@@ -2,14 +2,13 @@ This file will outline how I want to develop this program and what it should do.
 
 ##Activation##
 
-instead of using a prefix (like `!!` or `<<`), you talk to the chat user directly in the following ways:
+Instead of using a prefix (like `!!` or `<<`), you talk to the chat user directly in the following ways:
 
 1. @reply the user
 
         @Chatbot, alive
         I'm not dead yet!
 2. Reply to any message said by the chatbot
-3. 
 
 ## Commands ##
 
@@ -46,6 +45,21 @@ Example output:
 **next x tags** - shows the next [x] tags in the data exporter query. Should limit it to some reasonable number, like 10.
 
     The next 4 tags are [tag:xml], [tag:apple], [tag:java], and [tag:validation]
+
+**commands** - lists out all the commands avalible for people to use:
+
+    **Commands For Use**
+    
+    **Everyone**
+    (list names of commands)
+    
+    **Privilaged**
+    (list names of commands)
+    
+    **Owner**
+    power-down
+    ...
+    
 
 ## Recording ##
 
