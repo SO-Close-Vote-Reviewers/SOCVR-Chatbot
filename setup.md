@@ -6,7 +6,7 @@ Instead of using a prefix (like `!!` or `<<`), you talk to the chat user directl
 
 1. @reply the user
 
-        @Chatbot, alive
+        @Chatbot, alive?
         I'm not dead yet!
 2. Reply to any message said by the chatbot
 
@@ -16,9 +16,7 @@ Instead of using a prefix (like `!!` or `<<`), you talk to the chat user directl
 
     This is a chat bot for the SO Close Vote Reviewers chat room, developed by [gunr2171](http://stackoverflow.com/users/1043380/gunr2171). For more information see the [github page](https://github.com/gunr2171/SOCVR-Chatbot).
 
-**alive** - command for checking if the chatbox is alive without too much other nonsence.
-
-One of the following phrases will be picked at random:
+**alive** - command for checking if the chatbox is alive without too much other nonsence. One of the following phrases will be picked at random:
 
     I'm alive and kicking!
     Still here you guys!
@@ -30,15 +28,13 @@ One of the following phrases will be picked at random:
 
 **stats** - shows the stats on the close vote queue stats page. For example:
 
->10,101  
->need review
-
->1,508  
->reviews today
+    10,101  
+    need review
+    
+    1,508  
+    reviews today
 
 **current tag** - shows the top tag from the data export query
-
-Example output:
 
     The current tag is [tag:xml]
 
