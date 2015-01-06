@@ -1,1 +1,64 @@
 This file will outline how I want to develop this program and what it should do.
+
+##Activation##
+
+instead of using a prefix (like `!!` or `<<`), you talk to the chat user directly in the following ways:
+
+1. @reply the user
+
+        @Chatbot, alive
+        I'm not dead yet!
+2. Reply to any message said by the chatbot
+3. 
+
+## Commands ##
+
+**help** - shows some help information about what the software is
+
+    This is a chat bot for the SO Close Vote Reviewers chat room, developed by [gunr2171](http://stackoverflow.com/users/1043380/gunr2171). For more information see the [github page](https://github.com/gunr2171/SOCVR-Chatbot).
+
+**alive** - command for checking if the chatbox is alive without too much other nonsence.
+
+One of the following phrases will be picked at random:
+
+    I'm alive and kicking!
+    Still here you guys!
+    I'm not dead yet!
+
+**status** - chatbox replies with info about how it's running
+
+    SOCVR ChatBot version 1.x.x, running for 3 hours and 2 minutes.
+
+**stats** - shows the stats on the close vote queue stats page. For example:
+
+>10,101  
+>need review
+
+>1,508  
+>reviews today
+
+**current tag** - shows the top tag from the data export query
+
+Example output:
+
+    The current tag is [tag:xml]
+
+**next x tags** - shows the next [x] tags in the data exporter query. Should limit it to some reasonable number, like 10.
+
+    The next 4 tags are [tag:xml], [tag:apple], [tag:java], and [tag:validation]
+
+## Recording ##
+
+The chatbot will also record particular lines by registered memebers of the chat room
+
+1. When they pass/fail an audit
+
+        passed javascript audit
+2. When they run out of a filter (chat bot can also announce that a certain percentage of people have finshed a tag)
+
+        There are no items for you to review, matching the filter "[antivirus]"
+        
+3. When they run out of reviews or close votes for the day
+
+        Thank you for reviewing 40 close votes today; come back in 3 hours to continue reviewing.
+        You have no more close votes today; come back in 11 hours.
