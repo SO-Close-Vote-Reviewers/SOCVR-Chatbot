@@ -46,6 +46,8 @@ Example output:
 
     The next 4 tags are [tag:xml], [tag:apple], [tag:java], and [tag:validation]
 
+**start event** - a combination of the "stats" and "next x tags" commands (shows next 3).
+
 **commands** - lists out all the commands avalible for people to use:
 
     **Commands For Use**
@@ -72,7 +74,7 @@ The chatbot will also record particular lines by registered memebers of the chat
 
         There are no items for you to review, matching the filter "[antivirus]"
         
-3. When they run out of reviews or close votes for the day
+3. When they run out of reviews or close votes for the day (chat bot can also announce when a certain number of people have completed the event)
 
         Thank you for reviewing 40 close votes today; come back in 3 hours to continue reviewing.
         You have no more close votes today; come back in 11 hours.
