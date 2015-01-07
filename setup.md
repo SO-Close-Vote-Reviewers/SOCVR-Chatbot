@@ -10,6 +10,7 @@ Instead of using a prefix (like `!!` or `<<`), you talk to the chat user directl
         I'm not dead yet!
 2. Reply to any message said by the chatbot
 
+
 ## Commands ##
 
 **help** - shows some help information about what the software is
