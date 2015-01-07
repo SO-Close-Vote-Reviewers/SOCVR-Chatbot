@@ -11,6 +11,8 @@ namespace CVChatbot.Commands
     /// </summary>
     public abstract class UserCommand
     {
+        public abstract Task<bool> DoesInputTriggerCommandAsync(/* add Message datatype here */);
 
+        public abstract Task RunCommandAsync(); //need to pass in something to let it talk to the chat room
     }
 }
