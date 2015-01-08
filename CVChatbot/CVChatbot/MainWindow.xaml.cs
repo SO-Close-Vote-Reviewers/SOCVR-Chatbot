@@ -48,6 +48,7 @@ namespace CVChatbot
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
             mng = new RoomManager(txtUsername.Text, txtEmail.Text, txtPassword.Password);
+            btnLogin.IsEnabled = false;
         }
     }
 }

@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2205BC81-231C-4A89-BA63-4BE24BA2C5C6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TheCommonLibrary</RootNamespace>
+    <AssemblyName>TheCommonLibrary</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'LocalPublish|AnyCPU'">
+    <OutputPath>bin\LocalPublish\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CommandLine">
+      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
+    </Reference>
+    <Reference Include="ObjectListView">
+      <HintPath>..\packages\ObjectListView.Official.2.8.0\lib\net20\ObjectListView.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CommandLine\CommandLineOptions.cs" />
+    <Compile Include="CommandLine\CommandLineProgram.cs" />
+    <Compile Include="CommandLine\CommandLineProgramRunner.cs" />
+    <Compile Include="Extensions\BoolExtensions.cs" />
+    <Compile Include="Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Extensions\EnumExtensions.cs" />
+    <Compile Include="Extensions\ExceptionsExtensions.cs" />
+    <Compile Include="Extensions\FullGenericExtensions.cs" />
+    <Compile Include="Extensions\ICollectionExtensions.cs" />
+    <Compile Include="Extensions\IComparableExtensions.cs" />
+    <Compile Include="Extensions\IEnumerableExtensions.cs" />
+    <Compile Include="Extensions\MathExtensions.cs" />
+    <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="FTP\FTPManager.cs" />
+    <Compile Include="Logging\ConsoleLogger.cs" />
+    <Compile Include="Math\ExponentsHelper.cs" />
+    <Compile Include="Procedure\FormControls\frmProcedureInterface.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Procedure\FormControls\frmProcedureInterface.Designer.cs">
+      <DependentUpon>frmProcedureInterface.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Procedure\FormControls\InputField.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Procedure\FormControls\InputField.Designer.cs">
+      <DependentUpon>InputField.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Procedure\FormControls\UserInputProvider.cs" />
+    <Compile Include="Procedure\Logging\LoggingManager.cs" />
+    <Compile Include="Procedure\Logging\UILoggingEntry.cs" />
+    <Compile Include="Procedure\Procedure.cs" />
+    <Compile Include="Procedure\ProcedureManager.cs" />
+    <Compile Include="Procedure\ProcedureProgramRunner.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Sql\SqlAccessorBase.cs" />
+    <Compile Include="Sql\SqlScriptAccessorBase.cs" />
+    <Compile Include="Sql\SqlStoredProcedureAccessorBase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Extensions\ExtensionsDiagram.cd" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Procedure\FormControls\frmProcedureInterface.resx">
+      <DependentUpon>frmProcedureInterface.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Procedure\FormControls\InputField.resx">
+      <DependentUpon>InputField.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

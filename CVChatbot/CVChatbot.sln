@@ -1,26 +1,39 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CVChatbot", "CVChatbot\CVChatbot.csproj", "{6E31408F-222D-47D5-81CE-A03D1C79D4F2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatExchange.Net", "ChatExchange.Net\ChatExchange.Net.csproj", "{145AF77F-B475-40E4-8B85-CE3393BCD906}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheCommonLibrary", "TheCommonLibrary\TheCommonLibrary.csproj", "{2205BC81-231C-4A89-BA63-4BE24BA2C5C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		LocalPublish|Any CPU = LocalPublish|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{6E31408F-222D-47D5-81CE-A03D1C79D4F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6E31408F-222D-47D5-81CE-A03D1C79D4F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E31408F-222D-47D5-81CE-A03D1C79D4F2}.LocalPublish|Any CPU.ActiveCfg = Release|Any CPU
+		{6E31408F-222D-47D5-81CE-A03D1C79D4F2}.LocalPublish|Any CPU.Build.0 = Release|Any CPU
 		{6E31408F-222D-47D5-81CE-A03D1C79D4F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E31408F-222D-47D5-81CE-A03D1C79D4F2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{145AF77F-B475-40E4-8B85-CE3393BCD906}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{145AF77F-B475-40E4-8B85-CE3393BCD906}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{145AF77F-B475-40E4-8B85-CE3393BCD906}.LocalPublish|Any CPU.ActiveCfg = Release|Any CPU
+		{145AF77F-B475-40E4-8B85-CE3393BCD906}.LocalPublish|Any CPU.Build.0 = Release|Any CPU
 		{145AF77F-B475-40E4-8B85-CE3393BCD906}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{145AF77F-B475-40E4-8B85-CE3393BCD906}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2205BC81-231C-4A89-BA63-4BE24BA2C5C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2205BC81-231C-4A89-BA63-4BE24BA2C5C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2205BC81-231C-4A89-BA63-4BE24BA2C5C6}.LocalPublish|Any CPU.ActiveCfg = LocalPublish|Any CPU
+		{2205BC81-231C-4A89-BA63-4BE24BA2C5C6}.LocalPublish|Any CPU.Build.0 = LocalPublish|Any CPU
+		{2205BC81-231C-4A89-BA63-4BE24BA2C5C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2205BC81-231C-4A89-BA63-4BE24BA2C5C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -34,41 +34,6 @@ namespace CVChatbot
             cvChatRoom.NewMessage += cvChatRoom_NewMessage;
         }
 
-        //private async Task ProcessChatMessage(Message newMessage)
-        //{
-        //    //first, check if the incoming message is addressed to the chat user
-
-        //    if (newMessage.ParentID <= 0) //this is not a reply
-        //        return;
-
-        //    var repliedMessage = cvChatRoom.GetMessage(newMessage.ParentID);
-
-        //    if (repliedMessage.AuthorID != cvChatRoom.Me.ID)
-        //        return;
-
-        //    //the message is directed to the chat user, process it
-        //    //figure out if the message is a command
-
-
-        //    if (newMessage.Content == "repeat")
-        //    {
-        //        await Task.Run(() =>
-        //        {
-        //            var messageId = newMessage.ParentID;
-
-        //            if (messageId == -1)
-        //            {
-        //                cvChatRoom.PostReply(newMessage, "nothing to repeat");
-        //            }
-        //            else
-        //            {
-        //                var repeatMessage = cvChatRoom.GetMessage(newMessage.ParentID);
-        //                cvChatRoom.PostReply(newMessage, repeatMessage.Content);
-        //            }
-        //        });
-        //    }
-        //}
-
         private async void cvChatRoom_NewMessage(Message newMessage)
         {
             await cmp.ProcessChatMessageAsync(newMessage, cvChatRoom);

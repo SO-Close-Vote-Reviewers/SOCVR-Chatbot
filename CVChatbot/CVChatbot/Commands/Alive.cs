@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TheCommonLibrary.Extensions;
 
 namespace CVChatbot.Commands
 {
@@ -11,7 +12,18 @@ namespace CVChatbot.Commands
     {
         public override bool DoesInputTriggerCommand(Message userMessage)
         {
-            return userMessage.Content.ToLower().Trim().Contains("alive");
+            List<string> acceptablePhrases = new List<string>()
+            {
+                "alive",
+                "you alive",
+                "you alive?",
+                "are you alive?",
+            };
+
+            return userMessage.Content
+                .ToLower()
+                .Trim()
+                .In(acceptablePhrases);
         }
 
         public override void RunCommand(Message userMessage, Room chatRoom)
