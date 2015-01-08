@@ -3,6 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        
+        <GroupBox Header="Credentials" HorizontalAlignment="Left" Margin="37,29,0,0" VerticalAlignment="Top" Height="163" Width="448">
+            <Grid Margin="10,0,-2,-12">
+                <Label Content="Username" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                <Label Content="Email" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
+                <Label Content="Password" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="txtUsername" Height="23" Margin="78,14,10,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <TextBox x:Name="txtEmail" Height="23" Margin="78,45,10,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <PasswordBox x:Name="txtPassword" HorizontalAlignment="Left" Margin="78,80,0,0" VerticalAlignment="Top" Width="340"/>
+                <Button x:Name="btnLogin" Content="Login" Margin="0,0,10,10" HorizontalAlignment="Right" Width="75" Height="20" VerticalAlignment="Bottom" Click="btnLogin_Click"/>
+            </Grid>
+        </GroupBox>
+
     </Grid>
 </Window>

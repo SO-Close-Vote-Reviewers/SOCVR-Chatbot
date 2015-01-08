@@ -1,0 +1,6 @@
+﻿# This is a sample settings file
+# Values are stored in Key=Value pairs
+
+LoginUsername=my user name
+LoginEmail=my@email.address.com
+LoginPassword=mySecurePassword!
