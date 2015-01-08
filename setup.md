@@ -75,3 +75,12 @@ The chatbot will also record particular lines by registered memebers of the chat
 
         Thank you for reviewing 40 close votes today; come back in 3 hours to continue reviewing.
         You have no more close votes today; come back in 11 hours.
+
+		+Other ideas to add in when I get time:
+		
+---
+
+ - Add a register command, like "I'm starting" or similar. This will record the start date time for that user
+ - When the user either runs out of close votes or review items, take note of that number and the date time of the message.
+ - Add a "last session stats" command so people can see some simple stats on their last session
+ - For the last, this would read like: for your session ending 4 minutes ago, you reviewed 40 items in 24 minutes, averaging 1 review every 30 seconds. Overall, your average session time is 26 minutes and 17 seconds.
