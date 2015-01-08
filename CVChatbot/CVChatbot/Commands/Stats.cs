@@ -34,22 +34,25 @@ namespace CVChatbot.Commands
                 .Descendants("td")
                 .ElementAt(0)
                 .Element("a")
-                .InnerText
-                .Replace(",", "")
-                .Parse<int>();
+                .InnerText;
 
             var reviewsToday = statsTable
                 .Descendants("td")
                 .ElementAt(1)
                 .Element("div")
-                .InnerText
-                .Replace(",", "")
-                .Parse<int>();
+                .InnerText;
+
+            var allTime = statsTable
+                .Descendants("td")
+                .ElementAt(2)
+                .Element("div")
+                .InnerText;
 
             var message = new[]
             {
                 "{0} need review".FormatInline(needReview),
-                "{0} reviews today".FormatInline(reviewsToday)
+                "{0} reviews today".FormatInline(reviewsToday),
+                "{0} reviews all-time".FormatInline(allTime),
             }
             .ToCSV(Environment.NewLine);
 
