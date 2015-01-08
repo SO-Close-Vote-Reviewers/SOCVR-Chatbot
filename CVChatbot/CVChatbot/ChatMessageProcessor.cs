@@ -21,6 +21,7 @@ namespace CVChatbot
             ucp.AddUserCommand<Alive>();
             ucp.AddUserCommand<Help>();
             ucp.AddUserCommand<Status>();
+            ucp.AddUserCommand<Stats>();
         }
 
         public async Task ProcessChatMessageAsync(Message chatMessage, Room chatRoom)
@@ -39,6 +40,10 @@ namespace CVChatbot
                 if (userCommandToRun != null)
                 {
                     userCommandToRun.RunCommand(chatMessage, chatRoom);
+                }
+                else
+                {
+                    chatRoom.PostReply(chatMessage, "Sorry, don't understand that.");
                 }
             }
             else
