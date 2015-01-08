@@ -53,8 +53,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ChatBotStats.cs" />
+    <Compile Include="ChatExchangeExtensions.cs" />
     <Compile Include="ChatMessageProcessor.cs" />
     <Compile Include="Commands\Alive.cs" />
+    <Compile Include="Commands\Help.cs" />
+    <Compile Include="Commands\Status.cs" />
     <Compile Include="RoomManager.cs" />
     <Compile Include="Triggers\Trigger.cs" />
     <Compile Include="UserCommandProcessor.cs" />

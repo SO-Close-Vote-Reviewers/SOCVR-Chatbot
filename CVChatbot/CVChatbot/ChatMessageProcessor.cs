@@ -19,6 +19,8 @@ namespace CVChatbot
         {
             ucp = new UserCommandProcessor();
             ucp.AddUserCommand<Alive>();
+            ucp.AddUserCommand<Help>();
+            ucp.AddUserCommand<Status>();
         }
 
         public async Task ProcessChatMessageAsync(Message chatMessage, Room chatRoom)

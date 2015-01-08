@@ -22,6 +22,7 @@ namespace CVChatbot
 
             chatClient = new Client(username, email, password);
             cvChatRoom = chatClient.JoinRoom("http://chat.stackoverflow.com/rooms/68414/cvchatbot-testing");
+            ChatBotStats.LoginDate = DateTime.Now;
             cvChatRoom.StripMentionFromMessages = false;
 
             var startMessage = cvChatRoom.PostMessage("Hey everyone! (SO Close Vote Chatbot started)");
