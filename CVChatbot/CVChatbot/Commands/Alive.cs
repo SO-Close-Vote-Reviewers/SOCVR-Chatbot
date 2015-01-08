@@ -9,17 +9,12 @@ namespace CVChatbot.Commands
 {
     public class Alive : UserCommand
     {
-        public async override Task<bool> DoesInputTriggerCommandAsync(Message userMessage)
+        public override bool DoesInputTriggerCommand(Message userMessage)
         {
-            return await Task.Run(() => userMessage.Content.ToLower().Trim() == "alive");
+            return userMessage.Content.ToLower().Trim().Contains("alive");
         }
 
-        public async override Task RunCommandAsync(Message userMessage, Room chatRoom)
-        {
-            await Task.Run(() => RunCommand(userMessage, chatRoom));
-        }
-
-        private void RunCommand(Message userMessage, Room chatRoom)
+        public override void RunCommand(Message userMessage, Room chatRoom)
         {
             List<string> responsePhrases = new List<string>()
             {

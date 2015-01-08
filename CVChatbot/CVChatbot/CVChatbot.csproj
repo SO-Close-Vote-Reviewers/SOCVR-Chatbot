@@ -53,6 +53,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ChatMessageProcessor.cs" />
     <Compile Include="Commands\Alive.cs" />
     <Compile Include="RoomManager.cs" />
     <Compile Include="Triggers\Trigger.cs" />
