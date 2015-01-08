@@ -43,7 +43,7 @@ namespace CVChatbot
             //get the single command to run
             UserCommand commandToRun;
 
-            await commandToRun.RunCommandAsync();
+            //await commandToRun.RunCommandAsync();
         }
     }
 }

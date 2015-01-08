@@ -13,6 +13,6 @@ namespace CVChatbot.Triggers
     {
         public abstract Task<bool> DoesInputActivateTriggerAsync();
 
-        public Task RunTriggerAsync();
+        public abstract Task RunTriggerAsync();
     }
 }
