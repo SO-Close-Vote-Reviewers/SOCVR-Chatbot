@@ -1,5 +1,7 @@
 ﻿# This is a sample settings file
 # Values are stored in Key=Value pairs
+# Use these values instead of typing your credentials each time in the login page (unless you really like doing that for some reason)
+# place this file named "settings.txt" in the same folder as the created exe
 
 LoginUsername=my user name
 LoginEmail=my@email.address.com
