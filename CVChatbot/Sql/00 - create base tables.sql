@@ -25,3 +25,12 @@ create table ReviewSession
 	ItemsReviewed int null
 )
 
+--track when a user finishes a tag, multiple entries of the same tag by same user is allowed.
+--most of the time you will just look for the most recent entry
+create table NoItemsInFilterNotification
+(
+	Id int not null primary key identity,
+	RegisteredUserId int not null foreign key references RegisteredUser(Id),
+	TagName nvarchar(max) not null,
+	EntryDate datetimeoffset not null
+)
