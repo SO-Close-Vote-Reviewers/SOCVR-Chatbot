@@ -25,12 +25,12 @@ namespace CVChatbot
             ChatBotStats.LoginDate = DateTime.Now;
             cvChatRoom.StripMentionFromMessages = false;
 
-            var startMessage = cvChatRoom.PostMessage("Hey everyone! (SO Close Vote Chatbot started)");
+            //var startMessage = cvChatRoom.PostMessage("Hey everyone! (SO Close Vote Chatbot started)");
 
-            if (startMessage == null)
-            {
-                throw new InvalidOperationException("Unable to post message to room");
-            }
+            //if (startMessage == null)
+            //{
+            //    throw new InvalidOperationException("Unable to post message to room");
+            //}
 
             cvChatRoom.NewMessage += cvChatRoom_NewMessage;
         }

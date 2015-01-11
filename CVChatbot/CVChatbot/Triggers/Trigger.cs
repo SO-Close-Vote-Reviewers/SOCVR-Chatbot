@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChatExchangeDotNet;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,8 +12,8 @@ namespace CVChatbot.Triggers
     /// </summary>
     public abstract class Trigger
     {
-        public abstract Task<bool> DoesInputActivateTriggerAsync();
+        public abstract bool DoesInputActivateTrigger(Message userMessage);
 
-        public abstract Task RunTriggerAsync();
+        public abstract void RunTrigger(Message userMessage, Room chatRoom);
     }
 }
