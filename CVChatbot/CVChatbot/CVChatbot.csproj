@@ -45,6 +45,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
@@ -70,6 +71,7 @@
     <Compile Include="ChatMessageProcessor.cs" />
     <Compile Include="Commands\Alive.cs" />
     <Compile Include="Commands\Help.cs" />
+    <Compile Include="Commands\StartingSession.cs" />
     <Compile Include="Commands\Stats.cs" />
     <Compile Include="Commands\Status.cs" />
     <Compile Include="Model\DBCommonActions.cs" />
@@ -101,9 +103,10 @@
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
     <Compile Include="RoomManager.cs" />
-    <Compile Include="TriggerProcessor.cs" />
     <Compile Include="Triggers\CompletedAudit.cs" />
     <Compile Include="Triggers\EmptyFilter.cs" />
+    <Compile Include="Triggers\OutOfCloseVotes.cs" />
+    <Compile Include="Triggers\OutOfReviewActions.cs" />
     <Compile Include="Triggers\Trigger.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

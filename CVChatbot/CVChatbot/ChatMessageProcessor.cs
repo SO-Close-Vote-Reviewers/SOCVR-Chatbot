@@ -28,9 +28,11 @@ namespace CVChatbot
             AddUserCommand<Help>();
             AddUserCommand<Status>();
             AddUserCommand<Stats>();
+            AddUserCommand<StartingSession>();
 
             AddTrigger<CompletedAudit>();
             AddTrigger<EmptyFilter>();
+            AddTrigger<OutOfReviewActions>();
         }
 
         private void AddUserCommand<TUserCommand>()

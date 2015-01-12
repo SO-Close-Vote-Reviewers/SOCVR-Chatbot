@@ -45,6 +45,8 @@ Instead of using a prefix (like `!!` or `<<`), you talk to the chat user directl
 
 **start event** - a combination of the "stats" and "next x tags" commands (shows next 3).
 
+**starting** - tells the bot that you are starting a new review session
+
 **commands** - lists out all the commands avalible for people to use:
 
     **Commands For Use**
