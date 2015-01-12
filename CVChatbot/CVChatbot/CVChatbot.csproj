@@ -105,6 +105,7 @@
     <Compile Include="RoomManager.cs" />
     <Compile Include="Triggers\CompletedAudit.cs" />
     <Compile Include="Triggers\EmptyFilter.cs" />
+    <Compile Include="Triggers\EndingSessionTrigger.cs" />
     <Compile Include="Triggers\OutOfCloseVotes.cs" />
     <Compile Include="Triggers\OutOfReviewActions.cs" />
     <Compile Include="Triggers\Trigger.cs" />

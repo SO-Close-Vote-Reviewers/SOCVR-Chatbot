@@ -33,6 +33,7 @@ namespace CVChatbot
             AddTrigger<CompletedAudit>();
             AddTrigger<EmptyFilter>();
             AddTrigger<OutOfReviewActions>();
+            AddTrigger<OutOfCloseVotes>();
         }
 
         private void AddUserCommand<TUserCommand>()
