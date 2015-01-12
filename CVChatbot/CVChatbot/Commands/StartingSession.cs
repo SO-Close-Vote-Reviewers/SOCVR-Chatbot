@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CVChatbot.Model;
+using TheCommonLibrary.Extensions;
 
 namespace CVChatbot.Commands
 {
@@ -38,6 +39,17 @@ namespace CVChatbot.Commands
                 db.ReviewSessions.Add(newSession);
                 db.SaveChanges();
             }
+
+            List<string> replyMessages = new List<string>()
+            {
+                "Good luck!",
+                "Happy reviewing!",
+                "Don't get lost in the queue!",
+                "Watch out for audits!",
+                "May the Vote be with you!"
+            };
+
+            chatRoom.PostReply(userMessage, replyMessages.PickRandom());
         }
     }
 }
