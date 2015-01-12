@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TheCommonLibrary.Extensions;
+using CVChatbot.Model;
 
 namespace CVChatbot
 {
@@ -29,6 +30,7 @@ namespace CVChatbot
             AddUserCommand<Status>();
             AddUserCommand<Stats>();
             AddUserCommand<StartingSession>();
+            AddUserCommand<TrackUser>();
 
             AddTrigger<CompletedAudit>();
             AddTrigger<EmptyFilter>();
@@ -55,31 +57,46 @@ namespace CVChatbot
 
         private void ProcessChatMessage(Message chatMessage, Room chatRoom)
         {
-            bool isReplyToChatbot = MessageIsReplyToChatbot(chatMessage, chatRoom);
+            //first thing to determine is if the author of the message is a tracked user
+            //if not, don't do anything with it.
 
-            if (isReplyToChatbot)
+            bool messageMadeByTrackedUser;
+
+            using (SOChatBotEntities db = new SOChatBotEntities())
             {
-                //check if it's a command
-                var userCommandToRun = GetUserCommand(chatMessage, chatRoom);
-                if (userCommandToRun != null)
+                messageMadeByTrackedUser = db.RegisteredUsers
+                    .Where(x => x.ChatProfileId == chatMessage.AuthorID)
+                    .Any();
+            }
+
+            if (messageMadeByTrackedUser)
+            {
+                bool isReplyToChatbot = MessageIsReplyToChatbot(chatMessage, chatRoom);
+
+                if (isReplyToChatbot)
                 {
-                    userCommandToRun.RunCommand(chatMessage, chatRoom);
+                    //check if it's a command
+                    var userCommandToRun = GetUserCommand(chatMessage, chatRoom);
+                    if (userCommandToRun != null)
+                    {
+                        userCommandToRun.RunCommand(chatMessage, chatRoom);
+                    }
+                    else
+                    {
+                        chatRoom.PostReply(chatMessage, "Sorry, don't understand that.");
+                    }
                 }
                 else
                 {
-                    chatRoom.PostReply(chatMessage, "Sorry, don't understand that.");
+                    //check if it's a trigger
+                    var triggerToRun = GetTrigger(chatMessage, chatRoom);
+                    if (triggerToRun != null)
+                    {
+                        triggerToRun.RunTrigger(chatMessage, chatRoom);
+                    }
+
+                    //else, do nothing
                 }
-            }
-            else
-            {
-                //check if it's a trigger
-                var triggerToRun = GetTrigger(chatMessage, chatRoom);
-                if (triggerToRun != null)
-                {
-                    triggerToRun.RunTrigger(chatMessage, chatRoom);
-                }
-                
-                //else, do nothing
             }
         }
 

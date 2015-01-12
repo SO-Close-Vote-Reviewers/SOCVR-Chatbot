@@ -27,11 +27,13 @@ namespace CVChatbot.Triggers
 
             using (SOChatBotEntities db = new SOChatBotEntities())
             {
-                var user = DBCommonActions.GetRegisteredUser(userMessage.AuthorID, db);
+                var registedUser = db.RegisteredUsers
+                    .Single(x => x.ChatProfileId == userMessage.AuthorID);
+
                 CompletedAuditEntry newEntry = new CompletedAuditEntry()
                 {
                     EntryTs = DateTimeOffset.Now,
-                    RegisteredUser = user,
+                    RegisteredUser = registedUser,
                     TagName = pattern.Match(userMessage.Content).Groups[1].Value
                 };
 

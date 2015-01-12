@@ -76,6 +76,7 @@
     <Compile Include="Commands\StartingSession.cs" />
     <Compile Include="Commands\Stats.cs" />
     <Compile Include="Commands\Status.cs" />
+    <Compile Include="Commands\TrackUser.cs" />
     <Compile Include="Model\DBCommonActions.cs" />
     <Compile Include="Model\CompletedAuditEntry.cs">
       <DependentUpon>DbModel.tt</DependentUpon>

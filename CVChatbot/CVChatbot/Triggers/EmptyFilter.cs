@@ -40,11 +40,13 @@ namespace CVChatbot.Triggers
             {
                 foreach (var tagName in parsedTagNames)
                 {
-                    var user = DBCommonActions.GetRegisteredUser(userMessage.AuthorID, db);
+                    var registedUser = db.RegisteredUsers
+                        .Single(x => x.ChatProfileId == userMessage.AuthorID);
+
                     NoItemsInFilterEntry newEntry = new NoItemsInFilterEntry()
                     {
                         EntryTs = DateTimeOffset.Now,
-                        RegisteredUser = user,
+                        RegisteredUser = registedUser,
                         TagName = tagName
                     };
 

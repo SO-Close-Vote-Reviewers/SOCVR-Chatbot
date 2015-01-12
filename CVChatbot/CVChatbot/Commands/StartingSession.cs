@@ -26,12 +26,13 @@ namespace CVChatbot.Commands
             //start a new review session
             using (SOChatBotEntities db = new SOChatBotEntities())
             {
-                var user = DBCommonActions.GetRegisteredUser(chatUser.ID, db);
+                var registedUser = db.RegisteredUsers
+                    .Single(x => x.ChatProfileId == userMessage.AuthorID);
 
                 ReviewSession newSession = new ReviewSession()
                 {
                     SessionStart = DateTimeOffset.Now,
-                    RegisteredUser = user
+                    RegisteredUser = registedUser
                 };
 
                 db.ReviewSessions.Add(newSession);
