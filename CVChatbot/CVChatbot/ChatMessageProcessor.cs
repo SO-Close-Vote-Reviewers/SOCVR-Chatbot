@@ -30,6 +30,7 @@ namespace CVChatbot
             AddUserCommand<Stats>();
 
             AddTrigger<CompletedAudit>();
+            AddTrigger<EmptyFilter>();
         }
 
         private void AddUserCommand<TUserCommand>()

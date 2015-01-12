@@ -72,6 +72,7 @@
     <Compile Include="Commands\Help.cs" />
     <Compile Include="Commands\Stats.cs" />
     <Compile Include="Commands\Status.cs" />
+    <Compile Include="Model\DBCommonActions.cs" />
     <Compile Include="Model\CompletedAuditEntry.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
@@ -102,6 +103,7 @@
     <Compile Include="RoomManager.cs" />
     <Compile Include="TriggerProcessor.cs" />
     <Compile Include="Triggers\CompletedAudit.cs" />
+    <Compile Include="Triggers\EmptyFilter.cs" />
     <Compile Include="Triggers\Trigger.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
