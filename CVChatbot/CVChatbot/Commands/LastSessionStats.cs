@@ -42,7 +42,7 @@ namespace CVChatbot.Commands
 
                 if (lastSession == null)
                 {
-                    chatRoom.PostReply(userMessage, "You have no review sessions on record, so I can't give you any stats.");
+                    chatRoom.PostReply(userMessage, "You have no completed review sessions on record, so I can't give you any stats.");
                     return;
                 }
 
