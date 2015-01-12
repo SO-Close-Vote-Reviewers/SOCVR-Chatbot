@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace CVChatbot.Commands
 {
     /// <summary>
-    /// Used for editing the last session's review count.
+    /// Used for editing the last completed session's review count.
     /// </summary>
     public class LastSessionEditCount : UserCommand
     {
