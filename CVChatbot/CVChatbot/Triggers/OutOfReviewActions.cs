@@ -25,9 +25,9 @@ namespace CVChatbot.Triggers
 
         public override void RunTrigger(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
         {
-            //find the latest session by that user
             using (SOChatBotEntities db = new SOChatBotEntities())
             {
+                //find the latest session by that user
                 var latestSession = db.ReviewSessions
                     .Where(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID)
                     .Where(x => x.SessionEnd == null)
