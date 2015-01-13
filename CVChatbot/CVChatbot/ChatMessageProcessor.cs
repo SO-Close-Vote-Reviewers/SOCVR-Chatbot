@@ -34,6 +34,7 @@ namespace CVChatbot
             AddUserCommand<LastSessionStats>();
             AddUserCommand<LastSessionEditCount>();
             AddUserCommand<AuditStats>();
+            AddUserCommand<CompletedTags>();
 
             AddTrigger<CompletedAudit>();
             AddTrigger<EmptyFilter>();
