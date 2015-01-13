@@ -61,5 +61,10 @@ namespace CVChatbot.Commands
                     .FormatInline(chatUser.Name, chatUser.ID));
             }
         }
+
+        public override ActionPermissionLevel GetPermissionLevel()
+        {
+            return ActionPermissionLevel.Owner;
+        }
     }
 }

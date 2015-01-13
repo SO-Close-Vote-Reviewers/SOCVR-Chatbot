@@ -51,5 +51,10 @@ namespace CVChatbot.Commands
 
             chatRoom.PostReply(userMessage, replyMessages.PickRandom());
         }
+
+        public override ActionPermissionLevel GetPermissionLevel()
+        {
+            return ActionPermissionLevel.Registered;
+        }
     }
 }

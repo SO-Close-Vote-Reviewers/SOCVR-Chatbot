@@ -10,7 +10,7 @@ namespace CVChatbot.Triggers
     /// <summary>
     /// Represents a message that a person types into chat that the chat bot will react on.
     /// </summary>
-    public abstract class Trigger
+    public abstract class Trigger : ChatbotAction
     {
         public abstract bool DoesInputActivateTrigger(Message userMessage);
 

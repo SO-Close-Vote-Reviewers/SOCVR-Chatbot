@@ -10,7 +10,7 @@ namespace CVChatbot.Commands
     /// <summary>
     /// Represents a commands that a user types into chat to control the chat bot.
     /// </summary>
-    public abstract class UserCommand
+    public abstract class UserCommand : ChatbotAction
     {
         public abstract bool DoesInputTriggerCommand(Message userMessage);
 

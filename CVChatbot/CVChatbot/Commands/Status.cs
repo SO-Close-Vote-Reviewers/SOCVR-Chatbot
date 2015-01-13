@@ -34,5 +34,10 @@ namespace CVChatbot.Commands
 
             chatRoom.PostMessage(message);
         }
+
+        public override ActionPermissionLevel GetPermissionLevel()
+        {
+            return ActionPermissionLevel.Everyone;
+        }
     }
 }

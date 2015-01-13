@@ -30,5 +30,10 @@ namespace CVChatbot.Triggers
 
             EndSession(userMessage, chatRoom, itemsReviewed);
         }
+
+        public override ActionPermissionLevel GetPermissionLevel()
+        {
+            return ActionPermissionLevel.Registered;
+        }
     }
 }

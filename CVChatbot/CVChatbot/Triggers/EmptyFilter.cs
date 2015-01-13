@@ -55,5 +55,10 @@ namespace CVChatbot.Triggers
                 }
             }
         }
+
+        public override ActionPermissionLevel GetPermissionLevel()
+        {
+            return ActionPermissionLevel.Registered;
+        }
     }
 }

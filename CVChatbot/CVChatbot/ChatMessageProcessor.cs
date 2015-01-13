@@ -57,48 +57,93 @@ namespace CVChatbot
             await Task.Run(() => ProcessChatMessage(chatMessage, chatRoom));
         }
 
-        private void ProcessChatMessage(Message chatMessage, Room chatRoom)
+        private bool IsChatUserARegisteredUser(int userChatId)
         {
-            //first thing to determine is if the author of the message is a tracked user
-            //if not, don't do anything with it.
-
-            bool messageMadeByTrackedUser;
-
             using (SOChatBotEntities db = new SOChatBotEntities())
             {
-                messageMadeByTrackedUser = db.RegisteredUsers
-                    .Where(x => x.ChatProfileId == chatMessage.AuthorID)
+                return db.RegisteredUsers
+                    .Where(x => x.ChatProfileId == userChatId)
                     .Any();
             }
+        }
 
-            if (messageMadeByTrackedUser)
+        private bool DoesUserHavePermissionToRunAction<TAction>(int chatUserId, TAction actionToRun)
+            where TAction : ChatbotAction
+        {
+            var neededPermissionLevel = actionToRun.GetPermissionLevel();
+
+            if (neededPermissionLevel == ActionPermissionLevel.Everyone)
+                return true;
+
+            //now you need to look up the person in the database
+            using (SOChatBotEntities db = new SOChatBotEntities())
             {
-                bool isReplyToChatbot = MessageIsReplyToChatbot(chatMessage, chatRoom);
+                var dbUser = db.RegisteredUsers
+                    .Where(x => x.ChatProfileId == chatUserId)
+                    .SingleOrDefault();
 
-                if (isReplyToChatbot)
+                if (dbUser == null) //at this point, the permission is Registered or Owner, 
+                    return false;    //and if the user is not in the database at all then it can't work
+
+                if (neededPermissionLevel == ActionPermissionLevel.Registered)
+                    return true; //the user is in the list, that's all we need to check
+
+                if (dbUser.IsOwner && neededPermissionLevel == ActionPermissionLevel.Owner)
+                    return true;
+            }
+
+            //fall past the last check (for owner), so default to "no"
+            return false;
+        }
+
+        private void ProcessChatMessage(Message chatMessage, Room chatRoom)
+        {
+            bool isReplyToChatbot = MessageIsReplyToChatbot(chatMessage, chatRoom);
+
+            if (isReplyToChatbot)
+            {
+                ProcessInputAsUserCommand(chatMessage, chatRoom);
+            }
+            else
+            {
+                ProcessInputAsTrigger(chatMessage, chatRoom);
+            }
+        }
+
+        private void ProcessInputAsTrigger(Message chatMessage, Room chatRoom)
+        {
+            //check if there is a trigger that matches
+            var triggerToRun = GetTrigger(chatMessage);
+            if (triggerToRun != null)
+            {
+                if (DoesUserHavePermissionToRunAction(chatMessage.AuthorID, triggerToRun))
                 {
-                    //check if it's a command
-                    var userCommandToRun = GetUserCommand(chatMessage, chatRoom);
-                    if (userCommandToRun != null)
-                    {
-                        userCommandToRun.RunCommand(chatMessage, chatRoom);
-                    }
-                    else
-                    {
-                        chatRoom.PostReply(chatMessage, "Sorry, don't understand that.");
-                    }
+                    triggerToRun.RunTrigger(chatMessage, chatRoom);
+                }
+                //else, ignore (don't complain about permissions for triggers)
+            }
+
+            //else, do nothing
+        }
+
+        private void ProcessInputAsUserCommand(Message chatMessage, Room chatRoom)
+        {
+            //check if it's a command
+            var userCommandToRun = GetUserCommand(chatMessage);
+            if (userCommandToRun != null)
+            {
+                if (DoesUserHavePermissionToRunAction(chatMessage.AuthorID, userCommandToRun))
+                {
+                    userCommandToRun.RunCommand(chatMessage, chatRoom);
                 }
                 else
                 {
-                    //check if it's a trigger
-                    var triggerToRun = GetTrigger(chatMessage, chatRoom);
-                    if (triggerToRun != null)
-                    {
-                        triggerToRun.RunTrigger(chatMessage, chatRoom);
-                    }
-
-                    //else, do nothing
+                    chatRoom.PostReply(chatMessage, "Sorry, you need more permissions to run that command.");
                 }
+            }
+            else
+            {
+                chatRoom.PostReply(chatMessage, "Sorry, I don't understand that.");
             }
         }
 
@@ -110,7 +155,7 @@ namespace CVChatbot
         /// <param name="chatMessage"></param>
         /// <param name="chatRoom"></param>
         /// <returns></returns>
-        private UserCommand GetUserCommand(Message chatMessage, Room chatRoom)
+        private UserCommand GetUserCommand(Message chatMessage)
         {
             var possibleUserCommands = userCommands
                 .Where(x => x.DoesInputTriggerCommand(chatMessage))
@@ -123,7 +168,7 @@ namespace CVChatbot
             return possibleUserCommands.SingleOrDefault();
         }
 
-        private Trigger GetTrigger(Message chatMessage, Room chatRoom)
+        private Trigger GetTrigger(Message chatMessage)
         {
             var possibleTriggers = triggers
                 .Where(x => x.DoesInputActivateTrigger(chatMessage))
@@ -142,7 +187,6 @@ namespace CVChatbot
                 return false;
 
             var parentMessage = chatRoom.GetMessage(chatMessage.ParentID);
-
             return parentMessage.AuthorID == chatRoom.Me.ID;
         }
     }

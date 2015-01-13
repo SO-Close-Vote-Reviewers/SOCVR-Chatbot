@@ -8,7 +8,7 @@ namespace CVChatbot
 {
     public abstract class ChatbotAction
     {
-        public abstract void GetPermissionLevel();
+        public abstract ActionPermissionLevel GetPermissionLevel();
     }
 
     public enum ActionPermissionLevel
