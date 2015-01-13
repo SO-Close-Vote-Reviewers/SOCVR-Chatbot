@@ -122,8 +122,7 @@ namespace CVChatbot
                 }
                 //else, ignore (don't complain about permissions for triggers)
             }
-
-            //else, do nothing
+            //else, there is no trigger that matches, ignore
         }
 
         private void ProcessInputAsUserCommand(Message chatMessage, Room chatRoom)

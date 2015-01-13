@@ -43,7 +43,7 @@ namespace CVChatbot.Commands
 
         public override ActionPermissionLevel GetPermissionLevel()
         {
-            return ActionPermissionLevel.Owner;
+            return ActionPermissionLevel.Everyone;
         }
     }
 }
