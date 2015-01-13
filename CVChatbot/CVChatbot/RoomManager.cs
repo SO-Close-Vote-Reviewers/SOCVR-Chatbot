@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TheCommonLibrary.Extensions;
 
 namespace CVChatbot
 {
@@ -16,21 +17,31 @@ namespace CVChatbot
         private Client chatClient;
         private ChatMessageProcessor cmp;
 
-        public RoomManager(string username, string email, string password)
+        public RoomManager()
         {
             cmp = new ChatMessageProcessor();
 
+            var chatRoomUrl = SettingsAccessor.GetSettingValue<string>("ChatRoomUrl");
+            var username = SettingsAccessor.GetSettingValue<string>("LoginUsername");
+            var email = SettingsAccessor.GetSettingValue<string>("LoginEmail");
+            var password = SettingsAccessor.GetSettingValue<string>("LoginPassword");
+
             chatClient = new Client(username, email, password);
-            cvChatRoom = chatClient.JoinRoom("http://chat.stackoverflow.com/rooms/68414/cvchatbot-testing");
+            cvChatRoom = chatClient.JoinRoom(chatRoomUrl);
             ChatBotStats.LoginDate = DateTime.Now;
             cvChatRoom.StripMentionFromMessages = false;
 
-            //var startMessage = cvChatRoom.PostMessage("Hey everyone! (SO Close Vote Chatbot started)");
+            var startUpMessage = SettingsAccessor.GetSettingValue<string>("StartUpMessage");
 
-            //if (startMessage == null)
-            //{
-            //    throw new InvalidOperationException("Unable to post message to room");
-            //}
+            if (!startUpMessage.IsNullOrWhiteSpace())
+            {
+                var startMessage = cvChatRoom.PostMessage(startUpMessage);
+
+                if (startMessage == null)
+                {
+                    throw new InvalidOperationException("Unable to post message to room");
+                }
+            }
 
             cvChatRoom.NewMessage += cvChatRoom_NewMessage;
         }

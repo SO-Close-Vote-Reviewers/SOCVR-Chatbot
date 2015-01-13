@@ -66,6 +66,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ChatbotAction.cs" />
     <Compile Include="ChatBotStats.cs" />
     <Compile Include="ChatExchangeExtensions.cs" />
     <Compile Include="ChatMessageProcessor.cs" />
@@ -106,6 +107,7 @@
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
     <Compile Include="RoomManager.cs" />
+    <Compile Include="SettingsAccessor.cs" />
     <Compile Include="Triggers\CompletedAudit.cs" />
     <Compile Include="Triggers\EmptyFilter.cs" />
     <Compile Include="Triggers\EndingSessionTrigger.cs" />

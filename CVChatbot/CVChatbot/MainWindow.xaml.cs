@@ -27,29 +27,19 @@ namespace CVChatbot
         public MainWindow()
         {
             InitializeComponent();
-            LoadSettings();
+            lblCurrentStatus.Content = "Disconnected";
         }
 
-        private void LoadSettings()
+        private void btnStart_Click(object sender, RoutedEventArgs e)
         {
-            if (File.Exists("settings.txt"))
-            {
-                var settings = File.ReadAllLines("settings.txt")
-                    .Where(x => !x.StartsWith("#"))
-                    .Where(x => !string.IsNullOrWhiteSpace(x))
-                    .Select(x => x.Split('='))
-                    .ToDictionary(x => x[0], x => x[1]);
-
-                txtUsername.Text = settings["LoginUsername"];
-                txtEmail.Text = settings["LoginEmail"];
-                txtPassword.Password = settings["LoginPassword"];
-            }
+            mng = new RoomManager();
+            btnStart.IsEnabled = false;
+            lblCurrentStatus.Content = "Connected";
         }
 
-        private void btnLogin_Click(object sender, RoutedEventArgs e)
+        private void btnOpenLogFile_Click(object sender, RoutedEventArgs e)
         {
-            mng = new RoomManager(txtUsername.Text, txtEmail.Text, txtPassword.Password);
-            btnLogin.IsEnabled = false;
+
         }
     }
 }

@@ -38,7 +38,7 @@ namespace CVChatbot.Triggers
                 }
 
                 //check if session is greater than [MAX_REVIEW_TIME]
-                var maxReviewTimeHours = ConfigurationManager.AppSettings["MAX_REVIEW_LENGTH_HOURS"].Parse<int>();
+                var maxReviewTimeHours = SettingsAccessor.GetSettingValue<int>("MAX_REVIEW_LENGTH_HOURS");
 
                 var timeThreshold = DateTimeOffset.Now.AddHours(-maxReviewTimeHours);
 

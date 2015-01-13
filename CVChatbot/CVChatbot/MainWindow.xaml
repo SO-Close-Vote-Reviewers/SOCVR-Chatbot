@@ -1,19 +1,12 @@
 ﻿<Window x:Class="CVChatbot.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525">
+        Title="Chat Bot" Height="108" Width="213" ResizeMode="NoResize">
     <Grid>
-        <GroupBox Header="Credentials" HorizontalAlignment="Left" Margin="37,29,0,0" VerticalAlignment="Top" Height="163" Width="448">
-            <Grid Margin="10,0,-2,-12">
-                <Label Content="Username" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                <Label Content="Email" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
-                <Label Content="Password" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top"/>
-                <TextBox x:Name="txtUsername" Height="23" Margin="78,14,10,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                <TextBox x:Name="txtEmail" Height="23" Margin="78,45,10,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                <PasswordBox x:Name="txtPassword" HorizontalAlignment="Left" Margin="78,80,0,0" VerticalAlignment="Top" Width="340"/>
-                <Button x:Name="btnLogin" Content="Login" Margin="0,0,10,10" HorizontalAlignment="Right" Width="75" Height="20" VerticalAlignment="Bottom" Click="btnLogin_Click"/>
-            </Grid>
-        </GroupBox>
+        <Button x:Name="btnStart" Content="Start Bot" Margin="10,10,0,0" HorizontalAlignment="Left" Width="75" Height="25" VerticalAlignment="Top" RenderTransformOrigin="0.68,0.4" Click="btnStart_Click"/>
+        <Label Content="Status" HorizontalAlignment="Left" Margin="29,40,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lblCurrentStatus" Content="&lt;current status&gt;" HorizontalAlignment="Left" Margin="76,40,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="btnOpenLogFile" Content="Open Log File" Margin="90,10,0,0" HorizontalAlignment="Left" Width="102" Height="25" VerticalAlignment="Top" RenderTransformOrigin="0.68,0.4" Click="btnOpenLogFile_Click"/>
 
     </Grid>
 </Window>
