@@ -45,5 +45,10 @@ namespace CVChatbot.Commands
         {
             return ActionPermissionLevel.Everyone;
         }
+
+        public override string GetHelpText()
+        {
+            return "alive - a simple ping command to test if the bot is running";
+        }
     }
 }

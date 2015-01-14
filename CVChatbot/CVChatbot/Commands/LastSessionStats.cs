@@ -78,5 +78,10 @@ namespace CVChatbot.Commands
         {
             return ActionPermissionLevel.Registered;
         }
+
+        public override string GetHelpText()
+        {
+            return "last session stats - shows stats about your last review session";
+        }
     }
 }

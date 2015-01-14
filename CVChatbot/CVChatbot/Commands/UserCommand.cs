@@ -15,5 +15,7 @@ namespace CVChatbot.Commands
         public abstract bool DoesInputTriggerCommand(Message userMessage);
 
         public abstract void RunCommand(Message userMessage, Room chatRoom);
+
+        public abstract string GetHelpText();
     }
 }

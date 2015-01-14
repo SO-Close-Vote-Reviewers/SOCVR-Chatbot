@@ -63,5 +63,10 @@ namespace CVChatbot.Commands
         {
             return ActionPermissionLevel.Registered;
         }
+
+        public override string GetHelpText()
+        {
+            return "stats - shows the stats at the top of the /review/close/stats page";
+        }
     }
 }

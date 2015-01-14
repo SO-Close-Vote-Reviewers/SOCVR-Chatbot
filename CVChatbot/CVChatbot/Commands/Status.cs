@@ -39,5 +39,10 @@ namespace CVChatbot.Commands
         {
             return ActionPermissionLevel.Everyone;
         }
+
+        public override string GetHelpText()
+        {
+            return "status - tests if the chatbot is alive and shows simple info about it";
+        }
     }
 }
