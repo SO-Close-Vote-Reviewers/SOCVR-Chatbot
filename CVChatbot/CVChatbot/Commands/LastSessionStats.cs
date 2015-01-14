@@ -62,7 +62,7 @@ namespace CVChatbot.Commands
                 {
                     var averageTimePerReview = new TimeSpan(sessionLength.Ticks / (lastSession.ItemsReviewed.Value));
 
-                    statMessage += "You reviewed {2} items, averaging 1 review every {3}.";
+                    statMessage += "You reviewed {2} items, averaging a review every {3}.";
                     statMessage = statMessage.FormatSafely(
                         sessionEndedTimeAgo.ToUserFriendlyString(), 
                         sessionLength.ToUserFriendlyString(),
