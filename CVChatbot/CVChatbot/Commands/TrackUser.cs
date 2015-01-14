@@ -66,5 +66,10 @@ namespace CVChatbot.Commands
         {
             return ActionPermissionLevel.Owner;
         }
+
+        public override string GetHelpText()
+        {
+            return "add user <chat id> - adds the user to the registered users list";
+        }
     }
 }

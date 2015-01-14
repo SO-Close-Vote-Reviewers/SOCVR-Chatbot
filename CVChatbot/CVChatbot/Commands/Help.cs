@@ -20,13 +20,18 @@ namespace CVChatbot.Commands
 
         public override void RunCommand(Message userMessage, Room chatRoom)
         {
-            string message = "This is a chat bot for the SO Close Vote Reviewers chat room, developed by [gunr2171](http://stackoverflow.com/users/1043380/gunr2171). For more information see the [github page](https://github.com/gunr2171/SOCVR-Chatbot).";
+            string message = "This is a chat bot for the SO Close Vote Reviewers chat room, developed by [gunr2171](http://stackoverflow.com/users/1043380/gunr2171). For more information see the [github page](https://github.com/gunr2171/SOCVR-Chatbot). Reply with `commands` to see a list of commands.";
             chatRoom.PostMessage(message);
         }
 
         public override ActionPermissionLevel GetPermissionLevel()
         {
             return ActionPermissionLevel.Everyone;
+        }
+
+        public override string GetHelpText()
+        {
+            return "help - Prints info about this software";
         }
     }
 }

@@ -80,5 +80,10 @@ namespace CVChatbot.Commands
         {
             return ActionPermissionLevel.Registered;
         }
+
+        public override string GetHelpText()
+        {
+            return "last session edit count <new count> - edits the number of reviewed items in your last review session";
+        }
     }
 }

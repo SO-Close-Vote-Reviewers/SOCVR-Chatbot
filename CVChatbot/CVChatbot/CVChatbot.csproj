@@ -76,6 +76,7 @@
     <Compile Include="ChatMessageProcessor.cs" />
     <Compile Include="Commands\Alive.cs" />
     <Compile Include="Commands\AuditStats.cs" />
+    <Compile Include="Commands\Commands.cs" />
     <Compile Include="Commands\CompletedTags.cs" />
     <Compile Include="Commands\Help.cs" />
     <Compile Include="Commands\LastSessionEditCount.cs" />

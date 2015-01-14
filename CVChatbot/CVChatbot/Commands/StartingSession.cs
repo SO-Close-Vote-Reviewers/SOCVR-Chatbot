@@ -56,5 +56,10 @@ namespace CVChatbot.Commands
         {
             return ActionPermissionLevel.Registered;
         }
+
+        public override string GetHelpText()
+        {
+            return "starting - informs the chatbot that you are starting a new review session";
+        }
     }
 }

@@ -69,5 +69,10 @@ namespace CVChatbot.Commands
         {
             return ActionPermissionLevel.Registered;
         }
+
+        public override string GetHelpText()
+        {
+            return "audit stats - shows stats about your recorded audits";
+        }
     }
 }

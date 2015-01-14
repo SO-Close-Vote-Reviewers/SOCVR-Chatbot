@@ -99,5 +99,10 @@ namespace CVChatbot.Commands
         {
             return ActionPermissionLevel.Registered;
         }
+
+        public override string GetHelpText()
+        {
+            return "completed tags [min <#>] - shows the latest tags that have been completed by multiple people.";
+        }
     }
 }
