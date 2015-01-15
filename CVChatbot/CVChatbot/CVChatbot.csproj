@@ -74,6 +74,7 @@
     <Compile Include="Commands\AuditStats.cs" />
     <Compile Include="Commands\Commands.cs" />
     <Compile Include="Commands\CompletedTags.cs" />
+    <Compile Include="Commands\CurrentSession.cs" />
     <Compile Include="Commands\Help.cs" />
     <Compile Include="Commands\LastSessionEditCount.cs" />
     <Compile Include="Commands\LastSessionStats.cs" />
@@ -174,7 +175,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ChatExchange.Net\ChatExchange.Net.csproj">
