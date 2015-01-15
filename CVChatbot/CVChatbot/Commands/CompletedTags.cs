@@ -78,12 +78,10 @@ namespace CVChatbot.Commands
                 if (groupedTags.Any())
                 {
                     dataMessage = groupedTags
-                        .Select(x => "    {0}| cleared by {1} people, last cleared {2}"
-                            .FormatInline(
-                                x.TagName.PadRight(10),
-                                x.Count,
-                                x.LastTimeEntered.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'")))
-                        .ToCSV(Environment.NewLine);
+                        .ToStringTable(new string[] { "Tag Name", "Count", "Latest Time Cleared" },
+                            (x) => x.TagName,
+                            (x) => x.Count,
+                            (x) => x.LastTimeEntered.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'"));
                 }
                 else
                 {

@@ -52,13 +52,13 @@ namespace CVChatbot.Commands
                     .OrderByDescending(x => x.Percent)
                     .ThenByDescending(x => x.Count)
                     .ThenBy(x => x.TagName)
-                    .ToList()
-                    .Select(x => "    {0}: {1} {2} audits".FormatInline(
-                        x.TagName.PadRight(8),
-                        (Math.Round(x.Percent, 1).ToString() + "%").PadRight(5),
-                        x.Count));
+                    .ToList();
 
-                var message = groupedTags.ToCSV(Environment.NewLine);
+                var message = groupedTags
+                    .ToStringTable(new string[] { "Tag Name", "%", "Count"},
+                        (x) => x.TagName,
+                        (x) => Math.Round(x.Percent, 1),
+                        (x) => x.Count);
 
                 chatRoom.PostReply(userMessage, "Stats of all tracked audits by tag:");
                 chatRoom.PostMessage(message);
