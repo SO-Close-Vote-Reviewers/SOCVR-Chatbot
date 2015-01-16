@@ -12,15 +12,6 @@ namespace CVChatbot.Commands
 {
     public class Status : UserCommand
     {
-        public override bool DoesInputTriggerCommand(Message userMessage)
-        {
-            return userMessage
-                .GetContentsWithStrippedMentions()
-                .ToLower()
-                .Trim()
-                == "status";
-        }
-
         public override void RunCommand(Message userMessage, Room chatRoom)
         {
             var elapsedTime = DateTime.Now - ChatBotStats.LoginDate;
@@ -40,9 +31,19 @@ namespace CVChatbot.Commands
             return ActionPermissionLevel.Everyone;
         }
 
-        public override string GetHelpText()
+        protected override string GetMatchPattern()
         {
-            return "status - tests if the chatbot is alive and shows simple info about it";
+            return "^status$";
+        }
+
+        public override string GetCommandName()
+        {
+            return "Status";
+        }
+
+        public override string GetCommandDescription()
+        {
+            return "tests if the chatbot is alive and shows simple info about it";
         }
     }
 }

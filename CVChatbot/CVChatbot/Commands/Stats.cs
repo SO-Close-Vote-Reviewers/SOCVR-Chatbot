@@ -10,15 +10,6 @@ namespace CVChatbot.Commands
 {
     public class Stats : UserCommand
     {
-        public override bool DoesInputTriggerCommand(ChatExchangeDotNet.Message userMessage)
-        {
-            return userMessage
-                .GetContentsWithStrippedMentions()
-                .ToLower()
-                .Trim()
-                == "stats";
-        }
-
         public override void RunCommand(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
         {
             HtmlWeb web = new HtmlWeb();
@@ -64,9 +55,19 @@ namespace CVChatbot.Commands
             return ActionPermissionLevel.Registered;
         }
 
-        public override string GetHelpText()
+        protected override string GetMatchPattern()
         {
-            return "stats - shows the stats at the top of the /review/close/stats page";
+            return "^stats$";
+        }
+
+        public override string GetCommandName()
+        {
+            return "Stats";
+        }
+
+        public override string GetCommandDescription()
+        {
+            return "Shows the stats at the top of the /review/close/stats page";
         }
     }
 }

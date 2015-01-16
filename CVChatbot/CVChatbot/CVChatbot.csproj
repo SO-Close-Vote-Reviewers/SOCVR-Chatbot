@@ -112,6 +112,8 @@
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
     <Compile Include="RoomManager.cs" />
+    <Compile Include="RunningCommand.cs" />
+    <Compile Include="RunningCommandsManager.cs" />
     <Compile Include="SettingsAccessor.cs" />
     <Compile Include="Triggers\CompletedAudit.cs" />
     <Compile Include="Triggers\EmptyFilter.cs" />

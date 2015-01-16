@@ -14,34 +14,30 @@ namespace CVChatbot.Commands
     /// </summary>
     public class Commands : UserCommand
     {
-        public override bool DoesInputTriggerCommand(Message userMessage)
-        {
-            return userMessage
-                .GetContentsWithStrippedMentions()
-                .ToLower()
-                .Trim()
-                == "commands";
-        }
-
         public override void RunCommand(Message userMessage, Room chatRoom)
         {
             var groupedCommands = ReflectiveEnumerator.GetEnumerableOfType<UserCommand>()
                 .GroupBy(x => x.GetPermissionLevel());
 
-            string finalMessage = "    Below is a list of commands for the Close Vote Chat Bot" + Environment.NewLine + "    " + Environment.NewLine;
+            var finalMessageLines = new List<string>();
+            finalMessageLines.Add("Below is a list of commands for the Close Vote Chat Bot");
+            finalMessageLines.Add("");
 
             foreach (var group in groupedCommands)
             {
-                finalMessage += "    **" + group.Key.ToString() + "**" + Environment.NewLine;
+                finalMessageLines.Add("**{0}**".FormatInline(group.Key.ToString()));
 
-                finalMessage += group
-                    .Select(x => "    " + x.GetHelpText())
-                    .OrderBy(x => x)
-                    .ToCSV(Environment.NewLine);
+                var groupCommandLines = group
+                    .OrderBy(x => x.GetCommandName())
+                    .Select(x => "    {0} - {1}".FormatInline(x.GetCommandName(), x.GetCommandDescription()));
 
-                finalMessage += "    " + Environment.NewLine +
-                                "    " + Environment.NewLine;
+                finalMessageLines.AddRange(groupCommandLines);
+                finalMessageLines.Add("");
             }
+
+            var finalMessage = finalMessageLines
+                .Select(x => "    " + x)
+                .ToCSV(Environment.NewLine);
 
             chatRoom.PostMessage(finalMessage);
         }
@@ -49,11 +45,6 @@ namespace CVChatbot.Commands
         public override ActionPermissionLevel GetPermissionLevel()
         {
             return ActionPermissionLevel.Everyone;
-        }
-
-        public override string GetHelpText()
-        {
-            return "commands - Shows this list";
         }
 
         static class ReflectiveEnumerator
@@ -69,6 +60,21 @@ namespace CVChatbot.Commands
                 }
                 return objects;
             }
+        }
+
+        protected override string GetMatchPattern()
+        {
+            return "^commands$";
+        }
+
+        public override string GetCommandName()
+        {
+            return "Commands";
+        }
+
+        public override string GetCommandDescription()
+        {
+            return "Shows this list";
         }
     }
 }

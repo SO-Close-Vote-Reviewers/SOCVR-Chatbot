@@ -11,15 +11,6 @@ namespace CVChatbot.Commands
 {
     public class StartingSession : UserCommand
     {
-        public override bool DoesInputTriggerCommand(Message userMessage)
-        {
-            return userMessage
-                .GetContentsWithStrippedMentions()
-                .ToLower()
-                .Trim()
-                == "starting";
-        }
-
         public override void RunCommand(Message userMessage, Room chatRoom)
         {
             var chatUser = chatRoom.GetUser(userMessage.AuthorID);
@@ -57,9 +48,19 @@ namespace CVChatbot.Commands
             return ActionPermissionLevel.Registered;
         }
 
-        public override string GetHelpText()
+        protected override string GetMatchPattern()
         {
-            return "starting - informs the chatbot that you are starting a new review session";
+            return @"(?:i'm )?start(ing|ed)(?: now)?";
+        }
+
+        public override string GetCommandName()
+        {
+            return "Starting";
+        }
+
+        public override string GetCommandDescription()
+        {
+            return "informs the chatbot that you are starting a new review session";
         }
     }
 }

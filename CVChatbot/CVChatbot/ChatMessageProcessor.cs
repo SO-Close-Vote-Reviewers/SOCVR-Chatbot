@@ -22,6 +22,7 @@ namespace CVChatbot
 
         public ChatMessageProcessor()
         {
+//#error need to make this go off reflection
             userCommands = new List<UserCommand>();
             triggers = new List<Trigger>();
 
@@ -129,6 +130,29 @@ namespace CVChatbot
             //else, there is no trigger that matches, ignore
         }
 
+        private List<RunningCommand> runningCommands { get; set; }
+
+        private class RunningCommand
+        {
+            public string CommandName { get; set; }
+            public string RunningForUserName { get; set; }
+            public int RunningForUserId { get; set; }
+            public DateTimeOffset CommandStartTs { get; set; }
+        }
+
+        private void RunCommand(UserCommand command, Message chatMessage, Room chatRoom)
+        {
+            //record as started
+            var id = RunningCommandsManager.MarkCommandAsStarted(
+                command.GetCommandName(),
+                chatMessage.AuthorName,
+                chatMessage.AuthorID);
+
+            command.RunCommand(chatMessage, chatRoom);
+
+            RunningCommandsManager.MarkCommandAsFinished(id);
+        }
+
         private void ProcessInputAsUserCommand(Message chatMessage, Room chatRoom)
         {
             //check if it's a command
@@ -137,7 +161,7 @@ namespace CVChatbot
             {
                 if (DoesUserHavePermissionToRunAction(chatMessage.AuthorID, userCommandToRun))
                 {
-                    userCommandToRun.RunCommand(chatMessage, chatRoom);
+                    RunCommand(userCommandToRun, chatMessage, chatRoom);
                 }
                 else
                 {

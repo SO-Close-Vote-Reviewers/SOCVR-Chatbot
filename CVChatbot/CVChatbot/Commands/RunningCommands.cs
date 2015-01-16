@@ -8,10 +8,9 @@ namespace CVChatbot.Commands
 {
     public class RunningCommands : UserCommand
     {
-
-        public override bool DoesInputTriggerCommand(ChatExchangeDotNet.Message userMessage)
+        protected override string GetMatchPattern()
         {
-            throw new NotImplementedException();
+            return @"^running commands$";
         }
 
         public override void RunCommand(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
@@ -19,14 +18,19 @@ namespace CVChatbot.Commands
             throw new NotImplementedException();
         }
 
-        public override string GetHelpText()
+        public override string GetCommandName()
         {
-            throw new NotImplementedException();
+            return "Running Commands";
+        }
+
+        public override string GetCommandDescription()
+        {
+            return "Displays a list of all commands that the chat bot is currently running";
         }
 
         public override ActionPermissionLevel GetPermissionLevel()
         {
-            throw new NotImplementedException();
+            return ActionPermissionLevel.Everyone;
         }
     }
 }

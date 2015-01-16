@@ -14,20 +14,6 @@ namespace CVChatbot.Commands
     /// </summary>
     public class LastSessionEditCount : UserCommand
     {
-        string matchPatternText = @"^last session edit count (\d+)$";
-
-        public override bool DoesInputTriggerCommand(ChatExchangeDotNet.Message userMessage)
-        {
-            Regex matchPattern = new Regex(matchPatternText);
-
-            var message = userMessage
-                .GetContentsWithStrippedMentions()
-                .ToLower()
-                .Trim();
-
-            return matchPattern.IsMatch(message);
-        }
-
         public override void RunCommand(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
         {
             using (SOChatBotEntities db = new SOChatBotEntities())
@@ -45,12 +31,11 @@ namespace CVChatbot.Commands
                     return;
                 }
 
-                Regex matchPattern = new Regex(matchPatternText);
-                var message = userMessage
-                    .GetContentsWithStrippedMentions()
-                    .ToLower()
-                    .Trim();
-                var newReviewCount = matchPattern.Match(message).Groups[1].Value.Parse<int>();
+                var newReviewCount = GetRegexMatchingObject()
+                    .Match(GetMessageContentsReadyForRegexParsing(userMessage))
+                    .Groups[1]
+                    .Value
+                    .Parse<int>();
 
                 var previousReviewCount = lastSession.ItemsReviewed;
                 lastSession.ItemsReviewed = newReviewCount;
@@ -81,9 +66,19 @@ namespace CVChatbot.Commands
             return ActionPermissionLevel.Registered;
         }
 
-        public override string GetHelpText()
+        protected override string GetMatchPattern()
         {
-            return "last session edit count <new count> - edits the number of reviewed items in your last review session";
+            return @"^last session edit count (\d+)$";
+        }
+
+        public override string GetCommandName()
+        {
+            return "Last Session Edit Count";
+        }
+
+        public override string GetCommandDescription()
+        {
+            return "edits the number of reviewed items in your last review session";
         }
     }
 }

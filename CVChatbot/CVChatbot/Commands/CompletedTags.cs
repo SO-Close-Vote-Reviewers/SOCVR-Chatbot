@@ -14,30 +14,13 @@ namespace CVChatbot.Commands
     /// </summary>
     public class CompletedTags : UserCommand
     {
-        string matchPatternText = @"^completed tags(?: min (\d+))?$";
-
-        public override bool DoesInputTriggerCommand(ChatExchangeDotNet.Message userMessage)
-        {
-            Regex matchPattern = new Regex(matchPatternText);
-
-            var message = userMessage
-                .GetContentsWithStrippedMentions()
-                .ToLower()
-                .Trim();
-
-            return matchPattern.IsMatch(message);
-        }
-
         public override void RunCommand(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
         {
-            Regex matchPattern = new Regex(matchPatternText);
-
-            var message = userMessage
-                .GetContentsWithStrippedMentions()
-                .ToLower()
-                .Trim();
-
-            var thresholdInCommand = matchPattern.Match(message).Groups[1].Value.Parse<int?>();
+            var thresholdInCommand =  GetRegexMatchingObject()
+                .Match(GetMessageContentsReadyForRegexParsing(userMessage))
+                .Groups[1]
+                .Value
+                .Parse<int?>();
 
             if (thresholdInCommand != null && thresholdInCommand <= 0)
             {
@@ -98,9 +81,19 @@ namespace CVChatbot.Commands
             return ActionPermissionLevel.Registered;
         }
 
-        public override string GetHelpText()
+        protected override string GetMatchPattern()
         {
-            return "completed tags [min <#>] - shows the latest tags that have been completed by multiple people.";
+            return @"^completed tags(?: min (\d+))?$";
+        }
+
+        public override string GetCommandName()
+        {
+            return "Completed Tags";
+        }
+
+        public override string GetCommandDescription()
+        {
+            return "shows the latest tags that have been completed by multiple people.";
         }
     }
 }

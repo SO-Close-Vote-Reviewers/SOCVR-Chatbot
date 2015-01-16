@@ -14,20 +14,6 @@ namespace CVChatbot.Commands
     /// </summary>
     public class LastSessionStats : UserCommand
     {
-        string matchPatternText = @"^last session stats$";
-
-        public override bool DoesInputTriggerCommand(ChatExchangeDotNet.Message userMessage)
-        {
-            Regex matchPattern = new Regex(matchPatternText);
-
-            var message = userMessage
-                .GetContentsWithStrippedMentions()
-                .ToLower()
-                .Trim();
-
-            return matchPattern.IsMatch(message);
-        }
-
         public override void RunCommand(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
         {
             using (SOChatBotEntities db = new SOChatBotEntities())
@@ -79,9 +65,19 @@ namespace CVChatbot.Commands
             return ActionPermissionLevel.Registered;
         }
 
-        public override string GetHelpText()
+        protected override string GetMatchPattern()
         {
-            return "last session stats - shows stats about your last review session";
+            return @"^last session stats$";
+        }
+
+        public override string GetCommandName()
+        {
+            return "Lass Session Stats";
+        }
+
+        public override string GetCommandDescription()
+        {
+            return "shows stats about your last review session";
         }
     }
 }

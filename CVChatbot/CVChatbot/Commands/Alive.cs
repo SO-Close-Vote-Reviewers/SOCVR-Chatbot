@@ -10,23 +10,6 @@ namespace CVChatbot.Commands
 {
     public class Alive : UserCommand
     {
-        public override bool DoesInputTriggerCommand(Message userMessage)
-        {
-            List<string> acceptablePhrases = new List<string>()
-            {
-                "alive",
-                "you alive",
-                "you alive?",
-                "are you alive?",
-            };
-
-            return userMessage
-                .GetContentsWithStrippedMentions()
-                .ToLower()
-                .Trim()
-                .In(acceptablePhrases);
-        }
-
         public override void RunCommand(Message userMessage, Room chatRoom)
         {
             List<string> responsePhrases = new List<string>()
@@ -46,9 +29,19 @@ namespace CVChatbot.Commands
             return ActionPermissionLevel.Everyone;
         }
 
-        public override string GetHelpText()
+        protected override string GetMatchPattern()
         {
-            return "alive - a simple ping command to test if the bot is running";
+            return @"(?:(?:are )?you )?alive\??";
+        }
+
+        public override string GetCommandName()
+        {
+            return "Alive";
+        }
+
+        public override string GetCommandDescription()
+        {
+            return "A simple ping command to test if the bot is running";
         }
     }
 }

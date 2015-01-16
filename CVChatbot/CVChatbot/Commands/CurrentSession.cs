@@ -11,20 +11,6 @@ namespace CVChatbot.Commands
 {
     public class CurrentSession : UserCommand
     {
-        string matchPatternText = @"^current session?$";
-
-        public override bool DoesInputTriggerCommand(ChatExchangeDotNet.Message userMessage)
-        {
-            Regex matchPattern = new Regex(matchPatternText);
-
-            var message = userMessage
-                .GetContentsWithStrippedMentions()
-                .ToLower()
-                .Trim();
-
-            return matchPattern.IsMatch(message);
-        }
-
         public override void RunCommand(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
         {
             using (SOChatBotEntities db = new SOChatBotEntities())
@@ -53,14 +39,24 @@ namespace CVChatbot.Commands
             }
         }
 
-        public override string GetHelpText()
-        {
-            return "current session - Tells if the user has an open session or not, and when it started";
-        }
-
         public override ActionPermissionLevel GetPermissionLevel()
         {
             return ActionPermissionLevel.Registered;
+        }
+
+        protected override string GetMatchPattern()
+        {
+            return @"^current session?$";
+        }
+
+        public override string GetCommandName()
+        {
+            return "Current Session";
+        }
+
+        public override string GetCommandDescription()
+        {
+            return "Tells if the user has an open session or not, and when it started";
         }
     }
 }

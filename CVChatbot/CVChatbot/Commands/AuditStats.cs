@@ -12,20 +12,6 @@ namespace CVChatbot.Commands
 {
     public class AuditStats : UserCommand
     {
-        string matchPatternText = @"^audit stats$";
-
-        public override bool DoesInputTriggerCommand(ChatExchangeDotNet.Message userMessage)
-        {
-            Regex matchPattern = new Regex(matchPatternText);
-
-            var message = userMessage
-                .GetContentsWithStrippedMentions()
-                .ToLower()
-                .Trim();
-
-            return matchPattern.IsMatch(message);
-        }
-
         public override void RunCommand(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
         {
             using (SOChatBotEntities db = new SOChatBotEntities())
@@ -70,9 +56,19 @@ namespace CVChatbot.Commands
             return ActionPermissionLevel.Registered;
         }
 
-        public override string GetHelpText()
+        protected override string GetMatchPattern()
         {
-            return "audit stats - shows stats about your recorded audits";
+            return @"^audit stats$";
+        }
+
+        public override string GetCommandName()
+        {
+            return "Audit Stats";
+        }
+
+        public override string GetCommandDescription()
+        {
+            return "shows stats about your recorded audits";
         }
     }
 }
