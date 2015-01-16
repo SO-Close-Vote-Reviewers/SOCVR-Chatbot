@@ -34,5 +34,10 @@ namespace CVChatbot.Commands
         {
             return "Prints info about this software";
         }
+
+        public override string GetCommandUsage()
+        {
+            return "help";
+        }
     }
 }

@@ -62,5 +62,10 @@ namespace CVChatbot.Commands
         {
             return "informs the chatbot that you are starting a new review session";
         }
+
+        public override string GetCommandUsage()
+        {
+            return "starting";
+        }
     }
 }

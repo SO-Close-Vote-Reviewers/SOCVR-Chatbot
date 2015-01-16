@@ -49,5 +49,10 @@ namespace CVChatbot.Commands
         {
             return ActionPermissionLevel.Everyone;
         }
+
+        public override string GetCommandUsage()
+        {
+            return "running commands";
+        }
     }
 }

@@ -43,5 +43,10 @@ namespace CVChatbot.Commands
         {
             return "A simple ping command to test if the bot is running";
         }
+
+        public override string GetCommandUsage()
+        {
+            return "alive";
+        }
     }
 }

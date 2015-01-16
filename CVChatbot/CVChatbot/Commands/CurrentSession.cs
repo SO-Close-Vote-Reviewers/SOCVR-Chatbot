@@ -58,5 +58,10 @@ namespace CVChatbot.Commands
         {
             return "Tells if the user has an open session or not, and when it started";
         }
+
+        public override string GetCommandUsage()
+        {
+            return "current session";
+        }
     }
 }

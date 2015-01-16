@@ -95,5 +95,10 @@ namespace CVChatbot.Commands
         {
             return "shows the latest tags that have been completed by multiple people.";
         }
+
+        public override string GetCommandUsage()
+        {
+            return "completed tags [min <#>]";
+        }
     }
 }

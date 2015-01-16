@@ -45,5 +45,10 @@ namespace CVChatbot.Commands
         {
             return "tests if the chatbot is alive and shows simple info about it";
         }
+
+        public override string GetCommandUsage()
+        {
+            return "status";
+        }
     }
 }

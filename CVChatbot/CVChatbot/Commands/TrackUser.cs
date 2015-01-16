@@ -64,5 +64,10 @@ namespace CVChatbot.Commands
         {
             return "adds the user to the registered users list";
         }
+
+        public override string GetCommandUsage()
+        {
+            return "(add | track) user <chat id>";
+        }
     }
 }

@@ -69,5 +69,10 @@ namespace CVChatbot.Commands
         {
             return "Shows the stats at the top of the /review/close/stats page";
         }
+
+        public override string GetCommandUsage()
+        {
+            return "stats";
+        }
     }
 }

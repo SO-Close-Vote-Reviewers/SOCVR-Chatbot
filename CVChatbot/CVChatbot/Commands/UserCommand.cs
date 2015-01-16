@@ -43,5 +43,7 @@ namespace CVChatbot.Commands
         public abstract string GetCommandName();
 
         public abstract string GetCommandDescription();
+
+        public abstract string GetCommandUsage();
     }
 }

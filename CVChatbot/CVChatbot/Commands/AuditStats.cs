@@ -70,5 +70,10 @@ namespace CVChatbot.Commands
         {
             return "shows stats about your recorded audits";
         }
+
+        public override string GetCommandUsage()
+        {
+            return "audit stats";
+        }
     }
 }

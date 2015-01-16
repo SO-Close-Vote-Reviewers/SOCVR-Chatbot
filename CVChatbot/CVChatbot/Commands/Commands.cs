@@ -25,11 +25,11 @@ namespace CVChatbot.Commands
 
             foreach (var group in groupedCommands)
             {
-                finalMessageLines.Add("**{0}**".FormatInline(group.Key.ToString()));
+                finalMessageLines.Add("{0}".FormatInline(group.Key.ToString()));
 
                 var groupCommandLines = group
                     .OrderBy(x => x.GetCommandName())
-                    .Select(x => "    {0} - {1}".FormatInline(x.GetCommandName(), x.GetCommandDescription()));
+                    .Select(x => "    {0} - {1}".FormatInline(x.GetCommandUsage(), x.GetCommandDescription()));
 
                 finalMessageLines.AddRange(groupCommandLines);
                 finalMessageLines.Add("");
@@ -75,6 +75,11 @@ namespace CVChatbot.Commands
         public override string GetCommandDescription()
         {
             return "Shows this list";
+        }
+
+        public override string GetCommandUsage()
+        {
+            return "commands";
         }
     }
 }

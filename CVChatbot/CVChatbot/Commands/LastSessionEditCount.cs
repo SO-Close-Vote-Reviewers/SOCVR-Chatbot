@@ -80,5 +80,10 @@ namespace CVChatbot.Commands
         {
             return "edits the number of reviewed items in your last review session";
         }
+
+        public override string GetCommandUsage()
+        {
+            return "last session edit count <new count>";
+        }
     }
 }

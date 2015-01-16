@@ -79,5 +79,10 @@ namespace CVChatbot.Commands
         {
             return "shows stats about your last review session";
         }
+
+        public override string GetCommandUsage()
+        {
+            return "last session stats";
+        }
     }
 }
