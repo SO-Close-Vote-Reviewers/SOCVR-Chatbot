@@ -78,6 +78,7 @@
     <Compile Include="Commands\Help.cs" />
     <Compile Include="Commands\LastSessionEditCount.cs" />
     <Compile Include="Commands\LastSessionStats.cs" />
+    <Compile Include="Commands\RunningCommands.cs" />
     <Compile Include="Commands\StartingSession.cs" />
     <Compile Include="Commands\Stats.cs" />
     <Compile Include="Commands\Status.cs" />
