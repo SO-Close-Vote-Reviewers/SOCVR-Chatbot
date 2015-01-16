@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TheCommonLibrary.Extensions;
 
 namespace CVChatbot.Commands
 {
@@ -15,7 +16,23 @@ namespace CVChatbot.Commands
 
         public override void RunCommand(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
         {
-            throw new NotImplementedException();
+            var runningCommands = RunningCommandsManager.GetRunningCommands();
+            var now = DateTimeOffset.Now;
+
+            var tableMessage = runningCommands
+                .Select(x => new
+                {
+                    Command = x.CommandName,
+                    ForUser = "{0} ({1})".FormatInline(x.RunningForUserName, x.RunningForUserId),
+                    Started = (now - x.CommandStartTs).ToUserFriendlyString() + " ago",
+                })
+                .ToStringTable(new string[] { "Command", "For User", "Started" },
+                    x => x.Command,
+                    x => x.ForUser,
+                    x => x.Started);
+
+            chatRoom.PostReply(userMessage, "The following is a list of commands that I'm currently running:");
+            chatRoom.PostMessage(tableMessage);
         }
 
         public override string GetCommandName()

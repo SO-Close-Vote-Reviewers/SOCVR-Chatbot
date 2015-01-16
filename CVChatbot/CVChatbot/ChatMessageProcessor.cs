@@ -38,6 +38,7 @@ namespace CVChatbot
             AddUserCommand<CompletedTags>();
             AddUserCommand<Commands.Commands>();
             AddUserCommand<CurrentSession>();
+            AddUserCommand<RunningCommands>();
 
             AddTrigger<CompletedAudit>();
             AddTrigger<EmptyFilter>();
