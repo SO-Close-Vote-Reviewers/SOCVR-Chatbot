@@ -15,7 +15,7 @@ namespace CVChatbot.Triggers
     /// </summary>
     public class OutOfReviewActions : EndingSessionTrigger
     {
-        string matchPatternText = @"^(?:> )?Thank you for reviewing (\d+) close votes today; come back in ([\w ]+) to continue reviewing.$";
+        string matchPatternText = @"^(?:> )?Thank you for reviewing (\d+) close votes today; come back in ([\w ]+) to continue reviewing\.$";
 
         public override bool DoesInputActivateTrigger(ChatExchangeDotNet.Message userMessage)
         {
@@ -28,7 +28,12 @@ namespace CVChatbot.Triggers
             Regex matchPattern = new Regex(matchPatternText);
             var itemsReviewed = matchPattern.Match(userMessage.Content).Groups[1].Value.Parse<int>();
 
-            EndSession(userMessage, chatRoom, itemsReviewed);
+            var sucessful = EndSession(userMessage, chatRoom, itemsReviewed);
+
+            if (sucessful)
+            {
+                chatRoom.PostReply(userMessage, "Thanks for reviewing! To see more infomation use the command `last session stats`.");
+            }
         }
 
         public override ActionPermissionLevel GetPermissionLevel()
