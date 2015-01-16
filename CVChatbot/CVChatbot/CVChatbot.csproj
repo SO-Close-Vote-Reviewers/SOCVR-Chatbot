@@ -195,7 +195,22 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="connection-strings-sample.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="connection-strings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>if not exist "$(ProjectDir)norunconfigcopy.aaa" (
+  copy "$(ProjectDir)connection-strings.config" "%25LOCALAPPDATA%25\temp\connection-strings.config"
+  rem this is by far the most retarded thing i've ever heard of
+  rem see http://stackoverflow.com/a/17546180/1043380
+)</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
