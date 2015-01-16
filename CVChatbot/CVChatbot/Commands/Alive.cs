@@ -31,7 +31,7 @@ namespace CVChatbot.Commands
 
         protected override string GetMatchPattern()
         {
-            return @"(?:(?:are )?you )?alive\??";
+            return @"^(?:(?:are )?you )?(alive|still there|(still )?with us)\??$";
         }
 
         public override string GetCommandName()

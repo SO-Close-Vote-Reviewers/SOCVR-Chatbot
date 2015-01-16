@@ -58,7 +58,7 @@ namespace CVChatbot.Commands
 
         protected override string GetMatchPattern()
         {
-            return @"^audit stats$";
+            return @"^(show (me )?|display )?(my )?(audit stats|stats (of|about) my audits)$";
         }
 
         public override string GetCommandName()
