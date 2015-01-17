@@ -56,6 +56,21 @@ namespace CVChatbot.Commands
                         averageTimePerReview.ToUserFriendlyString());
                 }
 
+                //check if there is a on-going review session
+
+                var ongoingSessions = db.ReviewSessions
+                    .Where(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID)
+                    .Where(x => x.SessionEnd == null)
+                    .Where(x => x.SessionStart > lastSession.SessionStart)
+                    .OrderByDescending(x=>x.SessionStart)
+                    .FirstOrDefault();
+
+                if (ongoingSessions != null)
+                {
+                    var deltaTime = DateTimeOffset.Now - ongoingSessions.SessionStart;
+                    statMessage += " **Note: You still have a review session in progress.** It started {0} ago.".FormatInline(deltaTime.ToUserFriendlyString());
+                }
+
                 chatRoom.PostReply(userMessage, statMessage);
             }
         }
