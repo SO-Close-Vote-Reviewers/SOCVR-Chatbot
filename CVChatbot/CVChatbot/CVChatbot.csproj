@@ -66,23 +66,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ChatbotAction.cs" />
+    <Compile Include="ChatBotActions\ChatbotAction.cs" />
     <Compile Include="ChatBotStats.cs" />
-    <Compile Include="ChatExchangeExtensions.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="ChatMessageProcessor.cs" />
-    <Compile Include="Commands\Alive.cs" />
-    <Compile Include="Commands\AuditStats.cs" />
-    <Compile Include="Commands\Commands.cs" />
-    <Compile Include="Commands\CompletedTags.cs" />
-    <Compile Include="Commands\CurrentSession.cs" />
-    <Compile Include="Commands\Help.cs" />
-    <Compile Include="Commands\LastSessionEditCount.cs" />
-    <Compile Include="Commands\LastSessionStats.cs" />
-    <Compile Include="Commands\RunningCommands.cs" />
-    <Compile Include="Commands\StartingSession.cs" />
-    <Compile Include="Commands\Stats.cs" />
-    <Compile Include="Commands\Status.cs" />
-    <Compile Include="Commands\TrackUser.cs" />
+    <Compile Include="ChatBotActions\Commands\Alive.cs" />
+    <Compile Include="ChatBotActions\Commands\AuditStats.cs" />
+    <Compile Include="ChatBotActions\Commands\Commands.cs" />
+    <Compile Include="ChatBotActions\Commands\CompletedTags.cs" />
+    <Compile Include="ChatBotActions\Commands\CurrentSession.cs" />
+    <Compile Include="ChatBotActions\Commands\Help.cs" />
+    <Compile Include="ChatBotActions\Commands\LastSessionEditCount.cs" />
+    <Compile Include="ChatBotActions\Commands\LastSessionStats.cs" />
+    <Compile Include="ChatBotActions\Commands\RunningCommands.cs" />
+    <Compile Include="ChatBotActions\Commands\StartingSession.cs" />
+    <Compile Include="ChatBotActions\Commands\Stats.cs" />
+    <Compile Include="ChatBotActions\Commands\Status.cs" />
+    <Compile Include="ChatBotActions\Commands\TrackUser.cs" />
     <Compile Include="Model\DBCommonActions.cs" />
     <Compile Include="Model\CompletedAuditEntry.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
@@ -115,13 +115,13 @@
     <Compile Include="RunningCommand.cs" />
     <Compile Include="RunningCommandsManager.cs" />
     <Compile Include="SettingsAccessor.cs" />
-    <Compile Include="Triggers\CompletedAudit.cs" />
-    <Compile Include="Triggers\EmptyFilter.cs" />
-    <Compile Include="Triggers\EndingSessionTrigger.cs" />
-    <Compile Include="Triggers\OutOfCloseVotes.cs" />
-    <Compile Include="Triggers\OutOfReviewActions.cs" />
-    <Compile Include="Triggers\Trigger.cs" />
-    <Page Include="MainWindow.xaml">
+    <Compile Include="ChatBotActions\Triggers\CompletedAudit.cs" />
+    <Compile Include="ChatBotActions\Triggers\EmptyFilter.cs" />
+    <Compile Include="ChatBotActions\Triggers\EndingSessionTrigger.cs" />
+    <Compile Include="ChatBotActions\Triggers\OutOfCloseVotes.cs" />
+    <Compile Include="ChatBotActions\Triggers\OutOfReviewActions.cs" />
+    <Compile Include="ChatBotActions\Triggers\Trigger.cs" />
+    <Page Include="UI\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -129,8 +129,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Commands\UserCommand.cs" />
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="ChatBotActions\Commands\UserCommand.cs" />
+    <Compile Include="UI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>

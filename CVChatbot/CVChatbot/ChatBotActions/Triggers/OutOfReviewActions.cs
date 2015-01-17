@@ -15,7 +15,7 @@ namespace CVChatbot.Triggers
     /// </summary>
     public class OutOfReviewActions : EndingSessionTrigger
     {
-        string matchPatternText = @"^(?:> )?Thank you for reviewing (\d+) close votes today; come back in ([\w ]+) to continue reviewing\.$";
+        string matchPatternText = @"^(?:> )?thank you for reviewing (\d+) close votes today; come back in ([\w ]+) to continue reviewing\.$";
 
         public override bool DoesInputActivateTrigger(ChatExchangeDotNet.Message userMessage)
         {
