@@ -11,7 +11,7 @@ namespace CVChatbot.Triggers
 {
     public class EmptyFilter : Trigger
     {
-        string fullTriggerMatchPattern = "(?:> )?there are no items for you to review, matching the filter \"(?:[A-z-, ']+; )?([\\S ]+)\"";
+        string fullTriggerMatchPattern = "(?:> )?There are no items for you to review, matching the filter \"(?:[A-z-, ']+; )?([\\S ]+)\"";
 
         public override bool DoesInputActivateTrigger(Message userMessage)
         {

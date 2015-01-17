@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CVChatbot
 {
-    public static class Extensions
+    public static class ChatExchangeExtensions
     {
         public static string GetContentsWithStrippedMentions(this Message message)
         {

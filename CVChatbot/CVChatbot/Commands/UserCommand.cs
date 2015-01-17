@@ -33,12 +33,12 @@ namespace CVChatbot.Commands
             return new Regex(GetMatchPattern());
         }
 
-        public bool DoesInputTriggerCommand(Message chatMessage)
+        public bool DoesInputTriggerCommand(Message userMessage)
         {
-            return GetRegexMatchingObject().IsMatch(GetMessageContentsReadyForRegexParsing(chatMessage));
+            return GetRegexMatchingObject().IsMatch(GetMessageContentsReadyForRegexParsing(userMessage));
         }
 
-        
+        public abstract void RunCommand(Message userMessage, Room chatRoom);
 
         public abstract string GetCommandName();
 

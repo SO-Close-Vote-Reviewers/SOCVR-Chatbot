@@ -10,7 +10,7 @@ namespace CVChatbot.Triggers
 {
     public class OutOfCloseVotes : EndingSessionTrigger
     {
-        string matchPatternText = @"^(?:> )?you have no more close votes today; come back in (\d+) hours\.$";
+        string matchPatternText = @"^(?:> )?You have no more close votes today; come back in (\d+) hours\.$";
 
         public override bool DoesInputActivateTrigger(ChatExchangeDotNet.Message userMessage)
         {
