@@ -66,6 +66,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Actions\ChatbotActionRegister.cs" />
     <Compile Include="ChatbotAction.cs" />
     <Compile Include="ChatBotStats.cs" />
     <Compile Include="ChatExchangeExtensions.cs" />
@@ -157,6 +158,7 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>DbModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <None Include="Diagrams\ChatbotActions.cd" />
     <None Include="Diagrams\Overall Diagram.cd" />
     <None Include="Model\DbModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -207,6 +209,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>if not exist "$(ProjectDir)norunconfigcopy.aaa" (

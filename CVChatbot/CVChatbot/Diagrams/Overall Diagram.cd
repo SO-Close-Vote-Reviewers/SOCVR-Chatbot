@@ -1,45 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="CVChatbot.Commands.UserCommand">
-    <Position X="3" Y="1.5" Width="3.25" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAQAAAAAAAAAAACIAAAACAAAAAAAACAIAAAKAAA=</HashCode>
-      <FileName>Commands\UserCommand.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="CVChatbot.Triggers.Trigger">
-    <Position X="7.75" Y="1.75" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAACAAAA=</HashCode>
-      <FileName>Triggers\Trigger.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="CVChatbot.RoomManager">
-    <Position X="3.5" Y="5.5" Width="2.25" />
+    <Position X="1.25" Y="1.5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAQAAAAAAAAAQAAAAAAAAAAABACAAAAAAAAAAAAAA=</HashCode>
       <FileName>RoomManager.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CVChatbot.RunningCommandsManager">
-    <Position X="12" Y="6" Width="2.25" />
+    <Position X="2" Y="5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAABAAAAAAAAAAAAAAQAAAAAAAgAAAAAAEAAAAAA=</HashCode>
       <FileName>RunningCommandsManager.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CVChatbot.RunningCommand">
-    <Position X="12.25" Y="3.75" Width="2" />
+  <Class Name="CVChatbot.Actions.ChatbotActionRegister">
+    <Position X="7.25" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAQAACAgAAAAAAAAAAACAAAAA=</HashCode>
-      <FileName>RunningCommand.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="CVChatbot.SettingsAccessor">
-    <Position X="8.25" Y="6" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>SettingsAccessor.cs</FileName>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Actions\ChatbotActionRegister.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />
