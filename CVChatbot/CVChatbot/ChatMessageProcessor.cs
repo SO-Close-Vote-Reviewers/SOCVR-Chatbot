@@ -117,6 +117,13 @@ namespace CVChatbot
             }
         }
 
+        private void TellChatAboutErrorWhileRunningAction(Exception ex, Room chatRoom)
+        {
+            var errorMessage = "    " + ex.FullErrorMessage(Environment.NewLine + "    ");
+            chatRoom.PostMessage("OH GOD IT BROKE! EVERYTHING IS ON FIRE!");
+            chatRoom.PostMessage(errorMessage);
+        }
+
         private void ProcessInputAsTrigger(Message chatMessage, Room chatRoom)
         {
             //check if there is a trigger that matches
@@ -125,7 +132,14 @@ namespace CVChatbot
             {
                 if (DoesUserHavePermissionToRunAction(chatMessage.AuthorID, triggerToRun))
                 {
-                    triggerToRun.RunTrigger(chatMessage, chatRoom);
+                    try
+                    {
+                        triggerToRun.RunTrigger(chatMessage, chatRoom);
+                    }
+                    catch (Exception ex)
+                    {
+                        TellChatAboutErrorWhileRunningAction(ex, chatRoom);
+                    }
                 }
                 //else, ignore (don't complain about permissions for triggers)
             }
@@ -163,7 +177,14 @@ namespace CVChatbot
             {
                 if (DoesUserHavePermissionToRunAction(chatMessage.AuthorID, userCommandToRun))
                 {
-                    RunCommand(userCommandToRun, chatMessage, chatRoom);
+                    try
+                    {
+                        RunCommand(userCommandToRun, chatMessage, chatRoom);
+                    }
+                    catch (Exception ex)
+                    {
+                        TellChatAboutErrorWhileRunningAction(ex, chatRoom);
+                    }
                 }
                 else
                 {
