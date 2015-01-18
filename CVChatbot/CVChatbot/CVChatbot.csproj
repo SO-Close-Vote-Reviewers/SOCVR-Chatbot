@@ -75,6 +75,7 @@
     <Compile Include="Commands\Commands.cs" />
     <Compile Include="Commands\CompletedTags.cs" />
     <Compile Include="Commands\CurrentSession.cs" />
+    <Compile Include="Commands\EndSession.cs" />
     <Compile Include="Commands\Help.cs" />
     <Compile Include="Commands\LastSessionEditCount.cs" />
     <Compile Include="Commands\LastSessionStats.cs" />
