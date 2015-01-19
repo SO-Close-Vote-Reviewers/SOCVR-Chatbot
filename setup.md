@@ -78,9 +78,9 @@ The chatbot will also record particular lines by registered memebers of the chat
         Thank you for reviewing 40 close votes today; come back in 3 hours to continue reviewing.
         You have no more close votes today; come back in 11 hours.
 
-		+Other ideas to add in when I get time:
-		
 ---
+
+Other ideas to add in when I get time:
 
  - Add a register command, like "I'm starting" or similar. This will record the start date time for that user
  - When the user either runs out of close votes or review items, take note of that number and the date time of the message.
