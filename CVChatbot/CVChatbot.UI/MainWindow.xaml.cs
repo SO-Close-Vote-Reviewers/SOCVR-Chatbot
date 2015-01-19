@@ -24,5 +24,15 @@ namespace CVChatbot.UI
         {
             InitializeComponent();
         }
+
+        private void btnStart_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnOpenLogFile_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
