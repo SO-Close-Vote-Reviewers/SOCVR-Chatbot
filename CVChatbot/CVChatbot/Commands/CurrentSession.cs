@@ -46,7 +46,7 @@ namespace CVChatbot.Commands
 
         protected override string GetMatchPattern()
         {
-            return @"^current session?$";
+            return @"^((do i have (a|an) )|what is my )?(current|active|review)( review)? session( going( on)?)?(\?)?$";
         }
 
         public override string GetCommandName()
