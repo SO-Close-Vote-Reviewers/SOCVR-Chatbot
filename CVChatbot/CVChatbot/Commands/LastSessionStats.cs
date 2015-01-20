@@ -14,20 +14,6 @@ namespace CVChatbot.Commands
     /// </summary>
     public class LastSessionStats : UserCommand
     {
-        string matchPatternText = @"^last session stats$";
-
-        public override bool DoesInputTriggerCommand(ChatExchangeDotNet.Message userMessage)
-        {
-            Regex matchPattern = new Regex(matchPatternText);
-
-            var message = userMessage
-                .GetContentsWithStrippedMentions()
-                .ToLower()
-                .Trim();
-
-            return matchPattern.IsMatch(message);
-        }
-
         public override void RunCommand(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
         {
             using (SOChatBotEntities db = new SOChatBotEntities())
@@ -62,12 +48,27 @@ namespace CVChatbot.Commands
                 {
                     var averageTimePerReview = new TimeSpan(sessionLength.Ticks / (lastSession.ItemsReviewed.Value));
 
-                    statMessage += "You reviewed {2} items, averaging 1 review every {3}.";
+                    statMessage += "You reviewed {2} items, averaging a review every {3}.";
                     statMessage = statMessage.FormatSafely(
                         sessionEndedTimeAgo.ToUserFriendlyString(), 
                         sessionLength.ToUserFriendlyString(),
                         lastSession.ItemsReviewed.Value,
                         averageTimePerReview.ToUserFriendlyString());
+                }
+
+                //check if there is a on-going review session
+
+                var ongoingSessions = db.ReviewSessions
+                    .Where(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID)
+                    .Where(x => x.SessionEnd == null)
+                    .Where(x => x.SessionStart > lastSession.SessionStart)
+                    .OrderByDescending(x=>x.SessionStart)
+                    .FirstOrDefault();
+
+                if (ongoingSessions != null)
+                {
+                    var deltaTime = DateTimeOffset.Now - ongoingSessions.SessionStart;
+                    statMessage += " **Note: You still have a review session in progress.** It started {0} ago.".FormatInline(deltaTime.ToUserFriendlyString());
                 }
 
                 chatRoom.PostReply(userMessage, statMessage);
@@ -79,9 +80,24 @@ namespace CVChatbot.Commands
             return ActionPermissionLevel.Registered;
         }
 
-        public override string GetHelpText()
+        protected override string GetMatchPattern()
         {
-            return "last session stats - shows stats about your last review session";
+            return @"^last session stats$";
+        }
+
+        public override string GetCommandName()
+        {
+            return "Lass Session Stats";
+        }
+
+        public override string GetCommandDescription()
+        {
+            return "shows stats about your last review session";
+        }
+
+        public override string GetCommandUsage()
+        {
+            return "last session stats";
         }
     }
 }

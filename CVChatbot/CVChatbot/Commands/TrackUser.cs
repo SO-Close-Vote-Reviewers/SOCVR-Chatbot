@@ -11,30 +11,13 @@ namespace CVChatbot.Commands
 {
     public class TrackUser : UserCommand
     {
-        string matchPatternText = @"^(?:add|track) user (\d+)$";
-
-        public override bool DoesInputTriggerCommand(ChatExchangeDotNet.Message userMessage)
-        {
-            Regex matchPattern = new Regex(matchPatternText);
-
-            var message = userMessage
-                .GetContentsWithStrippedMentions()
-                .ToLower()
-                .Trim();
-
-            return matchPattern.IsMatch(message);
-        }
-
         public override void RunCommand(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
         {
-            Regex matchPattern = new Regex(matchPatternText);
-
-            var message = userMessage
-                .GetContentsWithStrippedMentions()
-                .ToLower()
-                .Trim();
-
-            var userIdToAdd = matchPattern.Match(message).Groups[1].Value.Parse<int>();
+            var userIdToAdd = GetRegexMatchingObject()
+                .Match(GetMessageContentsReadyForRegexParsing(userMessage))
+                .Groups[1]
+                .Value
+                .Parse<int>();
 
             using (SOChatBotEntities db = new SOChatBotEntities())
             {
@@ -67,9 +50,24 @@ namespace CVChatbot.Commands
             return ActionPermissionLevel.Owner;
         }
 
-        public override string GetHelpText()
+        protected override string GetMatchPattern()
         {
-            return "add user <chat id> - adds the user to the registered users list";
+            return @"^(?:add|track) user (\d+)$";
+        }
+
+        public override string GetCommandName()
+        {
+            return "Add user";
+        }
+
+        public override string GetCommandDescription()
+        {
+            return "adds the user to the registered users list";
+        }
+
+        public override string GetCommandUsage()
+        {
+            return "(add | track) user <chat id>";
         }
     }
 }

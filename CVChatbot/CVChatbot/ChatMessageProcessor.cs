@@ -22,6 +22,7 @@ namespace CVChatbot
 
         public ChatMessageProcessor()
         {
+//#error need to make this go off reflection
             userCommands = new List<UserCommand>();
             triggers = new List<Trigger>();
 
@@ -36,6 +37,9 @@ namespace CVChatbot
             AddUserCommand<AuditStats>();
             AddUserCommand<CompletedTags>();
             AddUserCommand<Commands.Commands>();
+            AddUserCommand<CurrentSession>();
+            AddUserCommand<RunningCommands>();
+            AddUserCommand<EndSession>();
 
             AddTrigger<CompletedAudit>();
             AddTrigger<EmptyFilter>();
@@ -113,6 +117,13 @@ namespace CVChatbot
             }
         }
 
+        private void TellChatAboutErrorWhileRunningAction(Exception ex, Room chatRoom)
+        {
+            var errorMessage = "    " + ex.FullErrorMessage(Environment.NewLine + "    ");
+            chatRoom.PostMessage("OH GOD IT BROKE! EVERYTHING IS ON FIRE!");
+            chatRoom.PostMessage(errorMessage);
+        }
+
         private void ProcessInputAsTrigger(Message chatMessage, Room chatRoom)
         {
             //check if there is a trigger that matches
@@ -121,11 +132,41 @@ namespace CVChatbot
             {
                 if (DoesUserHavePermissionToRunAction(chatMessage.AuthorID, triggerToRun))
                 {
-                    triggerToRun.RunTrigger(chatMessage, chatRoom);
+                    try
+                    {
+                        triggerToRun.RunTrigger(chatMessage, chatRoom);
+                    }
+                    catch (Exception ex)
+                    {
+                        TellChatAboutErrorWhileRunningAction(ex, chatRoom);
+                    }
                 }
                 //else, ignore (don't complain about permissions for triggers)
             }
             //else, there is no trigger that matches, ignore
+        }
+
+        private List<RunningCommand> runningCommands { get; set; }
+
+        private class RunningCommand
+        {
+            public string CommandName { get; set; }
+            public string RunningForUserName { get; set; }
+            public int RunningForUserId { get; set; }
+            public DateTimeOffset CommandStartTs { get; set; }
+        }
+
+        private void RunCommand(UserCommand command, Message chatMessage, Room chatRoom)
+        {
+            //record as started
+            var id = RunningCommandsManager.MarkCommandAsStarted(
+                command.GetCommandName(),
+                chatMessage.AuthorName,
+                chatMessage.AuthorID);
+
+            command.RunCommand(chatMessage, chatRoom);
+
+            RunningCommandsManager.MarkCommandAsFinished(id);
         }
 
         private void ProcessInputAsUserCommand(Message chatMessage, Room chatRoom)
@@ -136,7 +177,14 @@ namespace CVChatbot
             {
                 if (DoesUserHavePermissionToRunAction(chatMessage.AuthorID, userCommandToRun))
                 {
-                    userCommandToRun.RunCommand(chatMessage, chatRoom);
+                    try
+                    {
+                        RunCommand(userCommandToRun, chatMessage, chatRoom);
+                    }
+                    catch (Exception ex)
+                    {
+                        TellChatAboutErrorWhileRunningAction(ex, chatRoom);
+                    }
                 }
                 else
                 {
