@@ -11,7 +11,7 @@ namespace CVChatbot.Commands
     {
         protected override string GetMatchPattern()
         {
-            return @"^(end|done( with)?) (my )?(session|review(s|ing))$";
+            return @"^(end|done( with)?) (my )?(session|review(s|ing))( pl(ease|z))?$";
         }
 
         public override void RunCommand(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
