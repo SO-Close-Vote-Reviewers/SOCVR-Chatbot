@@ -24,8 +24,10 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
         public override void RunAction(Message incommingChatMessage, Room chatRoom)
         {
             //first, get the tags that were used
-            var overallPattern = new Regex(fullTriggerMatchPattern);
-            string tags = overallPattern.Match(incommingChatMessage.Content.ToLower()).Groups[1].Value;
+            string tags = GetRegexMatchingObject()
+                    .Match(GetMessageContentsReadyForRegexParsing(incommingChatMessage))
+                    .Groups[1]
+                    .Value;
 
             //split out tags
             var tagMatchingPattern = new Regex(@"\[(\S+?)\] ?");

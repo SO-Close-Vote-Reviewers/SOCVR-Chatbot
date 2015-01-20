@@ -24,7 +24,10 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
         public override void RunAction(Message incommingChatMessage, Room chatRoom)
         {
             var chatUser = chatRoom.GetUser(incommingChatMessage.AuthorID);
-            Regex pattern = new Regex(RegexMatchingPattern);
+            var tagName = GetRegexMatchingObject()
+                    .Match(GetMessageContentsReadyForRegexParsing(incommingChatMessage))
+                    .Groups[1]
+                    .Value;
 
             using (CVChatBotEntities db = new CVChatBotEntities())
             {
@@ -35,7 +38,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
                 {
                     EntryTs = DateTimeOffset.Now,
                     RegisteredUser = registedUser,
-                    TagName = pattern.Match(incommingChatMessage.Content).Groups[1].Value
+                    TagName = tagName
                 };
 
                 db.CompletedAuditEntries.Add(newEntry);
