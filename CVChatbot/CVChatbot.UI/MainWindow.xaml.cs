@@ -27,6 +27,8 @@ namespace CVChatbot.UI
         {
             InitializeComponent();
             mng = new RoomManager();
+
+            lblCurrentStatus.Content = "Disconnected";
         }
 
         private async void btnStart_Click(object sender, RoutedEventArgs e)
