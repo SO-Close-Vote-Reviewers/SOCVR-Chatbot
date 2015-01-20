@@ -1,0 +1,62 @@
+﻿using CVChatbot.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
+namespace CVChatbot.Bot.ChatbotActions.Triggers
+{
+    public class OutOfCloseVotes : EndingSessionTrigger
+    {
+        string matchPatternText = @"^(?:> )?you have no more close votes today; come back in (\d+) hours\.$";
+
+        public override bool DoesInputActivateTrigger(ChatExchangeDotNet.Message userMessage)
+        {
+            Regex matchPattern = new Regex(matchPatternText);
+            return matchPattern.IsMatch(userMessage.Content.ToLower());
+        }
+
+        public override void RunTrigger(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
+        {
+            var success = EndSession(userMessage, chatRoom, null);
+
+            if (success)
+            {
+                string message = "The review session has been marked as completed. To set the number of items you reviewed use the command `last session edit count <new count>`";
+                chatRoom.PostReply(userMessage, message);
+            }
+        }
+
+        public override ActionPermissionLevel GetPermissionLevel()
+        {
+            return ActionPermissionLevel.Registered;
+        }
+
+        protected override string GetRegexMatchingPattern()
+        {
+            return @"^(?:> )?you have no more close votes today; come back in (\d+) hours\.$";
+        }
+
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string GetActionName()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string GetActionDescription()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string GetActionUsage()
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

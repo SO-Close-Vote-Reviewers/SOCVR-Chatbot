@@ -45,11 +45,11 @@ namespace CVChatbot.Bot.ChatbotActions
 
         public abstract void RunAction(Message incommingChatMessage, Room chatRoom);
 
-        public abstract string GetCommandName();
+        public abstract string GetActionName();
 
-        public abstract string GetCommandDescription();
+        public abstract string GetActionDescription();
 
-        public abstract string GetCommandUsage();
+        public abstract string GetActionUsage();
 
         public abstract ActionPermissionLevel GetPermissionLevel();
     }

@@ -86,17 +86,17 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             return @"^completed tags(?: min (\d+))?$";
         }
 
-        public override string GetCommandName()
+        public override string GetActionName()
         {
             return "Completed Tags";
         }
 
-        public override string GetCommandDescription()
+        public override string GetActionDescription()
         {
             return "shows the latest tags that have been completed by multiple people.";
         }
 
-        public override string GetCommandUsage()
+        public override string GetActionUsage()
         {
             return "completed tags [min <#>]";
         }

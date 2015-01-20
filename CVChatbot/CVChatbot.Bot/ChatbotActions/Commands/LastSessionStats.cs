@@ -85,17 +85,17 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             return @"^last session stats$";
         }
 
-        public override string GetCommandName()
+        public override string GetActionName()
         {
             return "Lass Session Stats";
         }
 
-        public override string GetCommandDescription()
+        public override string GetActionDescription()
         {
             return "shows stats about your last review session";
         }
 
-        public override string GetCommandUsage()
+        public override string GetActionUsage()
         {
             return "last session stats";
         }

@@ -28,17 +28,17 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             chatRoom.PostReply(incommingChatMessage, phrase);
         }
 
-        public override string GetCommandName()
+        public override string GetActionName()
         {
             return "Alive";
         }
 
-        public override string GetCommandDescription()
+        public override string GetActionDescription()
         {
             return "A simple ping command to test if the bot is running";
         }
 
-        public override string GetCommandUsage()
+        public override string GetActionUsage()
         {
             return "alive";
         }

@@ -55,17 +55,17 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             return @"^(?:add|track) user (\d+)$";
         }
 
-        public override string GetCommandName()
+        public override string GetActionName()
         {
             return "Add user";
         }
 
-        public override string GetCommandDescription()
+        public override string GetActionDescription()
         {
             return "adds the user to the registered users list";
         }
 
-        public override string GetCommandUsage()
+        public override string GetActionUsage()
         {
             return "(add | track) user <chat id>";
         }

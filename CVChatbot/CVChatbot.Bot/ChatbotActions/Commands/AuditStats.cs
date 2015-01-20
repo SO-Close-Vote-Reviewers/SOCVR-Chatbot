@@ -61,17 +61,17 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             return @"^audit stats$";
         }
 
-        public override string GetCommandName()
+        public override string GetActionName()
         {
             return "Audit Stats";
         }
 
-        public override string GetCommandDescription()
+        public override string GetActionDescription()
         {
             return "shows stats about your recorded audits";
         }
 
-        public override string GetCommandUsage()
+        public override string GetActionUsage()
         {
             return "audit stats";
         }

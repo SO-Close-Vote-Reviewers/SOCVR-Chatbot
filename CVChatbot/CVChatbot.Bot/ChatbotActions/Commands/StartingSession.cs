@@ -53,17 +53,17 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             return @"(?:i'm )?start(ing|ed)(?: now)?";
         }
 
-        public override string GetCommandName()
+        public override string GetActionName()
         {
             return "Starting";
         }
 
-        public override string GetCommandDescription()
+        public override string GetActionDescription()
         {
             return "informs the chatbot that you are starting a new review session";
         }
 
-        public override string GetCommandUsage()
+        public override string GetActionUsage()
         {
             return "starting";
         }

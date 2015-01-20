@@ -47,17 +47,17 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             }
         }
 
-        public override string GetCommandName()
+        public override string GetActionName()
         {
             return "End Session";
         }
 
-        public override string GetCommandDescription()
+        public override string GetActionDescription()
         {
             return "If a user has an open review session this command will force end that session.";
         }
 
-        public override string GetCommandUsage()
+        public override string GetActionUsage()
         {
             return "end session";
         }

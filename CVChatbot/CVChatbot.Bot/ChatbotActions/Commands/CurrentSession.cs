@@ -49,17 +49,17 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             return @"^current session?$";
         }
 
-        public override string GetCommandName()
+        public override string GetActionName()
         {
             return "Current Session";
         }
 
-        public override string GetCommandDescription()
+        public override string GetActionDescription()
         {
             return "Tells if the user has an open session or not, and when it started";
         }
 
-        public override string GetCommandUsage()
+        public override string GetActionUsage()
         {
             return "current session";
         }

@@ -71,17 +71,17 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             return @"^last session edit count (\d+)$";
         }
 
-        public override string GetCommandName()
+        public override string GetActionName()
         {
             return "Last Session Edit Count";
         }
 
-        public override string GetCommandDescription()
+        public override string GetActionDescription()
         {
             return "edits the number of reviewed items in your last review session";
         }
 
-        public override string GetCommandUsage()
+        public override string GetActionUsage()
         {
             return "last session edit count <new count>";
         }

@@ -36,17 +36,17 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             return "^status$";
         }
 
-        public override string GetCommandName()
+        public override string GetActionName()
         {
             return "Status";
         }
 
-        public override string GetCommandDescription()
+        public override string GetActionDescription()
         {
             return "tests if the chatbot is alive and shows simple info about it";
         }
 
-        public override string GetCommandUsage()
+        public override string GetActionUsage()
         {
             return "status";
         }

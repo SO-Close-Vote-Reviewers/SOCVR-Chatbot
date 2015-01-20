@@ -16,7 +16,8 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     {
         public override void RunAction(Message userMessage, Room chatRoom)
         {
-            var groupedCommands = ReflectiveEnumerator.GetEnumerableOfType<UserCommand>()
+            var groupedCommands = ChatbotActionRegister.ChatActions
+                .Where(x => x is UserCommand)
                 .GroupBy(x => x.GetPermissionLevel());
 
             var finalMessageLines = new List<string>();
@@ -28,8 +29,8 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 finalMessageLines.Add("{0}".FormatInline(group.Key.ToString()));
 
                 var groupCommandLines = group
-                    .OrderBy(x => x.GetCommandName())
-                    .Select(x => "    {0} - {1}".FormatInline(x.GetCommandUsage(), x.GetCommandDescription()));
+                    .OrderBy(x => x.GetActionName())
+                    .Select(x => "    {0} - {1}".FormatInline(x.GetActionUsage(), x.GetActionDescription()));
 
                 finalMessageLines.AddRange(groupCommandLines);
                 finalMessageLines.Add("");
@@ -67,17 +68,17 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             return "^commands$";
         }
 
-        public override string GetCommandName()
+        public override string GetActionName()
         {
             return "Commands";
         }
 
-        public override string GetCommandDescription()
+        public override string GetActionDescription()
         {
             return "Shows this list";
         }
 
-        public override string GetCommandUsage()
+        public override string GetActionUsage()
         {
             return "commands";
         }

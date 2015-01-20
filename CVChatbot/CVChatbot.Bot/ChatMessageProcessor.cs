@@ -92,7 +92,7 @@ namespace CVChatbot.Bot
         {
             //record as started
             var id = RunningCommandsManager.MarkCommandAsStarted(
-                action.GetCommandName(),
+                action.GetActionName(),
                 incommingChatMessage.AuthorName,
                 incommingChatMessage.AuthorID);
 

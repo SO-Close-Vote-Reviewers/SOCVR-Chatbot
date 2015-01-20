@@ -25,17 +25,17 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             return "^help$";
         }
 
-        public override string GetCommandName()
+        public override string GetActionName()
         {
             return "Help";
         }
 
-        public override string GetCommandDescription()
+        public override string GetActionDescription()
         {
             return "Prints info about this software";
         }
 
-        public override string GetCommandUsage()
+        public override string GetActionUsage()
         {
             return "help";
         }

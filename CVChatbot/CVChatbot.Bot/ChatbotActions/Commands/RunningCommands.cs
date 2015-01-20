@@ -35,12 +35,12 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             chatRoom.PostMessage(tableMessage);
         }
 
-        public override string GetCommandName()
+        public override string GetActionName()
         {
             return "Running Commands";
         }
 
-        public override string GetCommandDescription()
+        public override string GetActionDescription()
         {
             return "Displays a list of all commands that the chat bot is currently running";
         }
@@ -50,7 +50,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             return ActionPermissionLevel.Everyone;
         }
 
-        public override string GetCommandUsage()
+        public override string GetActionUsage()
         {
             return "running commands";
         }

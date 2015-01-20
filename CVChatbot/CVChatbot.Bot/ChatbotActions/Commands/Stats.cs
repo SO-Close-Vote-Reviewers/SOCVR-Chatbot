@@ -60,17 +60,17 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             return "^stats$";
         }
 
-        public override string GetCommandName()
+        public override string GetActionName()
         {
             return "Stats";
         }
 
-        public override string GetCommandDescription()
+        public override string GetActionDescription()
         {
             return "Shows the stats at the top of the /review/close/stats page";
         }
 
-        public override string GetCommandUsage()
+        public override string GetActionUsage()
         {
             return "stats";
         }
