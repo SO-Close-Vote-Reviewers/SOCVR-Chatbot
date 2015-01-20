@@ -64,7 +64,7 @@ namespace CVChatbot.Commands
 
         protected override string GetMatchPattern()
         {
-            return "^commands$";
+            return "^(show the )?(list of )?(user )?command(s| list)( pl(ease|z))?$";
         }
 
         public override string GetCommandName()
