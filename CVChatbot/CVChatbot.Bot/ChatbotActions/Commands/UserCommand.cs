@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CVChatbot.Bot.ChatbotActions.Commands
 {
-    public class UserCommand : ChatbotAction
+    public abstract class UserCommand : ChatbotAction
     {
         protected override sealed string GetMessageContentsReadyForRegexParsing(Message incommingMessage)
         {

@@ -1,5 +1,6 @@
 ﻿using ChatExchangeDotNet;
 using CVChatbot.Bot.ChatbotActions;
+using CVChatbot.Bot.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,7 +68,7 @@ namespace CVChatbot.Bot
                 return true;
 
             //now you need to look up the person in the database
-            using (SOChatBotEntities db = new SOChatBotEntities())
+            using (CVChatBotEntities db = new CVChatBotEntities())
             {
                 var dbUser = db.RegisteredUsers
                     .Where(x => x.ChatProfileId == chatUserId)
