@@ -11,8 +11,8 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     {
         protected override sealed string GetMessageContentsReadyForRegexParsing(Message incommingMessage)
         {
-            return incommingMessage.Content
-                //.GetContentsWithStrippedMentions()
+            return incommingMessage
+                .GetContentsWithStrippedMentions()
                 .Trim();
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CVChatbot.Bot;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,14 +21,31 @@ namespace CVChatbot.UI
     /// </summary>
     public partial class MainWindow : Window
     {
+        RoomManager mng;
+
         public MainWindow()
         {
             InitializeComponent();
+            mng = new RoomManager();
         }
 
-        private void btnStart_Click(object sender, RoutedEventArgs e)
+        private async void btnStart_Click(object sender, RoutedEventArgs e)
         {
+            btnStart.IsEnabled = false;
 
+            RoomManagerSettings settings = new RoomManagerSettings()
+            {
+                ChatRoomUrl = SettingsAccessor.GetSettingValue<string>("ChatRoomUrl"),
+                Username = SettingsAccessor.GetSettingValue<string>("LoginUsername"),
+                Email = SettingsAccessor.GetSettingValue<string>("LoginEmail"),
+                Password = SettingsAccessor.GetSettingValue<string>("LoginPassword"),
+                StartUpMessage = SettingsAccessor.GetSettingValue<string>("StartUpMessage"),
+            };
+
+            lblCurrentStatus.Content = "Joining...";
+            await Task.Run(() => mng.JoinRoom(settings));
+           
+            lblCurrentStatus.Content = "Connected";
         }
 
         private void btnOpenLogFile_Click(object sender, RoutedEventArgs e)
