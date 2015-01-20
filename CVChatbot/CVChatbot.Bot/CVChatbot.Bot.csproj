@@ -39,12 +39,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChatbotActions\ChatbotAction.cs" />
+    <Compile Include="ChatbotActions\ChatbotActionRegister.cs" />
     <Compile Include="ChatbotActions\Commands\Alive.cs" />
+    <Compile Include="ChatbotActions\Commands\UserCommand.cs" />
     <Compile Include="ChatbotActions\Triggers\EmptyFilter.cs" />
+    <Compile Include="ChatbotActions\Triggers\Trigger.cs" />
+    <Compile Include="ChatMessageProcessor.cs" />
     <Compile Include="Model\DBCommonActions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Diagrams\ChatbotActions.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ChatExchange.Net\ChatExchange.Net.csproj">
+      <Project>{145af77f-b475-40e4-8b85-ce3393bcd906}</Project>
+      <Name>ChatExchange.Net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TheCommonLibrary\TheCommonLibrary.csproj">
+      <Project>{2205bc81-231c-4a89-ba63-4be24ba2c5c6}</Project>
+      <Name>TheCommonLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
