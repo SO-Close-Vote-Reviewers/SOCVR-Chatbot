@@ -22,7 +22,8 @@ namespace CVChatbot.Bot
                 .ToList();
 
             if (possibleChatbotActionsToRun.Count > 1)
-                throw new Exception("More than one possible chat bot action to run");
+                throw new Exception("More than one possible chat bot action to run for the input '{0}'"
+                    .FormatSafely(incommingChatMessage.Content));
 
             if (!possibleChatbotActionsToRun.Any())
             {
@@ -38,9 +39,52 @@ namespace CVChatbot.Bot
                 return;
             }
 
-            //you have a single item to run, attempt to run it
+            //you have a single item to run
             var chatbotActionToRun = possibleChatbotActionsToRun.Single();
-            RunChatbotAction(chatbotActionToRun, incommingChatMessage, chatRoom);
+
+            //now, do you have permission to run it?
+            if (DoesUserHavePermissionToRunAction(chatbotActionToRun, incommingChatMessage.AuthorID))
+            {
+                //have permission, run it
+                RunChatbotAction(chatbotActionToRun, incommingChatMessage, chatRoom);
+            }
+            else
+            {
+                //don't have permission, tell the user only if it's a command
+                if (isReplyToChatbot)
+                {
+                    chatRoom.PostReply(incommingChatMessage, "Sorry, you need more permissions to run that command.");
+                }
+                //don't do anything for triggers
+            }
+        }
+
+        private bool DoesUserHavePermissionToRunAction(ChatbotAction actionToRun, int chatUserId)
+        {
+            var neededPermissionLevel = actionToRun.GetPermissionLevel();
+
+            if (neededPermissionLevel == ActionPermissionLevel.Everyone)
+                return true;
+
+            //now you need to look up the person in the database
+            using (SOChatBotEntities db = new SOChatBotEntities())
+            {
+                var dbUser = db.RegisteredUsers
+                    .Where(x => x.ChatProfileId == chatUserId)
+                    .SingleOrDefault();
+
+                if (dbUser == null) //at this point, the permission is Registered or Owner, 
+                    return false;    //and if the user is not in the database at all then it can't work
+
+                if (neededPermissionLevel == ActionPermissionLevel.Registered)
+                    return true; //the user is in the list, that's all we need to check
+
+                if (dbUser.IsOwner && neededPermissionLevel == ActionPermissionLevel.Owner)
+                    return true;
+            }
+
+            //fall past the last check (for owner), so default to "no"
+            return false;
         }
 
         private void RunChatbotAction(ChatbotAction action, Message incommingChatMessage, Room chatRoom)
@@ -57,6 +101,9 @@ namespace CVChatbot.Bot
             }
             catch (Exception ex)
             {
+                //ChatMessageProcessor is responsible for outputting any errors that occur
+                //while running chatbot actions. Anything outside of the RunAction() method
+                //should be handled higher up
                 TellChatAboutErrorWhileRunningAction(ex, chatRoom);
             }
 

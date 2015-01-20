@@ -50,5 +50,25 @@ namespace CVChatbot.Bot.ChatbotActions
         public abstract string GetCommandDescription();
 
         public abstract string GetCommandUsage();
+
+        public abstract ActionPermissionLevel GetPermissionLevel();
+    }
+
+    public enum ActionPermissionLevel
+    {
+        /// <summary>
+        /// All people who join the chat room are allowed to run this command or activate the trigger
+        /// </summary>
+        Everyone,
+
+        /// <summary>
+        /// Only people in the tracked users list can run this command or activate the trigger
+        /// </summary>
+        Registered,
+
+        /// <summary>
+        /// Only people in the tracked users list who are labeled as "owner" can run this command or activate the trigger
+        /// </summary>
+        Owner,
     }
 }
