@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="CVChatbot.ChatbotAction">
+    <Position X="8.75" Y="0.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ChatbotAction.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CVChatbot.Commands.UserCommand">
+    <Position X="0.5" Y="2.25" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAAAACIAAAACAAAAAAAACAIAAAKAAA=</HashCode>
+      <FileName>Commands\UserCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CVChatbot.Triggers.Trigger">
+    <Position X="11.5" Y="2.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>Triggers\Trigger.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CVChatbot.Triggers.CompletedAudit">
+    <Position X="5" Y="4.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>Triggers\CompletedAudit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CVChatbot.Triggers.EmptyFilter">
+    <Position X="17" Y="4.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAACASAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>Triggers\EmptyFilter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CVChatbot.Triggers.EndingSessionTrigger">
+    <Position X="11.75" Y="4.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Triggers\EndingSessionTrigger.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CVChatbot.Triggers.OutOfCloseVotes">
+    <Position X="9" Y="6.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAQAAAAAAAASAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>Triggers\OutOfCloseVotes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CVChatbot.Triggers.OutOfReviewActions">
+    <Position X="13" Y="6.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAQAAAAAAAASAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>Triggers\OutOfReviewActions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="CVChatbot.ActionPermissionLevel" Collapsed="true">
+    <Position X="21.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>ChatbotAction.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
