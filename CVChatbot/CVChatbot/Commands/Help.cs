@@ -22,7 +22,7 @@ namespace CVChatbot.Commands
 
         protected override string GetMatchPattern()
         {
-            return "^help$";
+            return "^(i need )?(help|assistance)( me)?( (please|plz))?$";
         }
 
         public override string GetCommandName()
