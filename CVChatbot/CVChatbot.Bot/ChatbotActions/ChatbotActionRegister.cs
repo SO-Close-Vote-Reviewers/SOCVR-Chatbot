@@ -9,7 +9,7 @@ namespace CVChatbot.Bot.ChatbotActions
 {
     public static class ChatbotActionRegister
     {
-        public static List<ChatbotAction> ChatActions
+        public static List<ChatbotAction> AllChatActions
         {
             get
             {
@@ -17,6 +17,15 @@ namespace CVChatbot.Bot.ChatbotActions
                     .GetEnumerableOfType<ChatbotAction>()
                     .ToList();
             }
+        }
+
+        public static string GetChatBotActionUsage<TAction>()
+            where TAction : ChatbotAction
+        {
+            return AllChatActions
+                .Where(x => x is TAction)
+                .Single()
+                .GetActionUsage();
         }
 
         private static class ReflectiveEnumerator

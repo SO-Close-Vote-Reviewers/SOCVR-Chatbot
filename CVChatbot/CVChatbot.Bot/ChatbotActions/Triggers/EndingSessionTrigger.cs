@@ -1,4 +1,5 @@
 ﻿using ChatExchangeDotNet;
+using CVChatbot.Bot.ChatbotActions.Commands;
 using CVChatbot.Bot.Model;
 using System;
 using System.Collections.Generic;
@@ -45,8 +46,13 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
                 if (latestSession.SessionStart < timeThreshold)
                 {
                     var timeDelta = DateTimeOffset.Now - latestSession.SessionStart;
-                    chatRoom.PostReply(userMessage, "Your last uncompleted review session was {0} ago. Because it has exceeded my threshold ({1} hours), I can't mark that session with this information."
-                        .FormatInline(timeDelta.ToUserFriendlyString(), maxReviewTimeHours));
+
+                    var message = "Your last uncompleted review session was {0} ago. Because it has exceeded my threshold ({1} hours), I can't mark that session with this information. "
+                        .FormatInline(timeDelta.ToUserFriendlyString(), maxReviewTimeHours) +
+                        "Use the command '{0}' to forcefully end that session."
+                        .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<EndSession>());
+
+                    chatRoom.PostReply(userMessage, message);
                     return false;
                 }
 

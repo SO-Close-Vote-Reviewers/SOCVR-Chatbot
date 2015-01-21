@@ -18,7 +18,7 @@ namespace CVChatbot.Bot
             bool isReplyToChatbot = MessageIsReplyToChatbot(incommingChatMessage, chatRoom);
 
             //determine the list of possible actions that work from the message
-            var possibleChatbotActionsToRun = ChatbotActionRegister.ChatActions
+            var possibleChatbotActionsToRun = ChatbotActionRegister.AllChatActions
                 .Where(x => x.DoesChatMessageActiveAction(incommingChatMessage, isReplyToChatbot))
                 .ToList();
 

@@ -39,7 +39,8 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
                 if (lastSession.ItemsReviewed == null)
                 {
-                    statMessage += "However, the number of reviewed items has not been set. Use the command `last session edit count <new count>` to set the new value.";
+                    statMessage += "However, the number of reviewed items has not been set. Use the command `{0}` to set the new value."
+                        .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<LastSessionEditCount>());
                     statMessage = statMessage.FormatSafely(
                         sessionEndedTimeAgo.ToUserFriendlyString(), 
                         sessionLength.ToUserFriendlyString());

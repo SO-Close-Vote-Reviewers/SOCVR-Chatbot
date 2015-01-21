@@ -53,7 +53,8 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
                 if (usingDefault)
                 {
-                    headerMessage += " To give a different threshold number, use the command `completed tags min <#>`.";
+                    headerMessage += " To give a different threshold number, use the command `{0}`."
+                        .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<LastSessionEditCount>());
                 }
 
                 string dataMessage;
