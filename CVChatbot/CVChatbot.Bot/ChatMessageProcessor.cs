@@ -105,17 +105,27 @@ namespace CVChatbot.Bot
                 //ChatMessageProcessor is responsible for outputting any errors that occur
                 //while running chatbot actions. Anything outside of the RunAction() method
                 //should be handled higher up
-                TellChatAboutErrorWhileRunningAction(ex, chatRoom);
+                TellChatAboutErrorWhileRunningAction(ex, chatRoom, action);
             }
 
             RunningCommandsManager.MarkCommandAsFinished(id);
         }
 
-        private void TellChatAboutErrorWhileRunningAction(Exception ex, Room chatRoom)
+        private void TellChatAboutErrorWhileRunningAction(Exception ex, Room chatRoom, ChatbotAction actionToRun)
         {
+            var headerLine = "I hit an error while trying to run '{0}':"
+                .FormatSafely(actionToRun.GetActionName());
+
             var errorMessage = "    " + ex.FullErrorMessage(Environment.NewLine + "    ");
-            chatRoom.PostMessage("OH GOD IT BROKE! EVERYTHING IS ON FIRE!");
-            chatRoom.PostMessage(errorMessage);
+
+            var stackTraceMessage = ex.GetAllStackTraces();
+
+            var secondMessage = errorMessage + Environment.NewLine +
+                "    ----" + Environment.NewLine +
+                stackTraceMessage;
+
+            chatRoom.PostMessage(headerLine);
+            chatRoom.PostMessage(secondMessage);
         }
 
         private bool MessageIsReplyToChatbot(Message chatMessage, Room chatRoom)

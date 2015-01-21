@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using TheCommonLibrary.Extensions;
 
 namespace CVChatbot.Bot
 {
@@ -14,6 +15,34 @@ namespace CVChatbot.Bot
         public static string GetContentsWithStrippedMentions(this Message message)
         {
             return ChatExchangeDotNet.ExtensionMethods.StripMention(message.Content);
+        }
+
+        public static string GetAllStackTraces(this Exception ex)
+        {
+            var allStackTraces = GetAllStackTracesInner(ex);
+
+            return allStackTraces
+                .ToCSV(Environment.NewLine + "    " + Environment.NewLine);
+        }
+
+        private static List<string> GetAllStackTracesInner(this Exception ex)
+        {
+            List<string> stackTraces = new List<string>();
+
+            if (ex.InnerException != null)
+            {
+                stackTraces = GetAllStackTracesInner(ex.InnerException);
+            }
+
+            var formattedStackTrace = ex.StackTrace
+                .Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(x => x.Trim())
+                .Select(x => "    " + x)
+                .ToCSV(Environment.NewLine);
+
+            stackTraces.Add(formattedStackTrace);
+
+            return stackTraces;
         }
 
         /// <summary>
