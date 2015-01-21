@@ -25,7 +25,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
             var phrase = responsePhrases.PickRandom();
 
-            chatRoom.PostReply(incommingChatMessage, phrase);
+            chatRoom.PostReplyOrThrow(incommingChatMessage, phrase);
         }
 
         public override string GetActionName()

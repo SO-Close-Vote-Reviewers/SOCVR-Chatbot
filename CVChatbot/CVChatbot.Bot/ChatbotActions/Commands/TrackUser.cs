@@ -26,7 +26,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
                 if (existingUser != null)
                 {
-                    chatRoom.PostReply(userMessage, "That user is already in the system!");
+                    chatRoom.PostReplyOrThrow(userMessage, "That user is already in the system!");
                     return;
                 }
 
@@ -40,7 +40,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
                 var chatUser = chatRoom.GetUser(userIdToAdd);
 
-                chatRoom.PostReply(userMessage, "Ok, I added {0} ({1}) to the tracked users list."
+                chatRoom.PostReplyOrThrow(userMessage, "Ok, I added {0} ({1}) to the tracked users list."
                     .FormatInline(chatUser.Name, chatUser.ID));
             }
         }

@@ -40,7 +40,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 "May the Vote be with you!"
             };
 
-            chatRoom.PostReply(userMessage, replyMessages.PickRandom());
+            chatRoom.PostReplyOrThrow(userMessage, replyMessages.PickRandom());
         }
 
         public override ActionPermissionLevel GetPermissionLevel()

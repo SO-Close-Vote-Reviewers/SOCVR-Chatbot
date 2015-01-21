@@ -28,7 +28,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
                 if (lastSession == null)
                 {
-                    chatRoom.PostReply(userMessage, "You have no completed review sessions on record, so I can't give you any stats.");
+                    chatRoom.PostReplyOrThrow(userMessage, "You have no completed review sessions on record, so I can't give you any stats.");
                     return;
                 }
 
@@ -72,7 +72,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                     statMessage += " **Note: You still have a review session in progress.** It started {0} ago.".FormatInline(deltaTime.ToUserFriendlyString());
                 }
 
-                chatRoom.PostReply(userMessage, statMessage);
+                chatRoom.PostReplyOrThrow(userMessage, statMessage);
             }
         }
 

@@ -27,7 +27,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
                 if (lastSession == null)
                 {
-                    chatRoom.PostReply(userMessage, "You have no completed review sessions on record, so I can't edit any entries.");
+                    chatRoom.PostReplyOrThrow(userMessage, "You have no completed review sessions on record, so I can't edit any entries.");
                     return;
                 }
 
@@ -57,7 +57,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                         lastSession.ItemsReviewed.Value);
 
                 db.SaveChanges();
-                chatRoom.PostReply(userMessage, replyMessage);
+                chatRoom.PostReplyOrThrow(userMessage, replyMessage);
             }
         }
 

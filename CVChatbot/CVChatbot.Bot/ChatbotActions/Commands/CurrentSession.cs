@@ -25,7 +25,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
                 if (latestOpenSession == null)
                 {
-                    chatRoom.PostReply(userMessage, "You don't have an ongoing review session on record.");
+                    chatRoom.PostReplyOrThrow(userMessage, "You don't have an ongoing review session on record.");
                     return;
                 }
 
@@ -35,7 +35,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 string message = "Your current review session started {0} ago at {1}"
                     .FormatInline(deltaTimeSpan.ToUserFriendlyString(), formattedStartTs);
 
-                chatRoom.PostReply(userMessage, message);
+                chatRoom.PostReplyOrThrow(userMessage, message);
             }
         }
 

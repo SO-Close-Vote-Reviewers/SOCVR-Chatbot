@@ -22,7 +22,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
                 if (totalAuditsCount == 0)
                 {
-                    chatRoom.PostReply(userMessage, "I don't have any of your audits on record, so I can't produce any stats for you.");
+                    chatRoom.PostReplyOrThrow(userMessage, "I don't have any of your audits on record, so I can't produce any stats for you.");
                     return;
                 }
 
@@ -46,8 +46,8 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                         (x) => Math.Round(x.Percent, 1),
                         (x) => x.Count);
 
-                chatRoom.PostReply(userMessage, "Stats of all tracked audits by tag:");
-                chatRoom.PostMessage(message);
+                chatRoom.PostReplyOrThrow(userMessage, "Stats of all tracked audits by tag:");
+                chatRoom.PostMessageOrThrow(message);
             }
         }
 

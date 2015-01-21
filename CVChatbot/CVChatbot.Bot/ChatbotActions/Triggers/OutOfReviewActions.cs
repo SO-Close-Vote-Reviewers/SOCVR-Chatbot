@@ -37,7 +37,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
 
             if (sucessful)
             {
-                chatRoom.PostReply(incommingChatMessage, "Thanks for reviewing! To see more infomation use the command `{0}`."
+                chatRoom.PostReplyOrThrow(incommingChatMessage, "Thanks for reviewing! To see more infomation use the command `{0}`."
                     .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<LastSessionStats>()));
             }
         }
