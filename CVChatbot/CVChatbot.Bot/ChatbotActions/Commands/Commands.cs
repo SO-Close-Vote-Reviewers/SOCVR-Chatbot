@@ -16,7 +16,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     {
         public override void RunAction(Message userMessage, Room chatRoom)
         {
-            var groupedCommands = ChatbotActionRegister.ChatActions
+            var groupedCommands = ChatbotActionRegister.AllChatActions
                 .Where(x => x is UserCommand)
                 .GroupBy(x => x.GetPermissionLevel());
 
@@ -65,7 +65,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         protected override string GetRegexMatchingPattern()
         {
-            return "^commands$";
+            return "^(show the )?(list of )?(user )?command(s| list)( pl(ease|z))?$";
         }
 
         public override string GetActionName()

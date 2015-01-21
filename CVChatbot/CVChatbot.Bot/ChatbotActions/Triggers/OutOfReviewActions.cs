@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Configuration;
 using TheCommonLibrary.Extensions;
+using CVChatbot.Bot.ChatbotActions.Commands;
 
 namespace CVChatbot.Bot.ChatbotActions.Triggers
 {
@@ -36,7 +37,8 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
 
             if (sucessful)
             {
-                chatRoom.PostReply(incommingChatMessage, "Thanks for reviewing! To see more infomation use the command `last session stats`.");
+                chatRoom.PostReply(incommingChatMessage, "Thanks for reviewing! To see more infomation use the command `{0}`."
+                    .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<LastSessionStats>()));
             }
         }
 

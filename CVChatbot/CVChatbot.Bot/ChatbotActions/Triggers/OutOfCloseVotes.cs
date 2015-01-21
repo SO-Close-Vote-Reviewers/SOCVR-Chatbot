@@ -1,9 +1,11 @@
-﻿using System;
+﻿using CVChatbot.Bot.ChatbotActions.Commands;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using TheCommonLibrary.Extensions;
 
 namespace CVChatbot.Bot.ChatbotActions.Triggers
 {
@@ -25,7 +27,8 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
 
             if (success)
             {
-                string message = "The review session has been marked as completed. To set the number of items you reviewed use the command `last session edit count <new count>`";
+                string message = "The review session has been marked as completed. To set the number of items you reviewed use the command `{0}`"
+                    .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<LastSessionEditCount>());
                 chatRoom.PostReply(incommingChatMessage, message);
             }
         }

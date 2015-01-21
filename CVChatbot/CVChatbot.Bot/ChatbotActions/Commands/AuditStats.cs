@@ -58,7 +58,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         protected override string GetRegexMatchingPattern()
         {
-            return @"^audit stats$";
+            return @"^(show (me )?|display )?(my )?(audit stats|stats (of|about) my audits)( pl(ease|z))?$";
         }
 
         public override string GetActionName()

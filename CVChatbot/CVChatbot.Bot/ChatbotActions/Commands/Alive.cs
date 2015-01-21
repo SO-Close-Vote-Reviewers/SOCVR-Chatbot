@@ -11,7 +11,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     {
         protected override string GetRegexMatchingPattern()
         {
-            return @"(?:(?:are )?you )?alive\??";
+            return @"^(?:(?:are )?you )?(alive|still there|(still )?with us)\??$";
         }
 
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
