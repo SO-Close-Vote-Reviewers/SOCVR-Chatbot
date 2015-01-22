@@ -157,3 +157,4 @@ $RECYCLE.BIN/
 /CVChatbot/CVChatbot/connection-strings.config
 /CVChatbot/CVChatbot.UI/settings.txt
 /CVChatbot/CVChatbot.UI/connection-strings.config
+/CVChatbot/packages/*
