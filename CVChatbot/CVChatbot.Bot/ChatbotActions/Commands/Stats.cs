@@ -57,7 +57,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         protected override string GetRegexMatchingPattern()
         {
-            return "^stats$";
+            return "^(close vote )?stats( (please|plz))?$";
         }
 
         public override string GetActionName()

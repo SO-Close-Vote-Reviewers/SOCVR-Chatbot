@@ -26,7 +26,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         protected override string GetRegexMatchingPattern()
         {
-            return "^(i need )?(help|assistance|halp)( me)?( (please|plz))?$";
+            return "^(i need )?(help|assistance|halp|an adult)( me)?( (please|plz))?$";
         }
 
         public override string GetActionName()

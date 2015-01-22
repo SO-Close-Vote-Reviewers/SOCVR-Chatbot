@@ -11,7 +11,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     {
         protected override string GetRegexMatchingPattern()
         {
-            return @"^running commands$";
+            return @"^(show (a |me )?)?(list of |the )?running (commands|actions)( (please|plz))?$";
         }
 
         public override void RunAction(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)

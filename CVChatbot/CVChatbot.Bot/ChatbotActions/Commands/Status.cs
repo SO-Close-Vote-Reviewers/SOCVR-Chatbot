@@ -33,7 +33,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         protected override string GetRegexMatchingPattern()
         {
-            return "^status$";
+            return @"^((program|chatbot|bot|what's your) )?status(\?)?$";
         }
 
         public override string GetActionName()
