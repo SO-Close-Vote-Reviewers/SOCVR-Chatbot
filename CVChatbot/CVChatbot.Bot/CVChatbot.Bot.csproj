@@ -107,6 +107,9 @@
     <Compile Include="Model\ReviewSession.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\UnrecognizedCommand.cs">
+      <DependentUpon>DbModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoomManager.cs" />
     <Compile Include="RunningCommandsManager.cs" />

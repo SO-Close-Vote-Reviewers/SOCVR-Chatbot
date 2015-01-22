@@ -29,5 +29,6 @@ namespace CVChatbot.Bot.Model
         public virtual DbSet<NoItemsInFilterEntry> NoItemsInFilterEntries { get; set; }
         public virtual DbSet<RegisteredUser> RegisteredUsers { get; set; }
         public virtual DbSet<ReviewSession> ReviewSessions { get; set; }
+        public virtual DbSet<UnrecognizedCommand> UnrecognizedCommands { get; set; }
     }
 }
