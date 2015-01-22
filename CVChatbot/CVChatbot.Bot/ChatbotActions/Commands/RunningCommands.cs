@@ -31,8 +31,8 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                     x => x.ForUser,
                     x => x.Started);
 
-            chatRoom.PostReply(userMessage, "The following is a list of commands that I'm currently running:");
-            chatRoom.PostMessage(tableMessage);
+            chatRoom.PostReplyOrThrow(userMessage, "The following is a list of commands that I'm currently running:");
+            chatRoom.PostMessageOrThrow(tableMessage);
         }
 
         public override string GetActionName()

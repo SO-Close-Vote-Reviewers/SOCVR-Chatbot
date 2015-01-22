@@ -24,7 +24,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
             if (thresholdInCommand != null && thresholdInCommand <= 0)
             {
-                chatRoom.PostReply(userMessage, "Minimum person threshold must be greater or equal to 1.");
+                chatRoom.PostReplyOrThrow(userMessage, "Minimum person threshold must be greater or equal to 1.");
                 return;
             }
 
@@ -72,8 +72,8 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                     dataMessage = "    There are no entries that match that request!";
                 }
 
-                chatRoom.PostReply(userMessage, headerMessage);
-                chatRoom.PostMessage(dataMessage);
+                chatRoom.PostReplyOrThrow(userMessage, headerMessage);
+                chatRoom.PostMessageOrThrow(dataMessage);
             }
         }
 

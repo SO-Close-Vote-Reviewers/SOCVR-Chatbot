@@ -16,7 +16,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 "For more information see the [github page](https://github.com/gunr2171/SOCVR-Chatbot). " +
                 "Reply with `{0}` to see a list of commands."
                     .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<Commands>());
-            chatRoom.PostMessage(message);
+            chatRoom.PostMessageOrThrow(message);
         }
 
         public override ActionPermissionLevel GetPermissionLevel()

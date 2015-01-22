@@ -29,7 +29,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
             {
                 string message = "The review session has been marked as completed. To set the number of items you reviewed use the command `{0}`"
                     .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<LastSessionEditCount>());
-                chatRoom.PostReply(incommingChatMessage, message);
+                chatRoom.PostReplyOrThrow(incommingChatMessage, message);
             }
         }
 

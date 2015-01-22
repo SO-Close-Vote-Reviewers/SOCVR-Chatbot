@@ -23,7 +23,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             string message = "SOCVR ChatBot version {0}, running for {1}."
                 .FormatInline(version, elapsedTime.ToUserFriendlyString());
 
-            chatRoom.PostMessage(message);
+            chatRoom.PostMessageOrThrow(message);
         }
 
         public override ActionPermissionLevel GetPermissionLevel()

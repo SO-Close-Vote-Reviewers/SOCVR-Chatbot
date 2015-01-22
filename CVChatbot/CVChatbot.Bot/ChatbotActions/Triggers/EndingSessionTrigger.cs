@@ -34,7 +34,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
                 //first, check if there is a session
                 if (latestSession == null)
                 {
-                    chatRoom.PostReply(userMessage, "I don't seem to have the start of your review session on record. I might have not been running when you started, or some error happened.");
+                    chatRoom.PostReplyOrThrow(userMessage, "I don't seem to have the start of your review session on record. I might have not been running when you started, or some error happened.");
                     return false;
                 }
 
@@ -52,7 +52,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
                         "Use the command '{0}' to forcefully end that session."
                         .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<EndSession>());
 
-                    chatRoom.PostReply(userMessage, message);
+                    chatRoom.PostReplyOrThrow(userMessage, message);
                     return false;
                 }
 

@@ -37,6 +37,7 @@ namespace CVChatbot.Bot
 
             if (!settings.StartUpMessage.IsNullOrWhiteSpace())
             {
+                //this is the one exception to not using the "OrThrow" method
                 var startMessage = cvChatRoom.PostMessage(settings.StartUpMessage);
 
                 if (startMessage == null)
@@ -57,13 +58,8 @@ namespace CVChatbot.Bot
             catch (Exception ex)
             {
                 //something happened outside of an action's RunAction method. attempt to tell chat about it
-                var didPost = cvChatRoom.PostMessage("error happened!\n" + ex.FullErrorMessage(Environment.NewLine)); //for now, more verbose later
-
-                if (didPost == null)
-                {
-                    //can't even post to chat, throw hands up
-                    throw new Exception("Can't post error message to chat!");
-                }
+                //this line will throw an exception if it fails, moving it futher up the line
+                cvChatRoom.PostMessageOrThrow("error happened!\n" + ex.FullErrorMessage(Environment.NewLine)); //for now, more verbose later
             }
         }
     }

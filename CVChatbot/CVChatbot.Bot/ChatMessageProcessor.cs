@@ -33,7 +33,7 @@ namespace CVChatbot.Bot
                 if (isReplyToChatbot)
                 {
                     //user was trying to make a command
-                    chatRoom.PostReply(incommingChatMessage, "Sorry, I don't understand that.");
+                    chatRoom.PostReplyOrThrow(incommingChatMessage, "Sorry, I don't understand that.");
                 }
                 //else it's a trigger, do nothing
 
@@ -54,7 +54,7 @@ namespace CVChatbot.Bot
                 //don't have permission, tell the user only if it's a command
                 if (isReplyToChatbot)
                 {
-                    chatRoom.PostReply(incommingChatMessage, "Sorry, you need more permissions to run that command.");
+                    chatRoom.PostReplyOrThrow(incommingChatMessage, "Sorry, you need more permissions to run that command.");
                 }
                 //don't do anything for triggers
             }
@@ -124,8 +124,8 @@ namespace CVChatbot.Bot
                 "    ----" + Environment.NewLine +
                 stackTraceMessage;
 
-            chatRoom.PostMessage(headerLine);
-            chatRoom.PostMessage(secondMessage);
+            chatRoom.PostMessageOrThrow(headerLine);
+            chatRoom.PostMessageOrThrow(secondMessage);
         }
 
         private bool MessageIsReplyToChatbot(Message chatMessage, Room chatRoom)

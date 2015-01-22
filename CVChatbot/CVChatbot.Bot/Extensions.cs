@@ -17,6 +17,31 @@ namespace CVChatbot.Bot
             return ChatExchangeDotNet.ExtensionMethods.StripMention(message.Content);
         }
 
+        public static void PostMessageOrThrow(this Room chatRoom, string message)
+        {
+            var postedMessage = chatRoom.PostMessage(message);
+
+            if (postedMessage == null)
+            {
+                throw new InvalidOperationException("Unable to post message");
+            }
+        }
+
+        public static void PostReplyOrThrow(this Room chatRoom, Message replyingToMessage, string message)
+        {
+            chatRoom.PostReplyOrThrow(replyingToMessage.ID, message);
+        }
+
+        public static void PostReplyOrThrow(this Room chatRoom, int replyingToMessageId, string message)
+        {
+            var postedMessage = chatRoom.PostReply(replyingToMessageId, message);
+
+            if (postedMessage == null)
+            {
+                throw new InvalidOperationException("Unable to post message");
+            }
+        }
+
         public static string GetAllStackTraces(this Exception ex)
         {
             var allStackTraces = GetAllStackTracesInner(ex);

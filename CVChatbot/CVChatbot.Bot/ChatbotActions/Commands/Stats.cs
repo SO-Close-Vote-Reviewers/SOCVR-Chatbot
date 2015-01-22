@@ -47,7 +47,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             }
             .ToCSV(Environment.NewLine);
 
-            chatRoom.PostMessage(message);
+            chatRoom.PostMessageOrThrow(message);
         }
 
         public override ActionPermissionLevel GetPermissionLevel()
