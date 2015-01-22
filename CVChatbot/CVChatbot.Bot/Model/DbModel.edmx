@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="CVChatbot.Bot.Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="CVChatbot.Bot.Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="CompletedAuditEntry">
           <Key>
             <PropertyRef Name="Id" />
@@ -41,7 +41,14 @@
           <Property Name="SessionEnd" Type="datetimeoffset" Precision="7" />
           <Property Name="ItemsReviewed" Type="int" />
         </EntityType>
-        <Association Name="FK__Completed__Regis__267ABA7A">
+        <EntityType Name="UnrecognizedCommand">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Command" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__Completed__Regis__1A14E395">
           <End Role="RegisteredUser" Type="Self.RegisteredUser" Multiplicity="1" />
           <End Role="CompletedAuditEntry" Type="Self.CompletedAuditEntry" Multiplicity="*" />
           <ReferentialConstraint>
@@ -53,7 +60,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__NoItemsIn__Regis__239E4DCF">
+        <Association Name="FK__NoItemsIn__Regis__173876EA">
           <End Role="RegisteredUser" Type="Self.RegisteredUser" Multiplicity="1" />
           <End Role="NoItemsInFilterEntry" Type="Self.NoItemsInFilterEntry" Multiplicity="*" />
           <ReferentialConstraint>
@@ -65,7 +72,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ReviewSes__Regis__20C1E124">
+        <Association Name="FK__ReviewSes__Regis__145C0A3F">
           <End Role="RegisteredUser" Type="Self.RegisteredUser" Multiplicity="1" />
           <End Role="ReviewSession" Type="Self.ReviewSession" Multiplicity="*" />
           <ReferentialConstraint>
@@ -82,21 +89,21 @@
           <EntitySet Name="NoItemsInFilterEntry" EntityType="Self.NoItemsInFilterEntry" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RegisteredUser" EntityType="Self.RegisteredUser" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ReviewSession" EntityType="Self.ReviewSession" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__Completed__Regis__267ABA7A" Association="Self.FK__Completed__Regis__267ABA7A">
+          <EntitySet Name="UnrecognizedCommand" EntityType="Self.UnrecognizedCommand" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Completed__Regis__1A14E395" Association="Self.FK__Completed__Regis__1A14E395">
             <End Role="RegisteredUser" EntitySet="RegisteredUser" />
             <End Role="CompletedAuditEntry" EntitySet="CompletedAuditEntry" />
           </AssociationSet>
-          <AssociationSet Name="FK__NoItemsIn__Regis__239E4DCF" Association="Self.FK__NoItemsIn__Regis__239E4DCF">
+          <AssociationSet Name="FK__NoItemsIn__Regis__173876EA" Association="Self.FK__NoItemsIn__Regis__173876EA">
             <End Role="RegisteredUser" EntitySet="RegisteredUser" />
             <End Role="NoItemsInFilterEntry" EntitySet="NoItemsInFilterEntry" />
           </AssociationSet>
-          <AssociationSet Name="FK__ReviewSes__Regis__20C1E124" Association="Self.FK__ReviewSes__Regis__20C1E124">
+          <AssociationSet Name="FK__ReviewSes__Regis__145C0A3F" Association="Self.FK__ReviewSes__Regis__145C0A3F">
             <End Role="RegisteredUser" EntitySet="RegisteredUser" />
             <End Role="ReviewSession" EntitySet="ReviewSession" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="CVChatbot.Bot.Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -168,7 +175,15 @@
             <End Role="RegisteredUser" EntitySet="RegisteredUsers" />
             <End Role="ReviewSession" EntitySet="ReviewSessions" />
           </AssociationSet>
+          <EntitySet Name="UnrecognizedCommands" EntityType="CVChatbot.Bot.Model.UnrecognizedCommand" />
         </EntityContainer>
+        <EntityType Name="UnrecognizedCommand">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Command" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -236,6 +251,14 @@
               <ScalarProperty Name="Id" ColumnName="Id" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="UnrecognizedCommands">
+            <EntityTypeMapping TypeName="CVChatbot.Bot.Model.UnrecognizedCommand">
+              <MappingFragment StoreEntitySet="UnrecognizedCommand">
+                <ScalarProperty Name="Command" ColumnName="Command" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

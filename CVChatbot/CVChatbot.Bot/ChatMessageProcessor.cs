@@ -1,5 +1,6 @@
 ﻿using ChatExchangeDotNet;
 using CVChatbot.Bot.ChatbotActions;
+using CVChatbot.Bot.ChatbotActions.Commands;
 using CVChatbot.Bot.Model;
 using System;
 using System.Collections.Generic;
@@ -33,7 +34,9 @@ namespace CVChatbot.Bot
                 if (isReplyToChatbot)
                 {
                     //user was trying to make a command
-                    chatRoom.PostReplyOrThrow(incommingChatMessage, "Sorry, I don't understand that.");
+                    SendUnrecognizedCommandToDatabase(incommingChatMessage.GetContentsWithStrippedMentions());
+                    chatRoom.PostReplyOrThrow(incommingChatMessage, "Sorry, I don't understand that. Use `{0}` for a list of commands."
+                        .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<Commands>()));
                 }
                 //else it's a trigger, do nothing
 
@@ -57,6 +60,20 @@ namespace CVChatbot.Bot
                     chatRoom.PostReplyOrThrow(incommingChatMessage, "Sorry, you need more permissions to run that command.");
                 }
                 //don't do anything for triggers
+            }
+        }
+
+        private void SendUnrecognizedCommandToDatabase(string command)
+        {
+            using (CVChatBotEntities db = new CVChatBotEntities())
+            {
+                var newEntry = new UnrecognizedCommand
+                {
+                    Command = command
+                };
+
+                db.UnrecognizedCommands.Add(newEntry);
+                db.SaveChanges();
             }
         }
 

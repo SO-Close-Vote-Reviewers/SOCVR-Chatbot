@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'C:\code\Git\SOCVR-Chatbot\CVChatbot\CVChatbot.Bot\Model\DbModel.edmx'. 
+﻿// T4 code generation is enabled for model 'M:\code\git\SOCVR-Chatbot\CVChatbot\CVChatbot.Bot\Model\DbModel.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.
