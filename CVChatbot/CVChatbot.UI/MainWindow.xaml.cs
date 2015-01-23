@@ -31,28 +31,47 @@ namespace CVChatbot.UI
             lblCurrentStatus.Content = "Disconnected";
         }
 
-        private async void btnStart_Click(object sender, RoutedEventArgs e)
-        {
-            btnStart.IsEnabled = false;
-
-            RoomManagerSettings settings = new RoomManagerSettings()
-            {
-                ChatRoomUrl = SettingsAccessor.GetSettingValue<string>("ChatRoomUrl"),
-                Username = SettingsAccessor.GetSettingValue<string>("LoginUsername"),
-                Email = SettingsAccessor.GetSettingValue<string>("LoginEmail"),
-                Password = SettingsAccessor.GetSettingValue<string>("LoginPassword"),
-                StartUpMessage = SettingsAccessor.GetSettingValue<string>("StartUpMessage"),
-            };
-
-            lblCurrentStatus.Content = "Joining...";
-            await Task.Run(() => mng.JoinRoom(settings));
-           
-            lblCurrentStatus.Content = "Connected";
-        }
-
         private void btnQuit_Click(object sender, RoutedEventArgs e)
         {
-            mng.LeaveRoom();
+           
+        }
+
+        private async void btnStartStop_Click(object sender, RoutedEventArgs e)
+        {
+            if (btnStartStop.Content.ToString() == "Start Bot")
+            {
+                
+
+                RoomManagerSettings settings = new RoomManagerSettings()
+                {
+                    ChatRoomUrl = SettingsAccessor.GetSettingValue<string>("ChatRoomUrl"),
+                    Username = SettingsAccessor.GetSettingValue<string>("LoginUsername"),
+                    Email = SettingsAccessor.GetSettingValue<string>("LoginEmail"),
+                    Password = SettingsAccessor.GetSettingValue<string>("LoginPassword"),
+                    StartUpMessage = SettingsAccessor.GetSettingValue<string>("StartUpMessage"),
+                };
+
+                lblCurrentStatus.Content = "Joining...";
+                btnStartStop.IsEnabled = false;
+                await Task.Run(() => mng.JoinRoom(settings));
+
+                btnStartStop.IsEnabled = true;
+                lblCurrentStatus.Content = "Connected";
+                btnStartStop.Content = "Stop Bot";
+            }
+            else
+            {
+                var stopMessage = SettingsAccessor.GetSettingValue<string>("StopMessage");
+
+                mng.LeaveRoom(stopMessage);
+                mng = new RoomManager();
+                lblCurrentStatus.Content = "Disconnected";
+                btnStartStop.Content = "Start Bot";
+
+                //current html code only works once, once that is fixed then I can start the bot again
+                //without having to relaunch the program
+                btnStartStop.IsEnabled = false;
+            }
         }
     }
 }

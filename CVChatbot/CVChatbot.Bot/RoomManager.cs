@@ -49,8 +49,9 @@ namespace CVChatbot.Bot
             cvChatRoom.NewMessage += cvChatRoom_NewMessage;
         }
 
-        public void LeaveRoom()
+        public void LeaveRoom(string stopMessage)
         {
+            cvChatRoom.PostMessage(stopMessage);
             cvChatRoom.Leave();
         }
 
