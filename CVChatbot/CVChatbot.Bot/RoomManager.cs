@@ -30,7 +30,7 @@ namespace CVChatbot.Bot
         {
             settings = managerSettings;
 
-            chatClient = new Client(settings.Username, settings.Email, settings.Password);
+            chatClient = new Client(settings.Email, settings.Password);
             cvChatRoom = chatClient.JoinRoom(settings.ChatRoomUrl);
             ChatBotStats.LoginDate = DateTime.Now;
             cvChatRoom.StripMentionFromMessages = false;

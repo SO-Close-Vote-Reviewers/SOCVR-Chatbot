@@ -22,7 +22,7 @@ namespace ChatExchangeDotNet
             RoomID = roomID;
             Host = host;
 
-            var res = RequestManager.SendPOSTRequest("http://chat." + host + "/user/info", "ids=" + id + "&roomid=" + roomID);
+            var res = RequestManager.SendPOSTRequest("", "http://chat." + host + "/user/info", "ids=" + id + "&roomid=" + roomID);
 
             if (res == null)
             {

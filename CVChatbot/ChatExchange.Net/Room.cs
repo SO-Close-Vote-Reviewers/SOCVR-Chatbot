@@ -19,6 +19,8 @@ namespace ChatExchangeDotNet
         private WebSocket socket;
         private readonly string chatRoot;
         private string fkey;
+        private bool hasLeft;
+        private readonly string cookieKey;
 
         # region Events.
 
@@ -151,16 +153,17 @@ namespace ChatExchangeDotNet
         /// </summary>
         /// <param name="host">The host domain of the room (e.g., meta.stackexchange.com).</param>
         /// <param name="ID">The room's identification number.</param>
-        public Room(string host, int ID)
+        public Room(string cookieKey, string host, int ID)
         {
-            if (String.IsNullOrEmpty(host)) { throw new ArgumentException("'host' can not be null or empty.", "host"); }
+            if (String.IsNullOrEmpty(cookieKey)) { throw new ArgumentNullException("cookieKey"); }
+            if (String.IsNullOrEmpty(host)) { throw new ArgumentNullException("'host' can not be null or empty.", "host"); }
             if (ID < 0) { throw new ArgumentOutOfRangeException("ID", "'ID' can not be negative."); }
 
+            this.ID = ID;
+            this.cookieKey = cookieKey;
             IgnoreOwnEvents = true;
             StripMentionFromMessages = true;
-            this.ID = ID;
             Host = host;
-            //PingableUsers = GetPingableUsers();
             AllMessages = new List<Message>();
             MyMessages = new List<Message>();
             chatRoot = "http://chat." + Host;
@@ -173,8 +176,6 @@ namespace ChatExchangeDotNet
             var url = GetSocketURL(count);
 
             InitialiseSocket(url);
-
-            RequestManager.CookiesToPass = RequestManager.GlobalCookies;
         }
 
         ~Room()
@@ -187,6 +188,15 @@ namespace ChatExchangeDotNet
 
 
 
+        public void Leave()
+        {
+            if (hasLeft) { return; }
+
+            RequestManager.SendPOSTRequest(cookieKey, chatRoot + "/chats/leave/" + ID, "quiet=true&fkey=" + fkey);
+
+            hasLeft = true;
+        }
+
         /// <summary>
         /// Retrieves a message from the room.
         /// </summary>
@@ -194,19 +204,20 @@ namespace ChatExchangeDotNet
         /// <returns>A Message object representing the requested message, or null if the message could not be found.</returns>
         public Message GetMessage(int messageID)
         {
-            var res = RequestManager.SendGETRequest(chatRoot + "/messages/" + messageID + "/history");
+            var res = RequestManager.SendGETRequest(cookieKey, chatRoot + "/messages/" + messageID + "/history");
 
             if (res == null) { throw new Exception("Could not retrieve data of message " + messageID + ". Do you have an active internet connection?"); }
 
-            var lastestDom = CQ.Create(RequestManager.GetResponseContent(res)).Select(".monologue").Last();
-            
-            var content = Message.GetMessageContent(Host, ID, messageID, false); 
+            var lastestDom = CQ.Create(RequestManager.GetResponseContent(res)).Select(".monologue").Last();          
+            var content = Message.GetMessageContent(Host, ID, messageID);
+
+            if (content == null) { throw new Exception("The requested message was not found."); }
 
             var parentID = content.IsReply() ? int.Parse(content.Substring(1, content.IndexOf(' '))) : -1;
             var authorName = lastestDom[".username a"].First().Text();
             var authorID = int.Parse(lastestDom[".username a"].First().Attr("href").Split('/')[2]);
 
-            return new Message(Host, ID, StripMentionFromMessages ? content.StripMention() : content, messageID, authorName, authorID, parentID);
+            return new Message(Host, ID, messageID, StripMentionFromMessages, authorName, authorID, parentID);
         }
 
         public User GetUser(int userID)
@@ -223,32 +234,32 @@ namespace ChatExchangeDotNet
         /// <returns>A Message object representing the newly posted message (if successful), otherwise returns null.</returns>
         public Message PostMessage(string message)
         {
+            if (hasLeft) { return null; }
+
             while (true)
             {
                 var data = "text=" + Uri.EscapeDataString(message).Replace("%5Cn", "%0A") + "&fkey=" + fkey;
 
-                var res = RequestManager.SendPOSTRequest(chatRoot + "/chats/" + ID + "/messages/new", data);
-
-                if (res == null) { return null; }
-
-                var resContent = RequestManager.GetResponseContent(res);
-
-                if (HandleThrottling(resContent))
+                using (var res = RequestManager.SendPOSTRequest(cookieKey, chatRoot + "/chats/" + ID + "/messages/new", data))
                 {
-                    continue;
+                    if (res == null) { return null; }
+
+                    var resContent = RequestManager.GetResponseContent(res);
+
+                    if (HandleThrottling(resContent)) { continue; }
+
+                    var json = JObject.Parse(resContent);
+                    var messageID = (int)(json["id"].Type != JTokenType.Integer ? -1 : json["id"]);
+
+                    if (messageID == -1) { return null; }
+
+                    var m = new Message(Host, ID, messageID, StripMentionFromMessages, Me.Name, Me.ID);
+
+                    MyMessages.Add(m);
+                    AllMessages.Add(m);
+
+                    return m;
                 }
-
-                var json = JObject.Parse(resContent);
-                var messageID = (int)(json["id"].Type != JTokenType.Integer ? -1 : json["id"]);
-
-                if (messageID == -1) { return null; }
-
-                var m = new Message(Host, ID, message, messageID, Me.Name, Me.ID);
-
-                MyMessages.Add(m);
-                AllMessages.Add(m);
-
-                return m;
             }
         }
 
@@ -269,11 +280,12 @@ namespace ChatExchangeDotNet
 
         public bool EditMessage(int messageID, string newMessage)
         {
+            if (hasLeft) { return false; }
+
             while (true)
             {
                 var data = "text=" + Uri.EscapeDataString(newMessage).Replace("%5Cn", "%0A") + "&fkey=" + fkey;
-
-                var res = RequestManager.SendPOSTRequest(chatRoot + "/messages/" + messageID, data);
+                var res = RequestManager.SendPOSTRequest(cookieKey, chatRoot + "/messages/" + messageID, data);
 
                 if (res == null) { return false; }
 
@@ -295,9 +307,11 @@ namespace ChatExchangeDotNet
 
         public bool DeleteMessage(int messageID)
         {
+            if (hasLeft) { return false; }
+
             while (true)
             {
-                var res = RequestManager.SendPOSTRequest(chatRoot + "/messages/" + messageID + "/delete", "fkey=" + fkey);
+                var res = RequestManager.SendPOSTRequest(cookieKey, chatRoot + "/messages/" + messageID + "/delete", "fkey=" + fkey);
 
                 if (res == null) { return false; }
 
@@ -319,9 +333,11 @@ namespace ChatExchangeDotNet
 
         public bool ToggleStarring(int messageID)
         {
+            if (hasLeft) { return false; }
+
             while (true)
             {
-                var res = RequestManager.SendPOSTRequest(chatRoot + "/messages/" + messageID + "/star", "fkey=" + fkey);
+                var res = RequestManager.SendPOSTRequest(cookieKey, chatRoot + "/messages/" + messageID + "/star", "fkey=" + fkey);
 
                 if (res == null) { return false; }
 
@@ -349,11 +365,10 @@ namespace ChatExchangeDotNet
         {
             while (true)
             {
-                if (!Me.IsMod && !Me.IsRoomOwner) { return false; }
+                if (!Me.IsMod || !Me.IsRoomOwner || hasLeft) { return false; }
 
                 var data = "fkey=" + fkey;
-
-                var res = RequestManager.SendPOSTRequest(chatRoot + "/messages/" + messageID + "/unstar", data);
+                var res = RequestManager.SendPOSTRequest(cookieKey, chatRoot + "/messages/" + messageID + "/unstar", data);
 
                 if (res == null) { return false; }
 
@@ -377,11 +392,10 @@ namespace ChatExchangeDotNet
         {
             while (true)
             {
-                if (!Me.IsMod && !Me.IsRoomOwner) { return false; }
+                if (!Me.IsMod || !Me.IsRoomOwner || hasLeft) { return false; }
 
                 var data = "fkey=" + fkey;
-
-                var res = RequestManager.SendPOSTRequest(chatRoot + "/messages/" + messageID + "/owner-star", data);
+                var res = RequestManager.SendPOSTRequest(cookieKey, chatRoot + "/messages/" + messageID + "/owner-star", data);
 
                 if (res == null) { return false; }
 
@@ -403,11 +417,11 @@ namespace ChatExchangeDotNet
 
         public bool KickMute(int userID)
         {
-            if (!Me.IsMod && !Me.IsRoomOwner) { return false; }
+            if (!Me.IsMod || !Me.IsRoomOwner || hasLeft) { return false; }
 
             var data = "userID=" + userID + "&fkey=" + fkey;
 
-            var res = RequestManager.SendPOSTRequest(chatRoot + "/rooms/kickmute/" + ID, data);
+            var res = RequestManager.SendPOSTRequest(cookieKey, chatRoot + "/rooms/kickmute/" + ID, data);
 
             return res != null && RequestManager.GetResponseContent(res).Contains("has been kicked");
         }
@@ -419,7 +433,7 @@ namespace ChatExchangeDotNet
 
         public bool SetUserRoomAccess(UserRoomAccess access, int userID)
         {
-            if (!Me.IsMod && !Me.IsRoomOwner) { return false; }
+            if (!Me.IsMod || !Me.IsRoomOwner || hasLeft) { return false; }
 
             var data = "fkey=" + fkey + "&aclUserId=" + userID + "&userAccess=";
 
@@ -454,7 +468,7 @@ namespace ChatExchangeDotNet
                 }
             }
 
-            return RequestManager.SendPOSTRequest(chatRoot + "/rooms/setuseraccess/" + ID, data) != null;
+            return RequestManager.SendPOSTRequest(cookieKey, chatRoot + "/rooms/setuseraccess/" + ID, data) != null;
         }
 
         #endregion
@@ -540,29 +554,15 @@ namespace ChatExchangeDotNet
 
         # region Instantiation related methods.
 
-        //private List<User> GetPingableUsers()
-        //{
-        //	var users = new List<User>();
-
-        //	// Parse data returned from http://chat.{domain}/rooms/pingable/{room id}
-
-        //	return users;
-        //}
-
         private User GetMe()
         {
-            var res = RequestManager.SendGETRequest(chatRoot + "/chats/join/favorite");
+            var res = RequestManager.SendGETRequest(cookieKey, chatRoot + "/chats/join/favorite");
 
             if (res == null) { throw new Exception("Could not get user information. Do you have an active internet connection?"); }
 
-            var dom = CQ.Create(RequestManager.GetResponseContent(res));
-
+            var html = RequestManager.GetResponseContent(res);
+            var dom = CQ.Create(html);
             var e = dom[".topbar-menu-links a"][0];
-
-            // ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ Temp. For debug purposes only. ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-            var t = e.Attributes["href"];
-            // ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ Temp. For debug purposes only. ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
             var id = int.Parse(e.Attributes["href"].Split('/')[2]);
 
             return new User(Host, ID, id);
@@ -574,13 +574,13 @@ namespace ChatExchangeDotNet
 
             for (var i = 0; i < 31; i++) // Loop for a max of 31 mins.
             {
-                var res = RequestManager.SendGETRequest(chatRoot + "/rooms/" + ID);
+                var res = RequestManager.SendGETRequest(cookieKey, chatRoot + "/rooms/" + ID);
 
                 if (res == null) { throw new Exception("Could not get fkey. Do you have an active internet connection?"); }
 
                 var resContent = RequestManager.GetResponseContent(res);
 
-                fk = CQ.Create(resContent).GetFkey();
+                fk = CQ.Create(resContent).GetInputValue("fkey");
 
                 if (!String.IsNullOrEmpty(fk)) { break; }
 
@@ -592,35 +592,10 @@ namespace ChatExchangeDotNet
             fkey = fk;
         }
 
-        private CookieContainer GetSiteCookies()
-        {
-            var allCookies = RequestManager.GlobalCookies.GetCookies();
-            var siteCookies = new CookieCollection();
-
-            foreach (var cookie in allCookies)
-            {
-                var cookieDomain = cookie.Domain.StartsWith(".") ? cookie.Domain.Substring(1) : cookie.Domain;
-
-                if ((cookieDomain == Host && cookie.Name.ToLowerInvariant().Contains("usr")) || cookie.Name == "csr")
-                {
-                    siteCookies.Add(cookie);
-                }
-            }
-
-            var cookies = new CookieContainer();
-
-            cookies.Add(siteCookies);
-
-            return cookies;
-        }
-
         private int GetGlobalEventCount()
         {
             var data = "mode=Events&msgCount=0&fkey=" + fkey;
-
-            RequestManager.CookiesToPass = GetSiteCookies();
-
-            var res = RequestManager.SendPOSTRequest(chatRoot + "/chats/" + ID + "/events", data);
+            var res = RequestManager.SendPOSTRequest(cookieKey, chatRoot + "/chats/" + ID + "/events", data);
 
             if (res == null) { throw new Exception("Could not get eventtime for room " + ID + " on " + Host + ". Do you have an active internet conection?"); }
 
@@ -632,10 +607,7 @@ namespace ChatExchangeDotNet
         private string GetSocketURL(int eventTime)
         {
             var data = "roomid=" + ID + "&fkey=" + fkey;
-
-            RequestManager.CookiesToPass = GetSiteCookies();
-
-            var res = RequestManager.SendPOSTRequest(chatRoot + "/ws-auth", data, true, chatRoot + "/rooms/" + ID, chatRoot);
+            var res = RequestManager.SendPOSTRequest(cookieKey, chatRoot + "/ws-auth", data, true, chatRoot + "/rooms/" + ID, chatRoot);
 
             if (res == null) { throw new Exception("Could not get WebSocket URL. Do you haven an active internet connection?"); }
 
@@ -759,12 +731,11 @@ namespace ChatExchangeDotNet
         private void HandleNewMessage(JToken json)
         {
             var id = (int)json["message_id"];
-            var content = Message.GetMessageContent(Host, ID, id, StripMentionFromMessages);
             var authorName = (string)json["user_name"];
             var authorID = (int)json["user_id"];
             var parentID = (int)(json["parent_id"] ?? -1);
 
-            var message = new Message(Host, ID, content, id, authorName, authorID, parentID);
+            var message = new Message(Host, ID, id, StripMentionFromMessages, authorName, authorID, parentID);
 
             AllMessages.Add(message);
 
@@ -776,12 +747,11 @@ namespace ChatExchangeDotNet
         private void HandleUserMentioned(JToken json)
         {
             var id = (int)json["message_id"];
-            var content = Message.GetMessageContent(Host, ID, id, StripMentionFromMessages);
             var authorName = (string)json["user_name"];
             var authorID = (int)json["user_id"];
             var parentID = (int)(json["parent_id"] ?? -1);
 
-            var message = new Message(Host, ID, content, id, authorName, authorID, parentID);
+            var message = new Message(Host, ID, id, StripMentionFromMessages, authorName, authorID, parentID);
 
             AllMessages.Add(message);
 
@@ -793,12 +763,11 @@ namespace ChatExchangeDotNet
         private void HandleEdit(JToken json)
         {
             var id = (int)json["message_id"];
-            var content = Message.GetMessageContent(Host, ID, id, StripMentionFromMessages);
             var authorName = (string)json["user_name"];
             var authorID = (int)json["user_id"];
             var parentID = (int)(json["parent_id"] ?? -1);
 
-            var currentMessage = new Message(Host, ID, content, id, authorName, authorID, parentID);
+            var currentMessage = new Message(Host, ID, id, StripMentionFromMessages, authorName, authorID, parentID);
             var oldMessage = this[id];
 
             AllMessages.Remove(oldMessage);
