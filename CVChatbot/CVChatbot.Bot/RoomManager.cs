@@ -18,9 +18,21 @@ namespace CVChatbot.Bot
         private ChatMessageProcessor cmp;
         private RoomManagerSettings settings;
 
+        public delegate void ShutdownOrderGivenHandler();
+        public event ShutdownOrderGivenHandler ShutdownOrderGiven;
+
         public RoomManager()
         {
             cmp = new ChatMessageProcessor();
+            cmp.StopBotCommandIssued += cmp_StopBotCommandIssued;
+        }
+
+        void cmp_StopBotCommandIssued()
+        {
+            LeaveRoom("Goodbye!");
+
+            if (ShutdownOrderGiven != null)
+                ShutdownOrderGiven();
         }
 
         /// <summary>

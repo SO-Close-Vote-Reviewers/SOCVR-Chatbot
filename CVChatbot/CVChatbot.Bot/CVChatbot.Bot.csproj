@@ -64,6 +64,7 @@
     <Compile Include="ChatbotActions\Commands\Help.cs" />
     <Compile Include="ChatbotActions\Commands\LastSessionEditCount.cs" />
     <Compile Include="ChatbotActions\Commands\LastSessionStats.cs" />
+    <Compile Include="ChatbotActions\Commands\StopBot.cs" />
     <Compile Include="ChatbotActions\Commands\RunningCommands.cs" />
     <Compile Include="ChatbotActions\Commands\StartingSession.cs" />
     <Compile Include="ChatbotActions\Commands\Stats.cs" />

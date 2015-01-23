@@ -27,13 +27,14 @@ namespace CVChatbot.UI
         {
             InitializeComponent();
             mng = new RoomManager();
+            mng.ShutdownOrderGiven += mng_ShutdownOrderGiven;
 
             lblCurrentStatus.Content = "Disconnected";
         }
 
-        private void btnQuit_Click(object sender, RoutedEventArgs e)
+        void mng_ShutdownOrderGiven()
         {
-           
+            Dispatcher.Invoke(() => this.Close());
         }
 
         private async void btnStartStop_Click(object sender, RoutedEventArgs e)

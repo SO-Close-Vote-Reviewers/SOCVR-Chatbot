@@ -13,6 +13,9 @@ namespace CVChatbot.Bot
 {
     public class ChatMessageProcessor
     {
+        public delegate void StopBotCommandIssuedHandler();
+        public event StopBotCommandIssuedHandler StopBotCommandIssued;
+
         public void ProcessChatMessage(Message incommingChatMessage, Room chatRoom)
         {
             //do this first so I only have to find the result once per chat message
@@ -116,6 +119,13 @@ namespace CVChatbot.Bot
             try
             {
                 action.RunAction(incommingChatMessage, chatRoom);
+
+                //if the command was "stop bot", need to trigger a program shutdown
+                if (action is StopBot)
+                {
+                    if (StopBotCommandIssued != null)
+                        StopBotCommandIssued();
+                }
             }
             catch (Exception ex)
             {
