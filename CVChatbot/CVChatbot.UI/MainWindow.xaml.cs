@@ -41,8 +41,6 @@ namespace CVChatbot.UI
         {
             if (btnStartStop.Content.ToString() == "Start Bot")
             {
-                
-
                 RoomManagerSettings settings = new RoomManagerSettings()
                 {
                     ChatRoomUrl = SettingsAccessor.GetSettingValue<string>("ChatRoomUrl"),
