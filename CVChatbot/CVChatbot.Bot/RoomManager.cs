@@ -49,6 +49,11 @@ namespace CVChatbot.Bot
             cvChatRoom.NewMessage += cvChatRoom_NewMessage;
         }
 
+        public void LeaveRoom()
+        {
+            cvChatRoom.Leave();
+        }
+
         private async void cvChatRoom_NewMessage(Message newMessage)
         {
             try

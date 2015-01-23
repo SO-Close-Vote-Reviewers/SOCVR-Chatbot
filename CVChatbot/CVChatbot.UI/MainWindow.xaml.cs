@@ -50,9 +50,9 @@ namespace CVChatbot.UI
             lblCurrentStatus.Content = "Connected";
         }
 
-        private void btnOpenLogFile_Click(object sender, RoutedEventArgs e)
+        private void btnQuit_Click(object sender, RoutedEventArgs e)
         {
-
+            mng.LeaveRoom();
         }
     }
 }
