@@ -142,6 +142,10 @@
       <Project>{145af77f-b475-40e4-8b85-ce3393bcd906}</Project>
       <Name>ChatExchange.Net</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SOCVR.Net\SOCVR.Net.csproj">
+      <Project>{b96f1bff-c14b-44ad-aad5-09cbc0417c44}</Project>
+      <Name>SOCVR.Net</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TheCommonLibrary\TheCommonLibrary.csproj">
       <Project>{2205bc81-231c-4a89-ba63-4be24ba2c5c6}</Project>
       <Name>TheCommonLibrary</Name>
