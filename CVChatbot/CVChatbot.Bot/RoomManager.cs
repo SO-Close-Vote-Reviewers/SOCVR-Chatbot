@@ -28,7 +28,7 @@ namespace CVChatbot.Bot
         }
 
         /// <summary>
-        /// Joins the room with the settings passed in from the constructor.
+        /// Joins the room with the settings passed in.
         /// </summary>
         public void JoinRoom(RoomManagerSettings managerSettings)
         {
