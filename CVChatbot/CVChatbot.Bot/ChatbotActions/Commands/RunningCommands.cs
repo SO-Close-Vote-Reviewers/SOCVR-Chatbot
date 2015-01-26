@@ -16,15 +16,15 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override void RunAction(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
         {
-            var runningCommands = RunningCommandsManager.GetRunningCommands();
+            var runningCommands = RunningChatbotActionsManager.GetRunningChatbotActions();
             var now = DateTimeOffset.Now;
 
             var tableMessage = runningCommands
                 .Select(x => new
                 {
-                    Command = x.CommandName,
+                    Command = x.ChatbotActionName,
                     ForUser = "{0} ({1})".FormatInline(x.RunningForUserName, x.RunningForUserId),
-                    Started = (now - x.CommandStartTs).ToUserFriendlyString() + " ago",
+                    Started = (now - x.StartTs).ToUserFriendlyString() + " ago",
                 })
                 .ToStringTable(new string[] { "Command", "For User", "Started" },
                     x => x.Command,

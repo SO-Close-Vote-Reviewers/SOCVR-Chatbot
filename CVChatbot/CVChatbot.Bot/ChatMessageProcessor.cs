@@ -108,7 +108,7 @@ namespace CVChatbot.Bot
         private void RunChatbotAction(ChatbotAction action, Message incommingChatMessage, Room chatRoom)
         {
             //record as started
-            var id = RunningCommandsManager.MarkCommandAsStarted(
+            var id = RunningChatbotActionsManager.MarkChatbotActionAsStarted(
                 action.GetActionName(),
                 incommingChatMessage.AuthorName,
                 incommingChatMessage.AuthorID);
@@ -125,7 +125,7 @@ namespace CVChatbot.Bot
                 TellChatAboutErrorWhileRunningAction(ex, chatRoom, action);
             }
 
-            RunningCommandsManager.MarkCommandAsFinished(id);
+            RunningChatbotActionsManager.MarkChatbotActionAsFinished(id);
         }
 
         private void TellChatAboutErrorWhileRunningAction(Exception ex, Room chatRoom, ChatbotAction actionToRun)
