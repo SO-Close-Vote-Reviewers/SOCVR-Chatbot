@@ -18,6 +18,10 @@ namespace CVChatbot.Bot
         private ChatMessageProcessor cmp;
         private RoomManagerSettings settings;
 
+        /// <summary>
+        /// Creates a new RoomManger object.
+        /// Initializes the ChatMessageProcessor for internal use.
+        /// </summary>
         public RoomManager()
         {
             cmp = new ChatMessageProcessor();
@@ -58,18 +62,41 @@ namespace CVChatbot.Bot
             catch (Exception ex)
             {
                 //something happened outside of an action's RunAction method. attempt to tell chat about it
-                //this line will throw an exception if it fails, moving it futher up the line
+                //this line will throw an exception if it fails, moving it further up the line
                 cvChatRoom.PostMessageOrThrow("error happened!\n" + ex.FullErrorMessage(Environment.NewLine)); //for now, more verbose later
             }
         }
     }
 
+    /// <summary>
+    /// Settings needed to join a room.
+    /// </summary>
     public class RoomManagerSettings
     {
+        /// <summary>
+        /// The url of the chat room to join.
+        /// </summary>
         public string ChatRoomUrl { get; set; }
+
+        /// <summary>
+        /// The username of the account that is joining.
+        /// </summary>
         public string Username { get; set; }
+
+        /// <summary>
+        /// The Stack Exchange OAuth email to login with.
+        /// </summary>
         public string Email { get; set; }
+
+        /// <summary>
+        /// The Stack Exchange OAuth password to login with.
+        /// </summary>
         public string Password { get; set; }
+
+        /// <summary>
+        /// The message that the bot will announce when it first enters the chat room.
+        /// If the message is null, empty, or entirely whitespace, then no announcement message will be said.
+        /// </summary>
         public string StartUpMessage { get; set; }
     }
 }
