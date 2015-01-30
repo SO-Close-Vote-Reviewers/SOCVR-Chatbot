@@ -1,52 +1,56 @@
-﻿using System;
+﻿﻿using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using CsQuery;
-using ChatExchangeDotNet;
 using System.Net;
 
 namespace CVChatbot
 {
     /// <summary>
-    /// helper to throw exceptions to enforce Incoming contracts
+    /// Helper to throw exceptions to enforce incoming contracts.
     /// </summary>
     public static class ThrowWhen
     {
         /// <summary>
-        /// throws an argument exception if value is null or empty
+        /// Throws an argument exception if value is null or empty.
         /// </summary>
-        /// <param name="value">a value</param>
-        /// <param name="paramName">friendly name of value</param>
+        /// <param name="value">A value.</param>
+        /// <param name="paramName">Friendly name of value.</param>
         public static void IsNullOrEmpty(string value, string paramName)
         {
-            if (String.IsNullOrEmpty(value)) 
-            { 
-                throw new ArgumentException(String.Format("'{0}' must not be null or empty.",paramName) , paramName); 
+            if (String.IsNullOrEmpty(value))
+            {
+                throw new ArgumentException(String.Format("'{0}' must not be null or empty.", paramName), paramName);
             }
         }
     }
 
     /// <summary>
-    /// client responsible to login and run queries on data.stackexchange.com
+    /// Client responsible to login and run queries on data.stackexchange.com.
     /// </summary>
     public class SedeClient : IDisposable
     {
-        private readonly string email;
-        private readonly string password;
-        private bool disposed;
+        # region Private fields/consts.
 
-        // notice that this baby is AppDomain wide used as it is static...
-        private readonly static  CookieContainer cookies = new CookieContainer();
+        const string baseUrl = "http://data.stackexchange.com/stackoverflow";
+        private bool disposed;
+        /// <summary>
+        /// Notice that this baby is AppDomain wide used as it is static...
+        /// </summary>
+        private readonly static CookieContainer cookies = new CookieContainer();
+
+        # endregion
+
+
+
+        # region Constructor/destructor.
 
         public SedeClient(string email, string password)
         {
             ThrowWhen.IsNullOrEmpty(email, "email");
             ThrowWhen.IsNullOrEmpty(password, "password");
-
-            this.email = email;
-            this.password = password;
 
             SEOpenIDLogin(email, password);
         }
@@ -58,83 +62,111 @@ namespace CVChatbot
             disposed = true;
         }
 
+        # endregion 
+
+
+
+        # region Public methods.
+
+        public void Dispose()
+        {
+            if (disposed) { return; }
+
+            // Clean up.
+            GC.SuppressFinalize(this);
+            disposed = true;
+        }
+
         /// <summary>
-        /// Retrieves from the sede query the results 
+        /// Retrieves from the sede query the results.
         /// </summary>
-        /// <returns>the tagname and the count in a dictionary</returns>
+        /// <returns>The tagname and the count in a dictionary.</returns>
         public Dictionary<string, int> GetTags()
         {
-            
-
-            string baseUrl = "http://data.stackexchange.com/stackoverflow";
-            // get in to run first
+            // Get in to run first.
             string id = GetSedeQueryCsvRevisionId(baseUrl);
 
-            // for collecting the result 
+            return GetTags(id);
+        }
+
+        /// <summary>
+        /// Retrieves from the sede query the results.
+        /// </summary>
+        /// <returns>The tagname and the count in a dictionary.</returns>
+        public Dictionary<string, int> GetTags(string csvRevId)
+        {
+            ThrowWhen.IsNullOrEmpty(csvRevId, "csvRevId");
+
+            // For collecting the result.
             Dictionary<string, int> tags = null;
-            if (id != null)
+
+            // This gets a text/csv content
+            // tag, count
+            // "java", "200"
+            // "php", "120"
+            var csv = GetCSVQuery(baseUrl + "/csv/" + csvRevId);
+
+            tags = new Dictionary<string, int>();
+            var header = true; // Skip the header.
+
+            // Split the returned string on each line.
+            foreach (var line in csv.Split(new string[] { "\r\n" }, StringSplitOptions.None))
             {
-                // this gets a text/csv content
-                // tag, count
-                // "java", "200"
-                // "php", "120"
-                var csv = GetCSVQuery(baseUrl + "/csv/" + id);
-
-                tags = new Dictionary<string, int>();
-                var header = true; // skip the header
-                // split the returned string on each line
-                foreach (var line in csv.Split(new string[] { "\r\n" }, StringSplitOptions.None))
+                if (header)
                 {
-                    if (header)
-                    {
-                        header = false;
-                    }
-                    else
-                    {
-                        // split a line in fields
-                        var fields = line.Split(',');
-                        // first field is the tag enclosed in " which we remove
-                        var tag = fields[0].Replace("\"", "");
-                        // parse the count from the second field
-                        int cnt;
-                        Int32.TryParse(fields[1].Replace("\"", ""), out cnt);
+                    header = false;
+                }
+                else
+                {
+                    // Split a line in fields.
+                    var fields = line.Split(',');
 
-                        tags.Add(tag, cnt);
-                    }
+                    // First field is the tag enclosed in " which we remove.
+                    var tag = fields[0].Replace("\"", "");
+
+                    // Parse the count from the second field.
+                    int cnt;
+                    Int32.TryParse(fields[1].Replace("\"", ""), out cnt);
+
+                    tags.Add(tag, cnt);
                 }
             }
+            
             return tags;
         }
 
         /// <summary>
         /// This runs the Sede Query and gives us the revision Id of the CSV DownloadLink
         /// </summary>
-        /// <param name="baseUrl">where sede and the query live</param>
-        /// <returns>the revision</returns>
-        private string GetSedeQueryCsvRevisionId(string baseUrl)
+        /// <param name="baseUrl">Where sede and the query live.</param>
+        /// <returns>The revision.</returns>
+        public string GetSedeQueryCsvRevisionId(string baseUrl)
         {
+            ThrowWhen.IsNullOrEmpty(baseUrl, "baseUrl");
+
             const string SearchTermForRevision = "&quot;revisionId&quot;:";
 
             var first = Get(baseUrl + "/query/236526/tags-that-can-be-cleared-of-votes#");
 
-            // in theory we could parse the result from this html
-            // but the data is inside a script tag and I don't fancy yet to parse it
+            // Tn theory we could parse the result from this html
+            // but the data is inside a script tag and we don't fancy yet to parse it.
 
-            var dom = CQ.Create(first); // this is expensive ... 
-            // find the link
-            // this one is slug-ed so this is useless for now
-            string href = dom
-                .Find("#resultSetsButton")
-                .First()
-                .Attr("href");
+            // This is expensive...
+            var dom = CQ.Create(first);
 
-            //find among all inline scripts the one that holds the revisionid
-            var scriptTag = dom
-                .Find("script")
-                .Where(script => !script.HasAttribute("src") &&
-                        script.InnerText != null &&
-                        script.InnerText.Contains(SearchTermForRevision))
-                .FirstOrDefault();
+            // Find the link. This one is slug-ed so this is useless for now.
+            string href = dom["#resultSetsButton"][0].Attributes["href"];
+                //.Find("#resultSetsButton")
+                //.First()
+                //.Attr("href");
+
+            // Find among all inline scripts the one that holds the revisionid.
+            var scriptTag = dom["script"].FirstOrDefault(script => !script.HasAttribute("src") && script.InnerText != null && script.InnerText.Contains(SearchTermForRevision));
+                //.Find("script")
+                //.Where(script => !script.HasAttribute("src") &&
+                //        script.InnerText != null &&
+                //        script.InnerText.Contains(SearchTermForRevision))
+                //.FirstOrDefault();
 
             string revid = null; // "344267"; // old revision
             if (scriptTag != null)
@@ -146,23 +178,22 @@ namespace CVChatbot
             return revid;
         }
 
-        // this seems a thin wrapper but this here for future use
+        # endregion
+
+
+
+        # region Private methods.
+
+        /// <summary>
+        /// This seems a thin wrapper but this here for future use.
+        /// </summary>
         private string GetCSVQuery(string query)
         {
             return Get(query);
         }
 
-        public void Dispose()
-        {
-            if (disposed) { return; }
-
-            // clean up
-            GC.SuppressFinalize(this);
-            disposed = true;
-        }
-
         // GET from the url whatever is returned as a string
-        // notice that this method uses/ fills the shared CookieContainer 
+        // notice that this method uses/fills the shared CookieContainer.
         private string Get(string url)
         {
             var req = HttpWebRequest.CreateHttp(url);
@@ -177,7 +208,7 @@ namespace CVChatbot
         }
 
         // POST to the url the urlencoded data and return the contents as a string
-        // notice that this method uses/ fills the shared CookieContainer
+        // notice that this method uses/fills the shared CookieContainer.
         private string Post(string url, string data)
         {
             var req = HttpWebRequest.CreateHttp(url);
@@ -197,40 +228,44 @@ namespace CVChatbot
             }
         }
 
-        // perform an login for the SE openID provider
-        // notice that when you run this from the BOT
+        // Perform an login for the SE openID provider.
+        // Notice that when you run this from the BOT
         // you are already logged-in,
-        // we only get the Cookies 
+        // we only get the Cookies.
         private void SEOpenIDLogin(string email, string password)
         {
-            // do a Get to retrieve the cookies
-
+            // Do a Get to retrieve the cookies
             var start = Get("https://openid.stackexchange.com/account/login");
 
-            // if we find no fkey in html ...
+            // If we find no fkey in html.
             string fkey = CQ.Create(start).GetInputValue("fkey");
-            // ... we are already logged in...
+
+            // ... we are already logged in.
             if (!String.IsNullOrEmpty(fkey))
             {
-                // ... we found an fkey, use it to login in the openid
+                // ... we found an fkey, use it to login via openid.
                 var data = "email=" + Uri.EscapeDataString(email) +
                            "&password=" + Uri.EscapeDataString(password) +
                            "&fkey=" + fkey;
 
                 var res = Post("https://openid.stackexchange.com/account/login/submit", data);
 
-                if (String.IsNullOrEmpty(res)) // better error check, because this is nonsense
+                if (String.IsNullOrEmpty(res)) // Better error check, because this is nonsense.
                 {
                     throw new Exception("Could not login using the specified OpenID credentials. Have you entered the correct credentials and have an active internet connection?");
                 }
             }
         }
+
+        # endregion
     }
 
-    //stolen from CE.Net
+    /// <summary>
+    /// Stolen from CE.Net. :O
+    /// </summary>
     internal static class CQExtension
     {
-        //On a CQ dom find an <input name="foo" value="bar" > with the name foo and return bar or null for no match
+        // On a CQ dom find an <input name="foo" value="bar" > with the name foo and return bar or null for no match.
         internal static string GetInputValue(this CQ input, string elementName)
         {
             var fkeyE = input["input"].FirstOrDefault(e => e.Attributes["name"] != null && e.Attributes["name"] == elementName);

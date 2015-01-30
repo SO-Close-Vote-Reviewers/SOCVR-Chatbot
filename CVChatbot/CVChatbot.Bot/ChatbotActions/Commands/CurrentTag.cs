@@ -7,12 +7,31 @@ using System.Threading.Tasks;
 
 namespace CVChatbot.Bot.ChatbotActions.Commands
 {
-   
     /// <summary>
-    /// Implements the current command that takes the first tag from the SEDE query and post it to the room
+    /// Implements the current command that takes the first tag from the SEDE query and post it to the room.
     /// </summary>
-    public class CurrentTag:UserCommand
+    public class CurrentTag : UserCommand
     {
+        #region Private fields.
+        // We run the query and keep the result for a while.
+        static Dictionary<string, int> tags = null;
+        // We have once client session wide.
+        static SedeClient sedeClient = null;
+        /// <summary>
+        /// The last CSV revision ID of when fresh tags were fetched.
+        /// </summary>
+        static string lastCsvRevID;
+        /// <summary>
+        /// The last time fresh tag data was fetched.
+        /// </summary>
+        static DateTime lastRevIdCheckTime;
+
+        # endregion
+
+
+
+        # region Private class(es).
+
         /// <summary>
         /// copied from UI ... 
         /// </summary>
@@ -33,10 +52,13 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             }
         }
 
-        //we have once client session wide
-        static SedeClient sedeClient = null;
+        # endregion
 
-        // singleton
+
+
+        # region Public properties.
+
+        // Singleton.
         static SedeClient Client
         {
             get
@@ -51,25 +73,32 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 return sedeClient;
             }
         }
-
-        // we run the query and keep the result for a while
-        static Dictionary<string, int> tags = null;
-        // single instance
+        // Single instance
         static Dictionary<string, int> Tags
         {
             get
             {
-                // TODO: Expire this! (use a Cache?)
-                if (tags == null)
+                if (tags == null || (DateTime.UtcNow - lastRevIdCheckTime).TotalMinutes > 30)
                 {
-                    // notice that a SEDE Client gets created here
-                    // and at least two fetches for the data...
-                    tags = Client.GetTags();
+                    var currentID = "";
+
+                    if ((currentID = Client.GetSedeQueryCsvRevisionId("http://data.stackexchange.com/stackoverflow")) != lastCsvRevID)
+                    {
+                        lastCsvRevID = currentID;
+                        tags = Client.GetTags();
+                    }
+
+                    lastRevIdCheckTime = DateTime.UtcNow;
                 }
                 return tags;
             }
         }
 
+        # endregion
+
+
+
+        # region Public methods.
 
         protected override string GetRegexMatchingPattern()
         {
@@ -78,21 +107,22 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         }
 
         /// <summary>
-        /// outputs the tag
+        /// Outputs the tag.
         /// </summary>
         /// <param name="incommingChatMessage"></param>
         /// <param name="chatRoom"></param>
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
             string dataMessage;
-            if (Tags !=null)
+            if (Tags != null)
             {
                 dataMessage = String.Format("[tag:{0}] ({1})", Tags.First().Key, Tags.First().Value);
-            } else
+            }
+            else
             {
                 dataMessage = "No tags where retrieved :(";
             }
-            
+
             chatRoom.PostMessageOrThrow(dataMessage); 
         }
 
@@ -115,5 +145,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         {
             return ActionPermissionLevel.Registered;
         }
+
+        # endregion
     }
 }
