@@ -2,17 +2,15 @@
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Collections.Generic;
 
 
 
 namespace ChatExchangeDotNet
 {
-    public static class RequestManager
+    internal static class RequestManager
     {
-        public static readonly CookieContainer GlobalCookies = new CookieContainer();
-        public static CookieContainer CookiesToPass = new CookieContainer();
-
-
+        public static Dictionary<string, CookieContainer> Cookies = new Dictionary<string, CookieContainer>();
 
         public static string GetResponseContent(HttpWebResponse response)
         {
@@ -25,9 +23,7 @@ namespace ChatExchangeDotNet
             try
             {
                 dataStream = response.GetResponseStream();
-
                 reader = new StreamReader(dataStream);
-
                 responseFromServer = reader.ReadToEnd();
             }
             finally
@@ -48,19 +44,19 @@ namespace ChatExchangeDotNet
             return responseFromServer;
         }
 
-        public static HttpWebResponse SendPOSTRequest(string uri, string content, bool allowAutoRedirect = true, string referer = "", string origin = "")
+        public static HttpWebResponse SendPOSTRequest(string cookieKey, string uri, string content, bool allowAutoRedirect = true, string referer = "", string origin = "")
         {
-            return GetResponse(GenerateRequest(uri, content, "POST", allowAutoRedirect, referer, origin));
+            return GetResponse(GenerateRequest(cookieKey, uri, content, "POST", allowAutoRedirect, referer, origin));
         }
 
-        public static HttpWebResponse SendGETRequest(string uri, bool allowAutoRedirect = true, string referer = "")
+        public static HttpWebResponse SendGETRequest(string cookieKey, string uri, bool allowAutoRedirect = true, string referer = "")
         {
-            return GetResponse(GenerateRequest(uri, null, "GET", allowAutoRedirect, referer));
+            return GetResponse(GenerateRequest(cookieKey, uri, null, "GET", allowAutoRedirect, referer));
         }
 
 
 
-        private static HttpWebRequest GenerateRequest(string uri, string content, string method, bool allowAutoRedirect = true, string referer = "", string origin = "")
+        private static HttpWebRequest GenerateRequest(string cookieKey, string uri, string content, string method, bool allowAutoRedirect = true, string referer = "", string origin = "")
         {
             if (uri == null) { throw new ArgumentNullException("uri"); }
 
@@ -69,7 +65,7 @@ namespace ChatExchangeDotNet
             req.Method = method;
             req.AllowAutoRedirect = allowAutoRedirect;
             req.Credentials = CredentialCache.DefaultNetworkCredentials;
-            req.CookieContainer = CookiesToPass;
+            req.CookieContainer = String.IsNullOrEmpty(cookieKey) ? null : Cookies[cookieKey];
             req.Timeout = 300000; // 5 mins.
 
             if (!String.IsNullOrEmpty(referer))
@@ -98,7 +94,7 @@ namespace ChatExchangeDotNet
             return req;
         }
 
-        private static HttpWebResponse GetResponse(HttpWebRequest req)
+        private static HttpWebResponse GetResponse(HttpWebRequest req, string cookieKey = null)
         {
             if (req == null) { throw new ArgumentNullException("req"); }
 
@@ -108,15 +104,10 @@ namespace ChatExchangeDotNet
             {
                 res = (HttpWebResponse)req.GetResponse();
 
-                foreach (var cookie in res.Cookies)
+                if (!String.IsNullOrEmpty(cookieKey))
                 {
-                    if (!GlobalCookies.GetCookies().Contains((Cookie)cookie))
-                    {
-                        GlobalCookies.Add((Cookie)cookie);
-                    }
+                    Cookies[cookieKey].Add(res.Cookies);
                 }
-
-                GlobalCookies.Add(res.Cookies);
             }
             catch (WebException ex)
             {

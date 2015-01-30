@@ -13,12 +13,12 @@ namespace ChatExchangeDotNet
 {
     public static class ExtensionMethods
     {
-        private static readonly Regex hasMention = new Regex(@"^:\d*?\s|@\S{3,}?\b", RegexOptions.Compiled | RegexOptions.CultureInvariant);
-        private static readonly Regex isReply = new Regex(@"^:\d*?\s", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private static readonly Regex hasMention = new Regex(@"^:\d+\s|@\w{3,}?\b", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private static readonly Regex isReply = new Regex(@"^:\d+\s", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
 
 
-        public static List<Cookie> GetCookies(this CookieContainer container)
+        internal static List<Cookie> GetCookies(this CookieContainer container)
         {
             var cookies = new List<Cookie>();
 
@@ -50,9 +50,9 @@ namespace ChatExchangeDotNet
             return cookies;
         }
 
-        public static string GetFkey(this CQ input)
+        internal static string GetInputValue(this CQ input, string elementName)
         {
-            var fkeyE = input["input"].FirstOrDefault(e => e.Attributes["name"] != null && e.Attributes["name"] == "fkey");
+            var fkeyE = input["input"].FirstOrDefault(e => e.Attributes["name"] != null && e.Attributes["name"] == elementName);
 
             return fkeyE == null ? null : fkeyE.Attributes["value"];
         }
@@ -88,7 +88,7 @@ namespace ChatExchangeDotNet
 
         public static bool IsReply(this string message, bool includeMention = false)
         {
-            return includeMention ? hasMention.IsMatch(message) : isReply.IsMatch(message);
+            return !String.IsNullOrEmpty(message) && (includeMention ? hasMention.IsMatch(message) : isReply.IsMatch(message));
         }
     }
 }

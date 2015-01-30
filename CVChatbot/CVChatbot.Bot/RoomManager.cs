@@ -18,6 +18,9 @@ namespace CVChatbot.Bot
         private ChatMessageProcessor cmp;
         private RoomManagerSettings settings;
 
+        public delegate void ShutdownOrderGivenHandler();
+        public event ShutdownOrderGivenHandler ShutdownOrderGiven;
+
         /// <summary>
         /// Creates a new RoomManger object.
         /// Initializes the ChatMessageProcessor for internal use.
@@ -25,6 +28,15 @@ namespace CVChatbot.Bot
         public RoomManager()
         {
             cmp = new ChatMessageProcessor();
+            cmp.StopBotCommandIssued += cmp_StopBotCommandIssued;
+        }
+
+        void cmp_StopBotCommandIssued()
+        {
+            LeaveRoom("Goodbye!");
+
+            if (ShutdownOrderGiven != null)
+                ShutdownOrderGiven();
         }
 
         /// <summary>
@@ -34,7 +46,7 @@ namespace CVChatbot.Bot
         {
             settings = managerSettings;
 
-            chatClient = new Client(settings.Username, settings.Email, settings.Password);
+            chatClient = new Client(settings.Email, settings.Password);
             cvChatRoom = chatClient.JoinRoom(settings.ChatRoomUrl);
             ChatBotStats.LoginDate = DateTime.Now;
             cvChatRoom.StripMentionFromMessages = false;
@@ -51,6 +63,12 @@ namespace CVChatbot.Bot
             }
 
             cvChatRoom.NewMessage += cvChatRoom_NewMessage;
+        }
+
+        public void LeaveRoom(string stopMessage)
+        {
+            cvChatRoom.PostMessage(stopMessage);
+            cvChatRoom.Leave();
         }
 
         private async void cvChatRoom_NewMessage(Message newMessage)

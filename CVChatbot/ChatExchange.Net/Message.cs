@@ -8,7 +8,8 @@ namespace ChatExchangeDotNet
 {
     public class Message
     {
-        public string Content { get; private set; }
+        private readonly bool stripMention;
+
         public int ID { get; private set; }
         public string AuthorName { get; private set; }
         public int AuthorID { get; private set; }
@@ -16,11 +17,19 @@ namespace ChatExchangeDotNet
         public string Host { get; private set; }
         public int RoomID { get; private set; }
 
+        public string Content
+        {
+            get
+            {
+                return GetMessageContent(Host, RoomID, ID, stripMention);
+            }
+        }
+
         public int StarCount
         {
             get
             {
-                var res = RequestManager.SendGETRequest("http://chat." + Host + "/messages/" + ID + "/history");
+                var res = RequestManager.SendGETRequest("", "http://chat." + Host + "/messages/" + ID + "/history");
 
                 if (res == null) { return -1; }
 
@@ -47,7 +56,7 @@ namespace ChatExchangeDotNet
         {
             get
             {
-                var res = RequestManager.SendGETRequest("http://chat." + Host + "/messages/" + ID + "/history");
+                var res = RequestManager.SendGETRequest("", "http://chat." + Host + "/messages/" + ID + "/history");
 
                 if (res == null) { return -1; }
 
@@ -72,18 +81,18 @@ namespace ChatExchangeDotNet
 
 
 
-        public Message(string host, int roomID, string content, int ID, string authorName, int authorID, int parentID = -1)
+        public Message(string host, int roomID, int messageID, bool stripMention, string authorName, int authorID, int parentID = -1)
         {
             if (String.IsNullOrEmpty(host)) { throw new ArgumentException("'host' can not be null or empty.", "host"); }
-            if (String.IsNullOrEmpty(content)) { throw new ArgumentException("'content' can not be null or empty.", "content"); }
-            if (ID < 0) { throw new ArgumentOutOfRangeException("ID", "'ID' can not be less than 0."); }
+            if (messageID < 0) { throw new ArgumentOutOfRangeException("messageID", "'ID' can not be less than 0."); }
             if (String.IsNullOrEmpty(authorName)) { throw new ArgumentException("'authorName' can not be null or empty.", "authorName"); }
             if (authorID < -1) { throw new ArgumentOutOfRangeException("authorID", "'authorID' can not be less than -1."); }
 
+            this.stripMention = stripMention;
+
             Host = host;
             RoomID = roomID;
-            Content = content;
-            this.ID = ID;
+            ID = messageID;
             AuthorName = authorName;
             AuthorID = authorID;
             ParentID = parentID;
@@ -93,7 +102,7 @@ namespace ChatExchangeDotNet
 
         public static string GetMessageContent(string host, int roomID, int messageID, bool stripMention = true)
         {
-            var res = RequestManager.SendGETRequest("http://chat." + host + "/messages/" + roomID + "/" + messageID);
+            var res = RequestManager.SendGETRequest("", "http://chat." + host + "/messages/" + roomID + "/" + messageID);
 
             if (res == null || res.StatusCode != HttpStatusCode.OK) { return null; }
 

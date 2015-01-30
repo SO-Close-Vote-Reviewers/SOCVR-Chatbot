@@ -17,6 +17,9 @@ namespace CVChatbot.Bot
     /// </summary>
     public class ChatMessageProcessor
     {
+        public delegate void StopBotCommandIssuedHandler();
+        public event StopBotCommandIssuedHandler StopBotCommandIssued;
+
         /// <summary>
         /// Main entry point for the class.
         /// Takes a message revived from chat, determines what action should be taken, then performs that action.
@@ -145,6 +148,13 @@ namespace CVChatbot.Bot
             try
             {
                 action.RunAction(incommingChatMessage, chatRoom);
+
+                //if the command was "stop bot", need to trigger a program shutdown
+                if (action is StopBot)
+                {
+                    if (StopBotCommandIssued != null)
+                        StopBotCommandIssued();
+                }
             }
             catch (Exception ex)
             {

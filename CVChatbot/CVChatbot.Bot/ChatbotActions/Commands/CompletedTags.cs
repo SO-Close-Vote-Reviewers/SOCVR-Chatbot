@@ -54,7 +54,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 if (usingDefault)
                 {
                     headerMessage += " To give a different threshold number, use the command `{0}`."
-                        .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<LastSessionEditCount>());
+                        .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<CompletedTags>());
                 }
 
                 string dataMessage;
