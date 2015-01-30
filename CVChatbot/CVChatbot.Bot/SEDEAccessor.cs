@@ -1,148 +1,241 @@
-﻿//using System;
-//using System.IO;
-//using System.Linq;
-//using System.Collections.Generic;
-//using System.Text;
-//using CsQuery;
-//using ChatExchangeDotNet;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Collections.Generic;
+using System.Text;
+using CsQuery;
+using ChatExchangeDotNet;
+using System.Net;
 
-//namespace CVChatbot
-//{
-//    public class SedeClient : IDisposable
-//    {
-//        private readonly string username;
-//        private readonly string email;
-//        private readonly string password;
-//        private bool disposed;
+namespace CVChatbot
+{
+    /// <summary>
+    /// helper to throw exceptions to enforce Incoming contracts
+    /// </summary>
+    public static class ThrowWhen
+    {
+        /// <summary>
+        /// throws an argument exception if value is null or empty
+        /// </summary>
+        /// <param name="value">a value</param>
+        /// <param name="paramName">friendly name of value</param>
+        public static void IsNullOrEmpty(string value, string paramName)
+        {
+            if (String.IsNullOrEmpty(value)) 
+            { 
+                throw new ArgumentException(String.Format("'{0}' must not be null or empty.",paramName) , paramName); 
+            }
+        }
+    }
 
-//        public SedeClient(string username, string email, string password)
-//        {
-//            if (String.IsNullOrEmpty(email)) { throw new ArgumentException("'email' must not be null or empty.", "email"); }
-//            if (String.IsNullOrEmpty(password)) { throw new ArgumentException("'password' must not be null or empty.", "password"); }
+    /// <summary>
+    /// client responsible to login and run queries on data.stackexchange.com
+    /// </summary>
+    public class SedeClient : IDisposable
+    {
+        private readonly string email;
+        private readonly string password;
+        private bool disposed;
 
-//            this.username = username;
-//            this.email = email;
-//            this.password = password;
+        // notice that this baby is AppDomain wide used as it is static...
+        private readonly static  CookieContainer cookies = new CookieContainer();
 
-//            SEOpenIDLogin(email, password);
-//        }
+        public SedeClient(string email, string password)
+        {
+            ThrowWhen.IsNullOrEmpty(email, "email");
+            ThrowWhen.IsNullOrEmpty(password, "password");
 
-//        ~SedeClient()
-//        {
-//            if (disposed) { return; }
+            this.email = email;
+            this.password = password;
 
-//            disposed = true;
-//        }
+            SEOpenIDLogin(email, password);
+        }
 
-//        public Dictionary<string, int> GetTags()
-//        {
-//            // get in to eun first
-//            var first = GetRunQuery(@"http://data.stackexchange.com/stackoverflow/query/236526/tags-that-can-be-cleared-of-votes#");
-//            // no error checking whatsoever !!!!!!! :(
-//            var csv = GetCSVQuery("http://data.stackexchange.com/stackoverflow/csv/344267");
+        ~SedeClient()
+        {
+            if (disposed) { return; }
 
-//            var tags = new Dictionary<string, int>();
-//            var header = true;
-//            foreach (var line in csv.Split(new string[] { "\r\n" }, StringSplitOptions.None))
-//            {
-//                var flds = line.Split(',');
-//                var tag = flds[0].Replace("\"", "");
-//                int cnt;
-//                Int32.TryParse(flds[1].Replace("\"", ""), out cnt);
-//                if (header)
-//                {
-//                    header = false;
-//                }
-//                else
-//                {
-//                    tags.Add(tag, cnt);
-//                }
-//            }
-//            return tags;
-//        }
+            disposed = true;
+        }
 
-//        private string GetRunQuery(string query)
-//        {
-//            var resp = RequestManager.SendGETRequest(query);
-//            var str = resp.GetResponseStream();
-//            using (var ms = new MemoryStream())
-//            {
-//                str.CopyTo(ms);
-//                return Encoding.UTF8.GetString(ms.ToArray());
-//            }
-//        }
+        /// <summary>
+        /// Retrieves from the sede query the results 
+        /// </summary>
+        /// <returns>the tagname and the count in a dictionary</returns>
+        public Dictionary<string, int> GetTags()
+        {
+            
 
-//        private string GetCSVQuery(string query)
-//        {
-//            var resp = RequestManager.SendGETRequest(query);
-//            var str = resp.GetResponseStream();
-//            using (var ms = new MemoryStream())
-//            {
-//                str.CopyTo(ms);
-//                return Encoding.UTF8.GetString(ms.ToArray());
-//            }
-//        }
+            string baseUrl = "http://data.stackexchange.com/stackoverflow";
+            // get in to run first
+            string id = GetSedeQueryCsvRevisionId(baseUrl);
 
-//        public void Dispose()
-//        {
-//            if (disposed) { return; }
+            // for collecting the result 
+            Dictionary<string, int> tags = null;
+            if (id != null)
+            {
+                // this gets a text/csv content
+                // tag, count
+                // "java", "200"
+                // "php", "120"
+                var csv = GetCSVQuery(baseUrl + "/csv/" + id);
 
-//            // clean up
-//            GC.SuppressFinalize(this);
-//            disposed = true;
-//        }
+                tags = new Dictionary<string, int>();
+                var header = true; // skip the header
+                // split the returned string on each line
+                foreach (var line in csv.Split(new string[] { "\r\n" }, StringSplitOptions.None))
+                {
+                    if (header)
+                    {
+                        header = false;
+                    }
+                    else
+                    {
+                        // split a line in fields
+                        var fields = line.Split(',');
+                        // first field is the tag enclosed in " which we remove
+                        var tag = fields[0].Replace("\"", "");
+                        // parse the count from the second field
+                        int cnt;
+                        Int32.TryParse(fields[1].Replace("\"", ""), out cnt);
 
-//        private void SEOpenIDLogin(string email, string password)
-//        {
-//            var getRes = RequestManager.SendGETRequest("https://openid.stackexchange.com/account/login");
+                        tags.Add(tag, cnt);
+                    }
+                }
+            }
+            return tags;
+        }
 
-//            if (getRes == null) { throw new Exception("Could not get OpenID fkey. Do you have an active internet connection?"); }
+        /// <summary>
+        /// This runs the Sede Query and gives us the revision Id of the CSV DownloadLink
+        /// </summary>
+        /// <param name="baseUrl">where sede and the query live</param>
+        /// <returns>the revision</returns>
+        private string GetSedeQueryCsvRevisionId(string baseUrl)
+        {
+            const string SearchTermForRevision = "&quot;revisionId&quot;:";
 
-//            var getResContent = RequestManager.GetResponseContent(getRes);
-//            var data = "email=" + Uri.EscapeDataString(email) + "&password=" + Uri.EscapeDataString(password) + "&fkey=" + CQ.Create(getResContent).GetFkey();
+            var first = Get(baseUrl + "/query/236526/tags-that-can-be-cleared-of-votes#");
 
-//            RequestManager.CookiesToPass = RequestManager.GlobalCookies;
-//            var res = RequestManager.SendPOSTRequest("https://openid.stackexchange.com/account/login/submit", data);
+            // in theory we could parse the result from this html
+            // but the data is inside a script tag and I don't fancy yet to parse it
 
-//            if (res == null || !String.IsNullOrEmpty(res.Headers["p3p"]))
-//            {
-//                throw new Exception("Could not login using the specified OpenID credentials. Have you entered the correct credentials and have an active internet connection?");
-//            }
-//        }
+            var dom = CQ.Create(first); // this is expensive ... 
+            // find the link
+            // this one is slug-ed so this is useless for now
+            string href = dom
+                .Find("#resultSetsButton")
+                .First()
+                .Attr("href");
 
-//        private void SiteLogin(string host)
-//        {
-//            HandleNewAccountPrompt(host);
-//        }
+            //find among all inline scripts the one that holds the revisionid
+            var scriptTag = dom
+                .Find("script")
+                .Where(script => !script.HasAttribute("src") &&
+                        script.InnerText != null &&
+                        script.InnerText.Contains(SearchTermForRevision))
+                .FirstOrDefault();
 
-//        private void HandleNewAccountPrompt(string host)
-//        {
-//            var em = Uri.EscapeDataString(email);
-//            var pa = Uri.EscapeDataString(password);
-//            var na = Uri.EscapeDataString(username);
-//            var referrer = "https://" + host + "/users/signup?returnurl=http://" + host + "%2f";
-//            var origin = "https://" + host + ".com";
-//            var fkey = CQ.Create(RequestManager.GetResponseContent(RequestManager.SendGETRequest("https://" + host + "/users/signup"))).GetFkey();
+            string revid = null; // "344267"; // old revision
+            if (scriptTag != null)
+            {
+                var revision = scriptTag.InnerText.IndexOf(SearchTermForRevision) + SearchTermForRevision.Length;
+                var nextComma = scriptTag.InnerText.IndexOf(',', revision);
+                revid = scriptTag.InnerText.Substring(revision, nextComma - revision).Trim();
+            }
+            return revid;
+        }
 
-//            var data = "fkey=" + fkey + "&display-name=" + na + "&email=" + em + "&password=" + pa + "&password2=" + pa + "&legalLinksShown=1";
+        // this seems a thin wrapper but this here for future use
+        private string GetCSVQuery(string query)
+        {
+            return Get(query);
+        }
 
-//            var postRes = RequestManager.SendPOSTRequest("https://" + host + "/users/signup", data, true, referrer, origin);
+        public void Dispose()
+        {
+            if (disposed) { return; }
 
-//            if (postRes == null) { throw new Exception("Could not login/sign-up."); }
+            // clean up
+            GC.SuppressFinalize(this);
+            disposed = true;
+        }
 
-//            var resContent = RequestManager.GetResponseContent(postRes);
+        // GET from the url whatever is returned as a string
+        // notice that this method uses/ fills the shared CookieContainer 
+        private string Get(string url)
+        {
+            var req = HttpWebRequest.CreateHttp(url);
+            req.Method = "GET";
+            req.AllowAutoRedirect = true;
+            req.CookieContainer = cookies;
+            var resp = (HttpWebResponse)req.GetResponse();
+            using (StreamReader sr = new StreamReader(resp.GetResponseStream()))
+            {
+                return sr.ReadToEnd();
+            }
+        }
 
-//            // We already have an account (and we've been logged in).
-//            if (!resContent.Contains("We will automatically link this account with your accounts on other Stack Exchange sites.")) { return; }
+        // POST to the url the urlencoded data and return the contents as a string
+        // notice that this method uses/ fills the shared CookieContainer
+        private string Post(string url, string data)
+        {
+            var req = HttpWebRequest.CreateHttp(url);
+            req.Method = "POST";
+            req.CookieContainer = cookies;
+            req.ContentType = "application/x-www-form-urlencoded";
+            req.ContentLength = data.Length;
+            using (var sw = new StreamWriter(req.GetRequestStream()))
+            {
+                sw.Write(data);
+                sw.Flush();
+            }
+            var resp = (HttpWebResponse)req.GetResponse();
+            using (StreamReader sr = new StreamReader(resp.GetResponseStream()))
+            {
+                return sr.ReadToEnd();
+            }
+        }
 
-//            // We don't have an account, so lets create one!
+        // perform an login for the SE openID provider
+        // notice that when you run this from the BOT
+        // you are already logged-in,
+        // we only get the Cookies 
+        private void SEOpenIDLogin(string email, string password)
+        {
+            // do a Get to retrieve the cookies
 
-//            var dom = CQ.Create(resContent);
-//            var s = dom["input"].First(e => e.Attributes["name"] != null && e.Attributes["name"] == "s").Attributes["value"];
+            var start = Get("https://openid.stackexchange.com/account/login");
 
-//            var signUpRes = RequestManager.SendPOSTRequest("https://" + host + "/users/openidconfirm", "fkey=" + fkey + "&s=" + s + "&legalLinksShown=1", true, referrer, origin);
+            // if we find no fkey in html ...
+            string fkey = CQ.Create(start).GetInputValue("fkey");
+            // ... we are already logged in...
+            if (!String.IsNullOrEmpty(fkey))
+            {
+                // ... we found an fkey, use it to login in the openid
+                var data = "email=" + Uri.EscapeDataString(email) +
+                           "&password=" + Uri.EscapeDataString(password) +
+                           "&fkey=" + fkey;
 
-//            if (signUpRes == null) { throw new Exception("Could not login/sign-up."); }
-//        }
-//    }
-//}
+                var res = Post("https://openid.stackexchange.com/account/login/submit", data);
+
+                if (String.IsNullOrEmpty(res)) // better error check, because this is nonsense
+                {
+                    throw new Exception("Could not login using the specified OpenID credentials. Have you entered the correct credentials and have an active internet connection?");
+                }
+            }
+        }
+    }
+
+    //stolen from CE.Net
+    internal static class CQExtension
+    {
+        //On a CQ dom find an <input name="foo" value="bar" > with the name foo and return bar or null for no match
+        internal static string GetInputValue(this CQ input, string elementName)
+        {
+            var fkeyE = input["input"].FirstOrDefault(e => e.Attributes["name"] != null && e.Attributes["name"] == elementName);
+
+            return fkeyE == null ? null : fkeyE.Attributes["value"];
+        }
+    }
+}

@@ -62,6 +62,7 @@
     <Compile Include="ChatbotActions\Commands\AuditStats.cs" />
     <Compile Include="ChatbotActions\Commands\Commands.cs" />
     <Compile Include="ChatbotActions\Commands\CompletedTags.cs" />
+    <Compile Include="ChatbotActions\Commands\CurrentTag.cs" />
     <Compile Include="ChatbotActions\Commands\CurrentSession.cs" />
     <Compile Include="ChatbotActions\Commands\EndSession.cs" />
     <Compile Include="ChatbotActions\Commands\Help.cs" />
