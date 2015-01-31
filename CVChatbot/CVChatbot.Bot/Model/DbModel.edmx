@@ -126,10 +126,17 @@
           <NavigationProperty Name="RegisteredUser" Relationship="Self.FK__NoItemsIn__Regis__239E4DCF" FromRole="NoItemsInFilterEntry" ToRole="RegisteredUser" />
         </EntityType>
         <EntityType Name="RegisteredUser">
+          <Documentation>
+            <LongDescription>A user that has been marked as a "tracked" user, and has permission to run more commands.</LongDescription>
+          </Documentation>
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" >
+            <Documentation>
+              <Summary>Primary key for the table</Summary>
+            </Documentation>
+          </Property>
           <Property Name="ChatProfileId" Type="Int32" Nullable="false" />
           <Property Name="IsOwner" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="CompletedAuditEntries" Relationship="Self.FK__Completed__Regis__267ABA7A" FromRole="RegisteredUser" ToRole="CompletedAuditEntry" />
@@ -182,7 +189,11 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Command" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Command" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <Summary>The command text</Summary>
+            </Documentation>
+          </Property>
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>

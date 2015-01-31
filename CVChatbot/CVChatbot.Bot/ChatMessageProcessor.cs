@@ -11,17 +11,27 @@ using TheCommonLibrary.Extensions;
 
 namespace CVChatbot.Bot
 {
+    /// <summary>
+    /// This class is responsible for determining whether to act on an incoming chat message or not, 
+    /// then performing that action.
+    /// </summary>
     public class ChatMessageProcessor
     {
         public delegate void StopBotCommandIssuedHandler();
         public event StopBotCommandIssuedHandler StopBotCommandIssued;
 
+        /// <summary>
+        /// Main entry point for the class.
+        /// Takes a message revived from chat, determines what action should be taken, then performs that action.
+        /// </summary>
+        /// <param name="incommingChatMessage">The chat message that was said.</param>
+        /// <param name="chatRoom">The room the chat message was said in.</param>
         public void ProcessChatMessage(Message incommingChatMessage, Room chatRoom)
         {
-            //do this first so I only have to find the result once per chat message
+            // do this first so I only have to find the result once per chat message
             bool isReplyToChatbot = MessageIsReplyToChatbot(incommingChatMessage, chatRoom);
 
-            //determine the list of possible actions that work from the message
+            // determine the list of possible actions that work from the message
             var possibleChatbotActionsToRun = ChatbotActionRegister.AllChatActions
                 .Where(x => x.DoesChatMessageActiveAction(incommingChatMessage, isReplyToChatbot))
                 .ToList();
@@ -32,40 +42,45 @@ namespace CVChatbot.Bot
 
             if (!possibleChatbotActionsToRun.Any())
             {
-                //didn't find an action to run, what to do next depends of if was
-                //a reply to the chatbot or not
+                // didn't find an action to run, what to do next depends of if the message was
+                // a reply to the chatbot or not
                 if (isReplyToChatbot)
                 {
-                    //user was trying to make a command
+                    // user was trying to make a command
                     SendUnrecognizedCommandToDatabase(incommingChatMessage.GetContentsWithStrippedMentions());
                     chatRoom.PostReplyOrThrow(incommingChatMessage, "Sorry, I don't understand that. Use `{0}` for a list of commands."
                         .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<Commands>()));
                 }
-                //else it's a trigger, do nothing
+                // else it's a trigger, do nothing
 
                 return;
             }
 
-            //you have a single item to run
+            // you have a single item to run
             var chatbotActionToRun = possibleChatbotActionsToRun.Single();
 
-            //now, do you have permission to run it?
+            // now, do you have permission to run it?
             if (DoesUserHavePermissionToRunAction(chatbotActionToRun, incommingChatMessage.AuthorID))
             {
-                //have permission, run it
+                // have permission, run it
                 RunChatbotAction(chatbotActionToRun, incommingChatMessage, chatRoom);
             }
             else
             {
-                //don't have permission, tell the user only if it's a command
+                // don't have permission, tell the user only if it's a command
                 if (isReplyToChatbot)
                 {
                     chatRoom.PostReplyOrThrow(incommingChatMessage, "Sorry, you need more permissions to run that command.");
                 }
-                //don't do anything for triggers
+                // don't do anything for triggers
             }
         }
 
+        /// <summary>
+        /// Takes a command (already stripped of mentions and trimmed) and inserts it into
+        /// a table of commands that the chatbot did not recognize.
+        /// </summary>
+        /// <param name="command"></param>
         private void SendUnrecognizedCommandToDatabase(string command)
         {
             using (CVChatBotEntities db = new CVChatBotEntities())
@@ -80,14 +95,22 @@ namespace CVChatbot.Bot
             }
         }
 
+        /// <summary>
+        /// Determines if the specified chat user has the correct permissions to run the chatbot action.
+        /// </summary>
+        /// <param name="actionToRun">The action the user would like to run.</param>
+        /// <param name="chatUserId">The chat user who initiated this request.</param>
+        /// <returns></returns>
         private bool DoesUserHavePermissionToRunAction(ChatbotAction actionToRun, int chatUserId)
         {
             var neededPermissionLevel = actionToRun.GetPermissionLevel();
 
+            // if the permission level of the action is "everyone" then just return true.
+            // don't need to do anything else, like searching though the database.
             if (neededPermissionLevel == ActionPermissionLevel.Everyone)
                 return true;
 
-            //now you need to look up the person in the database
+            // now you need to look up the person in the database
             using (CVChatBotEntities db = new CVChatBotEntities())
             {
                 var dbUser = db.RegisteredUsers
@@ -108,10 +131,16 @@ namespace CVChatbot.Bot
             return false;
         }
 
+        /// <summary>
+        /// Runs the logic for the chatbot action and records the start and stop of the action.
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="incommingChatMessage"></param>
+        /// <param name="chatRoom"></param>
         private void RunChatbotAction(ChatbotAction action, Message incommingChatMessage, Room chatRoom)
         {
             //record as started
-            var id = RunningCommandsManager.MarkCommandAsStarted(
+            var id = RunningChatbotActionsManager.MarkChatbotActionAsStarted(
                 action.GetActionName(),
                 incommingChatMessage.AuthorName,
                 incommingChatMessage.AuthorID);
@@ -135,9 +164,17 @@ namespace CVChatbot.Bot
                 TellChatAboutErrorWhileRunningAction(ex, chatRoom, action);
             }
 
-            RunningCommandsManager.MarkCommandAsFinished(id);
+            //mark as finished
+            RunningChatbotActionsManager.MarkChatbotActionAsFinished(id);
         }
 
+        /// <summary>
+        /// Call this method if you get an error while running a ChatbotAction.
+        /// This will attempt to send a message to chat about error in a standard format.
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <param name="chatRoom"></param>
+        /// <param name="actionToRun"></param>
         private void TellChatAboutErrorWhileRunningAction(Exception ex, Room chatRoom, ChatbotAction actionToRun)
         {
             var headerLine = "I hit an error while trying to run '{0}':"
@@ -147,14 +184,20 @@ namespace CVChatbot.Bot
 
             var stackTraceMessage = ex.GetAllStackTraces();
 
-            var secondMessage = errorMessage + Environment.NewLine +
+            var detailsLine = errorMessage + Environment.NewLine +
                 "    ----" + Environment.NewLine +
                 stackTraceMessage;
 
             chatRoom.PostMessageOrThrow(headerLine);
-            chatRoom.PostMessageOrThrow(secondMessage);
+            chatRoom.PostMessageOrThrow(detailsLine);
         }
 
+        /// <summary>
+        /// Determines if the chat message is directed to the chatbot or not.
+        /// </summary>
+        /// <param name="chatMessage"></param>
+        /// <param name="chatRoom"></param>
+        /// <returns></returns>
         private bool MessageIsReplyToChatbot(Message chatMessage, Room chatRoom)
         {
             if (chatMessage.ParentID == -1)
