@@ -11,16 +11,6 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
 {
     public class EmptyFilter : Trigger
     {
-        public override ActionPermissionLevel GetPermissionLevel()
-        {
-            return ActionPermissionLevel.Registered;
-        }
-
-        protected override string GetRegexMatchingPattern()
-        {
-            return "(?:> )?there are no items for you to review, matching the filter \"(?:[A-z-, ']+; )?([\\S ]+)\"";
-        }
-
         public override void RunAction(Message incommingChatMessage, Room chatRoom)
         {
             // First, get the tags that were used.
@@ -37,14 +27,14 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
                 .ToList();
 
             // Save the tags to the database.
-            using (CVChatBotEntities db = new CVChatBotEntities())
+            using (var db = new CVChatBotEntities())
             {
                 foreach (var tagName in parsedTagNames)
                 {
                     var registedUser = db.RegisteredUsers
                         .Single(x => x.ChatProfileId == incommingChatMessage.AuthorID);
 
-                    NoItemsInFilterEntry newEntry = new NoItemsInFilterEntry()
+                    var newEntry = new NoItemsInFilterEntry()
                     {
                         EntryTs = DateTimeOffset.Now,
                         RegisteredUser = registedUser,
@@ -55,6 +45,16 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
                     db.SaveChanges();
                 }
             }
+        }
+
+        public override ActionPermissionLevel GetPermissionLevel()
+        {
+            return ActionPermissionLevel.Registered;
+        }
+
+        protected override string GetRegexMatchingPattern()
+        {
+            return "(?:> )?there are no items for you to review, matching the filter \"(?:[A-z-, ']+; )?([\\S ]+)\"";
         }
 
         public override string GetActionName()

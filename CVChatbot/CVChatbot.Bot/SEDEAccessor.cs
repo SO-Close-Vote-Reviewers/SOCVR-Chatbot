@@ -35,9 +35,11 @@ namespace CVChatbot
         # region Private fields/const(s).
 
         const string baseUrl = "http://data.stackexchange.com/stackoverflow";
+
         private bool disposed;
+
         /// <summary>
-        /// Notice that this baby is AppDomain wide used as it is static...
+        /// Notice that this baby is AppDomain wide used as it is static.
         /// </summary>
         private readonly static CookieContainer cookies = new CookieContainer();
 
@@ -187,8 +189,10 @@ namespace CVChatbot
             return Get(query);
         }
 
-        // GET from the url whatever is returned as a string
-        // notice that this method uses/fills the shared CookieContainer.
+        /// <summary>
+        /// GET from the url whatever is returned as a string.
+        /// This method uses/fills the shared CookieContainer.
+        /// </summary>
         private string Get(string url)
         {
             var req = HttpWebRequest.CreateHttp(url);
@@ -196,14 +200,16 @@ namespace CVChatbot
             req.AllowAutoRedirect = true;
             req.CookieContainer = cookies;
             var resp = (HttpWebResponse)req.GetResponse();
-            using (StreamReader sr = new StreamReader(resp.GetResponseStream()))
+            using (var sr = new StreamReader(resp.GetResponseStream()))
             {
                 return sr.ReadToEnd();
             }
         }
 
-        // POST to the url the urlencoded data and return the contents as a string
-        // notice that this method uses/fills the shared CookieContainer.
+        /// <summary>
+        /// POST to the url the urlencoded data and return the contents as a string.
+        /// This method uses/fills the shared CookieContainer.
+        /// </summary>
         private string Post(string url, string data)
         {
             var req = HttpWebRequest.CreateHttp(url);
@@ -217,28 +223,31 @@ namespace CVChatbot
                 sw.Flush();
             }
             var resp = (HttpWebResponse)req.GetResponse();
-            using (StreamReader sr = new StreamReader(resp.GetResponseStream()))
+            using (var sr = new StreamReader(resp.GetResponseStream()))
             {
                 return sr.ReadToEnd();
             }
         }
 
-        // Perform an login for the SE openID provider.
-        // Notice that when you run this from the BOT
-        // you are already logged-in,
-        // we only get the Cookies.
+        
+        /// <summary>
+        /// Perform an login for the SE openID provider.
+        /// Notice that when you run this from the BOT
+        /// you are already logged-in,
+        /// we only get the Cookies.
+        /// </summary>
         private void SEOpenIDLogin(string email, string password)
         {
-            // Do a Get to retrieve the cookies
+            // Do a Get to retrieve the cookies.
             var start = Get("https://openid.stackexchange.com/account/login");
 
             // If we find no fkey in html.
             string fkey = CQ.Create(start).GetInputValue("fkey");
 
-            // ... we are already logged in.
+            // We are already logged in.
             if (!String.IsNullOrEmpty(fkey))
             {
-                // ... we found an fkey, use it to login via openid.
+                // We found an fkey, use it to login via openid.
                 var data = "email=" + Uri.EscapeDataString(email) +
                            "&password=" + Uri.EscapeDataString(password) +
                            "&fkey=" + fkey;

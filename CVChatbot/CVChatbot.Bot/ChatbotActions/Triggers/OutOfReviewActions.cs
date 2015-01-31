@@ -11,20 +11,10 @@ using CVChatbot.Bot.ChatbotActions.Commands;
 namespace CVChatbot.Bot.ChatbotActions.Triggers
 {
     /// <summary>
-    /// For when a person does 40 review items and has ran out of review actions
+    /// For when a person does 40 review items and has ran out of review actions.
     /// </summary>
     public class OutOfReviewActions : EndingSessionTrigger
     {
-        public override ActionPermissionLevel GetPermissionLevel()
-        {
-            return ActionPermissionLevel.Registered;
-        }
-
-        protected override string GetRegexMatchingPattern()
-        {
-            return @"^(?:> )?thank you for reviewing (\d+) close votes today; come back in ([\w ]+) to continue reviewing\.$";
-        }
-
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
             var itemsReviewed = GetRegexMatchingObject()
@@ -40,6 +30,16 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
                 chatRoom.PostReplyOrThrow(incommingChatMessage, "Thanks for reviewing! To see more infomation use the command `{0}`."
                     .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<LastSessionStats>()));
             }
+        }
+
+        public override ActionPermissionLevel GetPermissionLevel()
+        {
+            return ActionPermissionLevel.Registered;
+        }
+
+        protected override string GetRegexMatchingPattern()
+        {
+            return @"^(?:> )?thank you for reviewing (\d+) close votes today; come back in ([\w ]+) to continue reviewing\.$";
         }
 
         public override string GetActionName()

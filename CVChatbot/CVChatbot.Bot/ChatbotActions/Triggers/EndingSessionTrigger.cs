@@ -22,12 +22,11 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
         /// <returns></returns>
         protected bool EndSession(Message userMessage, Room chatRoom, int? itemsReviewed)
         {
-            using (CVChatBotEntities db = new CVChatBotEntities())
+            using (var db = new CVChatBotEntities())
             {
                 // Find the latest session by that user.
                 var latestSession = db.ReviewSessions
-                    .Where(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID)
-                    .Where(x => x.SessionEnd == null)
+                    .Where(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID && x.SessionEnd == null)
                     .OrderByDescending(x => x.SessionStart)
                     .FirstOrDefault();
 

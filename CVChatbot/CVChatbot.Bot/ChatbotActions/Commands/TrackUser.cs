@@ -62,7 +62,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionDescription()
         {
-            return "adds the user to the registered users list";
+            return "Adds the user to the registered users list.";
         }
 
         public override string GetActionUsage()

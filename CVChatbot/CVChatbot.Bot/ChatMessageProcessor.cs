@@ -12,7 +12,7 @@ using TheCommonLibrary.Extensions;
 namespace CVChatbot.Bot
 {
     /// <summary>
-    /// This class is responsible for determining whether to act on an incoming chat message or not, 
+    /// This class is responsible for determining whether to act on an incoming chat message or not,
     /// then performing that action.
     /// </summary>
     public class ChatMessageProcessor
@@ -46,7 +46,7 @@ namespace CVChatbot.Bot
                 // a reply to the chatbot or not.
                 if (isReplyToChatbot)
                 {
-                    // user was trying to make a command.
+                    // User was trying to make a command.
                     SendUnrecognizedCommandToDatabase(incommingChatMessage.GetContentsWithStrippedMentions());
                     chatRoom.PostReplyOrThrow(incommingChatMessage, "Sorry, I don't understand that. Use `{0}` for a list of commands."
                         .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<Commands>()));
@@ -111,7 +111,7 @@ namespace CVChatbot.Bot
                 return true;
 
             // Now you need to look up the person in the database
-            using (CVChatBotEntities db = new CVChatBotEntities())
+            using (var db = new CVChatBotEntities())
             {
                 var dbUser = db.RegisteredUsers.SingleOrDefault(x => x.ChatProfileId == chatUserId);
 

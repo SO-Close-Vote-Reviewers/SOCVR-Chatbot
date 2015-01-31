@@ -9,14 +9,9 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class Alive : UserCommand
     {
-        protected override string GetRegexMatchingPattern()
-        {
-            return @"^(?:(?:are )?you )?(alive|still there|(still )?with us)\??$";
-        }
-
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
-            List<string> responsePhrases = new List<string>()
+            var responsePhrases = new List<string>()
             {
                 "I'm alive and kicking!",
                 "Still here you guys!",
@@ -28,6 +23,16 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             chatRoom.PostReplyOrThrow(incommingChatMessage, phrase);
         }
 
+        public override ActionPermissionLevel GetPermissionLevel()
+        {
+            return ActionPermissionLevel.Everyone;
+        }
+
+        protected override string GetRegexMatchingPattern()
+        {
+            return @"^(?:(?:are )?you )?(alive|still there|(still )?with us)\??$";
+        }
+
         public override string GetActionName()
         {
             return "Alive";
@@ -35,17 +40,12 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionDescription()
         {
-            return "A simple ping command to test if the bot is running";
+            return "A simple ping command to test if the bot is running.";
         }
 
         public override string GetActionUsage()
         {
             return "alive";
-        }
-
-        public override ActionPermissionLevel GetPermissionLevel()
-        {
-            return ActionPermissionLevel.Everyone;
         }
     }
 }

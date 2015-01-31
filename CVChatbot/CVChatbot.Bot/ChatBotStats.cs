@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace CVChatbot.Bot
 {
     /// <summary>
-    /// Class to hold status about how the chatbot is running for this instance
+    /// Class to hold status about how the chatbot is running for this instance.
     /// </summary>
     public static class ChatBotStats
     {

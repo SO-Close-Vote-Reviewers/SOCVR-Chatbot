@@ -67,7 +67,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionDescription()
         {
-            return "Shows the stats at the top of the /review/close/stats page";
+            return "Shows the stats at the top of the /review/close/stats page.";
         }
 
         public override string GetActionUsage()

@@ -77,7 +77,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionDescription()
         {
-            return "edits the number of reviewed items in your last review session";
+            return "Edits the number of reviewed items in your last review session.";
         }
 
         public override string GetActionUsage()

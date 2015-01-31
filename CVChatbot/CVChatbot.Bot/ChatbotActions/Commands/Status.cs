@@ -43,7 +43,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionDescription()
         {
-            return "tests if the chatbot is alive and shows simple info about it";
+            return "Tests if the chatbot is alive and shows simple info about it.";
         }
 
         public override string GetActionUsage()

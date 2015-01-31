@@ -11,16 +11,6 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
 {
     public class CompletedAudit : Trigger
     {
-        public override ActionPermissionLevel GetPermissionLevel()
-        {
-            return ActionPermissionLevel.Registered;
-        }
-
-        protected override string GetRegexMatchingPattern()
-        {
-            return @"^passed (an? )?(\S+) audit$";
-        }
-
         public override void RunAction(Message incommingChatMessage, Room chatRoom)
         {
             var chatUser = chatRoom.GetUser(incommingChatMessage.AuthorID);
@@ -29,12 +19,12 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
                     .Groups[1]
                     .Value;
 
-            using (CVChatBotEntities db = new CVChatBotEntities())
+            using (var db = new CVChatBotEntities())
             {
                 var registedUser = db.RegisteredUsers
                     .Single(x => x.ChatProfileId == incommingChatMessage.AuthorID);
 
-                CompletedAuditEntry newEntry = new CompletedAuditEntry()
+                var newEntry = new CompletedAuditEntry()
                 {
                     EntryTs = DateTimeOffset.Now,
                     RegisteredUser = registedUser,
@@ -46,6 +36,16 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
             }
 
             // Say the next tag on the list.
+        }
+
+        public override ActionPermissionLevel GetPermissionLevel()
+        {
+            return ActionPermissionLevel.Registered;
+        }
+
+        protected override string GetRegexMatchingPattern()
+        {
+            return @"^passed\s+(an?\s+)?(\S+)\s+audit$";
         }
 
         public override string GetActionName()

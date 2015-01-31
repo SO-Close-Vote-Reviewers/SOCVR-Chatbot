@@ -35,8 +35,8 @@ namespace CVChatbot.Bot.ChatbotActions
         }
 
         /// <summary>
-        /// The DoesChatMessageActiveAction method passes in if the incoming message is 
-        /// a reply to the chatbot. This method tells what that value MUST be for the 
+        /// The DoesChatMessageActiveAction method passes in if the incoming message is
+        /// a reply to the chatbot. This method tells what that value MUST be for the
         /// action to be activated. For example, User Commands MUST be a reply to the chatbot.
         /// </summary>
         /// <returns></returns>
@@ -50,11 +50,10 @@ namespace CVChatbot.Bot.ChatbotActions
         protected abstract string GetRegexMatchingPattern();
 
         /// <summary>
-        /// Returns the regex object needed for pattern matching with the incoming chat message.
         /// This is already populated with the necessary matching pattern text.
         /// You may call this method from the RunAction() method if you need arguments within chat message.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The regex object needed for pattern matching with the incoming chat message.</returns>
         protected Regex GetRegexMatchingObject()
         {
             var pattern = GetRegexMatchingPattern();

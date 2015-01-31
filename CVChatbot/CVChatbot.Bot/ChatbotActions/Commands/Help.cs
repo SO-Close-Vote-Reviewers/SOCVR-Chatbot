@@ -36,7 +36,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionDescription()
         {
-            return "Prints info about this software";
+            return "Prints info about this software.";
         }
 
         public override string GetActionUsage()

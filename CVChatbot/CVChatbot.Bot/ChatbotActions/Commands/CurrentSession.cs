@@ -15,7 +15,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         {
             using (var db = new CVChatBotEntities())
             {
-                //find the latest open session for the user
+                // Find the latest open session for the user.
 
                 var latestOpenSession = db.ReviewSessions
                     .Where(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID && x.SessionEnd == null)
@@ -45,7 +45,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         protected override string GetRegexMatchingPattern()
         {
-            return @"^((do i have (a|an) )|what is my )?(current|active|review)( review)? session( going( on)?)?(\?)?$";
+            return @"^(do i have an? |what is my )?(current|active|review)( review)? session( going( on)?)?\??$";
         }
 
         public override string GetActionName()
@@ -55,7 +55,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionDescription()
         {
-            return "Tells if the user has an open session or not, and when it started";
+            return "Tells if the user has an open session or not, and when it started.";
         }
 
         public override string GetActionUsage()

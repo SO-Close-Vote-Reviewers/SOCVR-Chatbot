@@ -10,7 +10,7 @@ using TheCommonLibrary.Extensions;
 namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     /// <summary>
-    /// Shows which tags have been reported a cleared by multiple people
+    /// Shows which tags have been reported a cleared by multiple people.
     /// </summary>
     public class CompletedTags : UserCommand
     {
@@ -28,9 +28,9 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 return;
             }
 
-            var defaultThreshold = 3; //for now i'm hard-coding this
+            var defaultThreshold = 3; // For now I'm hard-coding this.
 
-            var peopleThreshold = thresholdInCommand ?? defaultThreshold; //take the one in the command, or the default if the command one is not given
+            var peopleThreshold = thresholdInCommand ?? defaultThreshold; // Take the one in the command, or the default if the command one is not given.
             var usingDefault = thresholdInCommand == null;
 
             using (var db = new CVChatBotEntities())
@@ -62,7 +62,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 if (groupedTags.Any())
                 {
                     dataMessage = groupedTags
-                        .ToStringTable(new string[] { "Tag Name", "Count", "Latest Time Cleared" },
+                        .ToStringTable(new[] { "Tag Name", "Count", "Latest Time Cleared" },
                             (x) => x.TagName,
                             (x) => x.Count,
                             (x) => x.LastTimeEntered.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'"));
@@ -94,7 +94,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionDescription()
         {
-            return "shows the latest tags that have been completed by multiple people.";
+            return "Shows the latest tags that have been completed by multiple people.";
         }
 
         public override string GetActionUsage()

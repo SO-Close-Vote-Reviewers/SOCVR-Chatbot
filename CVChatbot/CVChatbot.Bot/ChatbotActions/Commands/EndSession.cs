@@ -10,16 +10,11 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class EndSession : UserCommand
     {
-        protected override string GetRegexMatchingPattern()
-        {
-            return @"^(end|done( with)?) (my )?(session|review(s|ing))( pl(ease|[sz]))?$";
-        }
-
         public override void RunAction(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
         {
             using (var db = new CVChatBotEntities())
             {
-                //first, check if latest session is an open session
+                // First, check if latest session is an open session.
 
                 var latestSession = db.ReviewSessions
                     .Where(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID)
@@ -40,7 +35,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                     return;
                 }
 
-                //else, lastestSession is open
+                // Else, lastestSession is open.
 
                 latestSession.SessionEnd = DateTimeOffset.Now;
                 db.SaveChanges();
@@ -50,6 +45,16 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                     "In addition, the number of review items is most likely not set, use the command `{0}` to fix that."
                     .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<LastSessionEditCount>()));
             }
+        }
+
+        public override ActionPermissionLevel GetPermissionLevel()
+        {
+            return ActionPermissionLevel.Registered;
+        }
+
+        protected override string GetRegexMatchingPattern()
+        {
+            return @"^(end|done( with)?) (my )?(session|review(s|ing))( pl(ease|[sz]))?$";
         }
 
         public override string GetActionName()
@@ -65,11 +70,6 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         public override string GetActionUsage()
         {
             return "end session";
-        }
-
-        public override ActionPermissionLevel GetPermissionLevel()
-        {
-            return ActionPermissionLevel.Registered;
         }
     }
 }
