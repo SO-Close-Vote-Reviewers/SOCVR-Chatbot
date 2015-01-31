@@ -15,13 +15,13 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         {
             var chatUser = chatRoom.GetUser(userMessage.AuthorID);
 
-            //start a new review session
-            using (CVChatBotEntities db = new CVChatBotEntities())
+            // Start a new review session.
+            using (var db = new CVChatBotEntities())
             {
                 var registedUser = db.RegisteredUsers
                     .Single(x => x.ChatProfileId == userMessage.AuthorID);
 
-                ReviewSession newSession = new ReviewSession()
+                var newSession = new ReviewSession()
                 {
                     SessionStart = DateTimeOffset.Now,
                     RegisteredUser = registedUser
@@ -31,7 +31,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 db.SaveChanges();
             }
 
-            List<string> replyMessages = new List<string>()
+            var replyMessages = new List<string>()
             {
                 "Good luck!",
                 "Happy reviewing!",
@@ -50,7 +50,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         protected override string GetRegexMatchingPattern()
         {
-            return @"(?:i'm )?start(ing|ed)(?: now)?";
+            return @"(?:i'?m )?start(ing|ed)(?: now)?";
         }
 
         public override string GetActionName()
@@ -60,7 +60,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionDescription()
         {
-            return "informs the chatbot that you are starting a new review session";
+            return "Informs the chatbot that you are starting a new review session.";
         }
 
         public override string GetActionUsage()

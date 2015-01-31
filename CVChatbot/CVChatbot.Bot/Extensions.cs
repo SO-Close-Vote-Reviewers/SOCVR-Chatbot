@@ -84,7 +84,7 @@ namespace CVChatbot.Bot
 
         private static List<string> GetAllStackTracesInner(this Exception ex)
         {
-            List<string> stackTraces = new List<string>();
+            var stackTraces = new List<string>();
 
             if (ex.InnerException != null)
             {
@@ -114,7 +114,7 @@ namespace CVChatbot.Bot
             const int DaysInMonth = 30;
 
             // Get each non-zero value from TimeSpan component
-            List<string> values = new List<string>();
+            var values = new List<string>();
 
             // Number of years
             int days = span.Days;
@@ -145,7 +145,7 @@ namespace CVChatbot.Bot
                 values.Add(CreateValueString(span.Seconds, "second"));
 
             // Combine values into string
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             for (int i = 0; i < values.Count; i++)
             {
                 if (builder.Length > 0)

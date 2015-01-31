@@ -12,7 +12,7 @@ using TheCommonLibrary.Extensions;
 namespace CVChatbot.Bot
 {
     /// <summary>
-    /// This class is responsible for determining whether to act on an incoming chat message or not, 
+    /// This class is responsible for determining whether to act on an incoming chat message or not,
     /// then performing that action.
     /// </summary>
     public class ChatMessageProcessor
@@ -28,10 +28,10 @@ namespace CVChatbot.Bot
         /// <param name="chatRoom">The room the chat message was said in.</param>
         public void ProcessChatMessage(Message incommingChatMessage, Room chatRoom)
         {
-            // do this first so I only have to find the result once per chat message
+            // Do this first so I only have to find the result once per chat message.
             bool isReplyToChatbot = MessageIsReplyToChatbot(incommingChatMessage, chatRoom);
 
-            // determine the list of possible actions that work from the message
+            // Determine the list of possible actions that work from the message.
             var possibleChatbotActionsToRun = ChatbotActionRegister.AllChatActions
                 .Where(x => x.DoesChatMessageActiveAction(incommingChatMessage, isReplyToChatbot))
                 .ToList();
@@ -42,37 +42,37 @@ namespace CVChatbot.Bot
 
             if (!possibleChatbotActionsToRun.Any())
             {
-                // didn't find an action to run, what to do next depends of if the message was
-                // a reply to the chatbot or not
+                // Didn't find an action to run, what to do next depends of if the message was
+                // a reply to the chatbot or not.
                 if (isReplyToChatbot)
                 {
-                    // user was trying to make a command
+                    // User was trying to make a command.
                     SendUnrecognizedCommandToDatabase(incommingChatMessage.GetContentsWithStrippedMentions());
                     chatRoom.PostReplyOrThrow(incommingChatMessage, "Sorry, I don't understand that. Use `{0}` for a list of commands."
                         .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<Commands>()));
                 }
-                // else it's a trigger, do nothing
+                // Else it's a trigger, do nothing.
 
                 return;
             }
 
-            // you have a single item to run
+            // You have a single item to run.
             var chatbotActionToRun = possibleChatbotActionsToRun.Single();
 
-            // now, do you have permission to run it?
+            // Now, do you have permission to run it?
             if (DoesUserHavePermissionToRunAction(chatbotActionToRun, incommingChatMessage.AuthorID))
             {
-                // have permission, run it
+                // Have permission, run it.
                 RunChatbotAction(chatbotActionToRun, incommingChatMessage, chatRoom);
             }
             else
             {
-                // don't have permission, tell the user only if it's a command
+                // Don't have permission, tell the user only if it's a command.
                 if (isReplyToChatbot)
                 {
                     chatRoom.PostReplyOrThrow(incommingChatMessage, "Sorry, you need more permissions to run that command.");
                 }
-                // don't do anything for triggers
+                // Don't do anything for triggers.
             }
         }
 
@@ -83,7 +83,7 @@ namespace CVChatbot.Bot
         /// <param name="command"></param>
         private void SendUnrecognizedCommandToDatabase(string command)
         {
-            using (CVChatBotEntities db = new CVChatBotEntities())
+            using (var db = new CVChatBotEntities())
             {
                 var newEntry = new UnrecognizedCommand
                 {
@@ -105,29 +105,27 @@ namespace CVChatbot.Bot
         {
             var neededPermissionLevel = actionToRun.GetPermissionLevel();
 
-            // if the permission level of the action is "everyone" then just return true.
-            // don't need to do anything else, like searching though the database.
+            // If the permission level of the action is "everyone" then just return true.
+            // Don't need to do anything else, like searching though the database.
             if (neededPermissionLevel == ActionPermissionLevel.Everyone)
                 return true;
 
-            // now you need to look up the person in the database
-            using (CVChatBotEntities db = new CVChatBotEntities())
+            // Now you need to look up the person in the database
+            using (var db = new CVChatBotEntities())
             {
-                var dbUser = db.RegisteredUsers
-                    .Where(x => x.ChatProfileId == chatUserId)
-                    .SingleOrDefault();
+                var dbUser = db.RegisteredUsers.SingleOrDefault(x => x.ChatProfileId == chatUserId);
 
-                if (dbUser == null) //at this point, the permission is Registered or Owner, 
-                    return false;    //and if the user is not in the database at all then it can't work
+                if (dbUser == null) // At this point, the permission is Registered or Owner,
+                    return false;    // and if the user is not in the database at all then it can't work.
 
                 if (neededPermissionLevel == ActionPermissionLevel.Registered)
-                    return true; //the user is in the list, that's all we need to check
+                    return true; // The user is in the list, that's all we need to check.
 
                 if (dbUser.IsOwner && neededPermissionLevel == ActionPermissionLevel.Owner)
                     return true;
             }
 
-            //fall past the last check (for owner), so default to "no"
+            // Fall past the last check (for owner), so default to "no".
             return false;
         }
 
@@ -139,7 +137,7 @@ namespace CVChatbot.Bot
         /// <param name="chatRoom"></param>
         private void RunChatbotAction(ChatbotAction action, Message incommingChatMessage, Room chatRoom)
         {
-            //record as started
+            // Record as started.
             var id = RunningChatbotActionsManager.MarkChatbotActionAsStarted(
                 action.GetActionName(),
                 incommingChatMessage.AuthorName,
@@ -149,7 +147,7 @@ namespace CVChatbot.Bot
             {
                 action.RunAction(incommingChatMessage, chatRoom);
 
-                //if the command was "stop bot", need to trigger a program shutdown
+                // If the command was "stop bot", need to trigger a program shutdown.
                 if (action is StopBot)
                 {
                     if (StopBotCommandIssued != null)
@@ -158,13 +156,13 @@ namespace CVChatbot.Bot
             }
             catch (Exception ex)
             {
-                //ChatMessageProcessor is responsible for outputting any errors that occur
-                //while running chatbot actions. Anything outside of the RunAction() method
-                //should be handled higher up
+                // ChatMessageProcessor is responsible for outputting any errors that occur
+                // while running chatbot actions. Anything outside of the RunAction() method
+                // should be handled higher up.
                 TellChatAboutErrorWhileRunningAction(ex, chatRoom, action);
             }
 
-            //mark as finished
+            // Mark as finished.
             RunningChatbotActionsManager.MarkChatbotActionAsFinished(id);
         }
 

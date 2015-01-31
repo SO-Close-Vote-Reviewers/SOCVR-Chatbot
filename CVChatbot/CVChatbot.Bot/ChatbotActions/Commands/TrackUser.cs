@@ -19,7 +19,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 .Value
                 .Parse<int>();
 
-            using (CVChatBotEntities db = new CVChatBotEntities())
+            using (var db = new CVChatBotEntities())
             {
                 var existingUser = db.RegisteredUsers
                     .SingleOrDefault(x => x.ChatProfileId == userIdToAdd);
@@ -62,7 +62,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionDescription()
         {
-            return "adds the user to the registered users list";
+            return "Adds the user to the registered users list.";
         }
 
         public override string GetActionUsage()

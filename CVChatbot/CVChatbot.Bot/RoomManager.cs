@@ -16,7 +16,6 @@ namespace CVChatbot.Bot
         private Room cvChatRoom;
         private Client chatClient;
         private ChatMessageProcessor cmp;
-        private RoomManagerSettings settings;
 
         public delegate void ShutdownOrderGivenHandler();
         public event ShutdownOrderGivenHandler ShutdownOrderGiven;
@@ -44,7 +43,7 @@ namespace CVChatbot.Bot
         /// </summary>
         public void JoinRoom(RoomManagerSettings managerSettings)
         {
-            settings = managerSettings;
+            var settings = managerSettings;
 
             chatClient = new Client(settings.Email, settings.Password);
             cvChatRoom = chatClient.JoinRoom(settings.ChatRoomUrl);
@@ -53,12 +52,12 @@ namespace CVChatbot.Bot
 
             if (!settings.StartUpMessage.IsNullOrWhiteSpace())
             {
-                //this is the one exception to not using the "OrThrow" method
+                // This is the one exception to not using the "OrThrow" method.
                 var startMessage = cvChatRoom.PostMessage(settings.StartUpMessage);
 
                 if (startMessage == null)
                 {
-                    throw new InvalidOperationException("Unable to post start up message to room");
+                    throw new InvalidOperationException("Unable to post start up message to room.");
                 }
             }
 
@@ -79,9 +78,9 @@ namespace CVChatbot.Bot
             }
             catch (Exception ex)
             {
-                //something happened outside of an action's RunAction method. attempt to tell chat about it
-                //this line will throw an exception if it fails, moving it further up the line
-                cvChatRoom.PostMessageOrThrow("error happened!\n" + ex.FullErrorMessage(Environment.NewLine)); //for now, more verbose later
+                // Something happened outside of an action's RunAction method. attempt to tell chat about it
+                // this line will throw an exception if it fails, moving it further up the line.
+                cvChatRoom.PostMessageOrThrow("error happened!\n" + ex.FullErrorMessage(Environment.NewLine)); // For now, more verbose later.
             }
         }
     }

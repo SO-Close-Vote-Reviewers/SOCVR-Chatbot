@@ -14,11 +14,10 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     {
         public override void RunAction(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
         {
-            using (CVChatBotEntities db = new CVChatBotEntities())
+            using (var db = new CVChatBotEntities())
             {
                 var totalAuditsCount = db.CompletedAuditEntries
-                    .Where(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID)
-                    .Count();
+                    .Count(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID);
 
                 if (totalAuditsCount == 0)
                 {
@@ -41,7 +40,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                     .ToList();
 
                 var message = groupedTags
-                    .ToStringTable(new string[] { "Tag Name", "%", "Count"},
+                    .ToStringTable(new[] { "Tag Name", "%", "Count"},
                         (x) => x.TagName,
                         (x) => Math.Round(x.Percent, 1),
                         (x) => x.Count);
@@ -58,7 +57,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         protected override string GetRegexMatchingPattern()
         {
-            return @"^(show (me )?|display )?(my )?(audit stats|stats (of|about) my audits)( pl(ease|z))?$";
+            return @"^(show (me )?|display )?(my )?(audit stats|stats (of|about) my audits)( pl(ease|[sz]))?$";
         }
 
         public override string GetActionName()
@@ -68,7 +67,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionDescription()
         {
-            return "shows stats about your recorded audits";
+            return "Shows stats about your recorded audits.";
         }
 
         public override string GetActionUsage()

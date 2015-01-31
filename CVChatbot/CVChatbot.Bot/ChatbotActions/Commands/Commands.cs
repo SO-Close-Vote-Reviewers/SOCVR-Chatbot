@@ -10,10 +10,27 @@ using TheCommonLibrary.Extensions;
 namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     /// <summary>
-    /// Command to show the list of commands on the server
+    /// Command to show the list of commands on the server.
     /// </summary>
     public class Commands : UserCommand
     {
+        private static class ReflectiveEnumerator
+        {
+            public static IEnumerable<T> GetEnumerableOfType<T>(params object[] constructorArgs) where T : class
+            {
+                var objects = new List<T>();
+                foreach (Type type in
+                    Assembly.GetAssembly(typeof(T)).GetTypes()
+                    .Where(myType => myType.IsClass && !myType.IsAbstract && myType.IsSubclassOf(typeof(T))))
+                {
+                    objects.Add((T)Activator.CreateInstance(type, constructorArgs));
+                }
+                return objects;
+            }
+        }
+
+
+
         public override void RunAction(Message userMessage, Room chatRoom)
         {
             var groupedCommands = ChatbotActionRegister.AllChatActions
@@ -48,24 +65,9 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             return ActionPermissionLevel.Everyone;
         }
 
-        static class ReflectiveEnumerator
-        {
-            public static IEnumerable<T> GetEnumerableOfType<T>(params object[] constructorArgs) where T : class
-            {
-                List<T> objects = new List<T>();
-                foreach (Type type in
-                    Assembly.GetAssembly(typeof(T)).GetTypes()
-                    .Where(myType => myType.IsClass && !myType.IsAbstract && myType.IsSubclassOf(typeof(T))))
-                {
-                    objects.Add((T)Activator.CreateInstance(type, constructorArgs));
-                }
-                return objects;
-            }
-        }
-
         protected override string GetRegexMatchingPattern()
         {
-            return "^(show the )?(list of )?(user )?command(s| list)( pl(ease|z))?$";
+            return "^(show the )?(list of )?(user )?command(s| list)( pl(ease|[sz]))?$";
         }
 
         public override string GetActionName()
@@ -75,7 +77,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionDescription()
         {
-            return "Shows this list";
+            return "Shows this list.";
         }
 
         public override string GetActionUsage()

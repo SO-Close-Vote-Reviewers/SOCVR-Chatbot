@@ -14,18 +14,22 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     public class CurrentTag : UserCommand
     {
         #region Private fields.
+
         // We run the query and keep the result for a while.
-        static Dictionary<string, int> tags = null;
+        private static Dictionary<string, int> tags = null;
+
         // We have once client session wide.
-        static SedeClient sedeClient = null;
+        private static SedeClient sedeClient = null;
+
         /// <summary>
         /// The last CSV revision ID of when fresh tags were fetched.
         /// </summary>
-        static string lastCsvRevID;
+        private static string lastCsvRevID;
+
         /// <summary>
         /// The last time fresh tag data was fetched.
         /// </summary>
-        static DateTime lastRevIdCheckTime;
+        private static DateTime lastRevIdCheckTime;
 
         # endregion
 
@@ -34,7 +38,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         # region Private class(es).
 
         /// <summary>
-        /// copied from UI ... 
+        /// Copied from UI.
         /// </summary>
         private static class SettingsAccessor
         {
@@ -44,8 +48,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                     throw new InvalidOperationException("Settings file does not exist.");
 
                 var settings = File.ReadAllLines("settings.txt")
-                        .Where(x => !x.StartsWith("#"))
-                        .Where(x => !x.IsNullOrWhiteSpace())
+                        .Where(x => !x.StartsWith("#") && !x.IsNullOrWhiteSpace())
                         .Select(x => x.Split('='))
                         .ToDictionary(x => x[0], x => x[1]);
 
@@ -57,25 +60,26 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
 
 
-        # region Public properties.
+        # region Private properties.
 
         // Singleton.
-        static SedeClient Client
+        private static SedeClient Client
         {
             get
             {
                 if (sedeClient == null)
                 {
-                    sedeClient = new SedeClient( 
-                                SettingsAccessor.GetSettingValue<string>("LoginEmail"),
-                                SettingsAccessor.GetSettingValue<string>("LoginPassword")
-                                );
+                    sedeClient = new SedeClient(
+                        SettingsAccessor.GetSettingValue<string>("LoginEmail"),
+                        SettingsAccessor.GetSettingValue<string>("LoginPassword")
+                        );
                 }
                 return sedeClient;
             }
         }
-        // Single instance
-        static Dictionary<string, int> Tags
+
+        // Single instance.
+        private static Dictionary<string, int> Tags
         {
             get
             {
@@ -101,11 +105,6 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         # region Public methods.
 
-        protected override string GetRegexMatchingPattern()
-        {
-            return @"^(what is the )?current tag( pl(ease|z))?\??$";
-        }
-
         /// <summary>
         /// Outputs the tag.
         /// </summary>
@@ -126,6 +125,16 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             chatRoom.PostMessageOrThrow(dataMessage); 
         }
 
+        public override ActionPermissionLevel GetPermissionLevel()
+        {
+            return ActionPermissionLevel.Registered;
+        }
+
+        protected override string GetRegexMatchingPattern()
+        {
+            return @"^(what is the )?current tag( pl(ease|z))?\??$";
+        }
+
         public override string GetActionName()
         {
             return "Current Tag";
@@ -133,17 +142,12 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionDescription()
         {
-            return "Get the tag that has the most amount of managable close queue items from the [SEDE query](http://data.stackexchange.com/stackoverflow/query/236526/tags-that-can-be-cleared-of-votes)";
+            return "Get the tag that has the most amount of manageable close queue items from the [SEDE query](http://data.stackexchange.com/stackoverflow/query/236526/tags-that-can-be-cleared-of-votes).";
         }
 
         public override string GetActionUsage()
         {
             return "current tag";
-        }
-
-        public override ActionPermissionLevel GetPermissionLevel()
-        {
-            return ActionPermissionLevel.Registered;
         }
 
         # endregion

@@ -17,9 +17,9 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
             var statsTable = doc.DocumentNode
                 .Descendants("table")
-                .Where(x => x.Attributes["class"] != null)
-                .Where(x => x.Attributes["class"].Value == "task-stat-table")
-                .Single();
+                .Single(x => 
+                    x.Attributes["class"].Value == "task-stat-table" && 
+                    x.Attributes["class"] != null);
 
             var needReview = statsTable
                 .Descendants("td")
@@ -57,7 +57,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         protected override string GetRegexMatchingPattern()
         {
-            return "^(close vote )?stats( (please|plz))?$";
+            return "^(close vote )?stats( (please|pl[sz]))?$";
         }
 
         public override string GetActionName()
@@ -67,7 +67,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionDescription()
         {
-            return "Shows the stats at the top of the /review/close/stats page";
+            return "Shows the stats at the top of the /review/close/stats page.";
         }
 
         public override string GetActionUsage()

@@ -13,13 +13,12 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     {
         public override void RunAction(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
         {
-            using (CVChatBotEntities db = new CVChatBotEntities())
+            using (var db = new CVChatBotEntities())
             {
-                //find the latest open session for the user
+                // Find the latest open session for the user.
 
                 var latestOpenSession = db.ReviewSessions
-                    .Where(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID)
-                    .Where(x => x.SessionEnd == null)
+                    .Where(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID && x.SessionEnd == null)
                     .OrderByDescending(x => x.SessionStart)
                     .FirstOrDefault();
 
@@ -32,7 +31,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 var deltaTimeSpan = DateTimeOffset.Now - latestOpenSession.SessionStart;
                 var formattedStartTs = latestOpenSession.SessionStart.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'");
 
-                string message = "Your current review session started {0} ago at {1}"
+                var message = "Your current review session started {0} ago at {1}"
                     .FormatInline(deltaTimeSpan.ToUserFriendlyString(), formattedStartTs);
 
                 chatRoom.PostReplyOrThrow(userMessage, message);
@@ -46,7 +45,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         protected override string GetRegexMatchingPattern()
         {
-            return @"^((do i have (a|an) )|what is my )?(current|active|review)( review)? session( going( on)?)?(\?)?$";
+            return @"^(do i have an? |what is my )?(current|active|review)( review)? session( going( on)?)?\??$";
         }
 
         public override string GetActionName()
@@ -56,7 +55,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionDescription()
         {
-            return "Tells if the user has an open session or not, and when it started";
+            return "Tells if the user has an open session or not, and when it started.";
         }
 
         public override string GetActionUsage()
