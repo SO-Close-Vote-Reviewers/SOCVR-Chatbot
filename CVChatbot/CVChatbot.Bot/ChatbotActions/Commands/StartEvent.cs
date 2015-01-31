@@ -28,7 +28,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 .Take(3)
                 .Select(x => "[tag:{0}]".FormatInline(x.Key));
 
-            var combinedTags = topTags.ToCSV(",");
+            var combinedTags = topTags.ToCSV(", ");
 
             var tagsMessage = "The tags to work on are: {0}.".FormatInline(combinedTags);
 
