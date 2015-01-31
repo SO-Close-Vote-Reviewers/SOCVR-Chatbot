@@ -125,5 +125,16 @@ namespace CVChatbot.Bot
         /// If the message is null, empty, or entirely whitespace, then no announcement message will be said.
         /// </summary>
         public string StopMessage { get; set; }
+
+        /// <summary>
+        /// The maximum number of hours a review session can last and still be closed by a trigger.
+        /// If a session is longer than this value, only a forced EndSession command can end the session.
+        /// </summary>
+        public int MaxReviewLengthHours { get; set; }
+
+        /// <summary>
+        /// The default value used in the CompletedTags command when no argument is given.
+        /// </summary>
+        public int DefaultCompletedTagsPeopleThreshold { get; set; }
     }
 }

@@ -48,6 +48,8 @@ namespace CVChatbot.UI
                     Password = SettingsFileAccessor.GetSettingValue<string>("LoginPassword"),
                     StartUpMessage = SettingsFileAccessor.GetSettingValue<string>("StartUpMessage"),
                     StopMessage = SettingsFileAccessor.GetSettingValue<string>("StopMessage"),
+                    MaxReviewLengthHours = SettingsFileAccessor.GetSettingValue<int>("MaxReviewLengthHours"),
+                    DefaultCompletedTagsPeopleThreshold = SettingsFileAccessor.GetSettingValue<int>("DefaultCompletedTagsPeopleThreshold"),
                 };
 
                 lblCurrentStatus.Content = "Joining...";

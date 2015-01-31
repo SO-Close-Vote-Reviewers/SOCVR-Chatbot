@@ -23,7 +23,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
                 .Value
                 .Parse<int>();
 
-            var sucessful = EndSession(incommingChatMessage, chatRoom, itemsReviewed);
+            var sucessful = EndSession(incommingChatMessage, chatRoom, itemsReviewed, roomSettings);
 
             if (sucessful)
             {

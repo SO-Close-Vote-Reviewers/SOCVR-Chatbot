@@ -20,7 +20,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
         /// <param name="chatRoom"></param>
         /// <param name="itemsReviewed"></param>
         /// <returns></returns>
-        protected bool EndSession(Message userMessage, Room chatRoom, int? itemsReviewed)
+        protected bool EndSession(Message userMessage, Room chatRoom, int? itemsReviewed, InstallationSettings settings)
         {
             using (var db = new CVChatBotEntities())
             {
@@ -38,7 +38,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
                 }
 
                 // Check if session is greater than [MAX_REVIEW_TIME].
-                var maxReviewTimeHours = 5; // Hard code for now.
+                var maxReviewTimeHours = settings.MaxReviewLengthHours;
 
                 var timeThreshold = DateTimeOffset.Now.AddHours(-maxReviewTimeHours);
 

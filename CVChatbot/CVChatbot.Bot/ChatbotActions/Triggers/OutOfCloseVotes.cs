@@ -13,7 +13,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
     {
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
-            var success = EndSession(incommingChatMessage, chatRoom, null);
+            var success = EndSession(incommingChatMessage, chatRoom, null, roomSettings);
 
             if (success)
             {

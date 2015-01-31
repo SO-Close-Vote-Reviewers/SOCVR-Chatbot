@@ -28,7 +28,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 return;
             }
 
-            var defaultThreshold = 3; // For now I'm hard-coding this.
+            var defaultThreshold = roomSettings.DefaultCompletedTagsPeopleThreshold;
 
             var peopleThreshold = thresholdInCommand ?? defaultThreshold; // Take the one in the command, or the default if the command one is not given.
             var usingDefault = thresholdInCommand == null;
