@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TheCommonLibrary.Extensions;
 
 namespace CVChatbot.Bot.ChatbotActions.Commands
 {
@@ -20,8 +21,16 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             var statsMessage = sa.GetOverallQueueStats();
 
             // Get the next 3 tags
-            // TODO: this
-            var tagsMessage = "The tags to work on are [tag:X], [tag:Y], and [tag:Z].";
+            SedeAccessor.SetCredentials(roomSettings.Email, roomSettings.Password);
+            var tags = SedeAccessor.Tags;
+
+            var topTags = tags
+                .Take(3)
+                .Select(x => "[tag:{0}]".FormatInline(x.Key));
+
+            var combinedTags = topTags.ToCSV(",");
+
+            var tagsMessage = "The tags to work on are: {0}.".FormatInline(combinedTags);
 
             chatRoom.PostMessageOrThrow(statsMessage);
             chatRoom.PostMessageOrThrow(tagsMessage);

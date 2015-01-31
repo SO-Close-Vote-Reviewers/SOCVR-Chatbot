@@ -13,62 +13,6 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     /// </summary>
     public class CurrentTag : UserCommand
     {
-        /// <summary>
-        /// The last CSV revision ID of when fresh tags were fetched.
-        /// </summary>
-        private static string lastCsvRevID;
-
-        /// <summary>
-        /// The last time fresh tag data was fetched.
-        /// </summary>
-        private static DateTime lastRevIdCheckTime;
-
-        private static string loginEmail;
-
-        private static string loginPassword;
-
-        // We have once client session wide.
-        private static SedeClient sedeClient = null;
-
-        // We run the query and keep the result for a while.
-        private static Dictionary<string, int> tags = null;
-
-        /// <summary>
-        /// A singleton for holing the SEDE client.
-        /// </summary>
-        private static SedeClient Client
-        {
-            get
-            {
-                if (sedeClient == null)
-                {
-                    sedeClient = new SedeClient(loginEmail, loginPassword);
-                }
-                return sedeClient;
-            }
-        }
-
-        // Single instance.
-        private static Dictionary<string, int> Tags
-        {
-            get
-            {
-                if (tags == null || (DateTime.UtcNow - lastRevIdCheckTime).TotalMinutes > 30)
-                {
-                    var currentID = "";
-
-                    if ((currentID = Client.GetSedeQueryCsvRevisionId("http://data.stackexchange.com/stackoverflow")) != lastCsvRevID)
-                    {
-                        lastCsvRevID = currentID;
-                        tags = Client.GetTags();
-                    }
-
-                    lastRevIdCheckTime = DateTime.UtcNow;
-                }
-                return tags;
-            }
-        }
-
         public override string GetActionDescription()
         {
             return "Get the tag that has the most amount of manageable close queue items from the SEDE query.";
@@ -96,15 +40,13 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         /// <param name="chatRoom"></param>
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
-            // Sets the static variables for credentials. If the SEDE client is already
-            // instantiated then changing these values won't matter.
-            loginEmail = roomSettings.Email;
-            loginPassword = roomSettings.Password;
+            SedeAccessor.SetCredentials(roomSettings.Email, roomSettings.Password);
+            var tags = SedeAccessor.Tags;
 
             string dataMessage;
-            if (Tags != null)
+            if (tags != null)
             {
-                dataMessage = "The current tag is [tag:{0}] with {1} known review items.".FormatInline(Tags.First().Key, Tags.First().Value);
+                dataMessage = "The current tag is [tag:{0}] with {1} known review items.".FormatInline(tags.First().Key, tags.First().Value);
             }
             else
             {

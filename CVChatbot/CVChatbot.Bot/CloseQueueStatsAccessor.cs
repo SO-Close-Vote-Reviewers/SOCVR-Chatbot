@@ -21,8 +21,8 @@ namespace CVChatbot.Bot
             var statsTable = doc.DocumentNode
                 .Descendants("table")
                 .Single(x =>
-                    x.Attributes["class"].Value == "task-stat-table" &&
-                    x.Attributes["class"] != null);
+                    x.Attributes["class"] != null &&
+                    x.Attributes["class"].Value == "task-stat-table");
 
             var needReview = statsTable
                 .Descendants("td")

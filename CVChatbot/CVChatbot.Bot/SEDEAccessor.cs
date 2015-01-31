@@ -28,7 +28,84 @@ namespace CVChatbot
     }
 
     /// <summary>
+    /// Creates a singleton SedeClient for getting the tag listing from SEDE.
+    /// </summary>
+    public static class SedeAccessor
+    {
+        /// <summary>
+        /// The last CSV revision ID of when fresh tags were fetched.
+        /// </summary>
+        private static string lastCsvRevID;
+
+        /// <summary>
+        /// The last time fresh tag data was fetched.
+        /// </summary>
+        private static DateTime lastRevIdCheckTime;
+
+        private static string loginEmail;
+
+        private static string loginPassword;
+
+        /// <summary>
+        /// If the email and password have not been set, this sets the credentials for the client.
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="password"></param>
+        public static void SetCredentials(string email, string password)
+        {
+            if (loginEmail == null)
+            {
+                loginEmail = email;
+                loginPassword = password;
+            }
+        }
+
+        // We have once client session wide.
+        private static SedeClient sedeClient = null;
+
+        // We run the query and keep the result for a while.
+        private static Dictionary<string, int> tags = null;
+
+        /// <summary>
+        /// A singleton for holing the SEDE client.
+        /// </summary>
+        private static SedeClient Client
+        {
+            get
+            {
+                if (sedeClient == null)
+                {
+                    sedeClient = new SedeClient(loginEmail, loginPassword);
+                }
+                return sedeClient;
+            }
+        }
+
+        // Single instance.
+        public static Dictionary<string, int> Tags
+        {
+            get
+            {
+                if (tags == null || (DateTime.UtcNow - lastRevIdCheckTime).TotalMinutes > 30)
+                {
+                    var currentID = "";
+
+                    if ((currentID = Client.GetSedeQueryCsvRevisionId("http://data.stackexchange.com/stackoverflow")) != lastCsvRevID)
+                    {
+                        lastCsvRevID = currentID;
+                        tags = Client.GetTags();
+                    }
+
+                    lastRevIdCheckTime = DateTime.UtcNow;
+                }
+                return tags;
+            }
+        }
+    }
+
+    /// <summary>
     /// Client responsible to login and run queries on data.stackexchange.com.
+    /// Don't use this class directly. Use SedeAccessor instead.
     /// </summary>
     public class SedeClient : IDisposable
     {
