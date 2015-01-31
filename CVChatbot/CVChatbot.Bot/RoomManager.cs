@@ -105,11 +105,6 @@ namespace CVChatbot.Bot
         public string ChatRoomUrl { get; set; }
 
         /// <summary>
-        /// The username of the account that is joining.
-        /// </summary>
-        public string Username { get; set; }
-
-        /// <summary>
         /// The Stack Exchange OAuth email to login with.
         /// </summary>
         public string Email { get; set; }

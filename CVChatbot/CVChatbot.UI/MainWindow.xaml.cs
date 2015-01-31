@@ -44,7 +44,6 @@ namespace CVChatbot.UI
                 var settings = new InstallationSettings()
                 {
                     ChatRoomUrl = SettingsFileAccessor.GetSettingValue<string>("ChatRoomUrl"),
-                    Username = SettingsFileAccessor.GetSettingValue<string>("LoginUsername"),
                     Email = SettingsFileAccessor.GetSettingValue<string>("LoginEmail"),
                     Password = SettingsFileAccessor.GetSettingValue<string>("LoginPassword"),
                     StartUpMessage = SettingsFileAccessor.GetSettingValue<string>("StartUpMessage"),
