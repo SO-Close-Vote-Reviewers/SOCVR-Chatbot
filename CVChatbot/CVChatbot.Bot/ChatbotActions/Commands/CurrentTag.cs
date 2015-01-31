@@ -70,7 +70,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionDescription()
         {
-            return "Get the tag that has the most amount of manageable close queue items from the [SEDE query](http://data.stackexchange.com/stackoverflow/query/236526/tags-that-can-be-cleared-of-votes).";
+            return "Get the tag that has the most amount of manageable close queue items from the SEDE query.";
         }
 
         public override string GetActionName()
