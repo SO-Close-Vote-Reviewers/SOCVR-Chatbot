@@ -23,14 +23,15 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         /// </summary>
         private static DateTime lastRevIdCheckTime;
 
+        private static string loginEmail;
+
+        private static string loginPassword;
+
         // We have once client session wide.
         private static SedeClient sedeClient = null;
 
         // We run the query and keep the result for a while.
         private static Dictionary<string, int> tags = null;
-
-        private static string loginEmail;
-        private static string loginPassword;
 
         /// <summary>
         /// A singleton for holing the SEDE client.
@@ -103,14 +104,14 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             string dataMessage;
             if (Tags != null)
             {
-                dataMessage = "[tag:{0}] ({1})".FormatInline(Tags.First().Key, Tags.First().Value);
+                dataMessage = "The current tag is [tag:{0}] with {1} known review items.".FormatInline(Tags.First().Key, Tags.First().Value);
             }
             else
             {
-                dataMessage = "No tags where retrieved :(";
+                dataMessage = "I couldn't find any tags! Either the query is empty or something bad happened.";
             }
 
-            chatRoom.PostMessageOrThrow(dataMessage);
+            chatRoom.PostReplyOrThrow(incommingChatMessage, dataMessage);
         }
 
         protected override string GetRegexMatchingPattern()
