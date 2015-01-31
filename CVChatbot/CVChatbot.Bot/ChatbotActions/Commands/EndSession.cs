@@ -10,27 +10,27 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class EndSession : UserCommand
     {
-        public override void RunAction(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             using (var db = new CVChatBotEntities())
             {
                 // First, check if latest session is an open session.
 
                 var latestSession = db.ReviewSessions
-                    .Where(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID)
+                    .Where(x => x.RegisteredUser.ChatProfileId == incommingChatMessage.AuthorID)
                     .OrderByDescending(x => x.SessionStart)
                     .FirstOrDefault();
 
                 if (latestSession == null)
                 {
-                    chatRoom.PostReplyOrThrow(userMessage, "I don't have any review session for you on record. Use the `{0}` command to tell me you are starting a review session."
+                    chatRoom.PostReplyOrThrow(incommingChatMessage, "I don't have any review session for you on record. Use the `{0}` command to tell me you are starting a review session."
                         .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<StartingSession>()));
                     return;
                 }
 
                 if (latestSession.SessionEnd != null)
                 {
-                    chatRoom.PostReplyOrThrow(userMessage, "Your latest review session has already been completed. Use the command `{0}` to see more information."
+                    chatRoom.PostReplyOrThrow(incommingChatMessage, "Your latest review session has already been completed. Use the command `{0}` to see more information."
                         .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<LastSessionStats>()));
                     return;
                 }
@@ -40,7 +40,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 latestSession.SessionEnd = DateTimeOffset.Now;
                 db.SaveChanges();
 
-                chatRoom.PostReplyOrThrow(userMessage, "I have forcefully ended your last session. To see more details use the command `{0}`. "
+                chatRoom.PostReplyOrThrow(incommingChatMessage, "I have forcefully ended your last session. To see more details use the command `{0}`. "
                     .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<LastSessionStats>()) +
                     "In addition, the number of review items is most likely not set, use the command `{0}` to fix that."
                     .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<LastSessionEditCount>()));

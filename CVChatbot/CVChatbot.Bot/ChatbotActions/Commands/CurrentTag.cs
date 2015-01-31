@@ -13,14 +13,6 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     /// </summary>
     public class CurrentTag : UserCommand
     {
-        #region Private fields.
-
-        // We run the query and keep the result for a while.
-        private static Dictionary<string, int> tags = null;
-
-        // We have once client session wide.
-        private static SedeClient sedeClient = null;
-
         /// <summary>
         /// The last CSV revision ID of when fresh tags were fetched.
         /// </summary>
@@ -31,48 +23,25 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         /// </summary>
         private static DateTime lastRevIdCheckTime;
 
-        # endregion
+        // We have once client session wide.
+        private static SedeClient sedeClient = null;
 
+        // We run the query and keep the result for a while.
+        private static Dictionary<string, int> tags = null;
 
-
-        # region Private class(es).
+        private static string loginEmail;
+        private static string loginPassword;
 
         /// <summary>
-        /// Copied from UI.
+        /// A singleton for holing the SEDE client.
         /// </summary>
-        private static class SettingsAccessor
-        {
-            public static string GetSettingValue<TValue>(string key)
-            {
-                if (!File.Exists("settings.txt"))
-                    throw new InvalidOperationException("Settings file does not exist.");
-
-                var settings = File.ReadAllLines("settings.txt")
-                        .Where(x => !x.StartsWith("#") && !x.IsNullOrWhiteSpace())
-                        .Select(x => x.Split('='))
-                        .ToDictionary(x => x[0], x => x[1]);
-
-                return settings[key];
-            }
-        }
-
-        # endregion
-
-
-
-        # region Private properties.
-
-        // Singleton.
         private static SedeClient Client
         {
             get
             {
                 if (sedeClient == null)
                 {
-                    sedeClient = new SedeClient(
-                        SettingsAccessor.GetSettingValue<string>("LoginEmail"),
-                        SettingsAccessor.GetSettingValue<string>("LoginPassword")
-                        );
+                    sedeClient = new SedeClient(loginEmail, loginPassword);
                 }
                 return sedeClient;
             }
@@ -99,19 +68,38 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             }
         }
 
-        # endregion
+        public override string GetActionDescription()
+        {
+            return "Get the tag that has the most amount of manageable close queue items from the [SEDE query](http://data.stackexchange.com/stackoverflow/query/236526/tags-that-can-be-cleared-of-votes).";
+        }
 
+        public override string GetActionName()
+        {
+            return "Current Tag";
+        }
 
+        public override string GetActionUsage()
+        {
+            return "current tag";
+        }
 
-        # region Public methods.
+        public override ActionPermissionLevel GetPermissionLevel()
+        {
+            return ActionPermissionLevel.Registered;
+        }
 
         /// <summary>
         /// Outputs the tag.
         /// </summary>
         /// <param name="incommingChatMessage"></param>
         /// <param name="chatRoom"></param>
-        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
+            // Sets the static variables for credentials. If the SEDE client is already
+            // instantiated then changing these values won't matter.
+            loginEmail = roomSettings.Email;
+            loginPassword = roomSettings.Password;
+
             string dataMessage;
             if (Tags != null)
             {
@@ -122,34 +110,12 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 dataMessage = "No tags where retrieved :(";
             }
 
-            chatRoom.PostMessageOrThrow(dataMessage); 
-        }
-
-        public override ActionPermissionLevel GetPermissionLevel()
-        {
-            return ActionPermissionLevel.Registered;
+            chatRoom.PostMessageOrThrow(dataMessage);
         }
 
         protected override string GetRegexMatchingPattern()
         {
             return @"^(what is the )?current tag( pl(ease|z))?\??$";
         }
-
-        public override string GetActionName()
-        {
-            return "Current Tag";
-        }
-
-        public override string GetActionDescription()
-        {
-            return "Get the tag that has the most amount of manageable close queue items from the [SEDE query](http://data.stackexchange.com/stackoverflow/query/236526/tags-that-can-be-cleared-of-votes).";
-        }
-
-        public override string GetActionUsage()
-        {
-            return "current tag";
-        }
-
-        # endregion
     }
 }

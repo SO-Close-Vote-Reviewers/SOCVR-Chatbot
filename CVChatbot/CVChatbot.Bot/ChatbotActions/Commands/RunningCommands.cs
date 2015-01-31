@@ -9,7 +9,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class RunningCommands : UserCommand
     {
-        public override void RunAction(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var runningCommands = RunningChatbotActionsManager.GetRunningChatbotActions();
             var now = DateTimeOffset.Now;
@@ -26,7 +26,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                     x => x.ForUser,
                     x => x.Started);
 
-            chatRoom.PostReplyOrThrow(userMessage, "The following is a list of commands that I'm currently running:");
+            chatRoom.PostReplyOrThrow(incommingChatMessage, "The following is a list of commands that I'm currently running:");
             chatRoom.PostMessageOrThrow(tableMessage);
         }
 

@@ -41,13 +41,14 @@ namespace CVChatbot.UI
         {
             if (btnStartStop.Content.ToString() == "Start Bot")
             {
-                var settings = new RoomManagerSettings()
+                var settings = new InstallationSettings()
                 {
-                    ChatRoomUrl = SettingsAccessor.GetSettingValue<string>("ChatRoomUrl"),
-                    Username = SettingsAccessor.GetSettingValue<string>("LoginUsername"),
-                    Email = SettingsAccessor.GetSettingValue<string>("LoginEmail"),
-                    Password = SettingsAccessor.GetSettingValue<string>("LoginPassword"),
-                    StartUpMessage = SettingsAccessor.GetSettingValue<string>("StartUpMessage"),
+                    ChatRoomUrl = SettingsFileAccessor.GetSettingValue<string>("ChatRoomUrl"),
+                    Username = SettingsFileAccessor.GetSettingValue<string>("LoginUsername"),
+                    Email = SettingsFileAccessor.GetSettingValue<string>("LoginEmail"),
+                    Password = SettingsFileAccessor.GetSettingValue<string>("LoginPassword"),
+                    StartUpMessage = SettingsFileAccessor.GetSettingValue<string>("StartUpMessage"),
+                    StopMessage = SettingsFileAccessor.GetSettingValue<string>("StopMessage"),
                 };
 
                 lblCurrentStatus.Content = "Joining...";
@@ -60,9 +61,7 @@ namespace CVChatbot.UI
             }
             else
             {
-                var stopMessage = SettingsAccessor.GetSettingValue<string>("StopMessage");
-
-                mng.LeaveRoom(stopMessage);
+                mng.LeaveRoom();
                 mng = new RoomManager();
                 lblCurrentStatus.Content = "Disconnected";
                 btnStartStop.Content = "Start Bot";

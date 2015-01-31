@@ -9,7 +9,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class Alive : UserCommand
     {
-        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var responsePhrases = new List<string>()
             {

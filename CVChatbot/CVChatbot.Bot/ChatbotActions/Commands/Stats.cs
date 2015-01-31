@@ -10,7 +10,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class Stats : UserCommand
     {
-        public override void RunAction(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var sa = new CloseQueueStatsAccessor();
             var message = sa.GetOverallQueueStats();

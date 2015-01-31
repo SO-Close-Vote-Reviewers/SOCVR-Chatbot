@@ -12,7 +12,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class Status : UserCommand
     {
-        public override void RunAction(Message userMessage, Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var elapsedTime = DateTime.Now - ChatBotStats.LoginDate;
 

@@ -8,7 +8,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class StopBot : UserCommand
     {
-        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             chatRoom.PostReplyOrThrow(incommingChatMessage, "I'm shutting down...");
         }

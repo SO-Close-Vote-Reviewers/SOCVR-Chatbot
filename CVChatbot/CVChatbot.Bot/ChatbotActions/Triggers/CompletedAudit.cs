@@ -11,7 +11,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
 {
     public class CompletedAudit : Trigger
     {
-        public override void RunAction(Message incommingChatMessage, Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var chatUser = chatRoom.GetUser(incommingChatMessage.AuthorID);
             var tagName = GetRegexMatchingObject()
