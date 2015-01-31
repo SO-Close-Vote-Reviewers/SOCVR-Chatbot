@@ -21,7 +21,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
             // Get the next 3 tags
             // TODO: this
-            var tagsMessage = "needs to be done...";
+            var tagsMessage = "The tags to work on are [tag:X], [tag:Y], and [tag:Z].";
 
             chatRoom.PostMessageOrThrow(statsMessage);
             chatRoom.PostMessageOrThrow(tagsMessage);
