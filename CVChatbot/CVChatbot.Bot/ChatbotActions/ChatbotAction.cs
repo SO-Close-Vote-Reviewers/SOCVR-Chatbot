@@ -21,13 +21,13 @@ namespace CVChatbot.Bot.ChatbotActions
         /// <returns></returns>
         public bool DoesChatMessageActiveAction(Message incomingMessage, bool isMessageAReplyToChatbot)
         {
-            //first, check if the message is a reply or not and if the Action accepts that
+            // First, check if the message is a reply or not and if the Action accepts that.
             var requiredIsReplyValue = GetMessageIsReplyToChatbotRequiredValue();
 
             if (isMessageAReplyToChatbot != requiredIsReplyValue)
                 return false;
 
-            //now regex test it
+            // Now regex test it.
             var formattedContents = GetMessageContentsReadyForRegexParsing(incomingMessage);
             var regex = GetRegexMatchingObject();
 
@@ -58,7 +58,7 @@ namespace CVChatbot.Bot.ChatbotActions
         protected Regex GetRegexMatchingObject()
         {
             var pattern = GetRegexMatchingPattern();
-            return new Regex(pattern, RegexOptions.IgnoreCase);
+            return new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
         }
 
         /// <summary>

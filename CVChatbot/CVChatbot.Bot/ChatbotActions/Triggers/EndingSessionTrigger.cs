@@ -24,22 +24,22 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
         {
             using (CVChatBotEntities db = new CVChatBotEntities())
             {
-                //find the latest session by that user
+                // Find the latest session by that user.
                 var latestSession = db.ReviewSessions
                     .Where(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID)
                     .Where(x => x.SessionEnd == null)
                     .OrderByDescending(x => x.SessionStart)
                     .FirstOrDefault();
 
-                //first, check if there is a session
+                // First, check if there is a session.
                 if (latestSession == null)
                 {
                     chatRoom.PostReplyOrThrow(userMessage, "I don't seem to have the start of your review session on record. I might have not been running when you started, or some error happened.");
                     return false;
                 }
 
-                //check if session is greater than [MAX_REVIEW_TIME]
-                var maxReviewTimeHours = 5; //hard code for now
+                // Check if session is greater than [MAX_REVIEW_TIME].
+                var maxReviewTimeHours = 5; // Hard code for now.
 
                 var timeThreshold = DateTimeOffset.Now.AddHours(-maxReviewTimeHours);
 
@@ -56,7 +56,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
                     return false;
                 }
 
-                //it's all good, mark the info as done
+                // It's all good, mark the info as done.
                 latestSession.SessionEnd = DateTimeOffset.Now;
                 latestSession.ItemsReviewed = itemsReviewed;
 

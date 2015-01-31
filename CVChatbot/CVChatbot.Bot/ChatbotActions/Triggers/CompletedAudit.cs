@@ -18,7 +18,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
 
         protected override string GetRegexMatchingPattern()
         {
-            return @"^passed (?:an )?(\S+) audit$";
+            return @"^passed (an? )?(\S+) audit$";
         }
 
         public override void RunAction(Message incommingChatMessage, Room chatRoom)
@@ -45,7 +45,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
                 db.SaveChanges();
             }
 
-            //say the next tag on the list
+            // Say the next tag on the list.
         }
 
         public override string GetActionName()

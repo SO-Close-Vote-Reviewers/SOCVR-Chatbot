@@ -36,8 +36,7 @@ namespace CVChatbot.Bot.ChatbotActions
             where TAction : ChatbotAction
         {
             return AllChatActions
-                .Where(x => x is TAction)
-                .Single()
+                .Single(x => x is TAction)
                 .GetActionUsage();
         }
 

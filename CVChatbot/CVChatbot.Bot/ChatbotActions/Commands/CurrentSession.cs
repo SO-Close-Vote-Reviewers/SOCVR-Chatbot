@@ -13,13 +13,12 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     {
         public override void RunAction(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
         {
-            using (CVChatBotEntities db = new CVChatBotEntities())
+            using (var db = new CVChatBotEntities())
             {
                 //find the latest open session for the user
 
                 var latestOpenSession = db.ReviewSessions
-                    .Where(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID)
-                    .Where(x => x.SessionEnd == null)
+                    .Where(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID && x.SessionEnd == null)
                     .OrderByDescending(x => x.SessionStart)
                     .FirstOrDefault();
 
@@ -32,7 +31,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 var deltaTimeSpan = DateTimeOffset.Now - latestOpenSession.SessionStart;
                 var formattedStartTs = latestOpenSession.SessionStart.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'");
 
-                string message = "Your current review session started {0} ago at {1}"
+                var message = "Your current review session started {0} ago at {1}"
                     .FormatInline(deltaTimeSpan.ToUserFriendlyString(), formattedStartTs);
 
                 chatRoom.PostReplyOrThrow(userMessage, message);

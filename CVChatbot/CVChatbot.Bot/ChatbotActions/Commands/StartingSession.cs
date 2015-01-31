@@ -15,7 +15,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         {
             var chatUser = chatRoom.GetUser(userMessage.AuthorID);
 
-            //start a new review session
+            // Start a new review session.
             using (CVChatBotEntities db = new CVChatBotEntities())
             {
                 var registedUser = db.RegisteredUsers

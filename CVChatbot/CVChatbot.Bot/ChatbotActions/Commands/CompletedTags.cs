@@ -33,7 +33,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             var peopleThreshold = thresholdInCommand ?? defaultThreshold; //take the one in the command, or the default if the command one is not given
             var usingDefault = thresholdInCommand == null;
 
-            using (CVChatBotEntities db = new CVChatBotEntities())
+            using (var db = new CVChatBotEntities())
             {
                 var groupedTags = db.NoItemsInFilterEntries
                     .GroupBy(x => x.TagName)
@@ -48,7 +48,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                     .Take(10)
                     .ToList();
 
-                string headerMessage = "Showing the latest 10 tags that have been cleared by at least {0} people."
+                var headerMessage = "Showing the latest 10 tags that have been cleared by at least {0} people."
                 .FormatInline(peopleThreshold);
 
                 if (usingDefault)

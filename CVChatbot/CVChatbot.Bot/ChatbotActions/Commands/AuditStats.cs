@@ -14,7 +14,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     {
         public override void RunAction(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
         {
-            using (CVChatBotEntities db = new CVChatBotEntities())
+            using (var db = new CVChatBotEntities())
             {
                 var totalAuditsCount = db.CompletedAuditEntries
                     .Where(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID)

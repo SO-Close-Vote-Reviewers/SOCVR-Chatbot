@@ -23,20 +23,20 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
 
         public override void RunAction(Message incommingChatMessage, Room chatRoom)
         {
-            //first, get the tags that were used
+            // First, get the tags that were used.
             string tags = GetRegexMatchingObject()
                     .Match(GetMessageContentsReadyForRegexParsing(incommingChatMessage))
                     .Groups[1]
                     .Value;
 
-            //split out tags
-            var tagMatchingPattern = new Regex(@"\[(\S+?)\] ?");
+            // Split out tags.
+            var tagMatchingPattern = new Regex(@"\[(\S+?)\] ?", RegexOptions.CultureInvariant);
             var parsedTagNames = tagMatchingPattern.Matches(incommingChatMessage.Content.ToLower())
                 .Cast<Match>()
                 .Select(x => x.Groups[1].Value)
                 .ToList();
 
-            //save the tags to the database
+            // Save the tags to the database.
             using (CVChatBotEntities db = new CVChatBotEntities())
             {
                 foreach (var tagName in parsedTagNames)

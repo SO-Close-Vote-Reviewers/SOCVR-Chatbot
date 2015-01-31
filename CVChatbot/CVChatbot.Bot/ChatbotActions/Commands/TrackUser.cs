@@ -19,7 +19,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 .Value
                 .Parse<int>();
 
-            using (CVChatBotEntities db = new CVChatBotEntities())
+            using (var db = new CVChatBotEntities())
             {
                 var existingUser = db.RegisteredUsers
                     .SingleOrDefault(x => x.ChatProfileId == userIdToAdd);

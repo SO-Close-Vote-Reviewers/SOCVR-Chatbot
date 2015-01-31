@@ -12,7 +12,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     {
         public override void RunAction(Message userMessage, Room chatRoom)
         {
-            string message = "This is a chat bot for the SO Close Vote Reviewers chat room, developed by [gunr2171](http://stackoverflow.com/users/1043380/gunr2171). " +
+            var message = "This is a chat bot for the SO Close Vote Reviewers chat room, developed by [gunr2171](http://stackoverflow.com/users/1043380/gunr2171). " +
                 "For more information see the [github page](https://github.com/gunr2171/SOCVR-Chatbot). " +
                 "Reply with `{0}` to see a list of commands."
                     .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<Commands>());
@@ -26,7 +26,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         protected override string GetRegexMatchingPattern()
         {
-            return "^(i need )?(help|assistance|halp|an adult)( me)?( (please|plz))?$";
+            return "^(i need )?(help|assistance|halp|an adult)( me)?( (please|pl[sz]))?$";
         }
 
         public override string GetActionName()

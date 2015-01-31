@@ -32,7 +32,7 @@ namespace CVChatbot
     /// </summary>
     public class SedeClient : IDisposable
     {
-        # region Private fields/consts.
+        # region Private fields/const(s).
 
         const string baseUrl = "http://data.stackexchange.com/stackoverflow";
         private bool disposed;
@@ -156,17 +156,12 @@ namespace CVChatbot
 
             // Find the link. This one is slug-ed so this is useless for now.
             string href = dom["#resultSetsButton"][0].Attributes["href"];
-                //.Find("#resultSetsButton")
-                //.First()
-                //.Attr("href");
 
             // Find among all inline scripts the one that holds the revisionid.
-            var scriptTag = dom["script"].FirstOrDefault(script => !script.HasAttribute("src") && script.InnerText != null && script.InnerText.Contains(SearchTermForRevision));
-                //.Find("script")
-                //.Where(script => !script.HasAttribute("src") &&
-                //        script.InnerText != null &&
-                //        script.InnerText.Contains(SearchTermForRevision))
-                //.FirstOrDefault();
+            var scriptTag = dom["script"].FirstOrDefault(script => 
+                !script.HasAttribute("src") && 
+                script.InnerText != null && 
+                script.InnerText.Contains(SearchTermForRevision));
 
             string revid = null; // "344267"; // old revision
             if (scriptTag != null)

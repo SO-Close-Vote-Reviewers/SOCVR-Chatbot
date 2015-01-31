@@ -34,7 +34,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         # region Private class(es).
 
         /// <summary>
-        /// copied from UI ... 
+        /// Copied from UI.
         /// </summary>
         private static class SettingsAccessor
         {
@@ -44,8 +44,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                     throw new InvalidOperationException("Settings file does not exist.");
 
                 var settings = File.ReadAllLines("settings.txt")
-                        .Where(x => !x.StartsWith("#"))
-                        .Where(x => !x.IsNullOrWhiteSpace())
+                        .Where(x => !x.StartsWith("#") && !x.IsNullOrWhiteSpace())
                         .Select(x => x.Split('='))
                         .ToDictionary(x => x[0], x => x[1]);
 
@@ -66,10 +65,10 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             {
                 if (sedeClient == null)
                 {
-                    sedeClient = new SedeClient( 
-                                SettingsAccessor.GetSettingValue<string>("LoginEmail"),
-                                SettingsAccessor.GetSettingValue<string>("LoginPassword")
-                                );
+                    sedeClient = new SedeClient(
+                        SettingsAccessor.GetSettingValue<string>("LoginEmail"),
+                        SettingsAccessor.GetSettingValue<string>("LoginPassword")
+                        );
                 }
                 return sedeClient;
             }

@@ -20,7 +20,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             string version = fvi.FileVersion;
 
-            string message = "SOCVR ChatBot version {0}, running for {1}."
+            var message = "SOCVR ChatBot version {0}, running for {1}."
                 .FormatInline(version, elapsedTime.ToUserFriendlyString());
 
             chatRoom.PostMessageOrThrow(message);
@@ -33,7 +33,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         protected override string GetRegexMatchingPattern()
         {
-            return @"^((program|chatbot|bot|what's your) )?status(\?)?$";
+            return @"^((program|chatbot|bot|what'?s your) )?status(\?)?$";
         }
 
         public override string GetActionName()

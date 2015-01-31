@@ -19,8 +19,7 @@ namespace CVChatbot.UI
                 throw new InvalidOperationException("Settings file does not exist.");
 
             var settings = File.ReadAllLines("settings.txt")
-                    .Where(x => !x.StartsWith("#"))
-                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Where(x => !string.IsNullOrWhiteSpace(x) && !x.StartsWith("#"))
                     .Select(x => x.Split('='))
                     .ToDictionary(x => x[0], x => x[1]);
 

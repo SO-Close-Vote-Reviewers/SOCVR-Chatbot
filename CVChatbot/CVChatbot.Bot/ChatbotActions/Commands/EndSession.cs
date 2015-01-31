@@ -12,12 +12,12 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     {
         protected override string GetRegexMatchingPattern()
         {
-            return @"^(end|done( with)?) (my )?(session|review(s|ing))( pl(ease|z))?$";
+            return @"^(end|done( with)?) (my )?(session|review(s|ing))( pl(ease|[sz]))?$";
         }
 
         public override void RunAction(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
         {
-            using (CVChatBotEntities db = new CVChatBotEntities())
+            using (var db = new CVChatBotEntities())
             {
                 //first, check if latest session is an open session
 

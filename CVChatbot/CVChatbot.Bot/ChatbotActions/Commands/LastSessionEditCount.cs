@@ -16,12 +16,11 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     {
         public override void RunAction(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
         {
-            using (CVChatBotEntities db = new CVChatBotEntities())
+            using (var db = new CVChatBotEntities())
             {
-                //get the last complete session
+                // Get the last complete session.
                 var lastSession = db.ReviewSessions
-                    .Where(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID)
-                    .Where(x => x.SessionEnd != null)
+                    .Where(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID && x.SessionEnd != null)
                     .OrderByDescending(x => x.SessionStart)
                     .FirstOrDefault();
 
@@ -40,7 +39,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 var previousReviewCount = lastSession.ItemsReviewed;
                 lastSession.ItemsReviewed = newReviewCount;
 
-                string replyMessage = @"    Review item count has been changed:
+                var replyMessage = @"    Review item count has been changed:
     User: {0} ({1})
     Start Time: {2}
     End Time: {3}
