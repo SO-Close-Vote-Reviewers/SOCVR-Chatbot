@@ -17,6 +17,13 @@ namespace CVChatbot.Bot
     /// </summary>
     public class ChatMessageProcessor
     {
+        private InstallationSettings roomSettings;
+
+        public ChatMessageProcessor(InstallationSettings settings)
+        {
+            roomSettings = settings;
+        }
+
         public delegate void StopBotCommandIssuedHandler();
         public event StopBotCommandIssuedHandler StopBotCommandIssued;
 
@@ -77,25 +84,6 @@ namespace CVChatbot.Bot
         }
 
         /// <summary>
-        /// Takes a command (already stripped of mentions and trimmed) and inserts it into
-        /// a table of commands that the chatbot did not recognize.
-        /// </summary>
-        /// <param name="command"></param>
-        private void SendUnrecognizedCommandToDatabase(string command)
-        {
-            using (var db = new CVChatBotEntities())
-            {
-                var newEntry = new UnrecognizedCommand
-                {
-                    Command = command
-                };
-
-                db.UnrecognizedCommands.Add(newEntry);
-                db.SaveChanges();
-            }
-        }
-
-        /// <summary>
         /// Determines if the specified chat user has the correct permissions to run the chatbot action.
         /// </summary>
         /// <param name="actionToRun">The action the user would like to run.</param>
@@ -130,6 +118,21 @@ namespace CVChatbot.Bot
         }
 
         /// <summary>
+        /// Determines if the chat message is directed to the chatbot or not.
+        /// </summary>
+        /// <param name="chatMessage"></param>
+        /// <param name="chatRoom"></param>
+        /// <returns></returns>
+        private bool MessageIsReplyToChatbot(Message chatMessage, Room chatRoom)
+        {
+            if (chatMessage.ParentID == -1)
+                return false;
+
+            var parentMessage = chatRoom.GetMessage(chatMessage.ParentID);
+            return parentMessage.AuthorID == chatRoom.Me.ID;
+        }
+
+        /// <summary>
         /// Runs the logic for the chatbot action and records the start and stop of the action.
         /// </summary>
         /// <param name="action"></param>
@@ -145,7 +148,7 @@ namespace CVChatbot.Bot
 
             try
             {
-                action.RunAction(incommingChatMessage, chatRoom);
+                action.RunAction(incommingChatMessage, chatRoom, roomSettings);
 
                 // If the command was "stop bot", need to trigger a program shutdown.
                 if (action is StopBot)
@@ -166,6 +169,24 @@ namespace CVChatbot.Bot
             RunningChatbotActionsManager.MarkChatbotActionAsFinished(id);
         }
 
+        /// <summary>
+        /// Takes a command (already stripped of mentions and trimmed) and inserts it into
+        /// a table of commands that the chatbot did not recognize.
+        /// </summary>
+        /// <param name="command"></param>
+        private void SendUnrecognizedCommandToDatabase(string command)
+        {
+            using (var db = new CVChatBotEntities())
+            {
+                var newEntry = new UnrecognizedCommand
+                {
+                    Command = command
+                };
+
+                db.UnrecognizedCommands.Add(newEntry);
+                db.SaveChanges();
+            }
+        }
         /// <summary>
         /// Call this method if you get an error while running a ChatbotAction.
         /// This will attempt to send a message to chat about error in a standard format.
@@ -188,21 +209,6 @@ namespace CVChatbot.Bot
 
             chatRoom.PostMessageOrThrow(headerLine);
             chatRoom.PostMessageOrThrow(detailsLine);
-        }
-
-        /// <summary>
-        /// Determines if the chat message is directed to the chatbot or not.
-        /// </summary>
-        /// <param name="chatMessage"></param>
-        /// <param name="chatRoom"></param>
-        /// <returns></returns>
-        private bool MessageIsReplyToChatbot(Message chatMessage, Room chatRoom)
-        {
-            if (chatMessage.ParentID == -1)
-                return false;
-
-            var parentMessage = chatRoom.GetMessage(chatMessage.ParentID);
-            return parentMessage.AuthorID == chatRoom.Me.ID;
         }
     }
 }

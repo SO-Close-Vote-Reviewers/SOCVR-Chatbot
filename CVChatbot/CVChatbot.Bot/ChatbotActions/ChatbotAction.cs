@@ -72,7 +72,7 @@ namespace CVChatbot.Bot.ChatbotActions
         /// </summary>
         /// <param name="incommingChatMessage">The chat message received.</param>
         /// <param name="chatRoom">The chat room the message was said in.</param>
-        public abstract void RunAction(Message incommingChatMessage, Room chatRoom);
+        public abstract void RunAction(Message incommingChatMessage, Room chatRoom, InstallationSettings roomSettings);
 
         /// <summary>
         /// Returns the human-friendly name of the chatbot action.

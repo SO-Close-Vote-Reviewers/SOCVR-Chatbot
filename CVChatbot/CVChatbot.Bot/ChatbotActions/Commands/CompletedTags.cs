@@ -14,17 +14,17 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     /// </summary>
     public class CompletedTags : UserCommand
     {
-        public override void RunAction(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var thresholdInCommand =  GetRegexMatchingObject()
-                .Match(GetMessageContentsReadyForRegexParsing(userMessage))
+                .Match(GetMessageContentsReadyForRegexParsing(incommingChatMessage))
                 .Groups[1]
                 .Value
                 .Parse<int?>();
 
             if (thresholdInCommand != null && thresholdInCommand <= 0)
             {
-                chatRoom.PostReplyOrThrow(userMessage, "Minimum person threshold must be greater or equal to 1.");
+                chatRoom.PostReplyOrThrow(incommingChatMessage, "Minimum person threshold must be greater or equal to 1.");
                 return;
             }
 
@@ -72,7 +72,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                     dataMessage = "    There are no entries that match that request!";
                 }
 
-                chatRoom.PostReplyOrThrow(userMessage, headerMessage);
+                chatRoom.PostReplyOrThrow(incommingChatMessage, headerMessage);
                 chatRoom.PostMessageOrThrow(dataMessage);
             }
         }

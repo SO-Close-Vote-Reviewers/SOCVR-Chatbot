@@ -31,7 +31,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
 
 
-        public override void RunAction(Message userMessage, Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var groupedCommands = ChatbotActionRegister.AllChatActions
                 .Where(x => x is UserCommand)

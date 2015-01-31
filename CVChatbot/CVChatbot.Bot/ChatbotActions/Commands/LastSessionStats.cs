@@ -14,20 +14,20 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     /// </summary>
     public class LastSessionStats : UserCommand
     {
-        public override void RunAction(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             using (var db = new CVChatBotEntities())
             {
                 // Get the last complete session.
 
                 var lastSession = db.ReviewSessions
-                    .Where(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID && x.SessionEnd != null)
+                    .Where(x => x.RegisteredUser.ChatProfileId == incommingChatMessage.AuthorID && x.SessionEnd != null)
                     .OrderByDescending(x => x.SessionStart)
                     .FirstOrDefault();
 
                 if (lastSession == null)
                 {
-                    chatRoom.PostReplyOrThrow(userMessage, "You have no completed review sessions on record, so I can't give you any stats.");
+                    chatRoom.PostReplyOrThrow(incommingChatMessage, "You have no completed review sessions on record, so I can't give you any stats.");
                     return;
                 }
 
@@ -58,8 +58,8 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 // Check if there is a on-going review session.
 
                 var ongoingSessions = db.ReviewSessions
-                    .Where(x => 
-                        x.RegisteredUser.ChatProfileId == userMessage.AuthorID && 
+                    .Where(x =>
+                        x.RegisteredUser.ChatProfileId == incommingChatMessage.AuthorID && 
                         x.SessionEnd == null && 
                         x.SessionStart > lastSession.SessionStart)
                     .OrderByDescending(x=>x.SessionStart)
@@ -71,7 +71,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                     statMessage += " **Note: You still have a review session in progress.** It started {0} ago.".FormatInline(deltaTime.ToUserFriendlyString());
                 }
 
-                chatRoom.PostReplyOrThrow(userMessage, statMessage);
+                chatRoom.PostReplyOrThrow(incommingChatMessage, statMessage);
             }
         }
 

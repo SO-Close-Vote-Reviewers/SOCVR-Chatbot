@@ -11,20 +11,20 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class CurrentSession : UserCommand
     {
-        public override void RunAction(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             using (var db = new CVChatBotEntities())
             {
                 // Find the latest open session for the user.
 
                 var latestOpenSession = db.ReviewSessions
-                    .Where(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID && x.SessionEnd == null)
+                    .Where(x => x.RegisteredUser.ChatProfileId == incommingChatMessage.AuthorID && x.SessionEnd == null)
                     .OrderByDescending(x => x.SessionStart)
                     .FirstOrDefault();
 
                 if (latestOpenSession == null)
                 {
-                    chatRoom.PostReplyOrThrow(userMessage, "You don't have an ongoing review session on record.");
+                    chatRoom.PostReplyOrThrow(incommingChatMessage, "You don't have an ongoing review session on record.");
                     return;
                 }
 
@@ -34,7 +34,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 var message = "Your current review session started {0} ago at {1}"
                     .FormatInline(deltaTimeSpan.ToUserFriendlyString(), formattedStartTs);
 
-                chatRoom.PostReplyOrThrow(userMessage, message);
+                chatRoom.PostReplyOrThrow(incommingChatMessage, message);
             }
         }
 

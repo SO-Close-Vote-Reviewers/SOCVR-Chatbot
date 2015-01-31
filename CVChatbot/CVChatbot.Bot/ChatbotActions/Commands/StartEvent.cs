@@ -13,7 +13,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             return "^start event$";
         }
 
-        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             // Get the stats
             var sa = new CloseQueueStatsAccessor();

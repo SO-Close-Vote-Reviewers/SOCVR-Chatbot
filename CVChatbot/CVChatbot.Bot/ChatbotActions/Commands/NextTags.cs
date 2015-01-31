@@ -13,7 +13,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             return @"^next (\d+) tags$";
         }
 
-        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             // Get the collection of tags
             // TODO: this

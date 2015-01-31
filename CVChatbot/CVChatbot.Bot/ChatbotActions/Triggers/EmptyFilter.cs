@@ -11,7 +11,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
 {
     public class EmptyFilter : Trigger
     {
-        public override void RunAction(Message incommingChatMessage, Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             // First, get the tags that were used.
             string tags = GetRegexMatchingObject()

@@ -16,23 +16,22 @@ namespace CVChatbot.Bot
         private Room cvChatRoom;
         private Client chatClient;
         private ChatMessageProcessor cmp;
+        private InstallationSettings settings;
 
         public delegate void ShutdownOrderGivenHandler();
         public event ShutdownOrderGivenHandler ShutdownOrderGiven;
 
         /// <summary>
         /// Creates a new RoomManger object.
-        /// Initializes the ChatMessageProcessor for internal use.
         /// </summary>
         public RoomManager()
         {
-            cmp = new ChatMessageProcessor();
-            cmp.StopBotCommandIssued += cmp_StopBotCommandIssued;
+
         }
 
         void cmp_StopBotCommandIssued()
         {
-            LeaveRoom("Goodbye!");
+            LeaveRoom();
 
             if (ShutdownOrderGiven != null)
                 ShutdownOrderGiven();
@@ -41,15 +40,22 @@ namespace CVChatbot.Bot
         /// <summary>
         /// Joins the room with the settings passed in.
         /// </summary>
-        public void JoinRoom(RoomManagerSettings managerSettings)
+        public void JoinRoom(InstallationSettings settings)
         {
-            var settings = managerSettings;
+            // Copy over the settings into this class so this class can use it.
+            this.settings = settings;
 
+            // Create the ChatMessageProcessor.
+            cmp = new ChatMessageProcessor(settings);
+            cmp.StopBotCommandIssued += cmp_StopBotCommandIssued;
+
+            // Logic to join the chat room.
             chatClient = new Client(settings.Email, settings.Password);
             cvChatRoom = chatClient.JoinRoom(settings.ChatRoomUrl);
             ChatBotStats.LoginDate = DateTime.Now;
             cvChatRoom.StripMentionFromMessages = false;
 
+            // Say the startup message?
             if (!settings.StartUpMessage.IsNullOrWhiteSpace())
             {
                 // This is the one exception to not using the "OrThrow" method.
@@ -64,9 +70,12 @@ namespace CVChatbot.Bot
             cvChatRoom.NewMessage += cvChatRoom_NewMessage;
         }
 
-        public void LeaveRoom(string stopMessage)
+        public void LeaveRoom()
         {
-            cvChatRoom.PostMessage(stopMessage);
+            // If there is a stop message, say it.
+            if (!settings.StopMessage.IsNullOrWhiteSpace())
+                cvChatRoom.PostMessage(settings.StopMessage);
+
             cvChatRoom.Leave();
         }
 
@@ -88,7 +97,7 @@ namespace CVChatbot.Bot
     /// <summary>
     /// Settings needed to join a room.
     /// </summary>
-    public class RoomManagerSettings
+    public class InstallationSettings
     {
         /// <summary>
         /// The url of the chat room to join.
@@ -115,5 +124,11 @@ namespace CVChatbot.Bot
         /// If the message is null, empty, or entirely whitespace, then no announcement message will be said.
         /// </summary>
         public string StartUpMessage { get; set; }
+
+        /// <summary>
+        /// The message that the bot will announce when it shuts down.
+        /// If the message is null, empty, or entirely whitespace, then no announcement message will be said.
+        /// </summary>
+        public string StopMessage { get; set; }
     }
 }
