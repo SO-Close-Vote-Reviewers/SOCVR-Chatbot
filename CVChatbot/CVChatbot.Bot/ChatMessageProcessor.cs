@@ -59,7 +59,7 @@ namespace CVChatbot.Bot
             // You have a single item to run.
             var chatbotActionToRun = possibleChatbotActionsToRun.Single();
 
-            // Bow, do you have permission to run it?
+            // Now, do you have permission to run it?
             if (DoesUserHavePermissionToRunAction(chatbotActionToRun, incommingChatMessage.AuthorID))
             {
                 // Have permission, run it.
