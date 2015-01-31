@@ -70,6 +70,8 @@
     <Compile Include="ChatbotActions\Commands\Help.cs" />
     <Compile Include="ChatbotActions\Commands\LastSessionEditCount.cs" />
     <Compile Include="ChatbotActions\Commands\LastSessionStats.cs" />
+    <Compile Include="ChatbotActions\Commands\NextTags.cs" />
+    <Compile Include="ChatbotActions\Commands\StartEvent.cs" />
     <Compile Include="ChatbotActions\Commands\StopBot.cs" />
     <Compile Include="ChatbotActions\Commands\RunningCommands.cs" />
     <Compile Include="ChatbotActions\Commands\StartingSession.cs" />
@@ -85,6 +87,7 @@
     <Compile Include="ChatbotActions\Triggers\Trigger.cs" />
     <Compile Include="ChatBotStats.cs" />
     <Compile Include="ChatMessageProcessor.cs" />
+    <Compile Include="CloseQueueStatsAccessor.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Model\CompletedAuditEntry.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
