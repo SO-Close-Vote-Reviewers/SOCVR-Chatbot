@@ -32,7 +32,7 @@ namespace CVChatbot.UI
             lblCurrentStatus.Content = "Disconnected";
         }
 
-        void mng_ShutdownOrderGiven()
+        void mng_ShutdownOrderGiven(object sender, EventArgs e)
         {
             Dispatcher.Invoke(() => this.Close());
         }

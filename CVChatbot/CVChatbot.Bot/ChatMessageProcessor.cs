@@ -17,7 +17,7 @@ namespace CVChatbot.Bot
     /// </summary>
     public class ChatMessageProcessor
     {
-        public delegate void StopBotCommandIssuedHandler();
+        public delegate void StopBotCommandIssuedHandler(object sender, EventArgs e);
         public event StopBotCommandIssuedHandler StopBotCommandIssued;
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace CVChatbot.Bot
                 if (action is StopBot)
                 {
                     if (StopBotCommandIssued != null)
-                        StopBotCommandIssued();
+                        StopBotCommandIssued(this, new EventArgs());
                 }
             }
             catch (Exception ex)

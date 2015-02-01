@@ -11,13 +11,14 @@ namespace CVChatbot.Bot
     /// <summary>
     /// This class joins and keeps track of the chat room.
     /// </summary>
-    public class RoomManager
+    public class RoomManager:IDisposable
     {
         private Room cvChatRoom;
         private Client chatClient;
         private ChatMessageProcessor cmp;
+        private bool disposed = false;
 
-        public delegate void ShutdownOrderGivenHandler();
+        public delegate void ShutdownOrderGivenHandler(object sender, EventArgs e);
         public event ShutdownOrderGivenHandler ShutdownOrderGiven;
 
         /// <summary>
@@ -30,12 +31,29 @@ namespace CVChatbot.Bot
             cmp.StopBotCommandIssued += cmp_StopBotCommandIssued;
         }
 
-        void cmp_StopBotCommandIssued()
+        protected virtual void Dispose(bool dispose)
+        {
+            if (dispose)
+            {
+                if (chatClient != null)
+                {
+                    ((IDisposable)chatClient).Dispose();
+                }
+                disposed = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(!disposed);
+        }
+
+        void cmp_StopBotCommandIssued(object sender, EventArgs e)
         {
             LeaveRoom("Goodbye!");
 
             if (ShutdownOrderGiven != null)
-                ShutdownOrderGiven();
+                ShutdownOrderGiven(this, e);
         }
 
         /// <summary>
@@ -70,11 +88,11 @@ namespace CVChatbot.Bot
             cvChatRoom.Leave();
         }
 
-        private async void cvChatRoom_NewMessage(Message newMessage)
+        private async void cvChatRoom_NewMessage(object sender , MessageEventArgs e)
         {
             try
             {
-                await Task.Run(() => cmp.ProcessChatMessage(newMessage, cvChatRoom));
+                await Task.Run(() => cmp.ProcessChatMessage(e.Message, cvChatRoom));
             }
             catch (Exception ex)
             {

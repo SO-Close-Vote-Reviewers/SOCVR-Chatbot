@@ -16,28 +16,17 @@ namespace ChatExchangeDotNet
         {
             if (response == null) { throw new ArgumentNullException("response"); }
 
-            Stream dataStream = null;
-            StreamReader reader = null;
             string responseFromServer;
 
             try
-            {
-                dataStream = response.GetResponseStream();
-                reader = new StreamReader(dataStream);
-                responseFromServer = reader.ReadToEnd();
+            {               
+                using (var reader = new StreamReader(response.GetResponseStream()))
+                {
+                    responseFromServer = reader.ReadToEnd();
+                }   
             }
             finally
             {                
-                if (reader != null)
-                {
-                    reader.Close();
-                }
-
-                if (dataStream != null)
-                {
-                    dataStream.Close();
-                }
-
                 response.Close();
             }
 

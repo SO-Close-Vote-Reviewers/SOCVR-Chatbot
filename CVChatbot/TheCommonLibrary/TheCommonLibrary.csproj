@@ -64,6 +64,7 @@
     <Compile Include="Extensions\MathExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="FTP\FTPManager.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Math\ExponentsHelper.cs" />
     <Compile Include="Procedure\FormControls\frmProcedureInterface.cs">

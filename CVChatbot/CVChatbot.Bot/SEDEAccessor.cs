@@ -59,24 +59,30 @@ namespace CVChatbot
 
         ~SedeClient()
         {
-            if (disposed) { return; }
-
-            disposed = true;
+            Dispose(false);
         }
 
         # endregion 
 
+        # region Protected methods.
+        protected virtual void Dispose(bool dispose)
+        {
+            if (dispose)
+            {
+                // Clean up managed.
+                GC.SuppressFinalize(this);
+            }
+            // cleanup native
+            disposed = true;
+        }
 
+        # endregion
 
         # region Public methods.
 
         public void Dispose()
         {
-            if (disposed) { return; }
-
-            // Clean up.
-            GC.SuppressFinalize(this);
-            disposed = true;
+            Dispose(true);
         }
 
         /// <summary>
