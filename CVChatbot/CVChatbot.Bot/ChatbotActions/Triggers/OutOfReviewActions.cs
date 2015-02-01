@@ -15,7 +15,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
     /// </summary>
     public class OutOfReviewActions : EndingSessionTrigger
     {
-        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var itemsReviewed = GetRegexMatchingObject()
                 .Match(GetMessageContentsReadyForRegexParsing(incommingChatMessage))
@@ -23,7 +23,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
                 .Value
                 .Parse<int>();
 
-            var sucessful = EndSession(incommingChatMessage, chatRoom, itemsReviewed);
+            var sucessful = EndSession(incommingChatMessage, chatRoom, itemsReviewed, roomSettings);
 
             if (sucessful)
             {

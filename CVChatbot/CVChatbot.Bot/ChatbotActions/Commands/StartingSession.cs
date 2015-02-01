@@ -11,15 +11,15 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class StartingSession : UserCommand
     {
-        public override void RunAction(Message userMessage, Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
-            var chatUser = chatRoom.GetUser(userMessage.AuthorID);
+            var chatUser = chatRoom.GetUser(incommingChatMessage.AuthorID);
 
             // Start a new review session.
             using (var db = new CVChatBotEntities())
             {
                 var registedUser = db.RegisteredUsers
-                    .Single(x => x.ChatProfileId == userMessage.AuthorID);
+                    .Single(x => x.ChatProfileId == incommingChatMessage.AuthorID);
 
                 var newSession = new ReviewSession()
                 {
@@ -40,7 +40,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 "May the Vote be with you!"
             };
 
-            chatRoom.PostReplyOrThrow(userMessage, replyMessages.PickRandom());
+            chatRoom.PostReplyOrThrow(incommingChatMessage, replyMessages.PickRandom());
         }
 
         public override ActionPermissionLevel GetPermissionLevel()

@@ -12,21 +12,21 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class AuditStats : UserCommand
     {
-        public override void RunAction(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             using (var db = new CVChatBotEntities())
             {
                 var totalAuditsCount = db.CompletedAuditEntries
-                    .Count(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID);
+                    .Count(x => x.RegisteredUser.ChatProfileId == incommingChatMessage.AuthorID);
 
                 if (totalAuditsCount == 0)
                 {
-                    chatRoom.PostReplyOrThrow(userMessage, "I don't have any of your audits on record, so I can't produce any stats for you.");
+                    chatRoom.PostReplyOrThrow(incommingChatMessage, "I don't have any of your audits on record, so I can't produce any stats for you.");
                     return;
                 }
 
                 var groupedTags = db.CompletedAuditEntries
-                    .Where(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID)
+                    .Where(x => x.RegisteredUser.ChatProfileId == incommingChatMessage.AuthorID)
                     .GroupBy(x => x.TagName)
                     .Select(x => new
                     {
@@ -45,7 +45,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                         (x) => Math.Round(x.Percent, 1),
                         (x) => x.Count);
 
-                chatRoom.PostReplyOrThrow(userMessage, "Stats of all tracked audits by tag:");
+                chatRoom.PostReplyOrThrow(incommingChatMessage, "Stats of all tracked audits by tag:");
                 chatRoom.PostMessageOrThrow(message);
             }
         }

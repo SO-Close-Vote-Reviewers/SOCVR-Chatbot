@@ -1,4 +1,5 @@
 ﻿using ChatExchangeDotNet;
+using CsQuery;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,22 @@ namespace CVChatbot.Bot
     /// </summary>
     public static class Extensions
     {
+        /// <summary>
+        ///  On a CQ dom find an <input name="foo" value="bar" > with the name foo and return bar or null for no match. 
+        /// </summary>
+        /// <param name="input">CQ instance</param>
+        /// <param name="elementName">elementname</param>
+        /// <returns>value on the input tag or null</returns>
+        /// <remarks>
+        /// Stolen from CE.Net. :O
+        /// </remarks>
+        internal static string GetInputValue(this CQ input, string elementName)
+        {
+            var fkeyE = input["input"].FirstOrDefault(e => e.Attributes["name"] != null && e.Attributes["name"] == elementName);
+
+            return fkeyE == null ? null : fkeyE.Attributes["value"];
+        }
+
         /// <summary>
         /// Takes a chat message and return its contents with any "mentions" stripped out.
         /// </summary>
