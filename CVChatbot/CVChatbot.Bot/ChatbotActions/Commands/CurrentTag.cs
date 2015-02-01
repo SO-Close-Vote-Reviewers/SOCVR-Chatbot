@@ -57,7 +57,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         protected override string GetRegexMatchingPattern()
         {
-            return @"^(what is the )?current tag( pl(ease|z))?\??$";
+            return @"^(what is the )?current tag( pl(ease|[sz]))?\??$";
         }
     }
 }

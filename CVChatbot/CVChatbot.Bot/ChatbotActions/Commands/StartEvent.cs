@@ -11,7 +11,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     {
         protected override string GetRegexMatchingPattern()
         {
-            return "^start event$";
+            return "^(pl(ease|[sz]) )?((start(ing)?( the)? event)|(event start(ed)?))( pl(eas|[sz]))?$";
         }
 
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
