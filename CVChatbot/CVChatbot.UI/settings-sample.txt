@@ -9,3 +9,4 @@ ChatRoomUrl=http://chat.stackoverflow.com/rooms/68414/cvchatbot-testing
 StartUpMessage=Hey everyone! (SO Close Vote Chatbot started)
 StopMessage=Goodbye!
 DefaultCompletedTagsPeopleThreshold=3
+MaxFetchTags=15

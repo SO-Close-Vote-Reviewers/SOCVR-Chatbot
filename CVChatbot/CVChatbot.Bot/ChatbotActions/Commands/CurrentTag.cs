@@ -40,8 +40,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         /// <param name="chatRoom"></param>
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
-            SedeAccessor.SetCredentials(roomSettings.Email, roomSettings.Password);
-            var tags = SedeAccessor.Tags;
+            var tags = SedeAccessor.GetTags(chatRoom, roomSettings.Email, roomSettings.Password);
 
             string dataMessage;
             if (tags != null)

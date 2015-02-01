@@ -21,8 +21,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             var statsMessage = sa.GetOverallQueueStats();
 
             // Get the next 3 tags
-            SedeAccessor.SetCredentials(roomSettings.Email, roomSettings.Password);
-            var tags = SedeAccessor.Tags;
+            var tags = SedeAccessor.GetTags(chatRoom, roomSettings.Email, roomSettings.Password);
 
             var topTags = tags
                 .Take(3)

@@ -5,28 +5,11 @@ using System.Collections.Generic;
 using System.Text;
 using CsQuery;
 using System.Net;
+using ChatExchangeDotNet;
+using CVChatbot.Bot;
 
 namespace CVChatbot
 {
-    /// <summary>
-    /// Helper to throw exceptions to enforce incoming contracts.
-    /// </summary>
-    public static class ThrowWhen
-    {
-        /// <summary>
-        /// Throws an argument exception if value is null or empty.
-        /// </summary>
-        /// <param name="value">A value.</param>
-        /// <param name="paramName">Friendly name of value.</param>
-        public static void IsNullOrEmpty(string value, string paramName)
-        {
-            if (String.IsNullOrEmpty(value))
-            {
-                throw new ArgumentException(String.Format("'{0}' must not be null or empty.", paramName), paramName);
-            }
-        }
-    }
-
     /// <summary>
     /// Creates a singleton SedeClient for getting the tag listing from SEDE.
     /// </summary>
@@ -45,20 +28,6 @@ namespace CVChatbot
         private static string loginEmail;
 
         private static string loginPassword;
-
-        /// <summary>
-        /// If the email and password have not been set, this sets the credentials for the client.
-        /// </summary>
-        /// <param name="email"></param>
-        /// <param name="password"></param>
-        public static void SetCredentials(string email, string password)
-        {
-            if (loginEmail == null)
-            {
-                loginEmail = email;
-                loginPassword = password;
-            }
-        }
 
         // We have once client session wide.
         private static SedeClient sedeClient = null;
@@ -81,28 +50,62 @@ namespace CVChatbot
             }
         }
 
-        // Single instance.
-        public static Dictionary<string, int> Tags
+        /// <summary>
+        /// Gets the tags from the SEDE query. If the email and password has not already
+        /// been set then those credentials will be saved and used. Will also tell
+        /// the chat room if the tags are being refreshed (because it takes some time).
+        /// </summary>
+        /// <param name="chatRoom"></param>
+        /// <param name="email"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        public static Dictionary<string, int> GetTags(Room chatRoom, string email, string password)
         {
-            get
+            // Set the email/password if not set.
+            if (loginEmail == null)
             {
-                if (tags == null || (DateTime.UtcNow - lastRevIdCheckTime).TotalMinutes > 30)
-                {
-                    var currentID = "";
-
-                    if ((currentID = Client.GetSedeQueryCsvRevisionId("http://data.stackexchange.com/stackoverflow")) != lastCsvRevID)
-                    {
-                        lastCsvRevID = currentID;
-                        tags = Client.GetTags();
-                    }
-
-                    lastRevIdCheckTime = DateTime.UtcNow;
-                }
-                return tags;
+                loginEmail = email;
+                loginPassword = password;
             }
+
+            // If tags have not been gotten yet or its been more than 30 minutes since the last get
+            // then refresh the tag listing.
+            if (tags == null || (DateTime.UtcNow - lastRevIdCheckTime).TotalMinutes > 30)
+            {
+                chatRoom.PostMessageOrThrow("Refreshing the tag listing. This could take a bit.");
+
+                var currentID = "";
+
+                if ((currentID = Client.GetSedeQueryCsvRevisionId("http://data.stackexchange.com/stackoverflow")) != lastCsvRevID)
+                {
+                    lastCsvRevID = currentID;
+                    tags = Client.GetTags();
+                }
+
+                lastRevIdCheckTime = DateTime.UtcNow;
+            }
+            return tags;
         }
     }
 
+    /// <summary>
+    /// Helper to throw exceptions to enforce incoming contracts.
+    /// </summary>
+    public static class ThrowWhen
+    {
+        /// <summary>
+        /// Throws an argument exception if value is null or empty.
+        /// </summary>
+        /// <param name="value">A value.</param>
+        /// <param name="paramName">Friendly name of value.</param>
+        public static void IsNullOrEmpty(string value, string paramName)
+        {
+            if (String.IsNullOrEmpty(value))
+            {
+                throw new ArgumentException(String.Format("'{0}' must not be null or empty.", paramName), paramName);
+            }
+        }
+    }
     /// <summary>
     /// Client responsible to login and run queries on data.stackexchange.com.
     /// Don't use this class directly. Use SedeAccessor instead.
@@ -113,13 +116,12 @@ namespace CVChatbot
 
         const string baseUrl = "http://data.stackexchange.com/stackoverflow";
 
-        private bool disposed;
-
         /// <summary>
         /// Notice that this baby is AppDomain wide used as it is static.
         /// </summary>
         private readonly static CookieContainer cookies = new CookieContainer();
 
+        private bool disposed;
         # endregion
 
 
@@ -141,7 +143,7 @@ namespace CVChatbot
             disposed = true;
         }
 
-        # endregion 
+        # endregion
 
 
 
@@ -154,6 +156,44 @@ namespace CVChatbot
             // Clean up.
             GC.SuppressFinalize(this);
             disposed = true;
+        }
+
+        /// <summary>
+        /// This runs the Sede Query and gives us the revision Id of the CSV DownloadLink
+        /// </summary>
+        /// <param name="baseUrl">Where sede and the query live.</param>
+        /// <returns>The revision.</returns>
+        public string GetSedeQueryCsvRevisionId(string baseUrl)
+        {
+            ThrowWhen.IsNullOrEmpty(baseUrl, "baseUrl");
+
+            const string SearchTermForRevision = "&quot;revisionId&quot;:";
+
+            var first = Get(baseUrl + "/query/236526/tags-that-can-be-cleared-of-votes#");
+
+            // Tn theory we could parse the result from this html
+            // but the data is inside a script tag and we don't fancy yet to parse it.
+
+            // This is expensive...
+            var dom = CQ.Create(first);
+
+            // Find the link. This one is slug-ed so this is useless for now.
+            string href = dom["#resultSetsButton"][0].Attributes["href"];
+
+            // Find among all inline scripts the one that holds the revisionid.
+            var scriptTag = dom["script"].FirstOrDefault(script =>
+                !script.HasAttribute("src") &&
+                script.InnerText != null &&
+                script.InnerText.Contains(SearchTermForRevision));
+
+            string revid = null; // "344267"; // old revision
+            if (scriptTag != null)
+            {
+                var revision = scriptTag.InnerText.IndexOf(SearchTermForRevision) + SearchTermForRevision.Length;
+                var nextComma = scriptTag.InnerText.IndexOf(',', revision);
+                revid = scriptTag.InnerText.Substring(revision, nextComma - revision).Trim();
+            }
+            return revid;
         }
 
         /// <summary>
@@ -210,61 +250,14 @@ namespace CVChatbot
                     tags.Add(tag, cnt);
                 }
             }
-            
+
             return tags;
         }
-
-        /// <summary>
-        /// This runs the Sede Query and gives us the revision Id of the CSV DownloadLink
-        /// </summary>
-        /// <param name="baseUrl">Where sede and the query live.</param>
-        /// <returns>The revision.</returns>
-        public string GetSedeQueryCsvRevisionId(string baseUrl)
-        {
-            ThrowWhen.IsNullOrEmpty(baseUrl, "baseUrl");
-
-            const string SearchTermForRevision = "&quot;revisionId&quot;:";
-
-            var first = Get(baseUrl + "/query/236526/tags-that-can-be-cleared-of-votes#");
-
-            // Tn theory we could parse the result from this html
-            // but the data is inside a script tag and we don't fancy yet to parse it.
-
-            // This is expensive...
-            var dom = CQ.Create(first);
-
-            // Find the link. This one is slug-ed so this is useless for now.
-            string href = dom["#resultSetsButton"][0].Attributes["href"];
-
-            // Find among all inline scripts the one that holds the revisionid.
-            var scriptTag = dom["script"].FirstOrDefault(script => 
-                !script.HasAttribute("src") && 
-                script.InnerText != null && 
-                script.InnerText.Contains(SearchTermForRevision));
-
-            string revid = null; // "344267"; // old revision
-            if (scriptTag != null)
-            {
-                var revision = scriptTag.InnerText.IndexOf(SearchTermForRevision) + SearchTermForRevision.Length;
-                var nextComma = scriptTag.InnerText.IndexOf(',', revision);
-                revid = scriptTag.InnerText.Substring(revision, nextComma - revision).Trim();
-            }
-            return revid;
-        }
-
         # endregion
 
 
 
         # region Private methods.
-
-        /// <summary>
-        /// This seems a thin wrapper but this here for future use.
-        /// </summary>
-        private string GetCSVQuery(string query)
-        {
-            return Get(query);
-        }
 
         /// <summary>
         /// GET from the url whatever is returned as a string.
@@ -283,6 +276,13 @@ namespace CVChatbot
             }
         }
 
+        /// <summary>
+        /// This seems a thin wrapper but this here for future use.
+        /// </summary>
+        private string GetCSVQuery(string query)
+        {
+            return Get(query);
+        }
         /// <summary>
         /// POST to the url the urlencoded data and return the contents as a string.
         /// This method uses/fills the shared CookieContainer.
@@ -306,7 +306,7 @@ namespace CVChatbot
             }
         }
 
-        
+
         /// <summary>
         /// Perform an login for the SE openID provider.
         /// Notice that when you run this from the BOT

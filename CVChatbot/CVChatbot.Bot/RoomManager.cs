@@ -136,5 +136,10 @@ namespace CVChatbot.Bot
         /// The default value used in the CompletedTags command when no argument is given.
         /// </summary>
         public int DefaultCompletedTagsPeopleThreshold { get; set; }
+
+        /// <summary>
+        /// The maximum number of tags that can be fetched with the NextTags command.
+        /// </summary>
+        public int MaxTagsToFetch { get; set; }
     }
 }
