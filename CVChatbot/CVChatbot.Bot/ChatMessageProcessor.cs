@@ -97,7 +97,7 @@ namespace CVChatbot.Bot
             // Don't need to do anything else, like searching though the database.
             if (neededPermissionLevel == ActionPermissionLevel.Everyone)
                 return true;
-            return true;
+
             // Now you need to look up the person in the database
             using (var db = new CVChatBotEntities())
             {
