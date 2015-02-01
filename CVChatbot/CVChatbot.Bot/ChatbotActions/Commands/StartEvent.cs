@@ -33,7 +33,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
             chatRoom.PostMessageOrThrow(statsMessage);
             chatRoom.PostMessageOrThrow(tagsMessage);
-        }
+        } 
 
         public override string GetActionName()
         {
