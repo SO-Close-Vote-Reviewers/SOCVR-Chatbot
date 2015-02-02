@@ -71,6 +71,7 @@
     <Compile Include="ChatbotActions\Commands\LastSessionEditCount.cs" />
     <Compile Include="ChatbotActions\Commands\LastSessionStats.cs" />
     <Compile Include="ChatbotActions\Commands\NextTags.cs" />
+    <Compile Include="ChatbotActions\Commands\RefreshTags.cs" />
     <Compile Include="ChatbotActions\Commands\StartEvent.cs" />
     <Compile Include="ChatbotActions\Commands\StopBot.cs" />
     <Compile Include="ChatbotActions\Commands\RunningCommands.cs" />

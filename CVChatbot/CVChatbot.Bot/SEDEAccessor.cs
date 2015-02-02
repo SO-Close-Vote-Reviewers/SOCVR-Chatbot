@@ -51,6 +51,15 @@ namespace CVChatbot
         }
 
         /// <summary>
+        /// Sets the time that the tag data was pulled at to a long time ago.
+        /// This will ensure that the next call to GetTags will get fresh data.
+        /// </summary>
+        public static void InvalidateCache()
+        {
+            lastRevIdCheckTime = DateTime.MinValue;
+        }
+
+        /// <summary>
         /// Gets the tags from the SEDE query. If the email and password has not already
         /// been set then those credentials will be saved and used. Will also tell
         /// the chat room if the tags are being refreshed (because it takes some time).
