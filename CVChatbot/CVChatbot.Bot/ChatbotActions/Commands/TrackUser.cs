@@ -11,22 +11,22 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class TrackUser : UserCommand
     {
-        public override void RunAction(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var userIdToAdd = GetRegexMatchingObject()
-                .Match(GetMessageContentsReadyForRegexParsing(userMessage))
+                .Match(GetMessageContentsReadyForRegexParsing(incommingChatMessage))
                 .Groups[1]
                 .Value
                 .Parse<int>();
 
-            using (CVChatBotEntities db = new CVChatBotEntities())
+            using (var db = new CVChatBotEntities())
             {
                 var existingUser = db.RegisteredUsers
                     .SingleOrDefault(x => x.ChatProfileId == userIdToAdd);
 
                 if (existingUser != null)
                 {
-                    chatRoom.PostReplyOrThrow(userMessage, "That user is already in the system!");
+                    chatRoom.PostReplyOrThrow(incommingChatMessage, "That user is already in the system!");
                     return;
                 }
 
@@ -40,7 +40,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
                 var chatUser = chatRoom.GetUser(userIdToAdd);
 
-                chatRoom.PostReplyOrThrow(userMessage, "Ok, I added {0} ({1}) to the tracked users list."
+                chatRoom.PostReplyOrThrow(incommingChatMessage, "Ok, I added {0} ({1}) to the tracked users list."
                     .FormatInline(chatUser.Name, chatUser.ID));
             }
         }
@@ -62,7 +62,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionDescription()
         {
-            return "adds the user to the registered users list";
+            return "Adds the user to the registered users list.";
         }
 
         public override string GetActionUsage()

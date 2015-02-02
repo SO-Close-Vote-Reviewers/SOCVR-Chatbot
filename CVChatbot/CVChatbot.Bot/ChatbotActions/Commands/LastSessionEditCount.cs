@@ -14,25 +14,24 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     /// </summary>
     public class LastSessionEditCount : UserCommand
     {
-        public override void RunAction(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
-            using (CVChatBotEntities db = new CVChatBotEntities())
+            using (var db = new CVChatBotEntities())
             {
-                //get the last complete session
+                // Get the last complete session.
                 var lastSession = db.ReviewSessions
-                    .Where(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID)
-                    .Where(x => x.SessionEnd != null)
+                    .Where(x => x.RegisteredUser.ChatProfileId == incommingChatMessage.AuthorID && x.SessionEnd != null)
                     .OrderByDescending(x => x.SessionStart)
                     .FirstOrDefault();
 
                 if (lastSession == null)
                 {
-                    chatRoom.PostReplyOrThrow(userMessage, "You have no completed review sessions on record, so I can't edit any entries.");
+                    chatRoom.PostReplyOrThrow(incommingChatMessage, "You have no completed review sessions on record, so I can't edit any entries.");
                     return;
                 }
 
                 var newReviewCount = GetRegexMatchingObject()
-                    .Match(GetMessageContentsReadyForRegexParsing(userMessage))
+                    .Match(GetMessageContentsReadyForRegexParsing(incommingChatMessage))
                     .Groups[1]
                     .Value
                     .Parse<int>();
@@ -40,15 +39,15 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 var previousReviewCount = lastSession.ItemsReviewed;
                 lastSession.ItemsReviewed = newReviewCount;
 
-                string replyMessage = @"    Review item count has been changed:
+                var replyMessage = @"    Review item count has been changed:
     User: {0} ({1})
     Start Time: {2}
     End Time: {3}
     Items Reviewed: {4} -> {5}
     Use the command 'last session stats' to see more details."
                     .FormatInline(
-                        userMessage.AuthorName,
-                        userMessage.AuthorID,
+                        incommingChatMessage.AuthorName,
+                        incommingChatMessage.AuthorID,
                         lastSession.SessionStart.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'"),
                         lastSession.SessionEnd.Value.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'"),
                         previousReviewCount.HasValue
@@ -57,7 +56,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                         lastSession.ItemsReviewed.Value);
 
                 db.SaveChanges();
-                chatRoom.PostReplyOrThrow(userMessage, replyMessage);
+                chatRoom.PostReplyOrThrow(incommingChatMessage, replyMessage);
             }
         }
 
@@ -78,7 +77,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionDescription()
         {
-            return "edits the number of reviewed items in your last review session";
+            return "Edits the number of reviewed items in your last review session.";
         }
 
         public override string GetActionUsage()

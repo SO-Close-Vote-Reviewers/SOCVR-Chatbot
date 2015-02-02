@@ -36,8 +36,7 @@ namespace CVChatbot.Bot.ChatbotActions
             where TAction : ChatbotAction
         {
             return AllChatActions
-                .Where(x => x is TAction)
-                .Single()
+                .Single(x => x is TAction)
                 .GetActionUsage();
         }
 
@@ -45,7 +44,7 @@ namespace CVChatbot.Bot.ChatbotActions
         {
             public static IEnumerable<T> GetEnumerableOfType<T>(params object[] constructorArgs) where T : class
             {
-                List<T> objects = new List<T>();
+                var objects = new List<T>();
                 foreach (Type type in
                     Assembly.GetAssembly(typeof(T)).GetTypes()
                     .Where(myType => myType.IsClass && !myType.IsAbstract && myType.IsSubclassOf(typeof(T))))

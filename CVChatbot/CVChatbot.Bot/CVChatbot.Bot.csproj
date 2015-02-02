@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CsQuery">
+      <HintPath>..\packages\CsQuery.1.3.4\lib\net40\CsQuery.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
@@ -61,11 +64,14 @@
     <Compile Include="ChatbotActions\Commands\AuditStats.cs" />
     <Compile Include="ChatbotActions\Commands\Commands.cs" />
     <Compile Include="ChatbotActions\Commands\CompletedTags.cs" />
+    <Compile Include="ChatbotActions\Commands\CurrentTag.cs" />
     <Compile Include="ChatbotActions\Commands\CurrentSession.cs" />
     <Compile Include="ChatbotActions\Commands\EndSession.cs" />
     <Compile Include="ChatbotActions\Commands\Help.cs" />
     <Compile Include="ChatbotActions\Commands\LastSessionEditCount.cs" />
     <Compile Include="ChatbotActions\Commands\LastSessionStats.cs" />
+    <Compile Include="ChatbotActions\Commands\NextTags.cs" />
+    <Compile Include="ChatbotActions\Commands\StartEvent.cs" />
     <Compile Include="ChatbotActions\Commands\StopBot.cs" />
     <Compile Include="ChatbotActions\Commands\RunningCommands.cs" />
     <Compile Include="ChatbotActions\Commands\StartingSession.cs" />
@@ -81,7 +87,9 @@
     <Compile Include="ChatbotActions\Triggers\Trigger.cs" />
     <Compile Include="ChatBotStats.cs" />
     <Compile Include="ChatMessageProcessor.cs" />
+    <Compile Include="CloseQueueStatsAccessor.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Model\CompletedAuditEntry.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
@@ -116,6 +124,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoomManager.cs" />
     <Compile Include="RunningChatbotActionsManager.cs" />
+    <Compile Include="SEDEAccessor.cs" />
+    <Compile Include="SedeClient.cs" />
+    <Compile Include="ThrowWhen.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.Config" />

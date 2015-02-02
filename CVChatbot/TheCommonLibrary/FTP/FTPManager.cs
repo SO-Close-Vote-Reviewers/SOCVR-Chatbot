@@ -34,7 +34,7 @@ namespace TheCommonLibrary.FTP
             using (StreamReader sourceStream = new StreamReader(filePath))
             {
                 fileContents = Encoding.UTF8.GetBytes(sourceStream.ReadToEnd());
-                sourceStream.Close();
+                // sourceStream gets closed by the Dispose call caused by the using
             }
 
             request.ContentLength = fileContents.Length;

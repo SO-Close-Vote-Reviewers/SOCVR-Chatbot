@@ -10,30 +10,30 @@ using TheCommonLibrary.Extensions;
 namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     /// <summary>
-    /// Shows which tags have been reported a cleared by multiple people
+    /// Shows which tags have been reported a cleared by multiple people.
     /// </summary>
     public class CompletedTags : UserCommand
     {
-        public override void RunAction(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var thresholdInCommand =  GetRegexMatchingObject()
-                .Match(GetMessageContentsReadyForRegexParsing(userMessage))
+                .Match(GetMessageContentsReadyForRegexParsing(incommingChatMessage))
                 .Groups[1]
                 .Value
                 .Parse<int?>();
 
             if (thresholdInCommand != null && thresholdInCommand <= 0)
             {
-                chatRoom.PostReplyOrThrow(userMessage, "Minimum person threshold must be greater or equal to 1.");
+                chatRoom.PostReplyOrThrow(incommingChatMessage, "Minimum person threshold must be greater or equal to 1.");
                 return;
             }
 
-            var defaultThreshold = 3; //for now i'm hard-coding this
+            var defaultThreshold = roomSettings.DefaultCompletedTagsPeopleThreshold;
 
-            var peopleThreshold = thresholdInCommand ?? defaultThreshold; //take the one in the command, or the default if the command one is not given
+            var peopleThreshold = thresholdInCommand ?? defaultThreshold; // Take the one in the command, or the default if the command one is not given.
             var usingDefault = thresholdInCommand == null;
 
-            using (CVChatBotEntities db = new CVChatBotEntities())
+            using (var db = new CVChatBotEntities())
             {
                 var groupedTags = db.NoItemsInFilterEntries
                     .GroupBy(x => x.TagName)
@@ -48,7 +48,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                     .Take(10)
                     .ToList();
 
-                string headerMessage = "Showing the latest 10 tags that have been cleared by at least {0} people."
+                var headerMessage = "Showing the latest 10 tags that have been cleared by at least {0} people."
                 .FormatInline(peopleThreshold);
 
                 if (usingDefault)
@@ -62,7 +62,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 if (groupedTags.Any())
                 {
                     dataMessage = groupedTags
-                        .ToStringTable(new string[] { "Tag Name", "Count", "Latest Time Cleared" },
+                        .ToStringTable(new[] { "Tag Name", "Count", "Latest Time Cleared" },
                             (x) => x.TagName,
                             (x) => x.Count,
                             (x) => x.LastTimeEntered.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'"));
@@ -72,7 +72,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                     dataMessage = "    There are no entries that match that request!";
                 }
 
-                chatRoom.PostReplyOrThrow(userMessage, headerMessage);
+                chatRoom.PostReplyOrThrow(incommingChatMessage, headerMessage);
                 chatRoom.PostMessageOrThrow(dataMessage);
             }
         }
@@ -94,7 +94,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionDescription()
         {
-            return "shows the latest tags that have been completed by multiple people.";
+            return "Shows the latest tags that have been completed by multiple people.";
         }
 
         public override string GetActionUsage()

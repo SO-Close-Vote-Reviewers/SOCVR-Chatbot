@@ -2,7 +2,6 @@
 # Values are stored in Key=Value pairs
 # place this file named "settings.txt" in the same folder as the created exe
 
-LoginUsername=my user name
 LoginEmail=my@email.address.com
 LoginPassword=mySecurePassword!
 MaxReviewLengthHours=5
@@ -10,3 +9,4 @@ ChatRoomUrl=http://chat.stackoverflow.com/rooms/68414/cvchatbot-testing
 StartUpMessage=Hey everyone! (SO Close Vote Chatbot started)
 StopMessage=Goodbye!
 DefaultCompletedTagsPeopleThreshold=3
+MaxFetchTags=15

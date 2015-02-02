@@ -9,7 +9,7 @@ using CsQuery;
 
 namespace ChatExchangeDotNet
 {
-    public class Client : IDisposable
+    public sealed class Client : IDisposable
     {
         private readonly Regex hostParser = new Regex("https?://(chat.)?|/.*", RegexOptions.Compiled | RegexOptions.CultureInvariant);
         private readonly Regex idParser = new Regex(".*/rooms/|/.*", RegexOptions.Compiled | RegexOptions.CultureInvariant);

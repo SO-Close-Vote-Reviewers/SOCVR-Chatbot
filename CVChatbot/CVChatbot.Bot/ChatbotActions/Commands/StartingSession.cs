@@ -11,17 +11,17 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class StartingSession : UserCommand
     {
-        public override void RunAction(Message userMessage, Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
-            var chatUser = chatRoom.GetUser(userMessage.AuthorID);
+            var chatUser = chatRoom.GetUser(incommingChatMessage.AuthorID);
 
-            //start a new review session
-            using (CVChatBotEntities db = new CVChatBotEntities())
+            // Start a new review session.
+            using (var db = new CVChatBotEntities())
             {
                 var registedUser = db.RegisteredUsers
-                    .Single(x => x.ChatProfileId == userMessage.AuthorID);
+                    .Single(x => x.ChatProfileId == incommingChatMessage.AuthorID);
 
-                ReviewSession newSession = new ReviewSession()
+                var newSession = new ReviewSession()
                 {
                     SessionStart = DateTimeOffset.Now,
                     RegisteredUser = registedUser
@@ -31,7 +31,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 db.SaveChanges();
             }
 
-            List<string> replyMessages = new List<string>()
+            var replyMessages = new List<string>()
             {
                 "Good luck!",
                 "Happy reviewing!",
@@ -40,7 +40,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 "May the Vote be with you!"
             };
 
-            chatRoom.PostReplyOrThrow(userMessage, replyMessages.PickRandom());
+            chatRoom.PostReplyOrThrow(incommingChatMessage, replyMessages.PickRandom());
         }
 
         public override ActionPermissionLevel GetPermissionLevel()
@@ -50,7 +50,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         protected override string GetRegexMatchingPattern()
         {
-            return @"(?:i'm )?start(ing|ed)(?: now)?";
+            return @"(?:i'?m )?start(ing|ed)(?: now)?";
         }
 
         public override string GetActionName()
@@ -60,7 +60,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionDescription()
         {
-            return "informs the chatbot that you are starting a new review session";
+            return "Informs the chatbot that you are starting a new review session.";
         }
 
         public override string GetActionUsage()

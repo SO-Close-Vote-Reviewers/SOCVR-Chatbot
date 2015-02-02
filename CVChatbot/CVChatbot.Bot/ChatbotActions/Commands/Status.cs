@@ -12,7 +12,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class Status : UserCommand
     {
-        public override void RunAction(Message userMessage, Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var elapsedTime = DateTime.Now - ChatBotStats.LoginDate;
 
@@ -20,7 +20,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             string version = fvi.FileVersion;
 
-            string message = "SOCVR ChatBot version {0}, running for {1}."
+            var message = "SOCVR ChatBot version {0}, running for {1}."
                 .FormatInline(version, elapsedTime.ToUserFriendlyString());
 
             chatRoom.PostMessageOrThrow(message);
@@ -33,7 +33,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         protected override string GetRegexMatchingPattern()
         {
-            return @"^((program|chatbot|bot|what's your) )?status(\?)?$";
+            return @"^((program|chatbot|bot|what'?s your) )?status(\?)?$";
         }
 
         public override string GetActionName()
@@ -43,7 +43,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionDescription()
         {
-            return "tests if the chatbot is alive and shows simple info about it";
+            return "Tests if the chatbot is alive and shows simple info about it.";
         }
 
         public override string GetActionUsage()

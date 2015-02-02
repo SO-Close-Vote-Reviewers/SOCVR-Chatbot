@@ -54,10 +54,10 @@ namespace TheCommonLibrary.Sql
 
                             trans.Commit();
                         }
-                        catch (Exception ex)
+                        catch 
                         {
                             trans.Rollback();
-                            throw ex;
+                            throw; // CA2200 preserve stack details, shield at caller
                         }
                     }
                 }

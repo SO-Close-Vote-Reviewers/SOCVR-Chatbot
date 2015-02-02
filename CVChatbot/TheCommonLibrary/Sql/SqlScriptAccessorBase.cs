@@ -19,6 +19,7 @@ namespace TheCommonLibrary.Sql
         /// <param name="sqlScript"></param>
         /// <param name="getResults"></param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         protected T RunScript<T>(string sqlScript, Action<SqlParameterCollection> parametersAction, Func<DataSet, T> getResults)
         {
             using (DataSet ds = new DataSet())
@@ -48,10 +49,10 @@ namespace TheCommonLibrary.Sql
 
                             trans.Commit();
                         }
-                        catch (Exception ex)
+                        catch 
                         {
                             trans.Rollback();
-                            throw ex;
+                            throw; //CA2200 
                         }
                     }
                 }
@@ -116,6 +117,7 @@ namespace TheCommonLibrary.Sql
             await Task.Run(() => RunScript(sqlScript, parametersAction, (Func<DataSet, object>)null));
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities",Justification="the purpose of value is to be a string that gets executed")]
         protected override void ConfigureSqlCommand(SqlCommand cmd, string value)
         {
             cmd.CommandType = System.Data.CommandType.Text;

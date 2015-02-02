@@ -14,28 +14,26 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     /// </summary>
     public class LastSessionStats : UserCommand
     {
-        public override void RunAction(ChatExchangeDotNet.Message userMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
-            using (CVChatBotEntities db = new CVChatBotEntities())
+            using (var db = new CVChatBotEntities())
             {
-                //get the last complete session
+                // Get the last complete session.
 
                 var lastSession = db.ReviewSessions
-                    .Where(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID)
-                    .Where(x => x.SessionEnd != null)
+                    .Where(x => x.RegisteredUser.ChatProfileId == incommingChatMessage.AuthorID && x.SessionEnd != null)
                     .OrderByDescending(x => x.SessionStart)
                     .FirstOrDefault();
 
                 if (lastSession == null)
                 {
-                    chatRoom.PostReplyOrThrow(userMessage, "You have no completed review sessions on record, so I can't give you any stats.");
+                    chatRoom.PostReplyOrThrow(incommingChatMessage, "You have no completed review sessions on record, so I can't give you any stats.");
                     return;
                 }
 
                 var sessionEndedTimeAgo = (DateTimeOffset.Now - lastSession.SessionEnd.Value);
                 var sessionLength = lastSession.SessionEnd.Value - lastSession.SessionStart;
-
-                string statMessage = "Your last completed review session ended {0} ago and lasted {1}. ";
+                var statMessage = "Your last completed review session ended {0} ago and lasted {1}. ";
 
                 if (lastSession.ItemsReviewed == null)
                 {
@@ -57,12 +55,13 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                         averageTimePerReview.ToUserFriendlyString());
                 }
 
-                //check if there is a on-going review session
+                // Check if there is a on-going review session.
 
                 var ongoingSessions = db.ReviewSessions
-                    .Where(x => x.RegisteredUser.ChatProfileId == userMessage.AuthorID)
-                    .Where(x => x.SessionEnd == null)
-                    .Where(x => x.SessionStart > lastSession.SessionStart)
+                    .Where(x =>
+                        x.RegisteredUser.ChatProfileId == incommingChatMessage.AuthorID && 
+                        x.SessionEnd == null && 
+                        x.SessionStart > lastSession.SessionStart)
                     .OrderByDescending(x=>x.SessionStart)
                     .FirstOrDefault();
 
@@ -72,7 +71,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                     statMessage += " **Note: You still have a review session in progress.** It started {0} ago.".FormatInline(deltaTime.ToUserFriendlyString());
                 }
 
-                chatRoom.PostReplyOrThrow(userMessage, statMessage);
+                chatRoom.PostReplyOrThrow(incommingChatMessage, statMessage);
             }
         }
 
@@ -93,7 +92,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionDescription()
         {
-            return "shows stats about your last review session";
+            return "Shows stats about your last review session.";
         }
 
         public override string GetActionUsage()

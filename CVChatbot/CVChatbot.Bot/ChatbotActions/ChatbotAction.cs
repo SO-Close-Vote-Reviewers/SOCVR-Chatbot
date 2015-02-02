@@ -21,13 +21,13 @@ namespace CVChatbot.Bot.ChatbotActions
         /// <returns></returns>
         public bool DoesChatMessageActiveAction(Message incomingMessage, bool isMessageAReplyToChatbot)
         {
-            //first, check if the message is a reply or not and if the Action accepts that
+            // First, check if the message is a reply or not and if the Action accepts that.
             var requiredIsReplyValue = GetMessageIsReplyToChatbotRequiredValue();
 
             if (isMessageAReplyToChatbot != requiredIsReplyValue)
                 return false;
 
-            //now regex test it
+            // Now regex test it.
             var formattedContents = GetMessageContentsReadyForRegexParsing(incomingMessage);
             var regex = GetRegexMatchingObject();
 
@@ -35,8 +35,8 @@ namespace CVChatbot.Bot.ChatbotActions
         }
 
         /// <summary>
-        /// The DoesChatMessageActiveAction method passes in if the incoming message is 
-        /// a reply to the chatbot. This method tells what that value MUST be for the 
+        /// The DoesChatMessageActiveAction method passes in if the incoming message is
+        /// a reply to the chatbot. This method tells what that value MUST be for the
         /// action to be activated. For example, User Commands MUST be a reply to the chatbot.
         /// </summary>
         /// <returns></returns>
@@ -50,15 +50,14 @@ namespace CVChatbot.Bot.ChatbotActions
         protected abstract string GetRegexMatchingPattern();
 
         /// <summary>
-        /// Returns the regex object needed for pattern matching with the incoming chat message.
         /// This is already populated with the necessary matching pattern text.
         /// You may call this method from the RunAction() method if you need arguments within chat message.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The regex object needed for pattern matching with the incoming chat message.</returns>
         protected Regex GetRegexMatchingObject()
         {
             var pattern = GetRegexMatchingPattern();
-            return new Regex(pattern, RegexOptions.IgnoreCase);
+            return new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
         }
 
         /// <summary>
@@ -73,7 +72,7 @@ namespace CVChatbot.Bot.ChatbotActions
         /// </summary>
         /// <param name="incommingChatMessage">The chat message received.</param>
         /// <param name="chatRoom">The chat room the message was said in.</param>
-        public abstract void RunAction(Message incommingChatMessage, Room chatRoom);
+        public abstract void RunAction(Message incommingChatMessage, Room chatRoom, InstallationSettings roomSettings);
 
         /// <summary>
         /// Returns the human-friendly name of the chatbot action.

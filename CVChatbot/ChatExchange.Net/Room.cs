@@ -7,12 +7,112 @@ using System.Threading;
 using CsQuery;
 using Newtonsoft.Json.Linq;
 using WebSocket4Net;
+using System.Diagnostics;
 
 
 
 namespace ChatExchangeDotNet
 {
-    public class Room : IDisposable
+    /// <summary>
+    /// The eventarg for a User
+    /// </summary>
+    public class UserEventArgs:EventArgs
+    {
+        /// <summary>
+        /// the user from chatmessage
+        /// </summary>
+        public User User { get; set; }
+
+        /// <summary>
+        /// creates an UserEvennt arg
+        /// </summary>
+        /// <param name="user">A User</param>
+        public UserEventArgs(User user)
+        {
+            User = user;
+        }
+    }
+
+    /// <summary>
+    /// Event args for holding a message, user and the Pins and Stars count
+    /// </summary>
+    public class StarMessageEventArgs : MessageEventArgs
+    {
+        /// <summary>
+        /// user
+        /// </summary>
+        public User User { get; set; }
+        /// <summary>
+        /// number of stars
+        /// </summary>
+        public int Stars { get; set; }
+        /// <summary>
+        /// number of pins
+        /// </summary>
+        public int Pins { get; set; }
+        /// <summary>
+        /// creates the eventarg
+        /// </summary>
+        /// <param name="msg">the message</param>
+        /// <param name="user">the user</param>
+        /// <param name="starCount">count of stars</param>
+        /// <param name="pinCount">count of pins</param>
+        public StarMessageEventArgs(Message msg, User user, int starCount, int pinCount):base(msg)
+        {
+            User = user;
+            Stars = starCount;
+            Pins = pinCount;
+        }
+    }
+
+    /// <summary>
+    /// Event args for Messages
+    /// </summary>
+    public class MessageEventArgs:EventArgs
+    {
+        /// <summary>
+        /// the message
+        /// </summary>
+        public Message Message { get; set; }
+        /// <summary>
+        /// Creates a single message
+        /// </summary>
+        /// <param name="msg">the message</param>
+        public MessageEventArgs(Message msg)
+        {
+            Message = msg;
+        }
+    }
+
+    /// <summary>
+    /// two messages as an Eventarg
+    /// </summary>
+    public class MessagePairEventArgs : EventArgs
+    {
+        /// <summary>
+        /// the old message
+        /// </summary>
+        public Message Old { get; set; }
+        /// <summary>
+        /// the new message
+        /// </summary>
+        public Message New { get; set; }
+        /// <summary>
+        /// Creates a messagepair
+        /// </summary>
+        /// <param name="old">the old message</param>
+        /// <param name="newer">the new mesage</param>
+        public MessagePairEventArgs(Message old, Message newer)
+        {
+            Old = old;
+            New = newer;
+        }
+    }
+
+    /// <summary>
+    /// The class that handles actions from and for a chatroom
+    /// </summary>
+    public sealed class Room : IDisposable
     {
         private bool disposing;
         private bool disposed;
@@ -25,26 +125,26 @@ namespace ChatExchangeDotNet
         # region Events.
 
         /// <param name="newMessage">The newly posted message.</param>
-        public delegate void NewMessageEventHandler(Message newMessage);
+        public delegate void NewMessageEventHandler(object sender, MessageEventArgs e);
 
         /// <param name="oldMessage">The previous state of the message.</param>
         /// <param name="newMessage">The current state of the message.</param>
-        public delegate void MessageEditedEventHandler(Message oldMessage, Message newMessage);
+        public delegate void MessageEditedEventHandler( object sender, MessagePairEventArgs e);
 
         /// <param name="message">The message that someone has (un)starred.</param>
         /// <param name="starer">The user that (un)starred the message.</param>
         /// <param name="starCount">The current star count.</param>
         /// <param name="starCount">The current pin count.</param>
-        public delegate void MessageStarToggledEventHandler(Message message, User starer, int starCount, int pinCount);
+        public delegate void MessageStarToggledEventHandler(object sender, StarMessageEventArgs e);
 
         /// <param name="user">The user that has joined/entered the room.</param>
-        public delegate void UserJoinEventHandler(User user);
+        public delegate void UserJoinEventHandler(object sender, UserEventArgs e);
 
         /// <param name="user">The user that has left the room.</param>
-        public delegate void UserLeftEventHandler(User user);
+        public delegate void UserLeftEventHandler(object sender, UserEventArgs e);
 
         /// <param name="message">The message that mentions the user.</param>
-        public delegate void UserMentiondEventHandler(Message message);
+        public delegate void UserMentiondEventHandler(object sender, MessageEventArgs e);
 
         /// <summary>
         /// Occurs when a new message is posted. Returns the newly posted message.
@@ -64,7 +164,7 @@ namespace ChatExchangeDotNet
         /// <summary>
         /// Occurs when a user joins/enters the room.
         /// </summary>
-        public event UserJoinEventHandler UserJoind;
+        public event UserJoinEventHandler UserJoined;
 
         /// <summary>
         /// Occurs when a user leaves the room.
@@ -129,7 +229,7 @@ namespace ChatExchangeDotNet
         {
             get
             {
-                if (messageID < 0) { throw new IndexOutOfRangeException(); }
+                if (messageID < 0) { throw new ArgumentOutOfRangeException("messageID"); }
 
                 if (AllMessages.Any(m => m.ID == messageID))
                 {
@@ -630,7 +730,7 @@ namespace ChatExchangeDotNet
                 }
                 catch (Exception)
                 {
-
+                    Debug.WriteLine("surpressed exception in InitialiseSocket");
                 }
             };
 
@@ -741,7 +841,7 @@ namespace ChatExchangeDotNet
 
             if (NewMessage == null || (authorID == Me.ID && IgnoreOwnEvents)) { return; }
 
-            NewMessage(message);
+            NewMessage(this, new MessageEventArgs(message));
         }
 
         private void HandleUserMentioned(JToken json)
@@ -757,7 +857,7 @@ namespace ChatExchangeDotNet
 
             if (UserMentioned == null || (authorID == Me.ID && IgnoreOwnEvents)) { return; }
 
-            UserMentioned(message);
+            UserMentioned(this, new MessageEventArgs(message));
         }
 
         private void HandleEdit(JToken json)
@@ -775,7 +875,7 @@ namespace ChatExchangeDotNet
 
             if (MessageEdited == null || (authorID == Me.ID && IgnoreOwnEvents)) { return; }
 
-            MessageEdited(oldMessage, currentMessage);
+            MessageEdited(this, new MessagePairEventArgs(oldMessage, currentMessage));
         }
 
         private void HandleStarToggle(JToken json)
@@ -790,7 +890,7 @@ namespace ChatExchangeDotNet
 
             if (MessageStarToggled == null || (starrerID == Me.ID && IgnoreOwnEvents)) { return; }
 
-            MessageStarToggled(message, user, starCount, pinCount);
+            MessageStarToggled(this, new StarMessageEventArgs(message, user, starCount, pinCount));
         }
 
         private void HandleUserJoin(JToken json)
@@ -799,9 +899,9 @@ namespace ChatExchangeDotNet
 
             var user = new User(Host, ID, userID);
 
-            if (UserJoind == null || (userID == Me.ID && IgnoreOwnEvents)) { return; }
+            if (UserJoined == null || (userID == Me.ID && IgnoreOwnEvents)) { return; }
 
-            UserJoind(user);
+            UserJoined(this, new UserEventArgs(user));
         }
 
         private void HandleUserLeave(JToken json)
@@ -812,7 +912,7 @@ namespace ChatExchangeDotNet
 
             if (UserLeft == null || (userID == Me.ID && IgnoreOwnEvents)) { return; }
 
-            UserLeft(user);
+            UserLeft(this, new UserEventArgs(user));
         }
 
         # endregion

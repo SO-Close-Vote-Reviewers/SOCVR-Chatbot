@@ -32,7 +32,7 @@ namespace CVChatbot.UI
             lblCurrentStatus.Content = "Disconnected";
         }
 
-        void mng_ShutdownOrderGiven()
+        void mng_ShutdownOrderGiven(object sender, EventArgs e)
         {
             Dispatcher.Invoke(() => this.Close());
         }
@@ -41,13 +41,16 @@ namespace CVChatbot.UI
         {
             if (btnStartStop.Content.ToString() == "Start Bot")
             {
-                RoomManagerSettings settings = new RoomManagerSettings()
+                var settings = new InstallationSettings()
                 {
-                    ChatRoomUrl = SettingsAccessor.GetSettingValue<string>("ChatRoomUrl"),
-                    Username = SettingsAccessor.GetSettingValue<string>("LoginUsername"),
-                    Email = SettingsAccessor.GetSettingValue<string>("LoginEmail"),
-                    Password = SettingsAccessor.GetSettingValue<string>("LoginPassword"),
-                    StartUpMessage = SettingsAccessor.GetSettingValue<string>("StartUpMessage"),
+                    ChatRoomUrl = SettingsFileAccessor.GetSettingValue<string>("ChatRoomUrl"),
+                    Email = SettingsFileAccessor.GetSettingValue<string>("LoginEmail"),
+                    Password = SettingsFileAccessor.GetSettingValue<string>("LoginPassword"),
+                    StartUpMessage = SettingsFileAccessor.GetSettingValue<string>("StartUpMessage"),
+                    StopMessage = SettingsFileAccessor.GetSettingValue<string>("StopMessage"),
+                    MaxReviewLengthHours = SettingsFileAccessor.GetSettingValue<int>("MaxReviewLengthHours"),
+                    DefaultCompletedTagsPeopleThreshold = SettingsFileAccessor.GetSettingValue<int>("DefaultCompletedTagsPeopleThreshold"),
+                    MaxTagsToFetch = SettingsFileAccessor.GetSettingValue<int>("MaxFetchTags"),
                 };
 
                 lblCurrentStatus.Content = "Joining...";
@@ -60,9 +63,7 @@ namespace CVChatbot.UI
             }
             else
             {
-                var stopMessage = SettingsAccessor.GetSettingValue<string>("StopMessage");
-
-                mng.LeaveRoom(stopMessage);
+                mng.LeaveRoom();
                 mng = new RoomManager();
                 lblCurrentStatus.Content = "Disconnected";
                 btnStartStop.Content = "Start Bot";
