@@ -45,7 +45,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
 
         protected override string GetRegexMatchingPattern()
         {
-            return @"^passed\s+(an?\s+)?(\S+)\s+audit$";
+            return @"^passed\s+(?:an?\s+)?(\S+)\s+audit$";
         }
 
         public override string GetActionName()
