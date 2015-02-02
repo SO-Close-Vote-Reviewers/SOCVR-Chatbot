@@ -1,6 +1,19 @@
 SOCVR-Chatbot
 =============
 
-Chatbot for the SO Close Vote Reviewers Chat Room
+This is a chatbot for the SO Close Vote Reviewers chat room. It is designed to track the actions of the members, provide statistics, and perform repetitive tasks that otherwise would have to be done manually.
 
-A list of commands and ideas can be found on the [setup page](https://github.com/gunr2171/SOCVR-Chatbot/blob/master/setup.md).
+Find it running at the [Close Vote Reviewers chat room](http://chat.stackoverflow.com/rooms/41570/so-close-vote-reviewers).
+
+##Interactions##
+
+Instead of using a prefix (like `!!` or `<<`), you talk to the chat user directly in the following ways:
+
+1. @reply the user
+
+        @Chatbot, alive?
+        I'm not dead yet!
+2. Reply to any message said by the chatbot
+
+##More Documentation##
+Find out more info on the project's [wiki pages](https://github.com/SO-Close-Vote-Reviewers/SOCVR-Chatbot/wiki), including a list of commands and triggers.
