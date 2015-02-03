@@ -35,6 +35,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                     .Groups[1]
                     .Value
                     .Parse<int>();
+
                 if (newReviewCount < 0)
                 {
                     chatRoom.PostReplyOrThrow(incommingChatMessage, "New review count cannot be negative.");
@@ -56,7 +57,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                         lastSession.SessionEnd.Value.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'"),
                         previousReviewCount.HasValue
                             ? previousReviewCount.Value.ToString()
-                            : "[Not Set]", 
+                            : "[Not Set]",
                         lastSession.ItemsReviewed.Value);
 
                 db.SaveChanges();
