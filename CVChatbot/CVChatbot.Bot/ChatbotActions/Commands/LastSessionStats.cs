@@ -45,7 +45,16 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 }
                 else
                 {
-                    var averageTimePerReview = new TimeSpan(sessionLength.Ticks / (lastSession.ItemsReviewed.Value));
+                    TimeSpan averageTimePerReview;
+                    var itemsReviewed = lastSession.ItemsReviewed.Value;
+                    if (itemsReviewed != 0)
+                    {
+                        averageTimePerReview = new TimeSpan(sessionLength.Ticks / (itemsReviewed));
+                    }
+                    else
+                    {
+                        averageTimePerReview = new TimeSpan(0);
+                    }
 
                     statMessage += "You reviewed {2} items, averaging a review every {3}.";
                     statMessage = statMessage.FormatSafely(

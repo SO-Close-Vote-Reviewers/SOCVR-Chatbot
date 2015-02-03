@@ -35,7 +35,11 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                     .Groups[1]
                     .Value
                     .Parse<int>();
-
+                if (newReviewCount < 0)
+                {
+                    chatRoom.PostReplyOrThrow(incommingChatMessage, "New review count cannot be negative.");
+                    return;
+                }
                 var previousReviewCount = lastSession.ItemsReviewed;
                 lastSession.ItemsReviewed = newReviewCount;
 
