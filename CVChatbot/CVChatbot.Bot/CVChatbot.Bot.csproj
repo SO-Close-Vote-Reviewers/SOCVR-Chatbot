@@ -35,12 +35,10 @@
     <Reference Include="CsQuery">
       <HintPath>..\packages\CsQuery.1.3.4\lib\net40\CsQuery.dll</HintPath>
     </Reference>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="EntityFramework">
       <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="EntityFramework.SqlServer">
       <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="HtmlAgilityPack">
@@ -152,21 +150,21 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ChatExchange.Net\ChatExchange.Net.csproj">
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ChatExchange.Net\ChatExchange.Net\ChatExchange.Net.csproj">
       <Project>{145af77f-b475-40e4-8b85-ce3393bcd906}</Project>
       <Name>ChatExchange.Net</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SOCVR.Net\SOCVR.Net.csproj">
+    <ProjectReference Include="..\..\SOCVR.Net\SOCVR.Net\SOCVR.Net\SOCVR.Net.csproj">
       <Project>{b96f1bff-c14b-44ad-aad5-09cbc0417c44}</Project>
       <Name>SOCVR.Net</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TheCommonLibrary\TheCommonLibrary.csproj">
-      <Project>{2205bc81-231c-4a89-ba63-4be24ba2c5c6}</Project>
-      <Name>TheCommonLibrary</Name>
+    <ProjectReference Include="..\..\TheCommonLibrary\TCL.Extensions\TCL.Extensions.csproj">
+      <Project>{135f21bf-e010-4793-9fa0-52b0d3493e59}</Project>
+      <Name>TCL.Extensions</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

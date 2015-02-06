@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TheCommonLibrary.Extensions;
+using TCL.Extensions;
 
 namespace CVChatbot.Bot
 {
@@ -98,11 +98,11 @@ namespace CVChatbot.Bot
             cvChatRoom.Leave();
         }
 
-        private async void cvChatRoom_NewMessage(object sender , MessageEventArgs e)
+        private async void cvChatRoom_NewMessage(Message e)
         {
             try
             {
-                await Task.Run(() => cmp.ProcessChatMessage(e.Message, cvChatRoom));
+                await Task.Run(() => cmp.ProcessChatMessage(e, cvChatRoom));
             }
             catch (Exception ex)
             {

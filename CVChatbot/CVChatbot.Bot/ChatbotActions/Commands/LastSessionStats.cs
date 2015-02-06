@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using TheCommonLibrary.Extensions;
+using TCL.Extensions;
 using CVChatbot.Bot.Model;
 
 namespace CVChatbot.Bot.ChatbotActions.Commands

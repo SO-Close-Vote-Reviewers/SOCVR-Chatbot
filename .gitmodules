@@ -1,0 +1,9 @@
+[submodule "TheCommonLibrary"]
+	path = TheCommonLibrary
+	url = https://github.com/gunr2171/TheCommonLibrary
+[submodule "SOCVR.Net"]
+	path = SOCVR.Net
+	url = https://github.com/SO-Close-Vote-Reviewers/SOCVR.Net
+[submodule "ChatExchange.Net"]
+	path = ChatExchange.Net
+	url = https://github.com/ArcticEcho/ChatExchange.Net

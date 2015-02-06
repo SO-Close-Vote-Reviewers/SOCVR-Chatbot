@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TheCommonLibrary.Extensions;
+using TCL.Extensions;
 using System.Text.RegularExpressions;
 using System.Threading;
 using CVChatbot.Bot.Model;
