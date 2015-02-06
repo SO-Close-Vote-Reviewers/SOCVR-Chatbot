@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TheCommonLibrary.Extensions;
+using TCL.Extensions;
 
 namespace CVChatbot.Bot
 {
@@ -91,30 +91,31 @@ namespace CVChatbot.Bot
         /// <returns></returns>
         private bool DoesUserHavePermissionToRunAction(ChatbotAction actionToRun, int chatUserId)
         {
-            var neededPermissionLevel = actionToRun.GetPermissionLevel();
+            return true;
+            //var neededPermissionLevel = actionToRun.GetPermissionLevel();
 
-            // If the permission level of the action is "everyone" then just return true.
-            // Don't need to do anything else, like searching though the database.
-            if (neededPermissionLevel == ActionPermissionLevel.Everyone)
-                return true;
+            //// If the permission level of the action is "everyone" then just return true.
+            //// Don't need to do anything else, like searching though the database.
+            //if (neededPermissionLevel == ActionPermissionLevel.Everyone)
+            //    return true;
 
-            // Now you need to look up the person in the database
-            using (var db = new CVChatBotEntities())
-            {
-                var dbUser = db.RegisteredUsers.SingleOrDefault(x => x.ChatProfileId == chatUserId);
+            //// Now you need to look up the person in the database
+            //using (var db = new CVChatBotEntities())
+            //{
+            //    var dbUser = db.RegisteredUsers.SingleOrDefault(x => x.ChatProfileId == chatUserId);
 
-                if (dbUser == null) // At this point, the permission is Registered or Owner,
-                    return false;    // and if the user is not in the database at all then it can't work.
+            //    if (dbUser == null) // At this point, the permission is Registered or Owner,
+            //        return false;    // and if the user is not in the database at all then it can't work.
 
-                if (neededPermissionLevel == ActionPermissionLevel.Registered)
-                    return true; // The user is in the list, that's all we need to check.
+            //    if (neededPermissionLevel == ActionPermissionLevel.Registered)
+            //        return true; // The user is in the list, that's all we need to check.
 
-                if (dbUser.IsOwner && neededPermissionLevel == ActionPermissionLevel.Owner)
-                    return true;
-            }
+            //    if (dbUser.IsOwner && neededPermissionLevel == ActionPermissionLevel.Owner)
+            //        return true;
+            //}
 
-            // Fall past the last check (for owner), so default to "no".
-            return false;
+            //// Fall past the last check (for owner), so default to "no".
+            //return false;
         }
 
         /// <summary>
