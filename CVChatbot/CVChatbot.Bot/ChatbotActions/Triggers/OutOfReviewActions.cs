@@ -39,7 +39,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
 
         protected override string GetRegexMatchingPattern()
         {
-            return @"^(?:> )?thank you for reviewing (\d+) close votes today; come back in ([\w ]+) to continue reviewing\.$";
+            return @"^>? *thank you for reviewing (\d+) close votes today; come back in ([\w ]+) to continue reviewing\.$";
         }
 
         public override string GetActionName()

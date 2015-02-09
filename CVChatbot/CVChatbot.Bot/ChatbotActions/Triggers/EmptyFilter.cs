@@ -54,7 +54,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
 
         protected override string GetRegexMatchingPattern()
         {
-            return "(?:> )?there are no items for you to review, matching the filter \"(?:[A-z-, ']+; )?([\\S ]+)\"";
+            return ">? *there are no items for you to review, matching the filter \"(?:[A-z-, ']+; )?([\\S ]+)\"";
         }
 
         public override string GetActionName()
