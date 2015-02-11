@@ -35,6 +35,60 @@ namespace CVChatbot.Bot.Database
                 ));
         }
 
+        /// <summary>
+        /// Returns the registered user that contains the given chat profile id.
+        /// Returns null if the user cannot be found.
+        /// </summary>
+        /// <param name="chatProfileId"></param>
+        /// <returns></returns>
+        public RegisteredUser GetRegisteredUserByChatProfileId(int chatProfileId)
+        {
+            var sql = "select * from RegisteredUser where ChatProfileId = @ChatProfileId;";
 
+            return RunScript<RegisteredUser>(sql,
+                (c) =>
+                {
+                    c.AddWithValue("@ChatProfileId", chatProfileId);
+                },
+                new Func<DataTable, RegisteredUser>(dt =>
+                    dt.AsEnumerable()
+                        .Select(x => new RegisteredUser
+                        {
+                            Id = x.Field<int>("Id"),
+                            ChatProfileId = x.Field<int>("ChatProfileId"),
+                            IsOwner = x.Field<bool>("IsOwner")
+                        })
+                        .SingleOrDefault()
+                ));
+        }
+
+        private void AddRegisteredUser(int chatProfileId)
+        {
+            var sql = "insert into RegisteredUser (ChatProfileId, IsOwner) values (@ChatProfileId, 0);";
+
+            RunScript(sql,
+                (c) =>
+                {
+                    c.AddWithValue("@ChatProfileId", chatProfileId);
+                });
+        }
+
+        /// <summary>
+        /// Adds the specified user to the tracked users list.
+        /// If user already exists the method will return true.
+        /// If the user did not exist and was added the method will return false.
+        /// </summary>
+        /// <param name="chatProfileId"></param>
+        /// <returns>"Was the user already in the list?"</returns>
+        public bool AddUserToRegisteredUserList(int chatProfileId)
+        {
+            var existingUser = GetRegisteredUserByChatProfileId(chatProfileId);
+
+            if (existingUser != null)
+                return true; //already exists
+
+            AddRegisteredUser(chatProfileId);
+            return false;
+        }
     }
 }
