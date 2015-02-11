@@ -1,7 +1,7 @@
 ﻿using ChatExchangeDotNet;
 using CVChatbot.Bot.ChatbotActions;
 using CVChatbot.Bot.ChatbotActions.Commands;
-using CVChatbot.Bot.Model;
+using CVChatbot.Bot.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -160,5 +160,10 @@ namespace CVChatbot.Bot
         /// The maximum number of tags that can be fetched with the NextTags command.
         /// </summary>
         public int MaxTagsToFetch { get; set; }
+
+        /// <summary>
+        /// The connection string for the database.
+        /// </summary>
+        public string DatabaseConnectionString { get; set; }
     }
 }
