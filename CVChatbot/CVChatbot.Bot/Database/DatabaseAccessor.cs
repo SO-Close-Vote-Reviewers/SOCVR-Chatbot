@@ -150,8 +150,15 @@ order by rs.SessionStart desc";
 
         public void EditLatestCompletedSessionItemsReviewedCount(int sessionId, int? newItemsReviewedCount)
         {
-#error finish this
-#error need to account for incomming null values here, need to add "AddParam" into TCL
+            var sql = @"
+update ReviewSession
+set ItemsReviewed = @NewItemsReviewedCount
+where Id = @SessionId;";
+
+            RunScript(sql, (c) =>
+            {
+                c.AddParam("@NewItemsReviewedCount", newItemsReviewedCount);
+            });
         }
 
         public ReviewSession GetLatestCompletedSession(int chatProfileId)

@@ -56,9 +56,9 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                         : "[Not Set]",
                     lastSession.ItemsReviewed.Value);
 
-            db.SaveChanges();
-            chatRoom.PostReplyOrThrow(incommingChatMessage, replyMessage);
+            da.EditLatestCompletedSessionItemsReviewedCount(lastSession.Id, newReviewCount);
 
+            chatRoom.PostReplyOrThrow(incommingChatMessage, replyMessage);
         }
 
         public override ActionPermissionLevel GetPermissionLevel()
