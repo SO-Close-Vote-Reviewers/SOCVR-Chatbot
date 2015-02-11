@@ -18,21 +18,21 @@ namespace CVChatbot.Bot.Database
             var sql = @"select * from GetCompletedTags(@PersonThreshold, @MaxReturnEntries);";
 
             return RunScript<List<CompletedTag>>(sql,
-                (c) =>
-                {
-                    c.AddWithValue("@PersonThreshold", personThreshold);
-                    c.AddWithValue("@MaxReturnEntries", maxReturnEntries);
-                },
-                new Func<DataTable, List<CompletedTag>>(dt =>
-                    dt.AsEnumerable()
-                        .Select(x => new CompletedTag
-                        {
-                            TagName = x.Field<string>("TagName"),
-                            PeopleWhoCompletedTag = x.Field<int>("PeopleWhoCompletedTag"),
-                            LastEntryTs = x.Field<DateTimeOffset>("LastEntryTs"),
-                        })
-                        .ToList()
-                ));
+            (c) =>
+            {
+                c.AddWithValue("@PersonThreshold", personThreshold);
+                c.AddWithValue("@MaxReturnEntries", maxReturnEntries);
+            },
+            new Func<DataTable, List<CompletedTag>>(dt =>
+                dt.AsEnumerable()
+                    .Select(x => new CompletedTag
+                    {
+                        TagName = x.Field<string>("TagName"),
+                        PeopleWhoCompletedTag = x.Field<int>("PeopleWhoCompletedTag"),
+                        LastEntryTs = x.Field<DateTimeOffset>("LastEntryTs"),
+                    })
+                    .ToList()
+            ));
         }
 
         /// <summary>
@@ -46,20 +46,20 @@ namespace CVChatbot.Bot.Database
             var sql = "select * from RegisteredUser where ChatProfileId = @ChatProfileId;";
 
             return RunScript<RegisteredUser>(sql,
-                (c) =>
-                {
-                    c.AddWithValue("@ChatProfileId", chatProfileId);
-                },
-                new Func<DataTable, RegisteredUser>(dt =>
-                    dt.AsEnumerable()
-                        .Select(x => new RegisteredUser
-                        {
-                            Id = x.Field<int>("Id"),
-                            ChatProfileId = x.Field<int>("ChatProfileId"),
-                            IsOwner = x.Field<bool>("IsOwner")
-                        })
-                        .SingleOrDefault()
-                ));
+            (c) =>
+            {
+                c.AddWithValue("@ChatProfileId", chatProfileId);
+            },
+            new Func<DataTable, RegisteredUser>(dt =>
+                dt.AsEnumerable()
+                    .Select(x => new RegisteredUser
+                    {
+                        Id = x.Field<int>("Id"),
+                        ChatProfileId = x.Field<int>("ChatProfileId"),
+                        IsOwner = x.Field<bool>("IsOwner")
+                    })
+                    .SingleOrDefault()
+            ));
         }
 
         public void AddRegisteredUser(int chatProfileId)
@@ -67,10 +67,10 @@ namespace CVChatbot.Bot.Database
             var sql = "insert into RegisteredUser (ChatProfileId, IsOwner) values (@ChatProfileId, 0);";
 
             RunScript(sql,
-                (c) =>
-                {
-                    c.AddWithValue("@ChatProfileId", chatProfileId);
-                });
+            (c) =>
+            {
+                c.AddWithValue("@ChatProfileId", chatProfileId);
+            });
         }
 
         /// <summary>
@@ -97,20 +97,20 @@ namespace CVChatbot.Bot.Database
             var sql = "select * from GetUserAuditStats(@ChatProfileId) a order by a.[Percent] desc;";
 
             return RunScript<List<UserAuditStatEntry>>(sql,
-                (c) =>
-                {
-                    c.AddWithValue(@"ChatProfileId", chatProfileId);
-                },
-                new Func<DataTable, List<UserAuditStatEntry>>(dt =>
-                    dt.AsEnumerable()
-                        .Select(x => new UserAuditStatEntry
-                        {
-                            TagName = x.Field<string>("TagName"),
-                            Percent = x.Field<decimal>("Percent"),
-                            Count = x.Field<int>("Count")
-                        })
-                        .ToList()
-                ));
+            (c) =>
+            {
+                c.AddWithValue(@"ChatProfileId", chatProfileId);
+            },
+            new Func<DataTable, List<UserAuditStatEntry>>(dt =>
+                dt.AsEnumerable()
+                    .Select(x => new UserAuditStatEntry
+                    {
+                        TagName = x.Field<string>("TagName"),
+                        Percent = x.Field<decimal>("Percent"),
+                        Count = x.Field<int>("Count")
+                    })
+                    .ToList()
+            ));
         }
 
         public DateTimeOffset? GetCurrentSessionStartTs(int chatProfileId)
@@ -118,13 +118,13 @@ namespace CVChatbot.Bot.Database
             var sql = "select dbo.GetUsersCurrentSession(@ChatProfileId) [SessionStartTs]";
 
             return RunScript<DateTimeOffset?>(sql,
-                (c) =>
-                {
-                    c.AddWithValue("@ChatProfileId", chatProfileId);
-                },
-                new Func<DataRow, DateTimeOffset?>(dr =>
-                    dr.Field<DateTimeOffset?>("SessionStartTs")
-                ));
+            (c) =>
+            {
+                c.AddWithValue("@ChatProfileId", chatProfileId);
+            },
+            new Func<DataRow, DateTimeOffset?>(dr =>
+                dr.Field<DateTimeOffset?>("SessionStartTs")
+            ));
         }
 
         public ReviewSession GetLatestSessionForUser(int chatProfileId)
@@ -137,22 +137,54 @@ where r.ChatProfileId = @ChatProfileId
 order by rs.SessionStart desc";
 
             return RunScript<ReviewSession>(sql,
-                (c) =>
-                {
-                    c.AddWithValue("@ChatProfileId", chatProfileId);
-                },
-                new Func<DataTable, ReviewSession>(dt =>
-                    dt.AsEnumerable()
-                        .Select(x => new ReviewSession
-                        {
-                            Id = x.Field<int>("Id"),
-                            RegisteredUserId = x.Field<int>("RegisteredUserId"),
-                            SessionStart = x.Field<DateTimeOffset>("SessionStart"),
-                            SessionEnd = x.Field<DateTimeOffset?>("SessionEnd"),
-                            ItemsReviewed = x.Field<int?>("ItemsReviewed"),
-                        })
-                        .SingleOrDefault()
-                ));
+            (c) =>
+            {
+                c.AddWithValue("@ChatProfileId", chatProfileId);
+            },
+            new Func<DataTable, ReviewSession>(dt =>
+                dt.AsEnumerable()
+                    .Select(ConvertDataRowToReviewSession)
+                    .SingleOrDefault()
+            ));
+        }
+
+        public void EditLatestCompletedSessionItemsReviewedCount(int sessionId, int? newItemsReviewedCount)
+        {
+#error finish this
+#error need to account for incomming null values here, need to add "AddParam" into TCL
+        }
+
+        public ReviewSession GetLatestCompletedSession(int chatProfileId)
+        {
+            var sql = @"
+select top 1 rs.*
+from ReviewSession rs
+inner join RegisteredUser r on rs.RegisteredUserId = r.Id
+where r.ChatProfileId = @ChatProfileId and rs.SessionEnd is not null
+order by rs.SessionStart desc";
+
+            return RunScript<ReviewSession>(sql,
+            (c) =>
+            {
+                c.AddWithValue("@ChatProfileId", chatProfileId);
+            },
+            new Func<DataTable, ReviewSession>(dt =>
+                dt.AsEnumerable()
+                    .Select(ConvertDataRowToReviewSession)
+                    .SingleOrDefault()
+            ));
+        }
+
+        private ReviewSession ConvertDataRowToReviewSession(DataRow dr)
+        {
+            return new ReviewSession
+            {
+                Id = dr.Field<int>("Id"),
+                RegisteredUserId = dr.Field<int>("RegisteredUserId"),
+                SessionStart = dr.Field<DateTimeOffset>("SessionStart"),
+                SessionEnd = dr.Field<DateTimeOffset?>("SessionEnd"),
+                ItemsReviewed = dr.Field<int?>("ItemsReviewed"),
+            };
         }
 
         public void SetSessionEndTs(int sessionId, DateTimeOffset newSessionEndTs)
