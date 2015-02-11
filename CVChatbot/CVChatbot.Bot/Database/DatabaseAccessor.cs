@@ -111,5 +111,19 @@ namespace CVChatbot.Bot.Database
                         .ToList()
                 ));
         }
+
+        public DateTimeOffset? GetCurrentSessionStartTs(int chatProfileId)
+        {
+            var sql = "select dbo.GetUsersCurrentSession(@ChatProfileId) [SessionStartTs]";
+
+            return RunScript<DateTimeOffset?>(sql,
+                (c) =>
+                {
+                    c.AddWithValue("@ChatProfileId", chatProfileId);
+                },
+                new Func<DataRow, DateTimeOffset?>(dr =>
+                    dr.Field<DateTimeOffset?>("SessionStartTs")
+                ));
+        }
     }
 }
