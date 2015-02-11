@@ -90,5 +90,26 @@ namespace CVChatbot.Bot.Database
             AddRegisteredUser(chatProfileId);
             return false;
         }
+
+        public List<UserAuditStatEntry> GetUserAuditStats(int chatProfileId)
+        {
+            var sql = "select * from GetUserAuditStats(@ChatProfileId) a order by a.[Percent] desc;";
+
+            return RunScript<List<UserAuditStatEntry>>(sql,
+                (c) =>
+                {
+                    c.AddWithValue(@"ChatProfileId", chatProfileId);
+                },
+                new Func<DataTable, List<UserAuditStatEntry>>(dt =>
+                    dt.AsEnumerable()
+                        .Select(x => new UserAuditStatEntry
+                        {
+                            TagName = x.Field<string>("TagName"),
+                            Percent = x.Field<decimal>("Percent"),
+                            Count = x.Field<int>("Count")
+                        })
+                        .ToList()
+                ));
+        }
     }
 }

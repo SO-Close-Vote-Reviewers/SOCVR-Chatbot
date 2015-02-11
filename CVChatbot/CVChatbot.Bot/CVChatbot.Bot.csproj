@@ -94,6 +94,7 @@
     <Compile Include="Database\CompletedTag.cs" />
     <Compile Include="Database\DatabaseAccessor.cs" />
     <Compile Include="Database\RegisteredUser.cs" />
+    <Compile Include="Database\UserAuditStatEntry.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
