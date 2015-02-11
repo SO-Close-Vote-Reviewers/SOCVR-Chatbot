@@ -62,7 +62,7 @@ namespace CVChatbot.Bot.Database
                 ));
         }
 
-        private void AddRegisteredUser(int chatProfileId)
+        public void AddRegisteredUser(int chatProfileId)
         {
             var sql = "insert into RegisteredUser (ChatProfileId, IsOwner) values (@ChatProfileId, 0);";
 
@@ -82,6 +82,7 @@ namespace CVChatbot.Bot.Database
         /// <returns>"Was the user already in the list?"</returns>
         public bool AddUserToRegisteredUserList(int chatProfileId)
         {
+#error this class should not be doing this sort of logic. move this out to the calling command.
             var existingUser = GetRegisteredUserByChatProfileId(chatProfileId);
 
             if (existingUser != null)
@@ -124,6 +125,48 @@ namespace CVChatbot.Bot.Database
                 new Func<DataRow, DateTimeOffset?>(dr =>
                     dr.Field<DateTimeOffset?>("SessionStartTs")
                 ));
+        }
+
+        public ReviewSession GetLatestSessionForUser(int chatProfileId)
+        {
+            var sql = @"
+select top 1 rs.*
+from ReviewSession rs
+inner join RegisteredUser r on rs.RegisteredUserId = r.Id
+where r.ChatProfileId = @ChatProfileId
+order by rs.SessionStart desc";
+
+            return RunScript<ReviewSession>(sql,
+                (c) =>
+                {
+                    c.AddWithValue("@ChatProfileId", chatProfileId);
+                },
+                new Func<DataTable, ReviewSession>(dt =>
+                    dt.AsEnumerable()
+                        .Select(x => new ReviewSession
+                        {
+                            Id = x.Field<int>("Id"),
+                            RegisteredUserId = x.Field<int>("RegisteredUserId"),
+                            SessionStart = x.Field<DateTimeOffset>("SessionStart"),
+                            SessionEnd = x.Field<DateTimeOffset?>("SessionEnd"),
+                            ItemsReviewed = x.Field<int?>("ItemsReviewed"),
+                        })
+                        .SingleOrDefault()
+                ));
+        }
+
+        public void SetSessionEndTs(int sessionId, DateTimeOffset newSessionEndTs)
+        {
+            var sql = @"
+update ReviewSession
+set SessionEnd = @NewSessionEndTs
+where Id = @SessionId;";
+
+            RunScript(sql, (c) =>
+            {
+                c.AddWithValue("@NewSessionEndTs", newSessionEndTs);
+                c.AddWithValue("@SessionId", sessionId);
+            });
         }
     }
 }
