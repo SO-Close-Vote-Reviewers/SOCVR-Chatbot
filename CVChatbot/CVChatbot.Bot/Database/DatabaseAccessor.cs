@@ -166,6 +166,13 @@ order by rs.SessionStart desc";
             ));
         }
 
+        public void InsertUnrecognizedCommand(string unrecognizedCommand)
+        {
+            var sql = "insert into UnrecognizedCommand([Command]) values (@Command);";
+
+            RunScript(sql, (c) => c.AddParam("@Command", unrecognizedCommand));
+        }
+
         public void InsertCompletedAuditEntry(int chatProfileId, string tagName)
         {
             var sql = @"
