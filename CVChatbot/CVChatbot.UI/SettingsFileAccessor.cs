@@ -28,10 +28,22 @@ namespace CVChatbot.UI
 
             var settings = File.ReadAllLines("settings.txt")
                     .Where(x => !string.IsNullOrWhiteSpace(x) && !x.StartsWith("#"))
-                    .Select(x => x.Split('='))
+                    .Select(x => SplitSettingsLine(x))
                     .ToDictionary(x => x[0], x => x[1]);
 
             return settings[key].Parse<TValue>();
+        }
+
+        private static string[] SplitSettingsLine(string line)
+        {
+            //first, find the location of the first '='
+            var firstEqualsIndex = line.IndexOf('=');
+
+            var outputArray = new string[2];
+            outputArray[0] = line.Substring(0, firstEqualsIndex);
+            outputArray[1] = line.Substring(firstEqualsIndex + 1);
+
+            return outputArray;
         }
     }
 }

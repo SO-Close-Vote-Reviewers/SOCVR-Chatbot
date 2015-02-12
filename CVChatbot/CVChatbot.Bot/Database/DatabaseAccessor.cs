@@ -195,8 +195,8 @@ insert into CompletedAuditEntry(RegisteredUserId, TagName, EntryTs)
         {
             var sql = @"
 update ReviewSession
-set ItemsReviewed = @ItemsReviewed
-    EndSessionTs = SYSDATETIMEOFFSET()
+set ItemsReviewed = @ItemsReviewed,
+    SessionEnd = SYSDATETIMEOFFSET()
 where Id = @SessionId;";
 
             RunScript(sql, (c) =>
