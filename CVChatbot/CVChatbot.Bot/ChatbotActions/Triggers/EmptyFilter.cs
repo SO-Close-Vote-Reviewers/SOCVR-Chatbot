@@ -1,5 +1,5 @@
 ﻿using ChatExchangeDotNet;
-using CVChatbot.Bot.Model;
+using CVChatbot.Bot.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,24 +26,12 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
                 .Select(x => x.Groups[1].Value)
                 .ToList();
 
+            var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
+
             // Save the tags to the database.
-            using (var db = new CVChatBotEntities())
+            foreach (var tagName in parsedTagNames)
             {
-                foreach (var tagName in parsedTagNames)
-                {
-                    var registedUser = db.RegisteredUsers
-                        .Single(x => x.ChatProfileId == incommingChatMessage.AuthorID);
-
-                    var newEntry = new NoItemsInFilterEntry()
-                    {
-                        EntryTs = DateTimeOffset.Now,
-                        RegisteredUser = registedUser,
-                        TagName = tagName
-                    };
-
-                    db.NoItemsInFilterEntries.Add(newEntry);
-                    db.SaveChanges();
-                }
+                da.InsertNoItemsInFilterRecord(incommingChatMessage.AuthorID, tagName);
             }
         }
 

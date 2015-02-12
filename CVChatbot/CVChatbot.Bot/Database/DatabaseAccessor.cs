@@ -204,5 +204,23 @@ where Id = @SessionId;";
                 c.AddWithValue("@SessionId", sessionId);
             });
         }
+
+        public void InsertNoItemsInFilterRecord(int chatProfileId, string tagName)
+        {
+            var sql = @"
+insert into NoItemsInFilterEntry(RegisteredUserId, TagName, EntryTs)
+	select
+		ru.Id,
+		@TagName,
+		SYSDATETIMEOFFSET()
+	from RegisteredUser ru
+	where ru.ChatProfileId = @ChatProfileId;";
+
+            RunScript(sql, (c) =>
+            {
+                c.AddParam("@TagName", tagName);
+                c.AddParam("@ChatProfileId", chatProfileId);
+            });
+        }
     }
 }
