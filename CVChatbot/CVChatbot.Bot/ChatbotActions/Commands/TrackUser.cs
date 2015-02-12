@@ -21,18 +21,19 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
             DatabaseAccessor da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
 
-            var alreadyInDb = da.AddUserToRegisteredUserList(userIdToAdd);
+            var existingUser = da.GetRegisteredUserByChatProfileId(userIdToAdd);
 
-            if (alreadyInDb)
+            if (existingUser != null)
             {
                 chatRoom.PostReplyOrThrow(incommingChatMessage, "That user is already in the system!");
+                return;
             }
-            else
-            {
-                var chatUser = chatRoom.GetUser(userIdToAdd);
-                chatRoom.PostReplyOrThrow(incommingChatMessage, "Ok, I added {0} ({1}) to the tracked users list."
-                    .FormatInline(chatUser.Name, chatUser.ID));
-            }
+
+            da.AddUserToRegisteredUsersList(userIdToAdd);
+
+            var chatUser = chatRoom.GetUser(userIdToAdd);
+            chatRoom.PostReplyOrThrow(incommingChatMessage, "Ok, I added {0} ({1}) to the tracked users list."
+                .FormatInline(chatUser.Name, chatUser.ID));
         }
 
         public override ActionPermissionLevel GetPermissionLevel()

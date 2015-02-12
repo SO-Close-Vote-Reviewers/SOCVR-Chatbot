@@ -62,7 +62,7 @@ namespace CVChatbot.Bot.Database
             ));
         }
 
-        public void AddRegisteredUser(int chatProfileId)
+        public void AddUserToRegisteredUsersList(int chatProfileId)
         {
             var sql = "insert into RegisteredUser (ChatProfileId, IsOwner) values (@ChatProfileId, 0);";
 
@@ -71,25 +71,6 @@ namespace CVChatbot.Bot.Database
             {
                 c.AddWithValue("@ChatProfileId", chatProfileId);
             });
-        }
-
-        /// <summary>
-        /// Adds the specified user to the tracked users list.
-        /// If user already exists the method will return true.
-        /// If the user did not exist and was added the method will return false.
-        /// </summary>
-        /// <param name="chatProfileId"></param>
-        /// <returns>"Was the user already in the list?"</returns>
-        public bool AddUserToRegisteredUserList(int chatProfileId)
-        {
-#error this class should not be doing this sort of logic. move this out to the calling command.
-            var existingUser = GetRegisteredUserByChatProfileId(chatProfileId);
-
-            if (existingUser != null)
-                return true; //already exists
-
-            AddRegisteredUser(chatProfileId);
-            return false;
         }
 
         public List<UserAuditStatEntry> GetUserAuditStats(int chatProfileId)
@@ -111,6 +92,22 @@ namespace CVChatbot.Bot.Database
                     })
                     .ToList()
             ));
+        }
+
+        public void StartReviewSession(int chatProfileId)
+        {
+            var sql = @"
+insert into ReviewSession (RegisteredUserId, SessionStart)
+	select
+		ru.Id,
+		SYSDATETIMEOFFSET()
+	from RegisteredUser ru
+	where ru.ChatProfileId = @ChatProfileId;";
+
+            RunScript(sql, (c) =>
+            {
+                c.AddParam("@ChatProfileId", chatProfileId);
+            });
         }
 
         public DateTimeOffset? GetCurrentSessionStartTs(int chatProfileId)
