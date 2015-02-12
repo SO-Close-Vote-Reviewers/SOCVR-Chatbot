@@ -5,7 +5,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TheCommonLibrary.Extensions;
-using CVChatbot.Bot.Model;
 using CVChatbot.Bot.Database;
 
 namespace CVChatbot.Bot.ChatbotActions.Commands
