@@ -124,6 +124,27 @@ insert into ReviewSession (RegisteredUserId, SessionStart)
             ));
         }
 
+        public ReviewSession GetLatestOpenSessionForUser(int chatProfileId)
+        {
+            var sql = @"
+select top 1 rs.*
+from ReviewSession rs
+inner join RegisteredUser r on rs.RegisteredUserId = r.Id
+where r.ChatProfileId = @ChatProfileId and rs.SessionEnd is null
+order by rs.SessionStart desc";
+
+            return RunScript<ReviewSession>(sql,
+            (c) =>
+            {
+                c.AddWithValue("@ChatProfileId", chatProfileId);
+            },
+            new Func<DataTable, ReviewSession>(dt =>
+                dt.AsEnumerable()
+                    .Select(ConvertDataRowToReviewSession)
+                    .SingleOrDefault()
+            ));
+        }
+
         public ReviewSession GetLatestSessionForUser(int chatProfileId)
         {
             var sql = @"
@@ -145,6 +166,21 @@ order by rs.SessionStart desc";
             ));
         }
 
+        public void EndReviewSession(int sessionId, int? itemsReviewed)
+        {
+            var sql = @"
+update ReviewSession
+set ItemsReviewed = @ItemsReviewed
+    EndSessionTs = SYSDATETIMEOFFSET()
+where Id = @SessionId;";
+
+            RunScript(sql, (c) =>
+            {
+                c.AddParam("@ItemsReviewed", itemsReviewed);
+                c.AddParam("@SessionId", sessionId);
+            });
+        }
+
         public void EditLatestCompletedSessionItemsReviewedCount(int sessionId, int? newItemsReviewedCount)
         {
             var sql = @"
@@ -155,6 +191,7 @@ where Id = @SessionId;";
             RunScript(sql, (c) =>
             {
                 c.AddParam("@NewItemsReviewedCount", newItemsReviewedCount);
+                c.AddParam("@SessionId", sessionId);
             });
         }
 
