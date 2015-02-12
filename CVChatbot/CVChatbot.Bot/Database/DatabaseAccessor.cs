@@ -166,6 +166,24 @@ order by rs.SessionStart desc";
             ));
         }
 
+        public void InsertCompletedAuditEntry(int chatProfileId, string tagName)
+        {
+            var sql = @"
+insert into CompletedAuditEntry(RegisteredUserId, TagName, EntryTs)
+	select
+		ru.Id,
+		@TagName,
+		SYSDATETIMEOFFSET()
+	from RegisteredUser ru
+	where ru.ChatProfileId = @ChatProfileId;";
+
+            RunScript(sql, (c) =>
+            {
+                c.AddParam("@TagName", tagName);
+                c.AddParam("@ChatProfileId", chatProfileId);
+            });
+        }
+
         public void EndReviewSession(int sessionId, int? itemsReviewed)
         {
             var sql = @"
