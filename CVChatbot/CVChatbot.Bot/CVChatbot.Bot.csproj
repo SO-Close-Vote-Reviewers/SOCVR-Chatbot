@@ -107,7 +107,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.Config" />
-    <None Include="Diagrams\ChatbotActions.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
