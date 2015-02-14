@@ -49,7 +49,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                     .ToList();
 
                 var headerMessage = "Showing the latest 10 tags that have been cleared by at least {0} {1}."
-                .FormatInline(peopleThreshold, peopleThreshold != 1 ? "people" : "person");
+                    .FormatInline(peopleThreshold, peopleThreshold != 1 ? "people" : "person");
 
                 if (usingDefault)
                 {
