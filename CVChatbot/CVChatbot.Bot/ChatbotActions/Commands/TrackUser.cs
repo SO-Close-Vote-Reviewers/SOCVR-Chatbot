@@ -1,4 +1,4 @@
-﻿using CVChatbot.Bot.Model;
+﻿using CVChatbot.Bot.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,30 +19,21 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 .Value
                 .Parse<int>();
 
-            using (var db = new CVChatBotEntities())
+            DatabaseAccessor da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
+
+            var existingUser = da.GetRegisteredUserByChatProfileId(userIdToAdd);
+
+            if (existingUser != null)
             {
-                var existingUser = db.RegisteredUsers
-                    .SingleOrDefault(x => x.ChatProfileId == userIdToAdd);
-
-                if (existingUser != null)
-                {
-                    chatRoom.PostReplyOrThrow(incommingChatMessage, "That user is already in the system!");
-                    return;
-                }
-
-                var newUser = new RegisteredUser()
-                {
-                    ChatProfileId = userIdToAdd
-                };
-
-                db.RegisteredUsers.Add(newUser);
-                db.SaveChanges();
-
-                var chatUser = chatRoom.GetUser(userIdToAdd);
-
-                chatRoom.PostReplyOrThrow(incommingChatMessage, "Ok, I added {0} ({1}) to the tracked users list."
-                    .FormatInline(chatUser.Name, chatUser.ID));
+                chatRoom.PostReplyOrThrow(incommingChatMessage, "That user is already in the system!");
+                return;
             }
+
+            da.AddUserToRegisteredUsersList(userIdToAdd);
+
+            var chatUser = chatRoom.GetUser(userIdToAdd);
+            chatRoom.PostReplyOrThrow(incommingChatMessage, "Ok, I added {0} ({1}) to the tracked users list."
+                .FormatInline(chatUser.Name, chatUser.ID));
         }
 
         public override ActionPermissionLevel GetPermissionLevel()

@@ -1,4 +1,4 @@
-﻿using CVChatbot.Bot.Model;
+﻿using CVChatbot.Bot.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,48 +33,36 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             var peopleThreshold = thresholdInCommand ?? defaultThreshold; // Take the one in the command, or the default if the command one is not given.
             var usingDefault = thresholdInCommand == null;
 
-            using (var db = new CVChatBotEntities())
+            var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
+            var completedTagsData = da.GetCompletedTags(peopleThreshold, 10); //10 is hard coded for now, could be changed later
+
+            var headerMessage = "Showing the latest 10 tags that have been cleared by at least {0} {1}."
+                .FormatInline(peopleThreshold, peopleThreshold != 1 ? "people" : "person");
+
+            if (usingDefault)
             {
-                var groupedTags = db.NoItemsInFilterEntries
-                    .GroupBy(x => x.TagName)
-                    .Where(x => x.Count() >= peopleThreshold)
-                    .Select(x => new
-                    {
-                        TagName = x.Key,
-                        LastTimeEntered = x.Max(y => y.EntryTs),
-                        Count = x.Count()
-                    })
-                    .OrderByDescending(x => x.LastTimeEntered)
-                    .Take(10)
-                    .ToList();
-
-                var headerMessage = "Showing the latest 10 tags that have been cleared by at least {0} {1}."
-                    .FormatInline(peopleThreshold, peopleThreshold != 1 ? "people" : "person");
-
-                if (usingDefault)
-                {
-                    headerMessage += " To give a different threshold number, use the command `{0}`."
-                        .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<CompletedTags>());
-                }
-
-                string dataMessage;
-
-                if (groupedTags.Any())
-                {
-                    dataMessage = groupedTags
-                        .ToStringTable(new[] { "Tag Name", "Count", "Latest Time Cleared" },
-                            (x) => x.TagName,
-                            (x) => x.Count,
-                            (x) => x.LastTimeEntered.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'"));
-                }
-                else
-                {
-                    dataMessage = "    There are no entries that match that request!";
-                }
-
-                chatRoom.PostReplyOrThrow(incommingChatMessage, headerMessage);
-                chatRoom.PostMessageOrThrow(dataMessage);
+                headerMessage += " To give a different threshold number, use the command `{0}`."
+                    .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<CompletedTags>());
             }
+
+            string dataMessage;
+
+            if (completedTagsData.Any())
+            {
+                dataMessage = completedTagsData
+                    .ToStringTable(new[] { "Tag Name", "Count", "Latest Time Cleared" },
+                        (x) => x.TagName,
+                        (x) => x.PeopleWhoCompletedTag,
+                        (x) => x.LastEntryTs.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'"));
+            }
+            else
+            {
+                dataMessage = "    There are no entries that match that request!";
+            }
+
+            chatRoom.PostReplyOrThrow(incommingChatMessage, headerMessage);
+            chatRoom.PostMessageOrThrow(dataMessage);
+            
         }
 
         public override ActionPermissionLevel GetPermissionLevel()

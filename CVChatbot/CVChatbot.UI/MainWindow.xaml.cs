@@ -51,6 +51,7 @@ namespace CVChatbot.UI
                     MaxReviewLengthHours = SettingsFileAccessor.GetSettingValue<int>("MaxReviewLengthHours"),
                     DefaultCompletedTagsPeopleThreshold = SettingsFileAccessor.GetSettingValue<int>("DefaultCompletedTagsPeopleThreshold"),
                     MaxTagsToFetch = SettingsFileAccessor.GetSettingValue<int>("MaxFetchTags"),
+                    DatabaseConnectionString = SettingsFileAccessor.GetSettingValue<string>("DatabaseConnectionString"),
                 };
 
                 lblCurrentStatus.Content = "Joining...";

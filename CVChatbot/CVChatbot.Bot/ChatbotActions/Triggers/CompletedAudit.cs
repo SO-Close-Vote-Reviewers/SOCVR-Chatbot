@@ -1,5 +1,5 @@
 ﻿using ChatExchangeDotNet;
-using CVChatbot.Bot.Model;
+using CVChatbot.Bot.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,23 +19,8 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
                     .Groups[1]
                     .Value;
 
-            using (var db = new CVChatBotEntities())
-            {
-                var registedUser = db.RegisteredUsers
-                    .Single(x => x.ChatProfileId == incommingChatMessage.AuthorID);
-
-                var newEntry = new CompletedAuditEntry()
-                {
-                    EntryTs = DateTimeOffset.Now,
-                    RegisteredUser = registedUser,
-                    TagName = tagName
-                };
-
-                db.CompletedAuditEntries.Add(newEntry);
-                db.SaveChanges();
-            }
-
-            // Say the next tag on the list.
+            var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
+            da.InsertCompletedAuditEntry(incommingChatMessage.AuthorID, tagName);
         }
 
         public override ActionPermissionLevel GetPermissionLevel()

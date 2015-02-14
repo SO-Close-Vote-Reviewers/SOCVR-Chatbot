@@ -1,4 +1,4 @@
-﻿using CVChatbot.Bot.Model;
+﻿using CVChatbot.Bot.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,23 +13,17 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     {
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
-            using (var db = new CVChatBotEntities())
+            var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
+            var currentSessionStartTs = da.GetCurrentSessionStartTs(incommingChatMessage.AuthorID);
+
+            if (currentSessionStartTs == null)
             {
-                // Find the latest open session for the user.
-
-                var latestOpenSession = db.ReviewSessions
-                    .Where(x => x.RegisteredUser.ChatProfileId == incommingChatMessage.AuthorID && x.SessionEnd == null)
-                    .OrderByDescending(x => x.SessionStart)
-                    .FirstOrDefault();
-
-                if (latestOpenSession == null)
-                {
-                    chatRoom.PostReplyOrThrow(incommingChatMessage, "You don't have an ongoing review session on record.");
-                    return;
-                }
-
-                var deltaTimeSpan = DateTimeOffset.Now - latestOpenSession.SessionStart;
-                var formattedStartTs = latestOpenSession.SessionStart.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'");
+                chatRoom.PostReplyOrThrow(incommingChatMessage, "You don't have an ongoing review session on record.");
+            }
+            else
+            {
+                var deltaTimeSpan = DateTimeOffset.Now - currentSessionStartTs.Value;
+                var formattedStartTs = currentSessionStartTs.Value.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'");
 
                 var message = "Your current review session started {0} ago at {1}"
                     .FormatInline(deltaTimeSpan.ToUserFriendlyString(), formattedStartTs);

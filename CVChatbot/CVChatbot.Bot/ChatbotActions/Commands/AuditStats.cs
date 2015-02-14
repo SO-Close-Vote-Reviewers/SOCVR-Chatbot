@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using TheCommonLibrary.Extensions;
 using System.Text.RegularExpressions;
 using System.Threading;
-using CVChatbot.Bot.Model;
+using CVChatbot.Bot.Database;
 
 namespace CVChatbot.Bot.ChatbotActions.Commands
 {
@@ -14,40 +14,24 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     {
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
-            using (var db = new CVChatBotEntities())
+            var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
+
+            var auditEntries = da.GetUserAuditStats(incommingChatMessage.AuthorID);
+
+            if (!auditEntries.Any())
             {
-                var totalAuditsCount = db.CompletedAuditEntries
-                    .Count(x => x.RegisteredUser.ChatProfileId == incommingChatMessage.AuthorID);
-
-                if (totalAuditsCount == 0)
-                {
-                    chatRoom.PostReplyOrThrow(incommingChatMessage, "I don't have any of your audits on record, so I can't produce any stats for you.");
-                    return;
-                }
-
-                var groupedTags = db.CompletedAuditEntries
-                    .Where(x => x.RegisteredUser.ChatProfileId == incommingChatMessage.AuthorID)
-                    .GroupBy(x => x.TagName)
-                    .Select(x => new
-                    {
-                        TagName = x.Key,
-                        Count = x.Count(),
-                        Percent = (x.Count() * 1.0) / totalAuditsCount * 100
-                    })
-                    .OrderByDescending(x => x.Percent)
-                    .ThenByDescending(x => x.Count)
-                    .ThenBy(x => x.TagName)
-                    .ToList();
-
-                var message = groupedTags
-                    .ToStringTable(new[] { "Tag Name", "%", "Count"},
-                        (x) => x.TagName,
-                        (x) => Math.Round(x.Percent, 1),
-                        (x) => x.Count);
-
-                chatRoom.PostReplyOrThrow(incommingChatMessage, "Stats of all tracked audits by tag:");
-                chatRoom.PostMessageOrThrow(message);
+                chatRoom.PostReplyOrThrow(incommingChatMessage, "I don't have any of your audits on record, so I can't produce any stats for you.");
+                return;
             }
+
+            var message = auditEntries
+                .ToStringTable(new[] { "Tag Name", "%", "Count" },
+                    (x) => x.TagName,
+                    (x) => x.Percent,
+                    (x) => x.Count);
+
+            chatRoom.PostReplyOrThrow(incommingChatMessage, "Stats of all tracked audits by tag:");
+            chatRoom.PostMessageOrThrow(message);
         }
 
         public override ActionPermissionLevel GetPermissionLevel()
