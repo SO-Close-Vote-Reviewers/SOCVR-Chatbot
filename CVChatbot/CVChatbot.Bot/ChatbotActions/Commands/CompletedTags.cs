@@ -36,8 +36,8 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
             var completedTagsData = da.GetCompletedTags(peopleThreshold, 10); //10 is hard coded for now, could be changed later
 
-            var headerMessage = "Showing the latest 10 tags that have been cleared by at least {0} people."
-                .FormatInline(peopleThreshold);
+            var headerMessage = "Showing the latest 10 tags that have been cleared by at least {0} {1}."
+                .FormatInline(peopleThreshold, peopleThreshold != 1 ? "people" : "person");
 
             if (usingDefault)
             {
