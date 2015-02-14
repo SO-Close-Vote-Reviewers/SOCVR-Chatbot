@@ -1,7 +1,7 @@
 ﻿using ChatExchangeDotNet;
 using CVChatbot.Bot.ChatbotActions;
 using CVChatbot.Bot.ChatbotActions.Commands;
-using CVChatbot.Bot.Model;
+using CVChatbot.Bot.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,10 +18,12 @@ namespace CVChatbot.Bot
     public class ChatMessageProcessor
     {
         private InstallationSettings roomSettings;
+        private DatabaseAccessor da;
 
         public ChatMessageProcessor(InstallationSettings settings)
         {
             roomSettings = settings;
+            da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
         }
 
         public delegate void StopBotCommandIssuedHandler(object sender, EventArgs e);
@@ -99,19 +101,16 @@ namespace CVChatbot.Bot
                 return true;
 
             // Now you need to look up the person in the database
-            using (var db = new CVChatBotEntities())
-            {
-                var dbUser = db.RegisteredUsers.SingleOrDefault(x => x.ChatProfileId == chatUserId);
+            var userRecordInDB = da.GetRegisteredUserByChatProfileId(chatUserId);
 
-                if (dbUser == null) // At this point, the permission is Registered or Owner,
-                    return false;    // and if the user is not in the database at all then it can't work.
+            if (userRecordInDB == null) // At this point, the permission is Registered or Owner,
+                return false;    // and if the user is not in the database at all then it can't work.
 
-                if (neededPermissionLevel == ActionPermissionLevel.Registered)
-                    return true; // The user is in the list, that's all we need to check.
+            if (neededPermissionLevel == ActionPermissionLevel.Registered)
+                return true; // The user is in the list, that's all we need to check.
 
-                if (dbUser.IsOwner && neededPermissionLevel == ActionPermissionLevel.Owner)
-                    return true;
-            }
+            if (userRecordInDB.IsOwner && neededPermissionLevel == ActionPermissionLevel.Owner)
+                return true;
 
             // Fall past the last check (for owner), so default to "no".
             return false;
@@ -176,16 +175,7 @@ namespace CVChatbot.Bot
         /// <param name="command"></param>
         private void SendUnrecognizedCommandToDatabase(string command)
         {
-            using (var db = new CVChatBotEntities())
-            {
-                var newEntry = new UnrecognizedCommand
-                {
-                    Command = command
-                };
-
-                db.UnrecognizedCommands.Add(newEntry);
-                db.SaveChanges();
-            }
+            da.InsertUnrecognizedCommand(command);
         }
         /// <summary>
         /// Call this method if you get an error while running a ChatbotAction.

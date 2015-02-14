@@ -1,5 +1,5 @@
 ﻿using ChatExchangeDotNet;
-using CVChatbot.Bot.Model;
+using CVChatbot.Bot.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,21 +15,8 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         {
             var chatUser = chatRoom.GetUser(incommingChatMessage.AuthorID);
 
-            // Start a new review session.
-            using (var db = new CVChatBotEntities())
-            {
-                var registedUser = db.RegisteredUsers
-                    .Single(x => x.ChatProfileId == incommingChatMessage.AuthorID);
-
-                var newSession = new ReviewSession()
-                {
-                    SessionStart = DateTimeOffset.Now,
-                    RegisteredUser = registedUser
-                };
-
-                db.ReviewSessions.Add(newSession);
-                db.SaveChanges();
-            }
+            var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
+            da.StartReviewSession(incommingChatMessage.AuthorID);
 
             var replyMessages = new List<string>()
             {
@@ -37,7 +24,9 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 "Happy reviewing!",
                 "Don't get lost in the queue!",
                 "Watch out for audits!",
-                "May the Vote be with you!"
+                "May the Vote be with you!",
+                "May Shog9's Will be done.",
+                "By the power of the Vote! Review!"
             };
 
             chatRoom.PostReplyOrThrow(incommingChatMessage, replyMessages.PickRandom());

@@ -4,9 +4,12 @@
 
 LoginEmail=my@email.address.com
 LoginPassword=mySecurePassword!
-MaxReviewLengthHours=5
+DatabaseConnectionString=data source=SERVER;initial catalog=DATABASE;integrated security=True;
 ChatRoomUrl=http://chat.stackoverflow.com/rooms/68414/cvchatbot-testing
-StartUpMessage=Hey everyone! (SO Close Vote Chatbot started)
-StopMessage=Goodbye!
+
+MaxReviewLengthHours=5
 DefaultCompletedTagsPeopleThreshold=3
 MaxFetchTags=15
+
+StartUpMessage=Hey everyone! (SO Close Vote Chatbot started)
+StopMessage=Goodbye!

@@ -65,6 +65,7 @@
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Extensions\MathExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="Extensions\SqlExtensions.cs" />
     <Compile Include="FTP\FTPManager.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
