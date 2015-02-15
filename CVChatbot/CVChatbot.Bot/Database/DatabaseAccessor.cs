@@ -284,5 +284,26 @@ insert into NoItemsInFilterEntry(RegisteredUserId, TagName, EntryTs)
                 c.AddParam("@ChatProfileId", chatProfileId);
             });
         }
+
+        public List<UserCompletedTag> GetUserCompletedTags(int chatProfileId)
+        {
+            var sql = "select * from GetUserCompletedTags(@ChatProfileId) order by LastTimeCleared desc;";
+
+            return RunScript<List<UserCompletedTag>>(sql,
+            (c) =>
+            {
+                c.AddParam("@ChatProfileId", chatProfileId);
+            },
+            new Func<DataTable, List<UserCompletedTag>>(dt =>
+                dt.AsEnumerable()
+                    .Select(x => new UserCompletedTag
+                    {
+                        TagName = x.Field<string>("TagName"),
+                        TimesCleared = x.Field<int>("TimesCleared"),
+                        LastTimeCleared = x.Field<DateTimeOffset>("LastTimeCleared")
+                    })
+                    .ToList()
+            ));
+        }
     }
 }
