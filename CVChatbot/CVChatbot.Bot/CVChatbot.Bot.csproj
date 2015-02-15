@@ -62,6 +62,7 @@
     <Compile Include="ChatbotActions\Commands\CurrentSession.cs" />
     <Compile Include="ChatbotActions\Commands\EndSession.cs" />
     <Compile Include="ChatbotActions\Commands\Help.cs" />
+    <Compile Include="ChatbotActions\Commands\PingReviewers.cs" />
     <Compile Include="ChatbotActions\Commands\LastSessionEditCount.cs" />
     <Compile Include="ChatbotActions\Commands\LastSessionStats.cs" />
     <Compile Include="ChatbotActions\Commands\NextTags.cs" />
