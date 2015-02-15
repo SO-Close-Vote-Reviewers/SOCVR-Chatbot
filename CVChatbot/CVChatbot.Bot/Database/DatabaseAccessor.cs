@@ -13,6 +13,46 @@ namespace CVChatbot.Bot.Database
     {
         public DatabaseAccessor(string connectionString) : base(connectionString) { }
 
+        public void AddUserToRegisteredUsersList(int chatProfileId)
+        {
+            var sql = "insert into RegisteredUser (ChatProfileId, IsOwner) values (@ChatProfileId, 0);";
+
+            RunScript(sql,
+            (c) =>
+            {
+                c.AddWithValue("@ChatProfileId", chatProfileId);
+            });
+        }
+
+        public void EditLatestCompletedSessionItemsReviewedCount(int sessionId, int? newItemsReviewedCount)
+        {
+            var sql = @"
+update ReviewSession
+set ItemsReviewed = @NewItemsReviewedCount
+where Id = @SessionId;";
+
+            RunScript(sql, (c) =>
+            {
+                c.AddParam("@NewItemsReviewedCount", newItemsReviewedCount);
+                c.AddParam("@SessionId", sessionId);
+            });
+        }
+
+        public void EndReviewSession(int sessionId, int? itemsReviewed)
+        {
+            var sql = @"
+update ReviewSession
+set ItemsReviewed = @ItemsReviewed,
+    SessionEnd = SYSDATETIMEOFFSET()
+where Id = @SessionId;";
+
+            RunScript(sql, (c) =>
+            {
+                c.AddParam("@ItemsReviewed", itemsReviewed);
+                c.AddParam("@SessionId", sessionId);
+            });
+        }
+
         public List<CompletedTag> GetCompletedTags(int personThreshold, int maxReturnEntries)
         {
             var sql = @"select * from GetCompletedTags(@PersonThreshold, @MaxReturnEntries);";
@@ -35,81 +75,6 @@ namespace CVChatbot.Bot.Database
             ));
         }
 
-        /// <summary>
-        /// Returns the registered user that contains the given chat profile id.
-        /// Returns null if the user cannot be found.
-        /// </summary>
-        /// <param name="chatProfileId"></param>
-        /// <returns></returns>
-        public RegisteredUser GetRegisteredUserByChatProfileId(int chatProfileId)
-        {
-            var sql = "select * from RegisteredUser where ChatProfileId = @ChatProfileId;";
-
-            return RunScript<RegisteredUser>(sql,
-            (c) =>
-            {
-                c.AddWithValue("@ChatProfileId", chatProfileId);
-            },
-            new Func<DataTable, RegisteredUser>(dt =>
-                dt.AsEnumerable()
-                    .Select(x => new RegisteredUser
-                    {
-                        Id = x.Field<int>("Id"),
-                        ChatProfileId = x.Field<int>("ChatProfileId"),
-                        IsOwner = x.Field<bool>("IsOwner")
-                    })
-                    .SingleOrDefault()
-            ));
-        }
-
-        public void AddUserToRegisteredUsersList(int chatProfileId)
-        {
-            var sql = "insert into RegisteredUser (ChatProfileId, IsOwner) values (@ChatProfileId, 0);";
-
-            RunScript(sql,
-            (c) =>
-            {
-                c.AddWithValue("@ChatProfileId", chatProfileId);
-            });
-        }
-
-        public List<UserAuditStatEntry> GetUserAuditStats(int chatProfileId)
-        {
-            var sql = "select * from GetUserAuditStats(@ChatProfileId) a order by a.[Percent] desc;";
-
-            return RunScript<List<UserAuditStatEntry>>(sql,
-            (c) =>
-            {
-                c.AddWithValue(@"ChatProfileId", chatProfileId);
-            },
-            new Func<DataTable, List<UserAuditStatEntry>>(dt =>
-                dt.AsEnumerable()
-                    .Select(x => new UserAuditStatEntry
-                    {
-                        TagName = x.Field<string>("TagName"),
-                        Percent = x.Field<decimal>("Percent"),
-                        Count = x.Field<int>("Count")
-                    })
-                    .ToList()
-            ));
-        }
-
-        public void StartReviewSession(int chatProfileId)
-        {
-            var sql = @"
-insert into ReviewSession (RegisteredUserId, SessionStart)
-	select
-		ru.Id,
-		SYSDATETIMEOFFSET()
-	from RegisteredUser ru
-	where ru.ChatProfileId = @ChatProfileId;";
-
-            RunScript(sql, (c) =>
-            {
-                c.AddParam("@ChatProfileId", chatProfileId);
-            });
-        }
-
         public DateTimeOffset? GetCurrentSessionStartTs(int chatProfileId)
         {
             var sql = "select dbo.GetUsersCurrentSession(@ChatProfileId) [SessionStartTs]";
@@ -121,6 +86,27 @@ insert into ReviewSession (RegisteredUserId, SessionStart)
             },
             new Func<DataRow, DateTimeOffset?>(dr =>
                 dr.Field<DateTimeOffset?>("SessionStartTs")
+            ));
+        }
+
+        public ReviewSession GetLatestCompletedSession(int chatProfileId)
+        {
+            var sql = @"
+select top 1 rs.*
+from ReviewSession rs
+inner join RegisteredUser r on rs.RegisteredUserId = r.Id
+where r.ChatProfileId = @ChatProfileId and rs.SessionEnd is not null
+order by rs.SessionStart desc";
+
+            return RunScript<ReviewSession>(sql,
+            (c) =>
+            {
+                c.AddWithValue("@ChatProfileId", chatProfileId);
+            },
+            new Func<DataTable, ReviewSession>(dt =>
+                dt.AsEnumerable()
+                    .Select(ConvertDataRowToReviewSession)
+                    .SingleOrDefault()
             ));
         }
 
@@ -166,93 +152,6 @@ order by rs.SessionStart desc";
             ));
         }
 
-        public void InsertUnrecognizedCommand(string unrecognizedCommand)
-        {
-            var sql = "insert into UnrecognizedCommand([Command]) values (@Command);";
-
-            RunScript(sql, (c) => c.AddParam("@Command", unrecognizedCommand));
-        }
-
-        public void InsertCompletedAuditEntry(int chatProfileId, string tagName)
-        {
-            var sql = @"
-insert into CompletedAuditEntry(RegisteredUserId, TagName, EntryTs)
-	select
-		ru.Id,
-		@TagName,
-		SYSDATETIMEOFFSET()
-	from RegisteredUser ru
-	where ru.ChatProfileId = @ChatProfileId;";
-
-            RunScript(sql, (c) =>
-            {
-                c.AddParam("@TagName", tagName);
-                c.AddParam("@ChatProfileId", chatProfileId);
-            });
-        }
-
-        public void EndReviewSession(int sessionId, int? itemsReviewed)
-        {
-            var sql = @"
-update ReviewSession
-set ItemsReviewed = @ItemsReviewed,
-    SessionEnd = SYSDATETIMEOFFSET()
-where Id = @SessionId;";
-
-            RunScript(sql, (c) =>
-            {
-                c.AddParam("@ItemsReviewed", itemsReviewed);
-                c.AddParam("@SessionId", sessionId);
-            });
-        }
-
-        public void EditLatestCompletedSessionItemsReviewedCount(int sessionId, int? newItemsReviewedCount)
-        {
-            var sql = @"
-update ReviewSession
-set ItemsReviewed = @NewItemsReviewedCount
-where Id = @SessionId;";
-
-            RunScript(sql, (c) =>
-            {
-                c.AddParam("@NewItemsReviewedCount", newItemsReviewedCount);
-                c.AddParam("@SessionId", sessionId);
-            });
-        }
-
-        public ReviewSession GetLatestCompletedSession(int chatProfileId)
-        {
-            var sql = @"
-select top 1 rs.*
-from ReviewSession rs
-inner join RegisteredUser r on rs.RegisteredUserId = r.Id
-where r.ChatProfileId = @ChatProfileId and rs.SessionEnd is not null
-order by rs.SessionStart desc";
-
-            return RunScript<ReviewSession>(sql,
-            (c) =>
-            {
-                c.AddWithValue("@ChatProfileId", chatProfileId);
-            },
-            new Func<DataTable, ReviewSession>(dt =>
-                dt.AsEnumerable()
-                    .Select(ConvertDataRowToReviewSession)
-                    .SingleOrDefault()
-            ));
-        }
-
-        private ReviewSession ConvertDataRowToReviewSession(DataRow dr)
-        {
-            return new ReviewSession
-            {
-                Id = dr.Field<int>("Id"),
-                RegisteredUserId = dr.Field<int>("RegisteredUserId"),
-                SessionStart = dr.Field<DateTimeOffset>("SessionStart"),
-                SessionEnd = dr.Field<DateTimeOffset?>("SessionEnd"),
-                ItemsReviewed = dr.Field<int?>("ItemsReviewed"),
-            };
-        }
-
         public List<int> GetPingReviewersRecipientList(int requestingUserProfileId, int daysBackThreshold)
         {
             var sql = "select * from GetPingReviewersRecipientList(@MaxDaysBack, @RequestingUserProfileId);";
@@ -270,36 +169,51 @@ order by rs.SessionStart desc";
             ));
         }
 
-        public void SetSessionEndTs(int sessionId, DateTimeOffset newSessionEndTs)
+        /// <summary>
+        /// Returns the registered user that contains the given chat profile id.
+        /// Returns null if the user cannot be found.
+        /// </summary>
+        /// <param name="chatProfileId"></param>
+        /// <returns></returns>
+        public RegisteredUser GetRegisteredUserByChatProfileId(int chatProfileId)
         {
-            var sql = @"
-update ReviewSession
-set SessionEnd = @NewSessionEndTs
-where Id = @SessionId;";
+            var sql = "select * from RegisteredUser where ChatProfileId = @ChatProfileId;";
 
-            RunScript(sql, (c) =>
+            return RunScript<RegisteredUser>(sql,
+            (c) =>
             {
-                c.AddWithValue("@NewSessionEndTs", newSessionEndTs);
-                c.AddWithValue("@SessionId", sessionId);
-            });
+                c.AddWithValue("@ChatProfileId", chatProfileId);
+            },
+            new Func<DataTable, RegisteredUser>(dt =>
+                dt.AsEnumerable()
+                    .Select(x => new RegisteredUser
+                    {
+                        Id = x.Field<int>("Id"),
+                        ChatProfileId = x.Field<int>("ChatProfileId"),
+                        IsOwner = x.Field<bool>("IsOwner")
+                    })
+                    .SingleOrDefault()
+            ));
         }
-
-        public void InsertNoItemsInFilterRecord(int chatProfileId, string tagName)
+        public List<UserAuditStatEntry> GetUserAuditStats(int chatProfileId)
         {
-            var sql = @"
-insert into NoItemsInFilterEntry(RegisteredUserId, TagName, EntryTs)
-	select
-		ru.Id,
-		@TagName,
-		SYSDATETIMEOFFSET()
-	from RegisteredUser ru
-	where ru.ChatProfileId = @ChatProfileId;";
+            var sql = "select * from GetUserAuditStats(@ChatProfileId) a order by a.[Percent] desc;";
 
-            RunScript(sql, (c) =>
+            return RunScript<List<UserAuditStatEntry>>(sql,
+            (c) =>
             {
-                c.AddParam("@TagName", tagName);
-                c.AddParam("@ChatProfileId", chatProfileId);
-            });
+                c.AddWithValue(@"ChatProfileId", chatProfileId);
+            },
+            new Func<DataTable, List<UserAuditStatEntry>>(dt =>
+                dt.AsEnumerable()
+                    .Select(x => new UserAuditStatEntry
+                    {
+                        TagName = x.Field<string>("TagName"),
+                        Percent = x.Field<decimal>("Percent"),
+                        Count = x.Field<int>("Count")
+                    })
+                    .ToList()
+            ));
         }
 
         public List<UserCompletedTag> GetUserCompletedTags(int chatProfileId)
@@ -321,6 +235,90 @@ insert into NoItemsInFilterEntry(RegisteredUserId, TagName, EntryTs)
                     })
                     .ToList()
             ));
+        }
+
+        public void InsertCompletedAuditEntry(int chatProfileId, string tagName)
+        {
+            var sql = @"
+insert into CompletedAuditEntry(RegisteredUserId, TagName, EntryTs)
+	select
+		ru.Id,
+		@TagName,
+		SYSDATETIMEOFFSET()
+	from RegisteredUser ru
+	where ru.ChatProfileId = @ChatProfileId;";
+
+            RunScript(sql, (c) =>
+            {
+                c.AddParam("@TagName", tagName);
+                c.AddParam("@ChatProfileId", chatProfileId);
+            });
+        }
+
+        public void InsertNoItemsInFilterRecord(int chatProfileId, string tagName)
+        {
+            var sql = @"
+insert into NoItemsInFilterEntry(RegisteredUserId, TagName, EntryTs)
+	select
+		ru.Id,
+		@TagName,
+		SYSDATETIMEOFFSET()
+	from RegisteredUser ru
+	where ru.ChatProfileId = @ChatProfileId;";
+
+            RunScript(sql, (c) =>
+            {
+                c.AddParam("@TagName", tagName);
+                c.AddParam("@ChatProfileId", chatProfileId);
+            });
+        }
+
+        public void InsertUnrecognizedCommand(string unrecognizedCommand)
+        {
+            var sql = "insert into UnrecognizedCommand([Command]) values (@Command);";
+
+            RunScript(sql, (c) => c.AddParam("@Command", unrecognizedCommand));
+        }
+
+        public void SetSessionEndTs(int sessionId, DateTimeOffset newSessionEndTs)
+        {
+            var sql = @"
+update ReviewSession
+set SessionEnd = @NewSessionEndTs
+where Id = @SessionId;";
+
+            RunScript(sql, (c) =>
+            {
+                c.AddWithValue("@NewSessionEndTs", newSessionEndTs);
+                c.AddWithValue("@SessionId", sessionId);
+            });
+        }
+
+        public void StartReviewSession(int chatProfileId)
+        {
+            var sql = @"
+insert into ReviewSession (RegisteredUserId, SessionStart)
+	select
+		ru.Id,
+		SYSDATETIMEOFFSET()
+	from RegisteredUser ru
+	where ru.ChatProfileId = @ChatProfileId;";
+
+            RunScript(sql, (c) =>
+            {
+                c.AddParam("@ChatProfileId", chatProfileId);
+            });
+        }
+        private ReviewSession ConvertDataRowToReviewSession(DataRow dr)
+        {
+            return new ReviewSession
+            {
+                Id = dr.Field<int>("Id"),
+                RegisteredUserId = dr.Field<int>("RegisteredUserId"),
+                SessionStart = dr.Field<DateTimeOffset>("SessionStart"),
+                SessionEnd = dr.Field<DateTimeOffset?>("SessionEnd"),
+                ItemsReviewed = dr.Field<int?>("ItemsReviewed"),
+            };
         }
     }
 }
