@@ -40,7 +40,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
             if (tagsToFetch <= 0)
             {
-                chatRoom.PostReplyOrThrow(incommingChatMessage, "I can't fetch zero tags or a negitive number of tags! Please use a number between 1 and {0}."
+                chatRoom.PostReplyOrThrow(incommingChatMessage, "I can't fetch zero tags or a negative number of tags! Please use a number between 1 and {0}."
                     .FormatInline(roomSettings.MaxTagsToFetch));
                 return;
             }
