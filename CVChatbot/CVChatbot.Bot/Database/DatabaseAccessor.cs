@@ -195,6 +195,7 @@ order by rs.SessionStart desc";
                     .SingleOrDefault()
             ));
         }
+
         public List<UserAuditStatEntry> GetUserAuditStats(int chatProfileId)
         {
             var sql = "select * from GetUserAuditStats(@ChatProfileId) a order by a.[Percent] desc;";
@@ -309,6 +310,7 @@ insert into ReviewSession (RegisteredUserId, SessionStart)
                 c.AddParam("@ChatProfileId", chatProfileId);
             });
         }
+
         private ReviewSession ConvertDataRowToReviewSession(DataRow dr)
         {
             return new ReviewSession
