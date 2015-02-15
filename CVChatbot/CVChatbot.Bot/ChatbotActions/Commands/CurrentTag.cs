@@ -42,6 +42,12 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         {
             var tags = SedeAccessor.GetTags(chatRoom, roomSettings.Email, roomSettings.Password);
 
+            if (tags == null)
+            {
+                chatRoom.PostReplyOrThrow(incommingChatMessage, "My attempt to get tag data returned no information. This could be due to the site being down or blocked for me, or a programming error. Try again in a few minutes, or tell the developer if this happens often.");
+                return;
+            }
+
             string dataMessage;
             if (tags != null)
             {
