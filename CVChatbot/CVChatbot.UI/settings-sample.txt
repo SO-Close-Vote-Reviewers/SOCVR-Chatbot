@@ -10,6 +10,7 @@ ChatRoomUrl=http://chat.stackoverflow.com/rooms/68414/cvchatbot-testing
 MaxReviewLengthHours=5
 DefaultCompletedTagsPeopleThreshold=3
 MaxFetchTags=15
+PingReviewersDaysBackThreshold=7
 
 StartUpMessage=Hey everyone! (SO Close Vote Chatbot started)
 StopMessage=Goodbye!

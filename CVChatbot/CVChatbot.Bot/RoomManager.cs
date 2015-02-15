@@ -165,5 +165,10 @@ namespace CVChatbot.Bot
         /// The connection string for the database.
         /// </summary>
         public string DatabaseConnectionString { get; set; }
+
+        /// <summary>
+        /// When using the Ping Reviewers command, this is the max numbers of days back to search for users by their review sessions.
+        /// </summary>
+        public int PingReviewersDaysBackThreshold { get; set; }
     }
 }

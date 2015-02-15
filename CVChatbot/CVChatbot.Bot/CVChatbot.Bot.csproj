@@ -62,8 +62,10 @@
     <Compile Include="ChatbotActions\Commands\CurrentSession.cs" />
     <Compile Include="ChatbotActions\Commands\EndSession.cs" />
     <Compile Include="ChatbotActions\Commands\Help.cs" />
+    <Compile Include="ChatbotActions\Commands\PingReviewers.cs" />
     <Compile Include="ChatbotActions\Commands\LastSessionEditCount.cs" />
     <Compile Include="ChatbotActions\Commands\LastSessionStats.cs" />
+    <Compile Include="ChatbotActions\Commands\MyCompletedTags.cs" />
     <Compile Include="ChatbotActions\Commands\NextTags.cs" />
     <Compile Include="ChatbotActions\Commands\RefreshTags.cs" />
     <Compile Include="ChatbotActions\Commands\StartEvent.cs" />
@@ -88,6 +90,7 @@
     <Compile Include="Database\RegisteredUser.cs" />
     <Compile Include="Database\ReviewSession.cs" />
     <Compile Include="Database\UserAuditStatEntry.cs" />
+    <Compile Include="Database\UserCompletedTag.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

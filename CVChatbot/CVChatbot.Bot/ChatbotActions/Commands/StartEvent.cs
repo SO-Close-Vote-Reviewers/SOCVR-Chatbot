@@ -23,6 +23,12 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             // Get the next 3 tags
             var tags = SedeAccessor.GetTags(chatRoom, roomSettings.Email, roomSettings.Password);
 
+            if (tags == null)
+            {
+                chatRoom.PostReplyOrThrow(incommingChatMessage, "My attempt to get tag data returned no information. This could be due to the site being down or blocked for me, or a programming error. Try again in a few minutes, or tell the developer if this happens often.");
+                return;
+            }
+
             var topTags = tags
                 .Take(3)
                 .Select(x => "[tag:{0}]".FormatInline(x.Key));

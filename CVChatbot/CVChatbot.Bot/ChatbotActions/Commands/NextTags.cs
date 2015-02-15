@@ -40,7 +40,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
             if (tagsToFetch <= 0)
             {
-                chatRoom.PostReplyOrThrow(incommingChatMessage, "I can't fetch zero tags or a negitive number of tags! Please use a number between 1 and {0}."
+                chatRoom.PostReplyOrThrow(incommingChatMessage, "I can't fetch zero tags or a negative number of tags! Please use a number between 1 and {0}."
                     .FormatInline(roomSettings.MaxTagsToFetch));
                 return;
             }
@@ -53,6 +53,12 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             }
 
             var tags = SedeAccessor.GetTags(chatRoom, roomSettings.Email, roomSettings.Password);
+
+            if (tags == null)
+            {
+                chatRoom.PostReplyOrThrow(incommingChatMessage, "My attempt to get tag data returned no information. This could be due to the site being down or blocked for me, or a programming error. Try again in a few minutes, or tell the developer if this happens often.");
+                return;
+            }
 
             var tagString = tags
                 .Take(tagsToFetch)
