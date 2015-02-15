@@ -253,6 +253,23 @@ order by rs.SessionStart desc";
             };
         }
 
+        public List<int> GetPingReviewersRecipientList(int requestingUserProfileId, int daysBackThreshold)
+        {
+            var sql = "select * from GetPingReviewersRecipientList(@MaxDaysBack, @RequestingUserProfileId);";
+
+            return RunScript<List<int>>(sql,
+            (c) =>
+            {
+                c.AddParam("@MaxDaysBack", daysBackThreshold);
+                c.AddParam("@RequestingUserProfileId", requestingUserProfileId);
+            },
+            new Func<DataTable, List<int>>(dt =>
+                dt.AsEnumerable()
+                    .Select(x => x.Field<int>("ChatProfileId"))
+                    .ToList()
+            ));
+        }
+
         public void SetSessionEndTs(int sessionId, DateTimeOffset newSessionEndTs)
         {
             var sql = @"
