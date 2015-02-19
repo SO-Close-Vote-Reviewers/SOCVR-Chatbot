@@ -39,7 +39,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         protected override string GetRegexMatchingPattern()
         {
-            return @"(?:i'?m )?start(ing|ed)(?: now)?";
+            return @"^(?:i'?m )?start(ing|ed)(?: now)?$";
         }
 
         public override string GetActionName()
