@@ -12,7 +12,6 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -105,6 +104,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\TheCommonLibrary\TCL.DataAccess\TCL.DataAccess.csproj">
+      <Project>{56fa7edd-9ab6-49e5-b012-9ea756101de0}</Project>
+      <Name>TCL.DataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TheCommonLibrary\TCL.Extensions\TCL.Extensions.csproj">
+      <Project>{135f21bf-e010-4793-9fa0-52b0d3493e59}</Project>
+      <Name>TCL.Extensions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ChatExchange.Net\ChatExchange.Net.csproj">
       <Project>{145af77f-b475-40e4-8b85-ce3393bcd906}</Project>
       <Name>ChatExchange.Net</Name>
@@ -113,22 +120,11 @@
       <Project>{b96f1bff-c14b-44ad-aad5-09cbc0417c44}</Project>
       <Name>SOCVR.Net</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TheCommonLibrary\TheCommonLibrary.csproj">
-      <Project>{2205bc81-231c-4a89-ba63-4be24ba2c5c6}</Project>
-      <Name>TheCommonLibrary</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

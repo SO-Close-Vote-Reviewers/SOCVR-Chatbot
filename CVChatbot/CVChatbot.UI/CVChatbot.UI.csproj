@@ -14,7 +14,6 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -99,13 +98,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\TheCommonLibrary\TCL.Extensions\TCL.Extensions.csproj">
+      <Project>{135f21bf-e010-4793-9fa0-52b0d3493e59}</Project>
+      <Name>TCL.Extensions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CVChatbot.Bot\CVChatbot.Bot.csproj">
       <Project>{a28be12f-be83-4313-b55f-c8706fd1aac2}</Project>
       <Name>CVChatbot.Bot</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TheCommonLibrary\TheCommonLibrary.csproj">
-      <Project>{2205bc81-231c-4a89-ba63-4be24ba2c5c6}</Project>
-      <Name>TheCommonLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -121,13 +120,6 @@
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

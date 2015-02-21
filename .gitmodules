@@ -1,0 +1,4 @@
+[submodule "TheCommonLibrary"]
+	path = TheCommonLibrary
+	url = git@github.com:gunr2171/TheCommonLibrary.git
+	branch = master

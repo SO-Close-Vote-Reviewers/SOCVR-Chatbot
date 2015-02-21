@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
-using TheCommonLibrary.Extensions;
+using TCL.Extensions;
 
 namespace CVChatbot.Bot.ChatbotActions.Commands
 {
