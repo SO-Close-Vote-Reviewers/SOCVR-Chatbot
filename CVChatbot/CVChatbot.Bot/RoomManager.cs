@@ -170,5 +170,10 @@ namespace CVChatbot.Bot
         /// When using the Ping Reviewers command, this is the max numbers of days back to search for users by their review sessions.
         /// </summary>
         public int PingReviewersDaysBackThreshold { get; set; }
+
+        /// <summary>
+        /// This is the default number of tags to fetch if no argument is used in the Next Tags command.
+        /// </summary>
+        public int DefaultNextTagCount { get; set; }
     }
 }
