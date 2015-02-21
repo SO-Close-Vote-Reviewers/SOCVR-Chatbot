@@ -30,7 +30,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
             var userNames = recipientChatProfileIds
                 .Select(x => chatRoom.GetUser(x).Name)
-                .Select(x => "@" + x);
+                .Select(x => "@" + x.Replace(" ", ""));
 
             var combinedUserNames = userNames.ToCSV(" ");
 
