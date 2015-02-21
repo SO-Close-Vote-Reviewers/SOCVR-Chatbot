@@ -21,7 +21,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionUsage()
         {
-            return "next <#> tags";
+            return "next [#] tags";
         }
 
         public override ActionPermissionLevel GetPermissionLevel()
@@ -32,24 +32,35 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             // First, get the number in the command
-            var tagsToFetch = GetRegexMatchingObject()
+            var tagsToFetchArgument = GetRegexMatchingObject()
                 .Match(GetMessageContentsReadyForRegexParsing(incommingChatMessage))
                 .Groups[1]
                 .Value
-                .Parse<int>();
+                .Parse<int?>();
 
-            if (tagsToFetch <= 0)
+            int tagsToFetch;
+
+            if (tagsToFetchArgument != null)
             {
-                chatRoom.PostReplyOrThrow(incommingChatMessage, "I can't fetch zero tags or a negative number of tags! Please use a number between 1 and {0}."
-                    .FormatInline(roomSettings.MaxTagsToFetch));
-                return;
+                if (tagsToFetchArgument <= 0)
+                {
+                    chatRoom.PostReplyOrThrow(incommingChatMessage, "I can't fetch zero tags or a negative number of tags! Please use a number between 1 and {0}."
+                        .FormatInline(roomSettings.MaxTagsToFetch));
+                    return;
+                }
+
+                if (tagsToFetchArgument > roomSettings.MaxTagsToFetch)
+                {
+                    chatRoom.PostReplyOrThrow(incommingChatMessage, "Sorry, that's too many tags for me. Please choose a number between 1 and {0}"
+                        .FormatInline(roomSettings.MaxTagsToFetch));
+                    return;
+                }
+
+                tagsToFetch = tagsToFetchArgument.Value;
             }
-
-            if (tagsToFetch > roomSettings.MaxTagsToFetch)
+            else
             {
-                chatRoom.PostReplyOrThrow(incommingChatMessage, "Sorry, that's too many tags for me. Please choose a number between 1 and {0}"
-                    .FormatInline(roomSettings.MaxTagsToFetch));
-                return;
+                tagsToFetch = roomSettings.DefaultNextTagCount;
             }
 
             var tags = SedeAccessor.GetTags(chatRoom, roomSettings.Email, roomSettings.Password);
@@ -71,7 +82,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         protected override string GetRegexMatchingPattern()
         {
-            return @"^next (\d+) tags$";
+            return @"^next(?: (\d+))? tags$";
         }
     }
 }

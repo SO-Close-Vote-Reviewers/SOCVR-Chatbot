@@ -11,6 +11,7 @@ MaxReviewLengthHours=5
 DefaultCompletedTagsPeopleThreshold=3
 MaxFetchTags=15
 PingReviewersDaysBackThreshold=7
+DefaultNextTagCount=5
 
 StartUpMessage=Hey everyone! (SO Close Vote Chatbot started)
 StopMessage=Goodbye!
