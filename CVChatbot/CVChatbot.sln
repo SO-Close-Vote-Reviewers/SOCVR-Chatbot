@@ -9,11 +9,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CVChatbot.Bot", "CVChatbot.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CVChatbot.UI", "CVChatbot.UI\CVChatbot.UI.csproj", "{6B3858CD-DA7F-4814-99B5-4502FC4F1B01}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SOCVR.Net", "SOCVR.Net\SOCVR.Net.csproj", "{B96F1BFF-C14B-44AD-AAD5-09CBC0417C44}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCL.Extensions", "..\TheCommonLibrary\TCL.Extensions\TCL.Extensions.csproj", "{135F21BF-E010-4793-9FA0-52B0D3493E59}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCL.DataAccess", "..\TheCommonLibrary\TCL.DataAccess\TCL.DataAccess.csproj", "{56FA7EDD-9AB6-49E5-B012-9EA756101DE0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SOCVR.Net", "..\SOCVR.Net\SOCVR.Net\SOCVR.Net.csproj", "{B96F1BFF-C14B-44AD-AAD5-09CBC0417C44}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,12 +40,6 @@ Global
 		{6B3858CD-DA7F-4814-99B5-4502FC4F1B01}.LocalPublish|Any CPU.Build.0 = Release|Any CPU
 		{6B3858CD-DA7F-4814-99B5-4502FC4F1B01}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B3858CD-DA7F-4814-99B5-4502FC4F1B01}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B96F1BFF-C14B-44AD-AAD5-09CBC0417C44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B96F1BFF-C14B-44AD-AAD5-09CBC0417C44}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B96F1BFF-C14B-44AD-AAD5-09CBC0417C44}.LocalPublish|Any CPU.ActiveCfg = Release|Any CPU
-		{B96F1BFF-C14B-44AD-AAD5-09CBC0417C44}.LocalPublish|Any CPU.Build.0 = Release|Any CPU
-		{B96F1BFF-C14B-44AD-AAD5-09CBC0417C44}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B96F1BFF-C14B-44AD-AAD5-09CBC0417C44}.Release|Any CPU.Build.0 = Release|Any CPU
 		{135F21BF-E010-4793-9FA0-52B0D3493E59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{135F21BF-E010-4793-9FA0-52B0D3493E59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{135F21BF-E010-4793-9FA0-52B0D3493E59}.LocalPublish|Any CPU.ActiveCfg = Release|Any CPU
@@ -58,6 +52,12 @@ Global
 		{56FA7EDD-9AB6-49E5-B012-9EA756101DE0}.LocalPublish|Any CPU.Build.0 = Release|Any CPU
 		{56FA7EDD-9AB6-49E5-B012-9EA756101DE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56FA7EDD-9AB6-49E5-B012-9EA756101DE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B96F1BFF-C14B-44AD-AAD5-09CBC0417C44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B96F1BFF-C14B-44AD-AAD5-09CBC0417C44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B96F1BFF-C14B-44AD-AAD5-09CBC0417C44}.LocalPublish|Any CPU.ActiveCfg = Release|Any CPU
+		{B96F1BFF-C14B-44AD-AAD5-09CBC0417C44}.LocalPublish|Any CPU.Build.0 = Release|Any CPU
+		{B96F1BFF-C14B-44AD-AAD5-09CBC0417C44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B96F1BFF-C14B-44AD-AAD5-09CBC0417C44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
