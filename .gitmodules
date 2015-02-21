@@ -6,3 +6,7 @@
 	path = SOCVR.Net
 	url = git@github.com:SO-Close-Vote-Reviewers/SOCVR.Net.git
 	branch = master
+[submodule "ChatExchange.Net"]
+	path = ChatExchange.Net
+	url = git@github.com:gunr2171/ChatExchange.Net.git
+	branch = submodule

@@ -98,11 +98,11 @@ namespace CVChatbot.Bot
             cvChatRoom.Leave();
         }
 
-        private async void cvChatRoom_NewMessage(object sender , MessageEventArgs e)
+        private async void cvChatRoom_NewMessage(Message newMessage)
         {
             try
             {
-                await Task.Run(() => cmp.ProcessChatMessage(e.Message, cvChatRoom));
+                await Task.Run(() => cmp.ProcessChatMessage(newMessage, cvChatRoom));
             }
             catch (Exception ex)
             {
