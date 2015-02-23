@@ -8,5 +8,5 @@
 	branch = master
 [submodule "ChatExchange.Net"]
 	path = ChatExchange.Net
-	url = git@github.com:gunr2171/ChatExchange.Net.git
+	url = git@github.com:ArcticEcho/ChatExchange.Net.git
 	branch = submodule
