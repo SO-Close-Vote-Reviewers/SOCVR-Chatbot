@@ -9,4 +9,4 @@
 [submodule "ChatExchange.Net"]
 	path = ChatExchange.Net
 	url = git@github.com:ArcticEcho/ChatExchange.Net.git
-	branch = submodule
+	branch = master
