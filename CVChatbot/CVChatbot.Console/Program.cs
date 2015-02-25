@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TCL.Extensions;
 
 namespace CVChatbot.Console
 {
@@ -18,6 +19,7 @@ namespace CVChatbot.Console
 
             mng = new RoomManager();
             mng.ShutdownOrderGiven += mng_ShutdownOrderGiven;
+            mng.InformationMessageBroadcasted += mng_InformationMessageBroadcasted;
 
             WriteToConsole("Gathering settings");
 
@@ -46,6 +48,11 @@ namespace CVChatbot.Console
             }
         }
 
+        static void mng_InformationMessageBroadcasted(string message)
+        {
+            WriteToConsole(message);
+        }
+
         static void mng_ShutdownOrderGiven(object sender, EventArgs e)
         {
             WriteToConsole("Shutdown order given.");
@@ -57,7 +64,9 @@ namespace CVChatbot.Console
         {
             lock (writeToConsoleLockObject)
             {
-                System.Console.WriteLine(message);
+                // [2000-01-01 00:00:00.00] [<profile id>] (<Message Type>) <message>
+                var formattedMessage = "[{0}] {1}".FormatInline(DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm:ss.ff zzz"), message);
+                System.Console.WriteLine(formattedMessage);
             }
         }
     }

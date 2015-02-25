@@ -20,7 +20,10 @@ namespace CVChatbot.Bot
         private bool disposed = false;
 
         public delegate void ShutdownOrderGivenHandler(object sender, EventArgs e);
+        public delegate void InformationMessageBrodcastedHandler(string message);
+
         public event ShutdownOrderGivenHandler ShutdownOrderGiven;
+        public event InformationMessageBrodcastedHandler InformationMessageBroadcasted;
 
         /// <summary>
         /// Creates a new RoomManger object.
@@ -77,7 +80,7 @@ namespace CVChatbot.Bot
             // Say the startup message?
             if (!settings.StartUpMessage.IsNullOrWhiteSpace())
             {
-                // This is the one exception to not using the "OrThrow" method.
+                // This is the one of the few instances to not using the "OrThrow" method.
                 var startMessage = cvChatRoom.PostMessage(settings.StartUpMessage);
 
                 if (startMessage == null)
@@ -102,6 +105,9 @@ namespace CVChatbot.Bot
         {
             try
             {
+                if (InformationMessageBroadcasted != null)
+                    InformationMessageBroadcasted(newMessage.Content);
+
                 await Task.Run(() => cmp.ProcessChatMessage(newMessage, cvChatRoom));
             }
             catch (Exception ex)
