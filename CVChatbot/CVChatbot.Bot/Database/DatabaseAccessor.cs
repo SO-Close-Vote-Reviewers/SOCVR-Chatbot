@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TheCommonLibrary.Sql;
+using TCL.DataAccess;
 using System.Data;
-using TheCommonLibrary.Extensions;
+using TCL.Extensions;
 
 namespace CVChatbot.Bot.Database
 {
