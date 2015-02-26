@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TCL.Extensions;
 
-namespace CVChatbot.UI
+namespace CVChatbot.Console
 {
     /// <summary>
     /// Used for getting values in the settings.txt file.
