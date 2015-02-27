@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace CVChatbot.Bot
 {
@@ -76,33 +77,26 @@ namespace CVChatbot.Bot
         {
             ThrowWhen.IsNullOrEmpty(baseUrl, "baseUrl");
 
-            const string SearchTermForRevision = "&quot;revisionId&quot;:";
+            var data = Get(baseUrl + "/query/236526/tags-that-can-be-cleared-of-votes#");
+            data = data.Remove(0, data.Length - 3000); // Footer averages around 2,500 chars, so lets say 3K just to be safe.
 
-            var first = Get(baseUrl + "/query/236526/tags-that-can-be-cleared-of-votes#");
+            // This regex could be turned into a private static variable which would then allow us
+            // to instantiate it with the RegexOptions.Complied flag for even greater performance.
+            var matches = Regex.Matches(data, "(?is)\"revisionId\":\\s\\d+", RegexOptions.CultureInvariant);
 
-            // Tn theory we could parse the result from this html
-            // but the data is inside a script tag and we don't fancy yet to parse it.
-
-            // This is expensive...
-            var dom = CQ.Create(first);
-
-            // Find the link. This one is slug-ed so this is useless for now.
-            string href = dom["#resultSetsButton"][0].Attributes["href"];
-
-            // Find among all inline scripts the one that holds the revisionid.
-            var scriptTag = dom["script"].FirstOrDefault(script =>
-                !script.HasAttribute("src") &&
-                script.InnerText != null &&
-                script.InnerText.Contains(SearchTermForRevision));
-
-            string revid = null; // "344267"; // old revision
-            if (scriptTag != null)
+            if (matches.Count != 1)
             {
-                var revision = scriptTag.InnerText.IndexOf(SearchTermForRevision) + SearchTermForRevision.Length;
-                var nextComma = scriptTag.InnerText.IndexOf(',', revision);
-                revid = scriptTag.InnerText.Substring(revision, nextComma - revision).Trim();
+                throw new Exception("Couldn't find CSV revision ID.");
             }
-            return revid;
+
+            foreach (Match match in matches)
+            {
+                var matchStr = match.Value;
+                var revId = new string(matchStr.Where(Char.IsDigit).ToArray());
+                return revId;
+            }
+
+            throw new Exception("Couldn't find CSV revision ID.");
         }
 
         /// <summary>
