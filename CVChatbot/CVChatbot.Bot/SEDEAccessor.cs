@@ -16,9 +16,9 @@ namespace CVChatbot
     public static class SedeAccessor
     {
         /// <summary>
-        /// The last url with revision.
+        /// The last CSV revision ID of when fresh tags were fetched.
         /// </summary>
-        private static string lastRevision;
+        private static string lastCsvRevID;
 
         /// <summary>
         /// The last time fresh tag data was fetched.
@@ -85,10 +85,10 @@ namespace CVChatbot
 
                 var currentID = "";
 
-                if ((currentID = Client.GetSedeQueryRunUrl(236526)) != lastRevision)
+                if ((currentID = Client.GetSedeQueryCsvRevisionId("http://data.stackexchange.com/stackoverflow")) != lastCsvRevID)
                 {
-                    lastRevision = currentID;
-                    tags = Client.GetTags(lastRevision);
+                    lastCsvRevID = currentID;
+                    tags = Client.GetTags();
                 }
 
                 lastRevIdCheckTime = DateTime.UtcNow;
