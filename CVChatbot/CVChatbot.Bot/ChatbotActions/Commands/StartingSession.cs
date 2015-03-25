@@ -16,6 +16,11 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             var chatUser = chatRoom.GetUser(incommingChatMessage.AuthorID);
 
             var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
+
+            // first, check if the user has any open sessions, and close them
+            int numberOfClosedSessions = da.EndAnyOpenSessions(incommingChatMessage.AuthorID);
+
+            // now record the new session
             da.StartReviewSession(incommingChatMessage.AuthorID);
 
             var replyMessages = new List<string>()
@@ -29,7 +34,23 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 "By the power of the Vote! Review!"
             };
 
-            chatRoom.PostReplyOrThrow(incommingChatMessage, replyMessages.PickRandom());
+            var outMessage = replyMessages.PickRandom();
+
+            if (numberOfClosedSessions > 0) //if there was a closed session
+            {
+                //append a message saying how many there were
+
+                outMessage += " **Note:** You had {0} open {1}. I have closed {2}.".FormatInline(
+                    numberOfClosedSessions,
+                    numberOfClosedSessions > 1
+                        ? "sessions"
+                        : "session",
+                    numberOfClosedSessions > 1
+                        ? "them"
+                        : "it");
+            }
+
+            chatRoom.PostReplyOrThrow(incommingChatMessage, outMessage);
         }
 
         public override ActionPermissionLevel GetPermissionLevel()
