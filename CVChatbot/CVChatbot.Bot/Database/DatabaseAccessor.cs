@@ -322,5 +322,33 @@ insert into ReviewSession (RegisteredUserId, SessionStart)
                 ItemsReviewed = dr.Field<int?>("ItemsReviewed"),
             };
         }
+
+        public int EndAnyOpenSessions(int profileId)
+        {
+            var sql = @"
+update rs
+set rs.SessionEnd = dateadd(SECOND, 40, rs.SessionStart)
+output
+	inserted.Id
+from ReviewSession rs
+inner join RegisteredUser ru on rs.RegisteredUserId = ru.Id
+where
+	ru.ChatProfileId = @ChatProfileId and
+	rs.SessionEnd is null;";
+
+            var numOfSessionsClosed = RunScript<int>(sql,
+            (c) =>
+            {
+                c.AddParam("@ChatProfileId", profileId);
+            },
+            new Func<DataTable, int>(dt =>
+            {
+                return dt.AsEnumerable()
+                    .Select(x => x.Field<int>("Id"))
+                    .Count();
+            }));
+
+            return numOfSessionsClosed;
+        }
     }
 }
