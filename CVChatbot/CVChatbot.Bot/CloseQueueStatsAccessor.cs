@@ -1,4 +1,4 @@
-﻿using HtmlAgilityPack;
+﻿using CsQuery;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,31 +15,23 @@ namespace CVChatbot.Bot
     {
         public string GetOverallQueueStats()
         {
-            HtmlWeb web = new HtmlWeb();
-            var doc = web.Load("http://stackoverflow.com/review/close/stats");
+            var doc = CQ.CreateFromUrl("http://stackoverflow.com/review/close/stats");
+            var statsTable = doc.Find("table.task-stat-table");
+            var cells = statsTable.Find("td");
 
-            var statsTable = doc.DocumentNode
-                .Descendants("table")
-                .Single(x =>
-                    x.Attributes["class"] != null &&
-                    x.Attributes["class"].Value == "task-stat-table");
-
-            var needReview = statsTable
-                .Descendants("td")
+            var needReview = cells
                 .ElementAt(0)
-                .Element("a")
+                .FirstElementChild
                 .InnerText;
 
-            var reviewsToday = statsTable
-                .Descendants("td")
+            var reviewsToday = cells
                 .ElementAt(1)
-                .Element("div")
+                .FirstElementChild
                 .InnerText;
 
-            var allTime = statsTable
-                .Descendants("td")
+            var allTime = cells
                 .ElementAt(2)
-                .Element("div")
+                .FirstElementChild
                 .InnerText;
 
             var message = new[]

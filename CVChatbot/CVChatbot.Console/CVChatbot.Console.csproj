@@ -60,9 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="settings-sample.txt" />
-    <Content Include="settings.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Resource Include="settings.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
