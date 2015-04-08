@@ -89,7 +89,7 @@ namespace CVChatbot.Bot
                 }
             }
 
-            cvChatRoom.NewMessage += cvChatRoom_NewMessage;
+            cvChatRoom.EventManager.ConnectListener(EventType.MessagePosted, new Action<Message>(cvChatRoom_NewMessage));
         }
 
         public void LeaveRoom()
