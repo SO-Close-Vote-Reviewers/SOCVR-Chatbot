@@ -109,14 +109,6 @@
       <Project>{b96f1bff-c14b-44ad-aad5-09cbc0417c44}</Project>
       <Name>SOCVR.Net</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\TheCommonLibrary\TCL.DataAccess\TCL.DataAccess.csproj">
-      <Project>{56fa7edd-9ab6-49e5-b012-9ea756101de0}</Project>
-      <Name>TCL.DataAccess</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\TheCommonLibrary\TCL.Extensions\TCL.Extensions.csproj">
-      <Project>{135f21bf-e010-4793-9fa0-52b0d3493e59}</Project>
-      <Name>TCL.Extensions</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
