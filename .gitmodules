@@ -1,7 +1,3 @@
-[submodule "TheCommonLibrary"]
-	path = TheCommonLibrary
-	url = git@github.com:gunr2171/TheCommonLibrary.git
-	branch = master
 [submodule "SOCVR.Net"]
 	path = SOCVR.Net
 	url = git@github.com:SO-Close-Vote-Reviewers/SOCVR.Net.git
