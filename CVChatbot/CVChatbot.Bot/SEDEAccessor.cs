@@ -81,7 +81,7 @@ namespace CVChatbot
             // then refresh the tag listing.
             if (tags == null || (DateTime.UtcNow - lastRevIdCheckTime).TotalMinutes > 30)
             {
-                chatRoom.PostMessageOrThrow("Refreshing the tag listing. This could take a bit.");
+                chatRoom.PostMessageOrThrow("Refreshing the tag listing. Please wait...");
 
                 var currentID = "";
 
