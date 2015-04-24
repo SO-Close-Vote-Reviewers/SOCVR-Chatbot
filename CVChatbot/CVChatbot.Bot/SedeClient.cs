@@ -327,7 +327,7 @@ namespace CVChatbot.Bot
         private void SEOpenIDLogin(string email, string password)
         {
             // Do a Get to retrieve the cookies.
-            var start = Post("http://data.stackexchange.com/user/authenticate?returnurl=/", "openid_identifier=https%3A%2F%2Fopenid.stackexchange.com%2F");
+            var start = Post("http://data.stackexchange.com/user/authenticate?returnurl=/", "openid=https%3A%2F%2Fopenid.stackexchange.com%2F");
 
             var html = CQ.Create(start);
             // If we find no fkey or session in html.
