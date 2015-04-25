@@ -41,7 +41,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="TCL.Extensions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\TCL.Extensions.1.2.32\lib\net45\TCL.Extensions.dll</HintPath>
+      <HintPath>..\packages\TCL.Extensions.1.2.34\lib\net45\TCL.Extensions.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

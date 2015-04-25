@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using TCL.DataAccess;
 using System.Data;
 using TCL.Extensions;
+using TCL.DataAccess.MsSql;
 
 namespace CVChatbot.Bot.Database
 {
