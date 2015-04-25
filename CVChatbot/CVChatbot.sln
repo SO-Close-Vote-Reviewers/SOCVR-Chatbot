@@ -11,23 +11,30 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CVChatbot.Console", "CVChat
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug_Postgres|Any CPU = Debug_Postgres|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		LocalPublish|Any CPU = LocalPublish|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A28BE12F-BE83-4313-B55F-C8706FD1AAC2}.Debug_Postgres|Any CPU.ActiveCfg = Debug_Postgres|Any CPU
+		{A28BE12F-BE83-4313-B55F-C8706FD1AAC2}.Debug_Postgres|Any CPU.Build.0 = Debug_Postgres|Any CPU
 		{A28BE12F-BE83-4313-B55F-C8706FD1AAC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A28BE12F-BE83-4313-B55F-C8706FD1AAC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A28BE12F-BE83-4313-B55F-C8706FD1AAC2}.LocalPublish|Any CPU.ActiveCfg = Release|Any CPU
 		{A28BE12F-BE83-4313-B55F-C8706FD1AAC2}.LocalPublish|Any CPU.Build.0 = Release|Any CPU
 		{A28BE12F-BE83-4313-B55F-C8706FD1AAC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A28BE12F-BE83-4313-B55F-C8706FD1AAC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B96F1BFF-C14B-44AD-AAD5-09CBC0417C44}.Debug_Postgres|Any CPU.ActiveCfg = Debug|Any CPU
+		{B96F1BFF-C14B-44AD-AAD5-09CBC0417C44}.Debug_Postgres|Any CPU.Build.0 = Debug|Any CPU
 		{B96F1BFF-C14B-44AD-AAD5-09CBC0417C44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B96F1BFF-C14B-44AD-AAD5-09CBC0417C44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B96F1BFF-C14B-44AD-AAD5-09CBC0417C44}.LocalPublish|Any CPU.ActiveCfg = Release|Any CPU
 		{B96F1BFF-C14B-44AD-AAD5-09CBC0417C44}.LocalPublish|Any CPU.Build.0 = Release|Any CPU
 		{B96F1BFF-C14B-44AD-AAD5-09CBC0417C44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B96F1BFF-C14B-44AD-AAD5-09CBC0417C44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9523CB8-D234-4C34-BDE1-7E11B5066986}.Debug_Postgres|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9523CB8-D234-4C34-BDE1-7E11B5066986}.Debug_Postgres|Any CPU.Build.0 = Debug|Any CPU
 		{E9523CB8-D234-4C34-BDE1-7E11B5066986}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E9523CB8-D234-4C34-BDE1-7E11B5066986}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9523CB8-D234-4C34-BDE1-7E11B5066986}.LocalPublish|Any CPU.ActiveCfg = Release|Any CPU

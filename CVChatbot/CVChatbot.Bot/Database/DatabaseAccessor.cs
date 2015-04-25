@@ -6,11 +6,21 @@ using System.Threading.Tasks;
 using TCL.DataAccess;
 using System.Data;
 using TCL.Extensions;
+
+#if MsSql
 using TCL.DataAccess.MsSql;
+#elif Postgres
+using TCL.DataAccess.Postgres;
+#endif
 
 namespace CVChatbot.Bot.Database
 {
-    class DatabaseAccessor : SqlScriptAccessorBase
+    class DatabaseAccessor : 
+#if MsSql
+        SqlScriptAccessorBase
+#elif Postgres
+        PostgresScriptAccessorBase
+#endif
     {
         public DatabaseAccessor(string connectionString) : base(connectionString) { }
 
