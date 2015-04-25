@@ -15,11 +15,11 @@ using TCL.DataAccess.Postgres;
 
 namespace CVChatbot.Bot.Database
 {
-    class DatabaseAccessor : 
+    class DatabaseAccessor :
 #if MsSql
         SqlScriptAccessorBase
 #elif Postgres
-        PostgresScriptAccessorBase
+ PostgresScriptAccessorBase
 #endif
     {
         public DatabaseAccessor(string connectionString) : base(connectionString) { }
@@ -88,7 +88,8 @@ where 'Id' = @SessionId;";
 #if MsSql
             var sql = @"select * from GetCompletedTags(@PersonThreshold, @MaxReturnEntries);";
 #elif Postgres
-            //need to do this one
+            throw new NotImplementedException();
+            var sql = "";
 #endif
 
             return RunScript<List<CompletedTag>>(sql,
@@ -114,7 +115,8 @@ where 'Id' = @SessionId;";
 #if MsSql
             var sql = "select dbo.GetUsersCurrentSession(@ChatProfileId) [SessionStartTs]";
 #elif Postgres
-            //need to do this one
+            throw new NotImplementedException();
+            var sql = "";
 #endif
 
             return RunScript<DateTimeOffset?>(sql,
@@ -225,7 +227,8 @@ limit 1;".Replace("'", "\"");
 #if MsSql
             var sql = "select * from GetPingReviewersRecipientList(@MaxDaysBack, @RequestingUserProfileId);";
 #elif Postgres
-            //need to do this
+            throw new NotImplementedException();
+            var sql = "";
 #endif
 
             return RunScript<List<int>>(sql,
@@ -432,18 +435,25 @@ insert into 'ReviewSession' ('RegisteredUserId', 'SessionStart')
 
         private ReviewSession ConvertDataRowToReviewSession(DataRow dr)
         {
-            return new ReviewSession
-            {
-                Id = dr.Field<int>("Id"),
-                RegisteredUserId = dr.Field<int>("RegisteredUserId"),
-                SessionStart = dr.Field<DateTimeOffset>("SessionStart"),
-                SessionEnd = dr.Field<DateTimeOffset?>("SessionEnd"),
-                ItemsReviewed = dr.Field<int?>("ItemsReviewed"),
-            };
+            var rs = new ReviewSession();
+            
+            rs.Id = dr.Field<int>("Id");
+            rs.RegisteredUserId = dr.Field<int>("RegisteredUserId");
+#if MsSql
+            rs.SessionStart = dr.Field<DateTimeOffset>("SessionStart");
+            rs.SessionEnd = dr.Field<DateTimeOffset?>("SessionEnd");
+#elif Postgres
+            rs.SessionStart = dr.Field<DateTime>("SessionStart");
+            rs.SessionEnd = dr.Field<DateTime?>("SessionEnd");
+#endif
+            rs.ItemsReviewed = dr.Field<int?>("ItemsReviewed");
+            
+            return rs;
         }
 
         public int EndAnyOpenSessions(int profileId)
         {
+#if MsSql
             var sql = @"
 update rs
 set rs.SessionEnd = dateadd(SECOND, 40, rs.SessionStart)
@@ -454,6 +464,17 @@ inner join RegisteredUser ru on rs.RegisteredUserId = ru.Id
 where
 	ru.ChatProfileId = @ChatProfileId and
 	rs.SessionEnd is null;";
+#elif Postgres
+            var sql = @"
+update 'ReviewSession'
+set 'SessionEnd' = current_timestamp
+from 'ReviewSession' rs
+inner join 'RegisteredUser' ru on rs.'RegisteredUserId' = ru.'Id'
+where
+	ru.'ChatProfileId' = @ChatProfileId and
+	rs.'SessionEnd' is null
+returning rs.'Id';".Replace("'", "\"");
+#endif
 
             var numOfSessionsClosed = RunScript<int>(sql,
             (c) =>
