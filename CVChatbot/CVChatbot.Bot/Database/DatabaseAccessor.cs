@@ -188,12 +188,20 @@ order by rs.SessionStart desc";
         /// <returns></returns>
         public RegisteredUser GetRegisteredUserByChatProfileId(int chatProfileId)
         {
+#if MsSql
             var sql = "select * from RegisteredUser where ChatProfileId = @ChatProfileId;";
+#elif Postgres
+            var sql = "select * from 'RegisteredUser' where 'ChatProfileId' = :ChatProfileId".Replace("'", "\"");
+#endif
 
             return RunScript<RegisteredUser>(sql,
             (c) =>
             {
+#if MsSql
                 c.AddWithValue("@ChatProfileId", chatProfileId);
+#elif Postgres
+                c.AddWithValue(":ChatProfileId", chatProfileId);
+#endif
             },
             new Func<DataTable, RegisteredUser>(dt =>
                 dt.AsEnumerable()
