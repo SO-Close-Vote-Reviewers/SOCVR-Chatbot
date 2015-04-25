@@ -374,17 +374,28 @@ insert into 'NoItemsInFilterEntry'('RegisteredUserId', 'TagName', 'EntryTs')
 
         public void InsertUnrecognizedCommand(string unrecognizedCommand)
         {
+#if MsSql
             var sql = "insert into UnrecognizedCommand([Command]) values (@Command);";
+#elif Postgres
+            var sql = "insert into 'UnrecognizedCommand'('Command') values (@Command);".Replace("'", "\"");
+#endif
 
             RunScript(sql, (c) => c.AddParam("@Command", unrecognizedCommand));
         }
 
         public void SetSessionEndTs(int sessionId, DateTimeOffset newSessionEndTs)
         {
+#if MsSql
             var sql = @"
 update ReviewSession
 set SessionEnd = @NewSessionEndTs
 where Id = @SessionId;";
+#elif Postgres
+            var sql = @"
+update 'ReviewSession'
+set 'SessionEnd' = @NewSessionEndTs
+where 'Id' = @SessionId;".Replace("'", "\"");
+#endif
 
             RunScript(sql, (c) =>
             {
@@ -395,6 +406,7 @@ where Id = @SessionId;";
 
         public void StartReviewSession(int chatProfileId)
         {
+#if MsSql
             var sql = @"
 insert into ReviewSession (RegisteredUserId, SessionStart)
 	select
@@ -402,6 +414,15 @@ insert into ReviewSession (RegisteredUserId, SessionStart)
 		SYSDATETIMEOFFSET()
 	from RegisteredUser ru
 	where ru.ChatProfileId = @ChatProfileId;";
+#elif Postgres
+            var sql = @"
+insert into 'ReviewSession' ('RegisteredUserId', 'SessionStart')
+	select
+		ru.'Id',
+		current_timestamp
+	from 'RegisteredUser' ru
+	where ru.'ChatProfileId' = @ChatProfileId;".Replace("'", "\"");
+#endif
 
             RunScript(sql, (c) =>
             {
