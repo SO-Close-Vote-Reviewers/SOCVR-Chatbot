@@ -85,7 +85,7 @@ namespace CVChatbot
 
                 var currentID = "";
 
-                if ((currentID = Client.GetSedeQueryRunUrl(236526)) != lastRevision)
+                if ((currentID = Client.GetSedeQueryRunUrl(236526)) != lastRevision || tags == null)
                 {
                     lastRevision = currentID;
                     tags = Client.GetTags(lastRevision);
