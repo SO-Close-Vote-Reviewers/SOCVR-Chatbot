@@ -109,10 +109,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ChatExchange.Net\ChatExchange.Net\ChatExchange.Net.csproj">
-      <Project>{145af77f-b475-40e4-8b85-ce3393bcd906}</Project>
-      <Name>ChatExchange.Net</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\SOCVR.Net\SOCVR.Net\SOCVR.Net.csproj">
       <Project>{b96f1bff-c14b-44ad-aad5-09cbc0417c44}</Project>
       <Name>SOCVR.Net</Name>
