@@ -26,7 +26,11 @@ namespace CVChatbot.Bot.Database
 
         public void AddUserToRegisteredUsersList(int chatProfileId)
         {
+#if MsSql
             var sql = "insert into RegisteredUser (ChatProfileId, IsOwner) values (@ChatProfileId, 0);";
+#elif Postgres
+            var sql = "insert into 'RegisteredUser' ('ChatProfileId', 'IsOwner') values (@ChatProfileId, false);".Replace("'", "\"");
+#endif
 
             RunScript(sql,
             (c) =>
@@ -37,10 +41,17 @@ namespace CVChatbot.Bot.Database
 
         public void EditLatestCompletedSessionItemsReviewedCount(int sessionId, int? newItemsReviewedCount)
         {
+#if MsSql
             var sql = @"
 update ReviewSession
 set ItemsReviewed = @NewItemsReviewedCount
 where Id = @SessionId;";
+#elif Postgres
+            var sql = @"
+update 'ReviewSession'
+set 'ItemsReviewed' = @NewItemsReviewedCount
+where 'Id' = @SessionId;".Replace("'", "\"");
+#endif
 
             RunScript(sql, (c) =>
             {
@@ -51,11 +62,19 @@ where Id = @SessionId;";
 
         public void EndReviewSession(int sessionId, int? itemsReviewed)
         {
+#if MsSql
             var sql = @"
 update ReviewSession
 set ItemsReviewed = @ItemsReviewed,
     SessionEnd = SYSDATETIMEOFFSET()
 where Id = @SessionId;";
+#elif Postgres
+            var sql = @"
+update 'ReviewSession'
+set 'ItemsReviewed' = @ItemsReviewed,
+    'SessionEnd' = current_timestamp
+where 'Id' = @SessionId;";
+#endif
 
             RunScript(sql, (c) =>
             {
@@ -66,7 +85,11 @@ where Id = @SessionId;";
 
         public List<CompletedTag> GetCompletedTags(int personThreshold, int maxReturnEntries)
         {
+#if MsSql
             var sql = @"select * from GetCompletedTags(@PersonThreshold, @MaxReturnEntries);";
+#elif Postgres
+            //need to do this one
+#endif
 
             return RunScript<List<CompletedTag>>(sql,
             (c) =>
@@ -88,7 +111,11 @@ where Id = @SessionId;";
 
         public DateTimeOffset? GetCurrentSessionStartTs(int chatProfileId)
         {
+#if MsSql
             var sql = "select dbo.GetUsersCurrentSession(@ChatProfileId) [SessionStartTs]";
+#elif Postgres
+            //need to do this one
+#endif
 
             return RunScript<DateTimeOffset?>(sql,
             (c) =>
@@ -102,12 +129,22 @@ where Id = @SessionId;";
 
         public ReviewSession GetLatestCompletedSession(int chatProfileId)
         {
+#if MsSql
             var sql = @"
 select top 1 rs.*
 from ReviewSession rs
 inner join RegisteredUser r on rs.RegisteredUserId = r.Id
 where r.ChatProfileId = @ChatProfileId and rs.SessionEnd is not null
 order by rs.SessionStart desc";
+#elif Postgres
+            var sql = @"
+select rs.*
+from 'ReviewSession' rs
+inner join 'RegisteredUser' r on rs.'RegisteredUserId' = r.'Id'
+where r.'ChatProfileId' = @ChatProfileId and rs.'SessionEnd' is not null
+order by rs.'SessionStart' desc
+limit 1;".Replace("'", "\"");
+#endif
 
             return RunScript<ReviewSession>(sql,
             (c) =>
@@ -123,12 +160,22 @@ order by rs.SessionStart desc";
 
         public ReviewSession GetLatestOpenSessionForUser(int chatProfileId)
         {
+#if MsSql
             var sql = @"
 select top 1 rs.*
 from ReviewSession rs
 inner join RegisteredUser r on rs.RegisteredUserId = r.Id
 where r.ChatProfileId = @ChatProfileId and rs.SessionEnd is null
 order by rs.SessionStart desc";
+#elif Postgres
+            var sql = @"
+select rs.*
+from 'ReviewSession' rs
+inner join 'RegisteredUser' r on rs.'RegisteredUserId' = r.'Id'
+where r.'ChatProfileId' = @ChatProfileId and rs.'SessionEnd' is null
+order by rs.'SessionStart' desc
+limit 1;".Replace("'", "\"");
+#endif
 
             return RunScript<ReviewSession>(sql,
             (c) =>
@@ -144,12 +191,22 @@ order by rs.SessionStart desc";
 
         public ReviewSession GetLatestSessionForUser(int chatProfileId)
         {
+#if MsSql
             var sql = @"
 select top 1 rs.*
 from ReviewSession rs
 inner join RegisteredUser r on rs.RegisteredUserId = r.Id
 where r.ChatProfileId = @ChatProfileId
 order by rs.SessionStart desc";
+#elif Postgres
+            var sql = @"
+select rs.*
+from 'ReviewSession' rs
+inner join 'RegisteredUser' r on rs.'RegisteredUserId' = r.'Id'
+where r.'ChatProfileId' = @ChatProfileId
+order by rs.'SessionStart' desc
+limit 1;".Replace("'", "\"");
+#endif
 
             return RunScript<ReviewSession>(sql,
             (c) =>
@@ -165,7 +222,11 @@ order by rs.SessionStart desc";
 
         public List<int> GetPingReviewersRecipientList(int requestingUserProfileId, int daysBackThreshold)
         {
+#if MsSql
             var sql = "select * from GetPingReviewersRecipientList(@MaxDaysBack, @RequestingUserProfileId);";
+#elif Postgres
+            //need to do this
+#endif
 
             return RunScript<List<int>>(sql,
             (c) =>
@@ -197,11 +258,7 @@ order by rs.SessionStart desc";
             return RunScript<RegisteredUser>(sql,
             (c) =>
             {
-#if MsSql
                 c.AddWithValue("@ChatProfileId", chatProfileId);
-#elif Postgres
-                c.AddWithValue(":ChatProfileId", chatProfileId);
-#endif
             },
             new Func<DataTable, RegisteredUser>(dt =>
                 dt.AsEnumerable()
@@ -259,6 +316,7 @@ order by rs.SessionStart desc";
 
         public void InsertCompletedAuditEntry(int chatProfileId, string tagName)
         {
+#if MsSql
             var sql = @"
 insert into CompletedAuditEntry(RegisteredUserId, TagName, EntryTs)
 	select
@@ -267,6 +325,16 @@ insert into CompletedAuditEntry(RegisteredUserId, TagName, EntryTs)
 		SYSDATETIMEOFFSET()
 	from RegisteredUser ru
 	where ru.ChatProfileId = @ChatProfileId;";
+#elif Postgres
+            var sql = @"
+insert into 'CompletedAuditEntry'('RegisteredUserId', 'TagName', 'EntryTs')
+	select
+		ru.'Id',
+		@TagName,
+		current_timestamp
+	from 'RegisteredUser' ru
+	where ru.'ChatProfileId' = @ChatProfileId;".Replace("'", "\"");
+#endif
 
             RunScript(sql, (c) =>
             {
@@ -277,6 +345,7 @@ insert into CompletedAuditEntry(RegisteredUserId, TagName, EntryTs)
 
         public void InsertNoItemsInFilterRecord(int chatProfileId, string tagName)
         {
+#if MsSql
             var sql = @"
 insert into NoItemsInFilterEntry(RegisteredUserId, TagName, EntryTs)
 	select
@@ -285,6 +354,16 @@ insert into NoItemsInFilterEntry(RegisteredUserId, TagName, EntryTs)
 		SYSDATETIMEOFFSET()
 	from RegisteredUser ru
 	where ru.ChatProfileId = @ChatProfileId;";
+#elif Postgres
+            var sql = @"
+insert into 'NoItemsInFilterEntry'('RegisteredUserId', 'TagName', 'EntryTs')
+	select
+		ru.'Id',
+		@TagName,
+		current_timestamp
+	from 'RegisteredUser' ru
+	where ru.'ChatProfileId' = @ChatProfileId;".Replace("'", "\"");
+#endif
 
             RunScript(sql, (c) =>
             {
