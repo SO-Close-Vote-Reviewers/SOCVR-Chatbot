@@ -233,8 +233,7 @@ limit 1;".Replace("'", "\"");
 #if MsSql
             var sql = "select * from GetPingReviewersRecipientList(@MaxDaysBack, @RequestingUserProfileId);";
 #elif Postgres
-            throw new NotImplementedException();
-            var sql = "";
+            var sql = "select * from 'GetPingReviewersRecipientList'(@MaxDaysBack, @RequestingUserProfileId);".Replace("'", "\"");
 #endif
 
             return RunScript<List<int>>(sql,
