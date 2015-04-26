@@ -1,5 +1,5 @@
 ﻿
-create or replace function "GetUserAuditStats"(ChatProfileId int) returns timestamptz LANGUAGE plpgsql as $$
+create or replace function "GetUsersCurrentSession"(ChatProfileId int) returns timestamptz LANGUAGE plpgsql as $$
 declare
 	returnValue int = null;
 begin
