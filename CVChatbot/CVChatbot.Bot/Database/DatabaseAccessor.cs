@@ -280,7 +280,11 @@ limit 1;".Replace("'", "\"");
 
         public List<UserAuditStatEntry> GetUserAuditStats(int chatProfileId)
         {
+#if MsSql
             var sql = "select * from GetUserAuditStats(@ChatProfileId) a order by a.[Percent] desc;";
+#elif Postgres
+            var sql = "select * from 'GetUserAuditStats'(@ChatProfileId) a order by a.Percent desc;".Replace("'", "\"");
+#endif
 
             return RunScript<List<UserAuditStatEntry>>(sql,
             (c) =>

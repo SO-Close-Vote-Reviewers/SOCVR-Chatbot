@@ -27,7 +27,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             var message = auditEntries
                 .ToStringTable(new[] { "Tag Name", "%", "Count" },
                     (x) => x.TagName,
-                    (x) => x.Percent,
+                    (x) => Math.Round(x.Percent, 2),
                     (x) => x.Count);
 
             chatRoom.PostReplyOrThrow(incommingChatMessage, "Stats of all tracked audits by tag:");
