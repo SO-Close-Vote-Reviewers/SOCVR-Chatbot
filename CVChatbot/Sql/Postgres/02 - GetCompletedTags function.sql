@@ -33,5 +33,3 @@ create or replace function "GetCompletedTags"(PersonThreshold int, MaxReturnEntr
 	order by g.LastEntryTs desc
 	limit MaxReturnEntries
 $$ LANGUAGE sql;
-
-select * from "GetCompletedTags"(1, 10);
