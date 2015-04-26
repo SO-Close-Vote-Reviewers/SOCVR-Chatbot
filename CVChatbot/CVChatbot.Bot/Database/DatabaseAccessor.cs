@@ -118,8 +118,7 @@ where 'Id' = @SessionId;".Replace("'", "\"");
 #if MsSql
             var sql = "select dbo.GetUsersCurrentSession(@ChatProfileId) [SessionStartTs]";
 #elif Postgres
-            throw new NotImplementedException();
-            var sql = "";
+            var sql = "select 'GetUsersCurrentSession'(@ChatProfileId) 'SessionStartTs'".Replace("'", "\"");
 #endif
 
             return RunScript<DateTimeOffset?>(sql,
@@ -128,7 +127,11 @@ where 'Id' = @SessionId;".Replace("'", "\"");
                 c.AddWithValue("@ChatProfileId", chatProfileId);
             },
             new Func<DataRow, DateTimeOffset?>(dr =>
+#if MsSql
                 dr.Field<DateTimeOffset?>("SessionStartTs")
+#elif Postgres
+                dr.Field<DateTime?>("SessionStartTs")
+#endif
             ));
         }
 
@@ -429,7 +432,7 @@ insert into ReviewSession (RegisteredUserId, SessionStart)
 insert into 'ReviewSession' ('RegisteredUserId', 'SessionStart')
 	select
 		ru.'Id',
-		current_timestamp
+		@StartTime
 	from 'RegisteredUser' ru
 	where ru.'ChatProfileId' = @ChatProfileId;".Replace("'", "\"");
 #endif
@@ -437,6 +440,9 @@ insert into 'ReviewSession' ('RegisteredUserId', 'SessionStart')
             RunScript(sql, (c) =>
             {
                 c.AddParam("@ChatProfileId", chatProfileId);
+#if Postgres
+                c.AddParam("@StartTime", DateTimeOffset.Now);
+#endif
             });
         }
 
