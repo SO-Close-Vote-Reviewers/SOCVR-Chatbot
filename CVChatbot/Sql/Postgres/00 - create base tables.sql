@@ -20,7 +20,7 @@ CREATE TABLE public."ReviewSession"
 	"ItemsReviewed" integer null,
 	
 	CONSTRAINT "pk_ReviewSession" PRIMARY KEY ("Id"), 
-	CONSTRAINT "fk_ReviewSession_RegisteredUser" foreign key ("Id") references "RegisteredUser" ("Id")
+	CONSTRAINT "fk_ReviewSession_RegisteredUser" foreign key ("RegisteredUserId") references "RegisteredUser" ("Id")
 )
 WITH (
   OIDS = FALSE
