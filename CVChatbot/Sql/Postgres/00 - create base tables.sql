@@ -19,7 +19,7 @@ CREATE TABLE public."ReviewSession"
 	"SessionEnd" timestamptz null,
 	"ItemsReviewed" integer null,
 	
-	CONSTRAINT "pk_ReviewSession" PRIMARY KEY ("Id"), 
+	CONSTRAINT "pk_ReviewSession" PRIMARY KEY ("RegisteredUserId"), 
 	CONSTRAINT "fk_ReviewSession_RegisteredUser" foreign key ("Id") references "RegisteredUser" ("Id")
 )
 WITH (
@@ -35,7 +35,7 @@ create table public."NoItemsInFilterEntry"
 	"EntryTs" timestamptz not null,
 	
 	CONSTRAINT "pk_NoItemsInFilterEntry" PRIMARY KEY ("Id"), 
-	CONSTRAINT "fk_NoItemsInFilterEntry_RegisteredUser" foreign key ("Id") references "RegisteredUser" ("Id")
+	CONSTRAINT "fk_NoItemsInFilterEntry_RegisteredUser" foreign key ("RegisteredUserId") references "RegisteredUser" ("Id")
 )
 WITH (
   OIDS = FALSE
@@ -50,7 +50,7 @@ create table public."CompletedAuditEntry"
 	"EntryTs" timestamptz not null,
 	
 	CONSTRAINT "pk_CompletedAuditEntry" PRIMARY KEY ("Id"), 
-	CONSTRAINT "fk_CompletedAuditEntry_RegisteredUser" foreign key ("Id") references "RegisteredUser" ("Id")
+	CONSTRAINT "fk_CompletedAuditEntry_RegisteredUser" foreign key ("RegisteredUserId") references "RegisteredUser" ("Id")
 )
 WITH (
   OIDS = FALSE

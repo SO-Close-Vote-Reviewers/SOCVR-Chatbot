@@ -73,7 +73,7 @@ where Id = @SessionId;";
 update 'ReviewSession'
 set 'ItemsReviewed' = @ItemsReviewed,
     'SessionEnd' = current_timestamp
-where 'Id' = @SessionId;";
+where 'Id' = @SessionId;".Replace("'", "\"");
 #endif
 
             RunScript(sql, (c) =>
@@ -88,8 +88,7 @@ where 'Id' = @SessionId;";
 #if MsSql
             var sql = @"select * from GetCompletedTags(@PersonThreshold, @MaxReturnEntries);";
 #elif Postgres
-            throw new NotImplementedException();
-            var sql = "";
+            var sql = "select * from 'GetCompletedTags'(@PersonThreshold, @MaxReturnEntries);".Replace("'", "\"");
 #endif
 
             return RunScript<List<CompletedTag>>(sql,
@@ -104,7 +103,11 @@ where 'Id' = @SessionId;";
                     {
                         TagName = x.Field<string>("TagName"),
                         PeopleWhoCompletedTag = x.Field<int>("PeopleWhoCompletedTag"),
+#if MsSql
                         LastEntryTs = x.Field<DateTimeOffset>("LastEntryTs"),
+#elif Postgres
+                        LastEntryTs = x.Field<DateTime>("LastEntryTs"),
+#endif
                     })
                     .ToList()
             ));
