@@ -19,7 +19,7 @@ CREATE TABLE public."ReviewSession"
 	"SessionEnd" timestamptz null,
 	"ItemsReviewed" integer null,
 	
-	CONSTRAINT "pk_ReviewSession" PRIMARY KEY ("RegisteredUserId"), 
+	CONSTRAINT "pk_ReviewSession" PRIMARY KEY ("Id"), 
 	CONSTRAINT "fk_ReviewSession_RegisteredUser" foreign key ("Id") references "RegisteredUser" ("Id")
 )
 WITH (
