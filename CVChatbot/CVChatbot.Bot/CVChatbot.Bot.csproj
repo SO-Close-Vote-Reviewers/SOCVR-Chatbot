@@ -136,12 +136,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\SOCVR.Net\SOCVR.Net\SOCVR.Net.csproj">
-      <Project>{b96f1bff-c14b-44ad-aad5-09cbc0417c44}</Project>
-      <Name>SOCVR.Net</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
