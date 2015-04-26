@@ -1,4 +1,0 @@
-[submodule "SOCVR.Net"]
-	path = SOCVR.Net
-	url = git@github.com:SO-Close-Vote-Reviewers/SOCVR.Net.git
-	branch = master
