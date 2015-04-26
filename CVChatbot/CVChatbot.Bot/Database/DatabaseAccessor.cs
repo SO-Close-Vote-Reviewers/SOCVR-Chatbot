@@ -308,7 +308,11 @@ limit 1;".Replace("'", "\"");
 
         public List<UserCompletedTag> GetUserCompletedTags(int chatProfileId)
         {
+#if MsSql
             var sql = "select * from GetUserCompletedTags(@ChatProfileId) order by LastTimeCleared desc;";
+#elif Postgres
+            var sql = "select * from 'GetUserCompletedTags'(@ChatProfileId) order by LastTimeCleared desc;".Replace("'", "\"");
+#endif
 
             return RunScript<List<UserCompletedTag>>(sql,
             (c) =>
@@ -321,7 +325,11 @@ limit 1;".Replace("'", "\"");
                     {
                         TagName = x.Field<string>("TagName"),
                         TimesCleared = x.Field<int>("TimesCleared"),
+#if MsSql
                         LastTimeCleared = x.Field<DateTimeOffset>("LastTimeCleared")
+#elif Postgres
+                        LastTimeCleared = x.Field<DateTime>("LastTimeCleared")
+#endif
                     })
                     .ToList()
             ));
