@@ -11,16 +11,18 @@ namespace CVChatbot.Console
 {
     class Program
     {
-        static RoomManager mng;
-        static bool shutdownOrderGiven = false;
-        // waithandle for shutdown
+        private static RoomManager mng;
+
+        /// <summary>
+        /// waithandle for shutdown
+        /// </summary>
         static ManualResetEvent shutdownEvent = new ManualResetEvent(false);
 
         static void Main(string[] args)
         {
             WriteToConsole("Starting program");
 
-            // dispise our RoomManager
+            // dispose our RoomManager
             using (mng = new RoomManager())
             {
                 mng.ShutdownOrderGiven += mng_ShutdownOrderGiven;
