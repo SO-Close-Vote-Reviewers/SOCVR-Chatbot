@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Runtime.Serialization.Json;
 using System.Threading;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CVChatbot.Bot
 {
@@ -30,8 +32,8 @@ namespace CVChatbot.Bot
         /// Notice that this baby is AppDomain wide used as it is static.
         /// </summary>
         private readonly static CookieContainer cookies = new CookieContainer();
-
-        private readonly static DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(JobResult));
+       
+       // private readonly static DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(JobResult));
 
         private bool disposed;
         # endregion
@@ -117,7 +119,7 @@ namespace CVChatbot.Bot
             }
 
             var dict = new Dictionary<string, int>();
-            foreach (object[] row in jobResult.resultSets[0].rows)
+            foreach (JArray row in jobResult.resultSets[0].rows)
             {
                 int value;
                 Int32.TryParse(row[1].ToString(), out value);
@@ -154,6 +156,18 @@ namespace CVChatbot.Bot
             return result;
         }
 
+        private JobResult DeserializeSedeQueryResult(Stream stream)
+        {
+            JobResult jobResult = null;
+            var js = new Newtonsoft.Json.JsonSerializer();
+            using (var streamReader = new StreamReader(stream))
+            using (var rdr = new JsonTextReader(streamReader))
+            {
+                jobResult = js.Deserialize<JobResult>(rdr);
+            }
+            return jobResult;
+        }
+
         /// <summary>
         /// the query result is retrieved by POSTING the formaction with no data
         /// </summary>
@@ -164,7 +178,9 @@ namespace CVChatbot.Bot
             JobResult jobResult = null;
             using (var jobStream = PostStream(String.Format(baseUrlFormat, url), null))
             {
-                jobResult = (JobResult)ser.ReadObject(jobStream);
+
+                jobResult = DeserializeSedeQueryResult(jobStream);
+                // jobResult = (JobResult)ser.ReadObject(jobStream);
                 if (jobResult.captcha)
                 {
                     Console.WriteLine("captcha requested! not logged in?");
@@ -180,7 +196,7 @@ namespace CVChatbot.Bot
                     if (jobResult.resultSets != null
                         && jobResult.resultSets.Length > 0)
                     {
-                        Console.WriteLine(jobResult.resultSets[0].rows.Length);
+                        Console.WriteLine(jobResult.resultSets[0].rows.Count);
                     }
                     else
                     {
@@ -214,7 +230,7 @@ namespace CVChatbot.Bot
                             Console.WriteLine(jobResult.job_id);
                             using (var pollStream = GetAsStream(String.Format(baseUrlJobFormat, jobResult.job_id)))
                             {
-                                jobResult = (JobResult)ser.ReadObject(pollStream);
+                                jobResult = DeserializeSedeQueryResult(pollStream);
                             }
                         }
                         // if we have a result, get out!
@@ -358,7 +374,8 @@ namespace CVChatbot.Bot
 
         public class ResultSet
         {
-            public object[] rows { get; set; }
+            
+            public Newtonsoft.Json.Linq.JArray rows { get; set; }
         }
 
         public class JobResult
