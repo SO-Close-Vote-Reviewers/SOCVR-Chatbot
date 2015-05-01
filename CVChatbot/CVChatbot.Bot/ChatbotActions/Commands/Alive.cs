@@ -16,7 +16,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 "I'm alive and kicking!",
                 "Still here you guys!",
                 "I'm not dead yet!",
-                "I feel...happy!",
+                "I feel... happy!",
                 "I think I'll go for a walk...",
                 "I don't want to go on the cart!",
                 "I feel fine.",

@@ -39,6 +39,10 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="TCL.Extensions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\TCL.Extensions.1.2.34\lib\net45\TCL.Extensions.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -47,12 +51,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\TheCommonLibrary\TCL.Extensions\TCL.Extensions.csproj">
-      <Project>{135f21bf-e010-4793-9fa0-52b0d3493e59}</Project>
-      <Name>TCL.Extensions</Name>
-    </ProjectReference>
     <ProjectReference Include="..\CVChatbot.Bot\CVChatbot.Bot.csproj">
       <Project>{a28be12f-be83-4313-b55f-c8706fd1aac2}</Project>
       <Name>CVChatbot.Bot</Name>
