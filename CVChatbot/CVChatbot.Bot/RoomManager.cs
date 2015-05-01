@@ -20,7 +20,7 @@ namespace CVChatbot.Bot
         private bool disposed = false;
 
         public delegate void ShutdownOrderGivenHandler(object sender, EventArgs e);
-        public delegate void InformationMessageBrodcastedHandler(string message);
+        public delegate void InformationMessageBrodcastedHandler(string message, string author);
 
         public event ShutdownOrderGivenHandler ShutdownOrderGiven;
         public event InformationMessageBrodcastedHandler InformationMessageBroadcasted;
@@ -106,7 +106,7 @@ namespace CVChatbot.Bot
             try
             {
                 if (InformationMessageBroadcasted != null)
-                    InformationMessageBroadcasted(newMessage.Content);
+                    InformationMessageBroadcasted(newMessage.Content, newMessage.AuthorName);
 
                 await Task.Run(() => cmp.ProcessChatMessage(newMessage, cvChatRoom));
             }
