@@ -29,9 +29,9 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                         gitCommitId = repo.Commits.First().Sha.Take(6).ToCSV("");
                     }
                 }
-                catch
+                catch(Exception ex)
                 {
-                    gitCommitId = "( error on retrieval, check settings )";
+                    gitCommitId = "`<error on retrieval, {0}>`".FormatInline(ex.Message);
                 }
             }
 
