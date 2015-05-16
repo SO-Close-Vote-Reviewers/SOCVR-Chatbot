@@ -14,7 +14,7 @@ namespace CVChatbot.Console
         private static RoomManager mng;
 
         /// <summary>
-        /// waithandle for shutdown
+        /// Wait handle for shutdown
         /// </summary>
         static ManualResetEvent shutdownEvent = new ManualResetEvent(false);
 
@@ -43,6 +43,7 @@ namespace CVChatbot.Console
                     DatabaseConnectionString = SettingsFileAccessor.GetSettingValue<string>("DatabaseConnectionString"),
                     PingReviewersDaysBackThreshold = SettingsFileAccessor.GetSettingValue<int>("PingReviewersDaysBackThreshold"),
                     DefaultNextTagCount = SettingsFileAccessor.GetSettingValue<int>("DefaultNextTagCount"),
+                    GitRootDirectoryPath = SettingsFileAccessor.GetSettingValue<string>("GitRootDirectoryPath"),
                 };
 
                 WriteToConsole("Joining room");

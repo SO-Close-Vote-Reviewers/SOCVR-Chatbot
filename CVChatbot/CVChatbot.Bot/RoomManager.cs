@@ -11,7 +11,7 @@ namespace CVChatbot.Bot
     /// <summary>
     /// This class joins and keeps track of the chat room.
     /// </summary>
-    public class RoomManager:IDisposable
+    public class RoomManager : IDisposable
     {
         private Room cvChatRoom;
         private Client chatClient;
@@ -181,5 +181,11 @@ namespace CVChatbot.Bot
         /// This is the default number of tags to fetch if no argument is used in the Next Tags command.
         /// </summary>
         public int DefaultNextTagCount { get; set; }
+
+        /// <summary>
+        /// If you want the "status" command to print out the sha1 of the current commit, set this value to 
+        /// the root folder of the git repository.
+        /// </summary>
+        public string GitRootDirectoryPath { get; set; }
     }
 }
