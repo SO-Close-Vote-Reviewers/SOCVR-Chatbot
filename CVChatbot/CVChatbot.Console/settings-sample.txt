@@ -6,7 +6,6 @@ LoginEmail=my@email.address.com
 LoginPassword=mySecurePassword!
 DatabaseConnectionString=data source=SERVER;initial catalog=DATABASE;integrated security=True;
 ChatRoomUrl=http://chat.stackoverflow.com/rooms/68414/cvchatbot-testing
-GitRootDirectoryPath=
 
 MaxReviewLengthHours=5
 DefaultCompletedTagsPeopleThreshold=3
