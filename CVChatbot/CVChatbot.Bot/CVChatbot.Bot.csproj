@@ -51,8 +51,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ChatExchange.Net, Version=2.1.10.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ChatExchange.Net.2.1.10-beta\lib\ChatExchange.Net.dll</HintPath>
+    <Reference Include="ChatExchange.Net, Version=2.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ChatExchange.Net.2.2.1-beta\lib\ChatExchange.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="CsQuery">
@@ -66,11 +66,15 @@
       <HintPath>..\packages\MySql.Data.6.9.6\lib\net45\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Npgsql">
       <HintPath>..\packages\Npgsql.2.2.5\lib\net45\Npgsql.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Text, Version=4.0.40.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ServiceStack.Text.4.0.40\lib\net40\ServiceStack.Text.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
