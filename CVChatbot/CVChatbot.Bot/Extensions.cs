@@ -6,7 +6,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using TCL.Extensions;
 
 namespace CVChatbot.Bot
@@ -39,7 +38,7 @@ namespace CVChatbot.Bot
         /// <returns></returns>
         public static string GetContentsWithStrippedMentions(this Message message)
         {
-            return ChatExchangeDotNet.ExtensionMethods.StripMention(message.Content);
+            return ExtensionMethods.StripMention(message.Content);
         }
 
         /// <summary>

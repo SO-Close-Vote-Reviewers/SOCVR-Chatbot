@@ -1,10 +1,5 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
 using System.Collections.Generic;
-using System.Text;
-using CsQuery;
-using System.Net;
 using ChatExchangeDotNet;
 using CVChatbot.Bot;
 

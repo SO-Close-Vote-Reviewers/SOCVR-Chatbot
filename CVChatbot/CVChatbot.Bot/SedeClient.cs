@@ -4,13 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Text.RegularExpressions;
-using System.Runtime.Serialization.Json;
 using System.Threading;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using ServiceStack.Text;
 
 namespace CVChatbot.Bot
 {
@@ -108,9 +103,9 @@ namespace CVChatbot.Bot
         }
 
         /// <summary>
-        /// Retrieves from the sede query the results.
+        /// Retrieves from the SEDE query the results.
         /// </summary>
-        /// <returns>The tagname and the count in a dictionary.</returns>
+        /// <returns>The tag's name and the count in a Dictionary.</returns>
         public Dictionary<string, int> GetTags(JobResult jobResult)
         {
             if (jobResult == null)
@@ -119,11 +114,11 @@ namespace CVChatbot.Bot
             }
 
             var dict = new Dictionary<string, int>();
-            foreach (JArray row in jobResult.resultSets[0].rows)
+            foreach (var row in jobResult.ResultSets[0].Rows)
             {
                 int value;
-                Int32.TryParse(row[1].ToString(), out value);
-                dict.Add(row[0].ToString(), value);
+                Int32.TryParse(row.Values.First(), out value);
+                dict.Add(row.Keys.First(), value);
             }
 
             return dict;
@@ -135,14 +130,14 @@ namespace CVChatbot.Bot
         # region Private methods.
 
         /// <summary>
-        /// formaction is the url posted to if the query is run. This includes the revision
+        /// Formaction is the URL posted to if the query is run. This includes the revision.
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
         private string GetFormActionUrl(string data)
         {
             const string formTag = @"<form id=""runQueryForm"" action=""";
-            // no fancy regex here
+            // No fancy regex here.
             string result = null;
             var postUrlAction = data.IndexOf(formTag);
             if (postUrlAction > -1)
@@ -156,87 +151,74 @@ namespace CVChatbot.Bot
             return result;
         }
 
-        private JobResult DeserializeSedeQueryResult(Stream stream)
-        {
-            JobResult jobResult = null;
-            var js = new Newtonsoft.Json.JsonSerializer();
-            using (var streamReader = new StreamReader(stream))
-            using (var rdr = new JsonTextReader(streamReader))
-            {
-                jobResult = js.Deserialize<JobResult>(rdr);
-            }
-            return jobResult;
-        }
-
         /// <summary>
-        /// the query result is retrieved by POSTING the formaction with no data
+        /// The query result is retrieved by POSTING the formaction with no data.
         /// </summary>
-        /// <param name="url">the formaction url</param>
-        /// <returns>a jobresult</returns>
+        /// <param name="url">The formaction URL.</param>
+        /// <returns>A JobResult.</returns>
         private JobResult GetQueryResult(string url)
         {
             JobResult jobResult = null;
             using (var jobStream = PostStream(String.Format(baseUrlFormat, url), null))
             {
 
-                jobResult = DeserializeSedeQueryResult(jobStream);
-                // jobResult = (JobResult)ser.ReadObject(jobStream);
-                if (jobResult.captcha)
+                jobResult = JsonSerializer.DeserializeFromStream<JobResult>(jobStream);
+                if (jobResult.Captcha)
                 {
                     Console.WriteLine("captcha requested! not logged in?");
                 }
                 else
                 {
-                    // if a job is started on the server 
-                    // we have to poll for the result
-                    // this call might block while polling but 
-                    // if the result is already there we return immediately
+                    // If a job is started on the server
+                    // we have to poll for the result.
+                    // This call might block while polling but 
+                    // if the result is already there we return immediately.
                     jobResult = GetQueryResultByPolling(jobResult);
 
-                    if (jobResult.resultSets != null
-                        && jobResult.resultSets.Length > 0)
+                    if (jobResult.ResultSets != null
+                        && jobResult.ResultSets.Length > 0)
                     {
-                        Console.WriteLine(jobResult.resultSets[0].rows.Count);
+                        Console.WriteLine(jobResult.ResultSets[0].Rows.Count);
                     }
                     else
                     {
                         Console.WriteLine("Hmm, no result sets...");
-                        // maybe an eror
-                        Console.WriteLine(jobResult.error);
+                        // Maybe an error.
+                        Console.WriteLine(jobResult.Error);
                     }
                 }
             }
             return jobResult;
         }
 
-        //this call is blocking, while doing work on a timer thread
+        // This call is blocking, while doing work on a timer thread.
         private JobResult GetQueryResultByPolling(JobResult jobResult)
         {
-            // we need to poll
-            if (jobResult.running)
+            // We need to poll.
+            if (jobResult.Running)
             {
                 var serializeTimer = new Object();
-                var done = new ManualResetEvent(false); // wait handle
-                // we use a timer that runs every second
+                var done = new ManualResetEvent(false); // Wait handle.
+                // We use a timer that runs every second.
                 using (var timer = new Timer((state) =>
                 {
-                    // make sure we are single threaded
+                    // Make sure we are single threaded.
                     lock (serializeTimer)
                     {
-                        // if we are not running, don't override our result
-                        if (jobResult.running)
+                        // If we are not running, don't override our result.
+                        if (jobResult.Running)
                         {
-                            // poll result
-                            Console.WriteLine(jobResult.job_id);
-                            using (var pollStream = GetAsStream(String.Format(baseUrlJobFormat, jobResult.job_id)))
+                            // Poll result.
+                            Console.WriteLine(jobResult.Job_id);
+                            using (var pollStream = GetAsStream(String.Format(baseUrlJobFormat, jobResult.Job_id)))
                             {
-                                jobResult = DeserializeSedeQueryResult(pollStream);
+                                jobResult = JsonSerializer.DeserializeFromStream<JobResult>(pollStream);
                             }
                         }
-                        // if we have a result, get out!
-                        if (!jobResult.running)
+                        // If we have a result, get out!
+                        if (!jobResult.Running)
                         {
-                            done.Set(); // signal main thread
+                            done.Set(); // Signal main thread.
                         }
                     }
                 }
@@ -267,10 +249,10 @@ namespace CVChatbot.Bot
         }
 
         /// <summary>
-        /// ge the raw stream from the http response
+        /// Get the raw stream from the http response.
         /// </summary>
         /// <param name="url"></param>
-        /// <returns>the stream</returns>
+        /// <returns>The stream.</returns>
         private static Stream GetAsStream(string url)
         {
             var req = HttpWebRequest.CreateHttp(url);
@@ -288,6 +270,7 @@ namespace CVChatbot.Bot
         {
             return Get(query);
         }
+
         /// <summary>
         /// POST to the url the urlencoded data and return the contents as a string.
         /// This method uses/fills the shared CookieContainer.
@@ -374,19 +357,18 @@ namespace CVChatbot.Bot
 
         public class ResultSet
         {
-            
-            public Newtonsoft.Json.Linq.JArray rows { get; set; }
+            public JsonArrayObjects Rows { get; set; }
         }
 
         public class JobResult
         {
-            public string line { get; set; }
-            public string error { get; set; }
-            public bool captcha { get; set; }
-            public bool running { get; set; }
-            public string job_id { get; set; }
-            public int revisionId { get; set; }
-            public ResultSet[] resultSets { get; set; }
+            public string Line { get; set; }
+            public string Error { get; set; }
+            public bool Captcha { get; set; }
+            public bool Running { get; set; }
+            public string Job_id { get; set; }
+            public int RevisionId { get; set; }
+            public ResultSet[] ResultSets { get; set; }
         }
         #endregion
     }
