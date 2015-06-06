@@ -1,11 +1,6 @@
-﻿using ChatExchangeDotNet;
-using CVChatbot.Bot.Database;
-using System;
-using System.Collections.Generic;
+﻿using CVChatbot.Bot.Database;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace CVChatbot.Bot.ChatbotActions.Triggers
 {

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Configuration;
-using TCL.Extensions;
+﻿using TCL.Extensions;
 using CVChatbot.Bot.ChatbotActions.Commands;
 
 namespace CVChatbot.Bot.ChatbotActions.Triggers

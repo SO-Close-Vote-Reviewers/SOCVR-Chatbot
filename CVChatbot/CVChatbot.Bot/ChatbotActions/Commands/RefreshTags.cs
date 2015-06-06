@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CVChatbot.Bot.ChatbotActions.Commands
+﻿namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class RefreshTags : UserCommand
     {

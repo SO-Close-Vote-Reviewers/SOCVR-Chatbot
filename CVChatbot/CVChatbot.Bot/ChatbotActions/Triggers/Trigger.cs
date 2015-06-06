@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CVChatbot.Bot.ChatbotActions.Triggers
+﻿namespace CVChatbot.Bot.ChatbotActions.Triggers
 {
     /// <summary>
     /// A Trigger is a message said in chat which is not a direct reply to the chatbot, but the chatbot will take action on the message.

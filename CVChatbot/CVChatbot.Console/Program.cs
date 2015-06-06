@@ -10,7 +10,7 @@ namespace CVChatbot.Console
         private static RoomManager mng;
 
         /// <summary>
-        /// waithandle for shutdown
+        /// Waithandle for shutdown.
         /// </summary>
         static ManualResetEvent shutdownEvent = new ManualResetEvent(false);
 
@@ -18,7 +18,7 @@ namespace CVChatbot.Console
         {
             WriteToConsole("Starting program");
 
-            // dispose our RoomManager
+            // Dispose our RoomManager.
             using (mng = new RoomManager())
             {
                 mng.ShutdownOrderGiven += mng_ShutdownOrderGiven;
@@ -42,13 +42,18 @@ namespace CVChatbot.Console
                 };
 
                 WriteToConsole("Joining room");
-                mng.JoinRoom(settings);
+                var room = mng.JoinRoom(settings);
 
-                WriteToConsole("Running wait loop");
+                // This could take a few mins, probably best to let
+                // the user know we're actually doing something.
+                WriteToConsole("Initialising UserWatcherManager");
+                using (var watcherManager = new UserWatcherManager(room, settings))
+                {
+                    WriteToConsole("Running wait loop");
 
-                // wait to get signaled
-                // we do it this way because this is cross-thread
-                shutdownEvent.WaitOne();
+                    // Wait to get signaled, we do it this way as this is cross-thread.
+                    shutdownEvent.WaitOne();
+                }
             }
         }
 
@@ -60,7 +65,7 @@ namespace CVChatbot.Console
         static void mng_ShutdownOrderGiven(object sender, EventArgs e)
         {
             WriteToConsole("Shutdown order given.");
-            // signal threads that wait for this
+            // Signal threads that wait for this.
             shutdownEvent.Set();
         }
 

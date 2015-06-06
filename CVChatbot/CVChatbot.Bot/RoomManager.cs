@@ -59,7 +59,7 @@ namespace CVChatbot.Bot
         /// <summary>
         /// Joins the room with the settings passed in.
         /// </summary>
-        public void JoinRoom(InstallationSettings settings)
+        public Room JoinRoom(InstallationSettings settings)
         {
             // Copy over the settings into this class so this class can use it.
             this.settings = settings;
@@ -87,6 +87,7 @@ namespace CVChatbot.Bot
             }
 
             cvChatRoom.EventManager.ConnectListener(EventType.MessagePosted, new Action<Message>(cvChatRoom_NewMessage));
+            return cvChatRoom;
         }
 
         public void LeaveRoom()
