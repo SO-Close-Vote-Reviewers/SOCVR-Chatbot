@@ -113,13 +113,14 @@ namespace CVChatbot.Bot
         {
             // Find the latest session by that user.
             var latestSession = dbAccessor.GetLatestOpenSessionForUser(watcher.UserID);
-
+            var ping = "@" + room.GetUser(watcher.UserID).Name.Replace(" ", "") + " ";
+            var msg = "";
+            
             // First, check if there is a session.
             if (latestSession == null)
             {
-                var msg = "@" + room.GetUser(watcher.UserID).Name.Replace(" ", "") +
-                    " I don't seem to have the start of your review session on record. " +
-                    "I might have not been running when you started, or some error happened.";
+                msg = ping + "I don't seem to have the start of your review session on record. " +
+                      "I might have not been running when you started, or some error happened.";
                 room.PostMessageOrThrow(msg);
                 return;
             }
@@ -133,20 +134,24 @@ namespace CVChatbot.Bot
             {
                 var timeDelta = DateTimeOffset.Now - latestSession.SessionStart;
 
-                var message = "@" + room.GetUser(watcher.UserID).Name.Replace(" ", "") +
-                    " Your last uncompleted review session was {0} ago. " +
-                    "Because it has exceeded my threshold ({1} hours), " +
-                    "I can't mark that session with this information. "
-                    .FormatInline(timeDelta.ToUserFriendlyString(), maxReviewTimeHours) +
-                    "Use the command '{0}' to forcefully end that session."
-                    .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<EndSession>());
+                msg = ping + "Your last uncompleted review session was {0} ago. " +
+                      "Because it has exceeded my threshold ({1} hours), " +
+                      "I can't mark that session with this information. "
+                      .FormatInline(timeDelta.ToUserFriendlyString(), maxReviewTimeHours) +
+                      "Use the command '{0}' to forcefully end that session."
+                      .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<EndSession>());
 
-                room.PostMessageOrThrow(message);
+                room.PostMessageOrThrow(msg);
                 return;
             }
 
             // It's all good, mark the info as done.
             dbAccessor.EndReviewSession(latestSession.Id, reviews.Count);
+            
+            msg = ping +
+                  "Thanks for reviewing! To see more information use the command `{0}`."
+                  .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<LastSessionStats>());
+            room.PostMessageOrThrow(msg);
         }
 
         private void HandleAuditFailed(UserWatcher watcher, ReviewItem audit)
