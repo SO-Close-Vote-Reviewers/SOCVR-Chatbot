@@ -47,7 +47,7 @@ namespace CVChatbot.Console
                 // This could take a few mins, probably best to let
                 // the user know we're actually doing something.
                 WriteToConsole("Initialising UserWatcherManager");
-                using (var watcherManager = new UserWatcherManager(room, settings))
+                using (var watcherManager = new UserWatcherManager(ref room, settings))
                 {
                     WriteToConsole("Running wait loop");
 

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using SOCVRDotNet;
-using CVChatbot.Bot.Database;
+using System.Linq;
 using ChatExchangeDotNet;
-using TCL.Extensions;
 using CVChatbot.Bot.ChatbotActions;
 using CVChatbot.Bot.ChatbotActions.Commands;
+using CVChatbot.Bot.Database;
+using SOCVRDotNet;
+using TCL.Extensions;
+using User = ChatExchangeDotNet.User;
 
 namespace CVChatbot.Bot
 {
@@ -19,7 +21,7 @@ namespace CVChatbot.Bot
 
 
 
-        public UserWatcherManager(Room chatRoom, InstallationSettings settings)
+        public UserWatcherManager(ref Room chatRoom, InstallationSettings settings)
         {
             if (chatRoom == null) { throw new ArgumentNullException("chatRoom"); }
             if (settings == null) { throw new ArgumentNullException("settings"); }
@@ -33,30 +35,13 @@ namespace CVChatbot.Bot
             foreach (var user in pingable)
             {
                 if (dbAccessor.GetRegisteredUserByChatProfileId(user.ID) == null) { continue; }
-                var watcher = new UserWatcher(user.ID);
 
-                // TODO: You may want to set these...
-                watcher.IdleTimeout = TimeSpan.FromMinutes(2);
-                watcher.AuditFailureTimeout = TimeSpan.FromMinutes(2);
-
-                watcher.EventManager.ConnectListener(UserEventType.StartedReviewing,
-                    new Action(() => HandleStartedReviewing(watcher)));
-
-                watcher.EventManager.ConnectListener(UserEventType.FinishedReviewing,
-                    new Action<DateTime, DateTime, List<ReviewItem>>((start, end, rs) =>
-                    HandleFinishedReviewing(watcher, start, end, rs)));
-
-                watcher.EventManager.ConnectListener(UserEventType.FailedAudit,
-                    new Action<ReviewItem>(r => HandleAuditFailed(watcher, r)));
-
-                watcher.EventManager.ConnectListener(UserEventType.PassedAudit,
-                    new Action<ReviewItem>(r => HandleAuditPassed(watcher, r)));
-
-                watcher.EventManager.ConnectListener(UserEventType.InternalException,
-                    new Action<Exception>(ex => HandleException(watcher, ex)));
-
+                var watcher = InitialiseWatcher(user.ID);
                 watchers.Add(watcher);
             }
+
+            // Look out for registered members that haven't joined in a while.
+            chatRoom.EventManager.ConnectListener(EventType.UserEntered, new Action<User>(u => HandleNewUser(u.ID)));
         }
 
         ~UserWatcherManager()
@@ -79,7 +64,59 @@ namespace CVChatbot.Bot
             GC.SuppressFinalize(this);
         }
 
+        public void AddUser(int userID)
+        {
+            HandleNewUser(userID);
+        }
 
+        public void AddUser(User user)
+        {
+            if (user == null) { throw new ArgumentNullException("user"); }
+
+            AddUser(user.ID);
+        }
+
+
+
+        private UserWatcher InitialiseWatcher(int userID)
+        {
+            var watcher = new UserWatcher(userID)
+            {
+                // TODO: You may want to set these...
+                AuditFailureTimeout = TimeSpan.FromMinutes(2),
+                IdleTimeout = TimeSpan.FromMinutes(2)
+            };
+
+            watcher.EventManager.ConnectListener(UserEventType.StartedReviewing,
+                new Action(() => HandleStartedReviewing(watcher)));
+
+            watcher.EventManager.ConnectListener(UserEventType.FinishedReviewing,
+                new Action<DateTime, DateTime, List<ReviewItem>>((start, end, rs) =>
+                HandleFinishedReviewing(watcher, start, end, rs)));
+
+            watcher.EventManager.ConnectListener(UserEventType.FailedAudit,
+                new Action<ReviewItem>(r => HandleAuditFailed(watcher, r)));
+
+            watcher.EventManager.ConnectListener(UserEventType.PassedAudit,
+                new Action<ReviewItem>(r => HandleAuditPassed(watcher, r)));
+
+            watcher.EventManager.ConnectListener(UserEventType.InternalException,
+                new Action<Exception>(ex => HandleException(watcher, ex)));
+
+            return watcher;
+        }
+
+        private void HandleNewUser(int userID)
+        {
+            if (dbAccessor.GetRegisteredUserByChatProfileId(userID) == null ||
+                watchers.Any(w => w.UserID == userID))
+            {
+                return;
+            }
+
+            var watcher = InitialiseWatcher(userID);
+            watchers.Add(watcher);
+        }
 
         private void HandleStartedReviewing(UserWatcher watcher)
         {
