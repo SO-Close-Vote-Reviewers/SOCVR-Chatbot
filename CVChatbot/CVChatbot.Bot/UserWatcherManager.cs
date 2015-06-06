@@ -89,18 +89,7 @@ namespace CVChatbot.Bot
             // Now record the new session.
             dbAccessor.StartReviewSession(watcher.UserID);
 
-            var replyMessages = new List<string>()
-            {
-                "Good luck!",
-                "Happy reviewing!",
-                "Don't get lost in the queue!",
-                "Watch out for audits!",
-                "May the Vote be with you!",
-                "May Shog9's Will be done.",
-                "By the power of the Vote! Review!"
-            };
-
-            var outMessage = replyMessages.PickRandom();
+            var outMessage = "I've noticed you've started reviewing. I'll make a new session for you. Good luck!";
             outMessage = "@" + chatUser.Name.Replace(" ", "") + " " + outMessage;
 
             // If there was a closed session.
