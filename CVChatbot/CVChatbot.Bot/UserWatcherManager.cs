@@ -32,8 +32,7 @@ namespace CVChatbot.Bot
 
             foreach (var user in pingable)
             {
-                // Temp
-                //if (dbAccessor.GetRegisteredUserByChatProfileId(user.ID) == null) { continue; }
+                if (dbAccessor.GetRegisteredUserByChatProfileId(user.ID) == null) { continue; }
                 var watcher = new UserWatcher(user.ID);
 
                 // TODO: You may want to set these...
