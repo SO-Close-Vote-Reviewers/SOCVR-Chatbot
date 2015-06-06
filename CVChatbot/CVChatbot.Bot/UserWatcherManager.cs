@@ -36,8 +36,8 @@ namespace CVChatbot.Bot
                 var watcher = new UserWatcher(user.ID);
 
                 // TODO: You may want to set these...
-                watcher.IdleTimeout = TimeSpan.FromMinutes(1);
-                watcher.AuditFailureTimeout = TimeSpan.FromSeconds(30);
+                watcher.IdleTimeout = TimeSpan.FromMinutes(2);
+                watcher.AuditFailureTimeout = TimeSpan.FromMinutes(2);
 
                 watcher.EventManager.ConnectListener(UserEventType.StartedReviewing,
                     new Action(() => HandleStartedReviewing(watcher)));
