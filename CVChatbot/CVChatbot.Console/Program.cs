@@ -41,6 +41,7 @@ namespace CVChatbot.Console
                     DefaultNextTagCount = SettingsFileAccessor.GetSettingValue<int>("DefaultNextTagCount"),
                 };
 
+                // Join the room, but don't post the start up message yet.
                 WriteToConsole("Joining room");
                 var room = mng.JoinRoom(settings);
 
@@ -49,6 +50,9 @@ namespace CVChatbot.Console
                 WriteToConsole("Initialising UserWatcherManager");
                 using (var watcherManager = new UserWatcherManager(ref room, settings))
                 {
+                    // Now that we're all set up, post the start up message.
+                    mng.PostStartUpMessage(settings);
+
                     WriteToConsole("Running wait loop");
 
                     // Wait to get signaled, we do it this way as this is cross-thread.

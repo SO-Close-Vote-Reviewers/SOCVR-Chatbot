@@ -13,11 +13,12 @@ namespace CVChatbot.Bot
 {
     public class UserWatcherManager : IDisposable
     {
-        private readonly List<UserWatcher> watchers;
         private readonly DatabaseAccessor dbAccessor;
         private readonly InstallationSettings initSettings;
         private readonly Room room;
         private bool dispose;
+
+        public List<UserWatcher> Watchers { get; private set; }
 
 
 
@@ -28,7 +29,7 @@ namespace CVChatbot.Bot
 
             room = chatRoom;
             initSettings = settings;
-            watchers = new List<UserWatcher>();
+            Watchers = new List<UserWatcher>();
             dbAccessor = new DatabaseAccessor(settings.DatabaseConnectionString);
             var pingable = chatRoom.GetPingableUsers();
 
@@ -37,7 +38,7 @@ namespace CVChatbot.Bot
                 if (dbAccessor.GetRegisteredUserByChatProfileId(user.ID) == null) { continue; }
 
                 var watcher = InitialiseWatcher(user.ID);
-                watchers.Add(watcher);
+                Watchers.Add(watcher);
             }
 
             // Look out for registered members that haven't joined in a while.
@@ -56,7 +57,7 @@ namespace CVChatbot.Bot
             if (dispose) { return; }
             dispose = true;
 
-            foreach (var watcher in watchers)
+            foreach (var watcher in Watchers)
             {
                 watcher.Dispose();
             }
@@ -82,9 +83,9 @@ namespace CVChatbot.Bot
         {
             var watcher = new UserWatcher(userID)
             {
-                // TODO: You may want to set these...
-                AuditFailureTimeout = TimeSpan.FromMinutes(2),
-                IdleTimeout = TimeSpan.FromMinutes(2)
+                // TODO: You may want to set these.
+                // AuditFailureFactor = ?,
+                // IdleFactor = ?
             };
 
             watcher.EventManager.ConnectListener(UserEventType.StartedReviewing,
@@ -100,6 +101,9 @@ namespace CVChatbot.Bot
             watcher.EventManager.ConnectListener(UserEventType.PassedAudit,
                 new Action<ReviewItem>(r => HandleAuditPassed(watcher, r)));
 
+            watcher.EventManager.ConnectListener(UserEventType.ReviewedTag,
+                new Action<KeyValuePair<string, float>, DateTime>((tagKv, timestamp) => HandleReviewedTag(watcher, tagKv, timestamp)));
+
             watcher.EventManager.ConnectListener(UserEventType.InternalException,
                 new Action<Exception>(ex => HandleException(watcher, ex)));
 
@@ -109,13 +113,13 @@ namespace CVChatbot.Bot
         private void HandleNewUser(int userID)
         {
             if (dbAccessor.GetRegisteredUserByChatProfileId(userID) == null ||
-                watchers.Any(w => w.UserID == userID))
+                Watchers.Any(w => w.UserID == userID))
             {
                 return;
             }
 
             var watcher = InitialiseWatcher(userID);
-            watchers.Add(watcher);
+            Watchers.Add(watcher);
         }
 
         private void HandleStartedReviewing(UserWatcher watcher)
@@ -152,7 +156,7 @@ namespace CVChatbot.Bot
             var latestSession = dbAccessor.GetLatestOpenSessionForUser(watcher.UserID);
             var ping = "@" + room.GetUser(watcher.UserID).Name.Replace(" ", "") + " ";
             var msg = "";
-            
+
             // First, check if there is a session.
             if (latestSession == null)
             {
@@ -184,11 +188,16 @@ namespace CVChatbot.Bot
 
             // It's all good, mark the info as done.
             dbAccessor.EndReviewSession(latestSession.Id, reviews.Count);
-            
+
             msg = ping +
                   "Thanks for reviewing! To see more information use the command `{0}`."
                   .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<LastSessionStats>());
             room.PostMessageOrThrow(msg);
+        }
+
+        private void HandleAuditPassed(UserWatcher watcher, ReviewItem audit)
+        {
+            dbAccessor.InsertCompletedAuditEntry(watcher.UserID, audit.Tags[0]);
         }
 
         private void HandleAuditFailed(UserWatcher watcher, ReviewItem audit)
@@ -196,9 +205,9 @@ namespace CVChatbot.Bot
             // Do something...
         }
 
-        private void HandleAuditPassed(UserWatcher watcher, ReviewItem audit)
+        private void HandleReviewedTag(UserWatcher watcher, KeyValuePair<string, float> tagKv, DateTime completedTime)
         {
-            dbAccessor.InsertCompletedAuditEntry(watcher.UserID, audit.Tags[0]);
+            dbAccessor.InsertNoItemsInFilterRecord(watcher.UserID, tagKv.Key);
         }
 
         private void HandleException(UserWatcher watcher, Exception ex)

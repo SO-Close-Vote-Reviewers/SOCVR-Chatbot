@@ -74,7 +74,12 @@ namespace CVChatbot.Bot
             ChatBotStats.LoginDate = DateTime.Now;
             cvChatRoom.StripMentionFromMessages = false;
 
-            // Say the startup message?
+            cvChatRoom.EventManager.ConnectListener(EventType.MessagePosted, new Action<Message>(cvChatRoom_NewMessage));
+            return cvChatRoom;
+        }
+
+        public void PostStartUpMessage(InstallationSettings settings)
+        {
             if (!settings.StartUpMessage.IsNullOrWhiteSpace())
             {
                 // This is the one of the few instances to not using the "OrThrow" method.
@@ -85,9 +90,6 @@ namespace CVChatbot.Bot
                     throw new InvalidOperationException("Unable to post start up message to room.");
                 }
             }
-
-            cvChatRoom.EventManager.ConnectListener(EventType.MessagePosted, new Action<Message>(cvChatRoom_NewMessage));
-            return cvChatRoom;
         }
 
         public void LeaveRoom()

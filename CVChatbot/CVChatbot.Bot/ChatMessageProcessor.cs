@@ -101,7 +101,7 @@ namespace CVChatbot.Bot
             var userRecordInDB = da.GetRegisteredUserByChatProfileId(chatUserId);
 
             if (userRecordInDB == null) // At this point, the permission is Registered or Owner,
-                return false;    // and if the user is not in the database at all then it can't work.
+                return false;           // and if the user is not in the database at all then it can't work.
 
             if (neededPermissionLevel == ActionPermissionLevel.Registered)
                 return true; // The user is in the list, that's all we need to check.
@@ -109,7 +109,7 @@ namespace CVChatbot.Bot
             if (userRecordInDB.IsOwner && neededPermissionLevel == ActionPermissionLevel.Owner)
                 return true;
 
-            // Fall past the last check (for owner), so default to "no".
+            // Fall past the last check(for owner), so default to "no".
             return false;
         }
 

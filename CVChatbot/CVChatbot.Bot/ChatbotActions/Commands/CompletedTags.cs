@@ -57,7 +57,6 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
             chatRoom.PostReplyOrThrow(incommingChatMessage, headerMessage);
             chatRoom.PostMessageOrThrow(dataMessage);
-            
         }
 
         public override ActionPermissionLevel GetPermissionLevel()
