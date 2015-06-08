@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using ChatExchangeDotNet;
 using CVChatbot.Bot.ChatbotActions;
 using CVChatbot.Bot.ChatbotActions.Commands;
@@ -16,6 +18,8 @@ namespace CVChatbot.Bot
         private readonly DatabaseAccessor dbAccessor;
         private readonly InstallationSettings initSettings;
         private readonly Room room;
+        private readonly ConcurrentDictionary<Message, string> tagReviewedConfirmationQueue;
+        private readonly Regex tagReviewedConfirmationMsgPattern;
         private bool dispose;
 
         public List<UserWatcher> Watchers { get; private set; }
@@ -29,6 +33,8 @@ namespace CVChatbot.Bot
 
             room = chatRoom;
             initSettings = settings;
+            tagReviewedConfirmationQueue = new ConcurrentDictionary<Message, string>();
+            tagReviewedConfirmationMsgPattern = new Regex(@"(?i)y[ue][aps]h?", RegexOptions.Compiled | RegexOptions.CultureInvariant);
             Watchers = new List<UserWatcher>();
             dbAccessor = new DatabaseAccessor(settings.DatabaseConnectionString);
             var pingable = chatRoom.GetPingableUsers();
@@ -43,6 +49,8 @@ namespace CVChatbot.Bot
 
             // Look out for registered members that haven't joined in a while.
             chatRoom.EventManager.ConnectListener(EventType.UserEntered, new Action<User>(u => HandleNewUser(u.ID)));
+
+            chatRoom.EventManager.ConnectListener(EventType.UserMentioned, new Action<Message>(m => HandleReviewedTagConfirmation(m)));
         }
 
         ~UserWatcherManager()
@@ -198,6 +206,14 @@ namespace CVChatbot.Bot
         private void HandleAuditPassed(UserWatcher watcher, ReviewItem audit)
         {
             dbAccessor.InsertCompletedAuditEntry(watcher.UserID, audit.Tags[0]);
+            var name = room.GetUser(watcher.UserID).Name;
+            var tag = audit.Tags[0];
+            var msg = name +
+                " passed a" + ("aeiou".Contains(char.ToLowerInvariant(tag[0]))
+                ? "n "
+                : " ")
+                + tag + " audit!";
+            room.PostMessageOrThrow(msg);
         }
 
         private void HandleAuditFailed(UserWatcher watcher, ReviewItem audit)
@@ -207,7 +223,33 @@ namespace CVChatbot.Bot
 
         private void HandleReviewedTag(UserWatcher watcher, KeyValuePair<string, float> tagKv, DateTime completedTime)
         {
-            dbAccessor.InsertNoItemsInFilterRecord(watcher.UserID, tagKv.Key);
+            var ping = "@" + room.GetUser(watcher.UserID).Name.Replace(" ", "") + " ";
+            var tag = tagKv.Key;
+            var msg = ping + "It looks like you've finished reviewing the " + tag + " tag. Is that right?";
+            var m = room.PostMessage(msg);
+            if (m == null) { throw new Exception("Unable to post message."); }
+            tagReviewedConfirmationQueue[m] = tag;
+        }
+
+        private void HandleReviewedTagConfirmation(Message msg)
+        {
+            var parentMsgKv = tagReviewedConfirmationQueue.FirstOrDefault(kv => kv.Key.ID == msg.ParentID);
+
+            // Maybe we should we throw an exception instead?
+            if (parentMsgKv.Key == null) { return; }
+
+            if (tagReviewedConfirmationMsgPattern.IsMatch(parentMsgKv.Key.Content))
+            {
+                dbAccessor.InsertNoItemsInFilterRecord(msg.AuthorID, parentMsgKv.Value);
+                room.PostReplyOrThrow(msg, "Ok, I've marked `[" + parentMsgKv.Value + "]` as a completed tag.");
+            }
+            else
+            {
+                room.PostReplyOrThrow(msg, "Ok. Well don't forget to let me know when you've completed it!");
+            }
+
+            string temp;
+            tagReviewedConfirmationQueue.TryRemove(parentMsgKv.Key, out temp);
         }
 
         private void HandleException(UserWatcher watcher, Exception ex)
