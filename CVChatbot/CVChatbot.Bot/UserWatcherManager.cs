@@ -18,8 +18,9 @@ namespace CVChatbot.Bot
         private readonly DatabaseAccessor dbAccessor;
         private readonly InstallationSettings initSettings;
         private readonly Room room;
-        private readonly ConcurrentDictionary<Message, string> tagReviewedConfirmationQueue;
-        private readonly Regex tagReviewedConfirmationMsgPattern;
+        private readonly ConcurrentDictionary<Message, List<string>> tagReviewedConfirmationQueue;
+        private readonly Regex yesRegex;
+        private readonly Regex noRegex;
         private bool dispose;
 
         public List<UserWatcher> Watchers { get; private set; }
@@ -33,8 +34,9 @@ namespace CVChatbot.Bot
 
             room = chatRoom;
             initSettings = settings;
-            tagReviewedConfirmationQueue = new ConcurrentDictionary<Message, string>();
-            tagReviewedConfirmationMsgPattern = new Regex(@"(?i)y[ue][aps]h?", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+            tagReviewedConfirmationQueue = new ConcurrentDictionary<Message, List<string>>();
+            yesRegex = new Regex(@"(?i)\by[ue][aps]h?\b", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+            noRegex = new Regex(@"(?i)\bno*(pe|t)?\b", RegexOptions.Compiled | RegexOptions.CultureInvariant);
             Watchers = new List<UserWatcher>();
             dbAccessor = new DatabaseAccessor(settings.DatabaseConnectionString);
             var pingable = chatRoom.GetPingableUsers();
@@ -50,7 +52,7 @@ namespace CVChatbot.Bot
             // Look out for registered members that haven't joined in a while.
             chatRoom.EventManager.ConnectListener(EventType.UserEntered, new Action<User>(u => HandleNewUser(u.ID)));
 
-            chatRoom.EventManager.ConnectListener(EventType.UserMentioned, new Action<Message>(m => HandleReviewedTagConfirmation(m)));
+            chatRoom.EventManager.ConnectListener(EventType.MessageReply, new Action<Message, Message>((parent, reply) => HandleCurrentTagsChangedConfirmation(reply)));
         }
 
         ~UserWatcherManager()
@@ -92,25 +94,26 @@ namespace CVChatbot.Bot
             var watcher = new UserWatcher(userID)
             {
                 // TODO: You may want to set these.
-                // AuditFailureFactor = ?,
-                // IdleFactor = ?
+                //TagTrackingEnabled = ?
+                //AuditFailureFactor = ?,
+                //IdleFactor = ?
             };
 
-            watcher.EventManager.ConnectListener(UserEventType.StartedReviewing,
-                new Action(() => HandleStartedReviewing(watcher)));
+            watcher.EventManager.ConnectListener(UserEventType.ReviewingStarted,
+                new Action(() => HandleReviewingStarted(watcher)));
 
-            watcher.EventManager.ConnectListener(UserEventType.FinishedReviewing,
+            watcher.EventManager.ConnectListener(UserEventType.ReviewingFinished,
                 new Action<DateTime, DateTime, List<ReviewItem>>((start, end, rs) =>
-                HandleFinishedReviewing(watcher, start, end, rs)));
+                HandleReviewingFinished(watcher, start, end, rs)));
 
-            watcher.EventManager.ConnectListener(UserEventType.FailedAudit,
+            watcher.EventManager.ConnectListener(UserEventType.AuditFailed,
                 new Action<ReviewItem>(r => HandleAuditFailed(watcher, r)));
 
-            watcher.EventManager.ConnectListener(UserEventType.PassedAudit,
+            watcher.EventManager.ConnectListener(UserEventType.AuditPassed,
                 new Action<ReviewItem>(r => HandleAuditPassed(watcher, r)));
 
-            watcher.EventManager.ConnectListener(UserEventType.ReviewedTag,
-                new Action<KeyValuePair<string, float>, DateTime>((tagKv, timestamp) => HandleReviewedTag(watcher, tagKv, timestamp)));
+            watcher.EventManager.ConnectListener(UserEventType.CurrentTagsChanged,
+                new Action<List<string>, List<string>>((oldTags, newTags) => HandleCurrentTagsChanged(watcher, oldTags, newTags)));
 
             watcher.EventManager.ConnectListener(UserEventType.InternalException,
                 new Action<Exception>(ex => HandleException(watcher, ex)));
@@ -130,7 +133,7 @@ namespace CVChatbot.Bot
             Watchers.Add(watcher);
         }
 
-        private void HandleStartedReviewing(UserWatcher watcher)
+        private void HandleReviewingStarted(UserWatcher watcher)
         {
             var chatUser = room.GetUser(watcher.UserID);
             var numberOfClosedSessions = dbAccessor.EndAnyOpenSessions(watcher.UserID);
@@ -158,7 +161,7 @@ namespace CVChatbot.Bot
             room.PostMessageOrThrow(outMessage);
         }
 
-        private void HandleFinishedReviewing(UserWatcher watcher, DateTime startTime, DateTime endTime, List<ReviewItem> reviews)
+        private void HandleReviewingFinished(UserWatcher watcher, DateTime startTime, DateTime endTime, List<ReviewItem> reviews)
         {
             // Find the latest session by that user.
             var latestSession = dbAccessor.GetLatestOpenSessionForUser(watcher.UserID);
@@ -221,34 +224,82 @@ namespace CVChatbot.Bot
             // Do something...
         }
 
-        private void HandleReviewedTag(UserWatcher watcher, KeyValuePair<string, float> tagKv, DateTime completedTime)
+        private void HandleCurrentTagsChanged(UserWatcher watcher, List<string> oldTags, List<string> newTags)
         {
             var ping = "@" + room.GetUser(watcher.UserID).Name.Replace(" ", "") + " ";
-            var tag = tagKv.Key;
-            var msg = ping + "It looks like you've finished reviewing the " + tag + " tag. Is that right?";
-            var m = room.PostMessage(msg);
-            if (m == null) { throw new Exception("Unable to post message."); }
-            tagReviewedConfirmationQueue[m] = tag;
-        }
-
-        private void HandleReviewedTagConfirmation(Message msg)
-        {
-            var parentMsgKv = tagReviewedConfirmationQueue.FirstOrDefault(kv => kv.Key.ID == msg.ParentID);
-
-            // Maybe we should we throw an exception instead?
-            if (parentMsgKv.Key == null) { return; }
-
-            if (tagReviewedConfirmationMsgPattern.IsMatch(parentMsgKv.Key.Content))
+            var msg = ping + "It looks like you've finished reviewing ";
+            List<string> removedTags;
+            if (oldTags == null || oldTags.Count == 0)
             {
-                dbAccessor.InsertNoItemsInFilterRecord(msg.AuthorID, parentMsgKv.Value);
-                room.PostReplyOrThrow(msg, "Ok, I've marked `[" + parentMsgKv.Value + "]` as a completed tag.");
+                removedTags = newTags;
             }
             else
             {
-                room.PostReplyOrThrow(msg, "Ok. Well don't forget to let me know when you've completed it!");
+                removedTags = oldTags.Where(t => !newTags.Contains(t)).ToList();
             }
 
-            string temp;
+            if (removedTags.Count > 1)
+            {
+                var tagsFormatted = "";
+                switch (removedTags.Count)
+                {
+                    case 1:
+                    {
+                        tagsFormatted += "[tag:" + newTags[0] + "]";
+                        break;
+                    }
+                    case 2:
+                    {
+                        tagsFormatted = "[tag:" + removedTags[0] + "] & [tag:" + removedTags[1] + "]";
+                        break;
+                    }
+                    case 3:
+                    {
+                        tagsFormatted = "[tag:" + removedTags[0] + "], [tag:" + removedTags[1] + "] & [tag:" + removedTags[2] + "]";
+                        break;
+                    }
+                }
+                msg += tagsFormatted + ". Is that right?";
+            }
+            else
+            {
+                return;
+            }
+
+            var m = room.PostMessage(msg);
+            if (m == null) { throw new Exception("Unable to post message."); }
+            tagReviewedConfirmationQueue[m] = removedTags;
+        }
+
+        private void HandleCurrentTagsChangedConfirmation(Message msg)
+        {
+            var parentMsgKv = tagReviewedConfirmationQueue.FirstOrDefault(kv => kv.Key.ID == msg.ParentID);
+            if (parentMsgKv.Key == null) { return; }
+
+            // Stop other people confirming someone else's message.
+            var originalTarget = room[parentMsgKv.Key.ParentID].AuthorID;
+            if (originalTarget != msg.AuthorID) { return; }
+
+            if (yesRegex.IsMatch(parentMsgKv.Key.Content))
+            {
+                foreach (var tag in parentMsgKv.Value)
+                {
+                    dbAccessor.InsertNoItemsInFilterRecord(msg.AuthorID, tag);
+                }
+                var outMsg = "Ok, I've marked " + (parentMsgKv.Value.Count > 1 ? "them as completed tags." : "it as a completed tag.");
+                room.PostReplyOrThrow(msg, outMsg);
+            }
+            else if (noRegex.IsMatch(parentMsgKv.Key.Content))
+            {
+                var outMsg = "Ok. Well don't forget to let me know when you've completed " + (parentMsgKv.Value.Count > 1 ? "them!" : "it!");
+                room.PostReplyOrThrow(msg, outMsg);
+            }
+            else
+            {
+                return;
+            }
+
+            List<string> temp;
             tagReviewedConfirmationQueue.TryRemove(parentMsgKv.Key, out temp);
         }
 
