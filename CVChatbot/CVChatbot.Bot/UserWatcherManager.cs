@@ -117,7 +117,7 @@ namespace CVChatbot.Bot
                 new Action<ReviewItem>(r => HandleAuditPassed(watcher, r)));
 
             watcher.EventManager.ConnectListener(UserEventType.CurrentTagsChanged,
-                new Action<List<string>, List<string>>((oldTags, newTags) => HandleCurrentTagsChanged(watcher, oldTags, newTags)));
+                new Action<List<string>>((oldTags) => HandleCurrentTagsChanged(watcher, oldTags)));
 
             watcher.EventManager.ConnectListener(UserEventType.InternalException,
                 new Action<Exception>(ex => HandleException(watcher, ex)));
@@ -243,38 +243,29 @@ namespace CVChatbot.Bot
             // Do something...
         }
 
-        private void HandleCurrentTagsChanged(UserWatcher watcher, List<string> oldTags, List<string> newTags)
+        private void HandleCurrentTagsChanged(UserWatcher watcher, List<string> oldTags)
         {
             var ping = "@" + room.GetUser(watcher.UserID).Name.Replace(" ", "") + " ";
             var msg = ping + "It looks like you've finished reviewing ";
-            List<string> removedTags;
-            if (oldTags == null || oldTags.Count == 0)
-            {
-                removedTags = newTags;
-            }
-            else
-            {
-                removedTags = oldTags.Where(t => !newTags.Contains(t)).ToList();
-            }
 
-            if (removedTags.Count > 1)
+            if (oldTags.Count > 1)
             {
                 var tagsFormatted = "";
-                switch (removedTags.Count)
+                switch (oldTags.Count)
                 {
                     case 1:
                     {
-                        tagsFormatted += "[tag:" + newTags[0] + "]";
+                        tagsFormatted += "[tag:" + oldTags[0] + "]";
                         break;
                     }
                     case 2:
                     {
-                        tagsFormatted = "[tag:" + removedTags[0] + "] & [tag:" + removedTags[1] + "]";
+                        tagsFormatted = "[tag:" + oldTags[0] + "] & [tag:" + oldTags[1] + "]";
                         break;
                     }
                     case 3:
                     {
-                        tagsFormatted = "[tag:" + removedTags[0] + "], [tag:" + removedTags[1] + "] & [tag:" + removedTags[2] + "]";
+                        tagsFormatted = "[tag:" + oldTags[0] + "], [tag:" + oldTags[1] + "] & [tag:" + oldTags[2] + "]";
                         break;
                     }
                 }
@@ -287,7 +278,7 @@ namespace CVChatbot.Bot
 
             var m = room.PostMessage(msg);
             if (m == null) { throw new Exception("Unable to post message."); }
-            tagReviewedConfirmationQueue[m] = removedTags;
+            tagReviewedConfirmationQueue[m] = oldTags;
         }
 
         private void HandleCurrentTagsChangedConfirmation(Message msg)
