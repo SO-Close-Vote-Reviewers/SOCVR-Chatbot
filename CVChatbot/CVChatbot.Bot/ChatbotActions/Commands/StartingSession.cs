@@ -1,8 +1,4 @@
-﻿using CVChatbot.Bot.Database;
-using System.Collections.Generic;
-using TCL.Extensions;
-
-namespace CVChatbot.Bot.ChatbotActions.Commands
+﻿namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class StartingSession : UserCommand
     {

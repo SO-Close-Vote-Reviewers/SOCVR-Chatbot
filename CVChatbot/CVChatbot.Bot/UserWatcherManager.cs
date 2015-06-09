@@ -50,8 +50,12 @@ namespace CVChatbot.Bot
             }
 
             // Look out for registered members that haven't joined in a while.
-            chatRoom.EventManager.ConnectListener(EventType.UserEntered, new Action<User>(u => HandleNewUser(u.ID)));
+            chatRoom.EventManager.ConnectListener(EventType.UserEntered, new Action<User>(u => AddNewUser(u.ID)));
 
+            // Listen out for tracking new users.
+            chatRoom.EventManager.ConnectListener(EventType.UserMentioned, new Action<Message>(m => HandleTrackUserCommand(m)));
+
+            // Listen for tag confirmations.
             chatRoom.EventManager.ConnectListener(EventType.MessageReply, new Action<Message, Message>((parent, reply) => HandleCurrentTagsChangedConfirmation(reply)));
         }
 
@@ -77,7 +81,7 @@ namespace CVChatbot.Bot
 
         public void AddUser(int userID)
         {
-            HandleNewUser(userID);
+            AddNewUser(userID, false);
         }
 
         public void AddUser(User user)
@@ -121,9 +125,24 @@ namespace CVChatbot.Bot
             return watcher;
         }
 
-        private void HandleNewUser(int userID)
+        private void HandleTrackUserCommand(Message m)
         {
-            if (dbAccessor.GetRegisteredUserByChatProfileId(userID) == null ||
+            var action = ChatbotActionRegister.AllChatActions.First(a => a is TrackUser);
+            if (!action.DoesChatMessageActiveAction(m, true)) { return; }
+
+            var user = dbAccessor.GetRegisteredUserByChatProfileId(m.AuthorID);
+            if (user == null || !user.IsOwner) { return; }
+
+            var newUserId = 0;
+            var sucess = int.TryParse(new string(m.Content.Where(char.IsDigit).ToArray()), out newUserId);
+            if (!sucess) { return; }
+
+            AddNewUser(newUserId, false);
+        }
+
+        private void AddNewUser(int userID, bool checkDb = true)
+        {
+            if ((dbAccessor.GetRegisteredUserByChatProfileId(userID) == null && checkDb) ||
                 Watchers.Any(w => w.UserID == userID))
             {
                 return;

@@ -12,7 +12,7 @@ namespace CVChatbot.Bot.ChatbotActions
         /// Determines if the incoming chat message activates this action.
         /// </summary>
         /// <param name="incomingMessage">The message said in the chat room.</param>
-        /// <param name="isMessageAReplyToChatbot">A precomputed value indicating if the message is a directly reply to the chatbot.</param>
+        /// <param name="isMessageAReplyToChatbot">A precomputed value indicating if the message is a direct reply to the chatbot.</param>
         /// <returns></returns>
         public bool DoesChatMessageActiveAction(Message incomingMessage, bool isMessageAReplyToChatbot)
         {
