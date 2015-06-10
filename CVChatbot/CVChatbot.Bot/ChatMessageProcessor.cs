@@ -54,8 +54,10 @@ namespace CVChatbot.Bot
                 {
                     // User was trying to make a command.
                     SendUnrecognizedCommandToDatabase(incommingChatMessage.GetContentsWithStrippedMentions());
-                    chatRoom.PostReplyOrThrow(incommingChatMessage, "Sorry, I don't understand that. Use `{0}` for a list of commands."
-                        .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<Commands>()));
+                    // This'll fire if a user replies to a tag confirmation message
+                    // (which is either "yes" or "no"), so lets disable this for now.
+                    //chatRoom.PostReplyOrThrow(incommingChatMessage, "Sorry, I don't understand that. Use `{0}` for a list of commands."
+                    //    .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<Commands>()));
                 }
                 // Else it's a trigger, do nothing.
 
