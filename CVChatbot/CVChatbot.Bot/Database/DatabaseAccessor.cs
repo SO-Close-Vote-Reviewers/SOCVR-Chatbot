@@ -56,16 +56,17 @@ where 'Id' = @SessionId;".Replace("'", "\"");
             });
         }
 
-        public void EndReviewSession(int sessionId, int? itemsReviewed, DateTime? endTime = null)
+        public void EndReviewSession(int sessionId, int? itemsReviewed, DateTimeOffset? endTime = null)
         {
+            // Assume the user finished literally just now.
+            var timeToInsert = DateTimeOffset.Now;
+
             if (endTime != null)
             {
                 // Use the passed end time rather then assuming the user finish *right now*.
+                timeToInsert = endTime.Value;
             }
-            else
-            {
-                // Assume the user finished literally just now.
-            }
+
 #if MsSql
             var sql = @"
 update ReviewSession
@@ -76,7 +77,7 @@ where Id = @SessionId;";
             var sql = @"
 update 'ReviewSession'
 set 'ItemsReviewed' = @ItemsReviewed,
-    'SessionEnd' = current_timestamp
+    'SessionEnd' = @SessionEnd
 where 'Id' = @SessionId;".Replace("'", "\"");
 #endif
 
@@ -84,6 +85,7 @@ where 'Id' = @SessionId;".Replace("'", "\"");
             {
                 c.AddParam("@ItemsReviewed", itemsReviewed);
                 c.AddParam("@SessionId", sessionId);
+                c.AddParam("@SessionEnd", timeToInsert);
             });
         }
 
@@ -134,9 +136,9 @@ where 'Id' = @SessionId;".Replace("'", "\"");
 #if MsSql
                 dr.Field<DateTimeOffset?>("SessionStartTs")
 #elif Postgres
-                dr.Field<DateTime?>("SessionStartTs")
+ dr.Field<DateTime?>("SessionStartTs")
 #endif
-            ));
+));
         }
 
         public ReviewSession GetLatestCompletedSession(int chatProfileId)
@@ -460,7 +462,7 @@ insert into 'ReviewSession' ('RegisteredUserId', 'SessionStart')
         private ReviewSession ConvertDataRowToReviewSession(DataRow dr)
         {
             var rs = new ReviewSession();
-            
+
             rs.Id = dr.Field<int>("Id");
             rs.RegisteredUserId = dr.Field<int>("RegisteredUserId");
 #if MsSql
@@ -471,7 +473,7 @@ insert into 'ReviewSession' ('RegisteredUserId', 'SessionStart')
             rs.SessionEnd = dr.Field<DateTime?>("SessionEnd");
 #endif
             rs.ItemsReviewed = dr.Field<int?>("ItemsReviewed");
-            
+
             return rs;
         }
 
