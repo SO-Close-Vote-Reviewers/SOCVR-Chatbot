@@ -100,6 +100,7 @@ namespace CVChatbot.Bot
                 // TODO: You may want to set these.
                 //TagTrackingEnabled = ?
                 //AuditFailureFactor = ?,
+                //PollInterval = ?,
                 //IdleFactor = ?
             };
 
@@ -217,7 +218,7 @@ namespace CVChatbot.Bot
             }
 
             // It's all good, mark the info as done.
-            dbAccessor.EndReviewSession(latestSession.Id, reviews.Count);
+            dbAccessor.EndReviewSession(latestSession.Id, reviews.Count, endTime);
 
             msg = ping +
                   "Thanks for reviewing! To see more information use the command `{0}`."

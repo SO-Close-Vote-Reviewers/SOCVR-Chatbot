@@ -56,8 +56,16 @@ where 'Id' = @SessionId;".Replace("'", "\"");
             });
         }
 
-        public void EndReviewSession(int sessionId, int? itemsReviewed)
+        public void EndReviewSession(int sessionId, int? itemsReviewed, DateTime? endTime = null)
         {
+            if (endTime != null)
+            {
+                // Use the passed end time rather then assuming the user finish *right now*.
+            }
+            else
+            {
+                // Assume the user finished literally just now.
+            }
 #if MsSql
             var sql = @"
 update ReviewSession
