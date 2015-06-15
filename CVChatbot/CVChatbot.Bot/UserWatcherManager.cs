@@ -161,39 +161,43 @@ namespace CVChatbot.Bot
             // Now record the new session.
             dbAccessor.StartReviewSession(watcher.UserID);
 
-            var outMessage = "I've noticed you've started reviewing. I'll make a new session for you. Good luck!";
-            outMessage = "@" + chatUser.Name.Replace(" ", "") + " " + outMessage;
+            var message = new MessageBuilder();
+
+            message.AppendPing(chatUser);
+            message.AppendText("I've noticed you've started reviewing. I'll make a new session for you. Good luck! ");
 
             // If there was a closed session.
             if (numberOfClosedSessions > 0)
             {
                 // Append a message saying how many there were.
-                outMessage += " **Note:** You had {0} open {1}. I have closed {2}.".FormatInline(
+                message.AppendText("Note: ", TextFormattingOptions.Bold);
+                message.AppendText("You had {0} open {1}. I have closed {2}.".FormatInline(
                     numberOfClosedSessions,
                     numberOfClosedSessions > 1
                         ? "sessions"
                         : "session",
                     numberOfClosedSessions > 1
                         ? "them"
-                        : "it");
+                        : "it"));
             }
 
-            room.PostMessageOrThrow(outMessage);
+            room.PostMessageOrThrow(message.Message);
         }
 
         private void HandleReviewingFinished(UserWatcher watcher, DateTime startTime, DateTime endTime, List<ReviewItem> reviews)
         {
             // Find the latest session by that user.
             var latestSession = dbAccessor.GetLatestOpenSessionForUser(watcher.UserID);
-            var ping = "@" + room.GetUser(watcher.UserID).Name.Replace(" ", "") + " ";
-            var msg = "";
+            var message = new MessageBuilder();
+
+            message.AppendPing(room.GetUser(watcher.UserID));
 
             // First, check if there is a session.
             if (latestSession == null)
             {
-                msg = ping + "I don't seem to have the start of your review session on record. " +
-                      "I might have not been running when you started, or some error happened.";
-                room.PostMessageOrThrow(msg);
+                message.AppendText("I don't seem to have the start of your review session on record. ");
+                message.AppendText("I might have not been running when you started, or some error happened.");
+                room.PostMessageOrThrow(message.Message);
                 return;
             }
 
@@ -206,37 +210,40 @@ namespace CVChatbot.Bot
             {
                 var timeDelta = DateTimeOffset.Now - latestSession.SessionStart;
 
-                msg = ping + "Your last uncompleted review session was {0} ago. " +
+                message.AppendText("Your last uncompleted review session was {0} ago. " +
                       "Because it has exceeded my threshold ({1} hours), " +
                       "I can't mark that session with this information. "
                       .FormatInline(timeDelta.ToUserFriendlyString(), maxReviewTimeHours) +
                       "Use the command '{0}' to forcefully end that session."
-                      .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<EndSession>());
+                      .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<EndSession>()));
 
-                room.PostMessageOrThrow(msg);
+                room.PostMessageOrThrow(message.Message);
                 return;
             }
 
             // It's all good, mark the info as done.
             dbAccessor.EndReviewSession(latestSession.Id, reviews.Count, endTime);
 
-            msg = ping +
-                  "Thanks for reviewing! To see more information use the command `{0}`."
-                  .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<LastSessionStats>());
-            room.PostMessageOrThrow(msg);
+            message.AppendText("Thanks for reviewing! To see more information use the command ");
+            message.AppendText(ChatbotActionRegister.GetChatBotActionUsage<LastSessionStats>(), TextFormattingOptions.InLineCode);
+            message.AppendText(".");
+            room.PostMessageOrThrow(message.Message);
         }
 
         private void HandleAuditPassed(UserWatcher watcher, ReviewItem audit)
         {
-            dbAccessor.InsertCompletedAuditEntry(watcher.UserID, audit.Tags[0]);
-            var name = room.GetUser(watcher.UserID).Name;
+            var message = new MessageBuilder();
             var tag = audit.Tags[0];
-            var msg = name +
-                " passed a" + ("aeiou".Contains(char.ToLowerInvariant(tag[0]))
-                ? "n "
-                : " ")
-                + tag + " audit!";
-            room.PostMessageOrThrow(msg);
+            dbAccessor.InsertCompletedAuditEntry(watcher.UserID, tag);
+
+            message.AppendPing(room.GetUser(watcher.UserID));
+            message.AppendText("passed a");
+            // Basic grammar correction. Not foolproof, but it'll do.
+            message.AppendText("aeiou".Contains(char.ToLowerInvariant(tag[0])) ? "n " : " ");
+            message.AppendText(tag, TextFormattingOptions.Tag);
+            message.AppendText(" audit!");
+
+            room.PostMessageOrThrow(message.Message);
         }
 
         private void HandleAuditFailed(UserWatcher watcher, ReviewItem audit)
@@ -246,38 +253,36 @@ namespace CVChatbot.Bot
 
         private void HandleCurrentTagsChanged(UserWatcher watcher, List<string> oldTags)
         {
-            var ping = "@" + room.GetUser(watcher.UserID).Name.Replace(" ", "") + " ";
-            var msg = ping + "It looks like you've finished reviewing ";
+            var message = new MessageBuilder();
 
-            if (oldTags.Count > 1)
+            message.AppendPing(room.GetUser(watcher.UserID));
+            message.AppendText("It looks like you've finished reviewing ");
+
+            if (oldTags.Count > 0)
             {
-                var tagsFormatted = "";
-                switch (oldTags.Count)
+                message.AppendText(oldTags[0], TextFormattingOptions.Tag);
+
+                if (oldTags.Count == 2)
                 {
-                    case 1:
-                    {
-                        tagsFormatted += "[tag:" + oldTags[0] + "]";
-                        break;
-                    }
-                    case 2:
-                    {
-                        tagsFormatted = "[tag:" + oldTags[0] + "] & [tag:" + oldTags[1] + "]";
-                        break;
-                    }
-                    case 3:
-                    {
-                        tagsFormatted = "[tag:" + oldTags[0] + "], [tag:" + oldTags[1] + "] & [tag:" + oldTags[2] + "]";
-                        break;
-                    }
+                    message.AppendText(" & ");
+                    message.AppendText(oldTags[1], TextFormattingOptions.Tag);
                 }
-                msg += tagsFormatted + ". Is that right?";
+                else if (oldTags.Count == 3)
+                {
+                    message.AppendText(", ");
+                    message.AppendText(oldTags[1], TextFormattingOptions.Tag);
+                    message.AppendText(" & ");
+                    message.AppendText(oldTags[2], TextFormattingOptions.Tag);
+                }
+
+                message.AppendText(". Is that right?");
             }
             else
             {
                 return;
             }
 
-            var m = room.PostMessage(msg);
+            var m = room.PostMessage(message.Message);
             if (m == null) { throw new Exception("Unable to post message."); }
             tagReviewedConfirmationQueue[m] = oldTags;
         }

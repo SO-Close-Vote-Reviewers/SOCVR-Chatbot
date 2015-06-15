@@ -111,7 +111,7 @@ namespace CVChatbot.Bot
             if (userRecordInDB.IsOwner && neededPermissionLevel == ActionPermissionLevel.Owner)
                 return true;
 
-            // Fall past the last check(for owner), so default to "no".
+            // Fall past the last check (for owner), so default to "no".
             return false;
         }
 
