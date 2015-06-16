@@ -13,7 +13,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
-            var completedTags = da.GetUserCompletedTags(incommingChatMessage.AuthorID);
+            var completedTags = da.GetUserCompletedTags(incommingChatMessage.Author.ID);
 
             if (!completedTags.Any())
             {

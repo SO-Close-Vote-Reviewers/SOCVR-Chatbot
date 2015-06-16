@@ -9,7 +9,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
-            var currentSessionStartTs = da.GetCurrentSessionStartTs(incommingChatMessage.AuthorID);
+            var currentSessionStartTs = da.GetCurrentSessionStartTs(incommingChatMessage.Author.ID);
 
             if (currentSessionStartTs == null)
             {

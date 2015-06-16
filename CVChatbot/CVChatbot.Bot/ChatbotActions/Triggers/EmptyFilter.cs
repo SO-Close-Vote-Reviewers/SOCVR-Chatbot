@@ -26,7 +26,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
             // Save the tags to the database.
             foreach (var tagName in parsedTagNames)
             {
-                da.InsertNoItemsInFilterRecord(incommingChatMessage.AuthorID, tagName);
+                da.InsertNoItemsInFilterRecord(incommingChatMessage.Author.ID, tagName);
             }
         }
 

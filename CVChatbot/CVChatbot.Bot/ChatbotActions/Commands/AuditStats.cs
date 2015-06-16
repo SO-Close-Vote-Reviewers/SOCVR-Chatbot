@@ -10,7 +10,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         {
             var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
 
-            var auditEntries = da.GetUserAuditStats(incommingChatMessage.AuthorID);
+            var auditEntries = da.GetUserAuditStats(incommingChatMessage.Author.ID);
 
             if (!auditEntries.Any())
             {

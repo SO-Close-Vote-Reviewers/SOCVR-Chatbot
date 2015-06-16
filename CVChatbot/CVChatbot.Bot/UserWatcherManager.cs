@@ -131,7 +131,7 @@ namespace CVChatbot.Bot
             var action = ChatbotActionRegister.AllChatActions.First(a => a is TrackUser);
             if (!action.DoesChatMessageActiveAction(m, true)) { return; }
 
-            var user = dbAccessor.GetRegisteredUserByChatProfileId(m.AuthorID);
+            var user = dbAccessor.GetRegisteredUserByChatProfileId(m.Author.ID);
             if (user == null || !user.IsOwner) { return; }
 
             var newUserId = 0;
@@ -293,14 +293,14 @@ namespace CVChatbot.Bot
             if (parentMsgKv.Key == null) { return; }
 
             // Stop other people confirming someone else's message.
-            var originalTarget = room[parentMsgKv.Key.ParentID].AuthorID;
-            if (originalTarget != msg.AuthorID) { return; }
+            var originalTarget = room[parentMsgKv.Key.ParentID].Author.ID;
+            if (originalTarget != msg.Author.ID) { return; }
 
             if (yesRegex.IsMatch(parentMsgKv.Key.Content))
             {
                 foreach (var tag in parentMsgKv.Value)
                 {
-                    dbAccessor.InsertNoItemsInFilterRecord(msg.AuthorID, tag);
+                    dbAccessor.InsertNoItemsInFilterRecord(msg.Author.ID, tag);
                 }
                 var outMsg = "Ok, I've marked " + (parentMsgKv.Value.Count > 1 ? "them as completed tags." : "it as a completed tag.");
                 room.PostReplyOrThrow(msg, outMsg);

@@ -12,7 +12,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
-            var lastFinishedSession = da.GetLatestCompletedSession(incommingChatMessage.AuthorID);
+            var lastFinishedSession = da.GetLatestCompletedSession(incommingChatMessage.Author.ID);
 
             if (lastFinishedSession == null)
             {
@@ -54,7 +54,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             }
 
             // Check if there is a on-going review session.
-            var ongoingSessionStartTs = da.GetCurrentSessionStartTs(incommingChatMessage.AuthorID);
+            var ongoingSessionStartTs = da.GetCurrentSessionStartTs(incommingChatMessage.Author.ID);
 
             if (ongoingSessionStartTs != null)
             {
