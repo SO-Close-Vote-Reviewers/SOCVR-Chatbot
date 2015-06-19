@@ -122,8 +122,8 @@ namespace CVChatbot.Bot
                 // TODO: You may want to set these.
                 //TagTrackingEnabled = ?
                 //AuditFailureFactor = ?,
-                //PollInterval = ?,
                 //IdleFactor = ?
+                //PollInterval = ?,
             };
 
             watcher.EventManager.ConnectListener(UserEventType.ReviewingStarted,
@@ -258,8 +258,8 @@ namespace CVChatbot.Bot
             var tag = audit.Tags[0];
             dbAccessor.InsertCompletedAuditEntry(watcher.UserID, tag);
 
-            message.AppendPing(room.GetUser(watcher.UserID));
-            message.AppendText("passed a");
+            message.AppendText(room.GetUser(watcher.UserID).Name);
+            message.AppendText(" passed a");
             // Basic grammar correction. Not foolproof, but it'll do.
             message.AppendText("aeiou".Contains(char.ToLowerInvariant(tag[0])) ? "n " : " ");
             message.AppendText(tag, TextFormattingOptions.Tag);
