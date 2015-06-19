@@ -136,8 +136,7 @@ namespace CVChatbot.Bot
             {
                 // Something happened outside of an action's RunAction method. attempt to tell chat about it
                 // this line will throw an exception if it fails, moving it further up the line.
-                cvChatRoom.PostMessageOrThrow("error happened!\n" + ex.FullErrorMessage(Environment.NewLine)); // For now, more verbose later.
-                
+
                 var headerLine = "An error happened that was not handled by the ChatMessageProcesser";
                 var errorMessage = "    " + ex.FullErrorMessage(Environment.NewLine + "    ");
                 var stackTraceMessage = ex.GetAllStackTraces();
