@@ -40,7 +40,7 @@ namespace CVChatbot.Bot
         private readonly DatabaseAccessor dbAccessor;
         private readonly InstallationSettings initSettings;
         private readonly Room room;
-        private readonly ConcurrentDictionary<Message, List<string>> tagReviewedConfirmationQueue;
+        private readonly ConcurrentDictionary<User, List<string>> tagReviewedConfirmationQueue;
         private readonly Regex yesRegex;
         private readonly Regex noRegex;
         private bool dispose;
@@ -56,7 +56,7 @@ namespace CVChatbot.Bot
 
             room = chatRoom;
             initSettings = settings;
-            tagReviewedConfirmationQueue = new ConcurrentDictionary<Message, List<string>>();
+            tagReviewedConfirmationQueue = new ConcurrentDictionary<User, List<string>>();
             yesRegex = new Regex(@"(?i)\by[ue][aps]h?\b", RegexOptions.Compiled | RegexOptions.CultureInvariant);
             noRegex = new Regex(@"(?i)\bno*(pe|t)?\b", RegexOptions.Compiled | RegexOptions.CultureInvariant);
             Watchers = new List<UserWatcher>();
@@ -120,10 +120,10 @@ namespace CVChatbot.Bot
             var watcher = new UserWatcher(userID)
             {
                 // TODO: You may want to set these.
-                //TagTrackingEnabled = ?
-                //AuditFailureFactor = ?,
-                //IdleFactor = ?
-                //PollInterval = ?,
+                TagTrackingEnabled = true,
+                AuditFailureFactor = 3,
+                IdleFactor = 5,
+                PollInterval = TimeSpan.FromSeconds(15)
             };
 
             watcher.EventManager.ConnectListener(UserEventType.ReviewingStarted,
@@ -180,8 +180,8 @@ namespace CVChatbot.Bot
             var chatUser = room.GetUser(watcher.UserID);
             var numberOfClosedSessions = dbAccessor.EndAnyOpenSessions(watcher.UserID);
 
-            // Now record the new session.
-            dbAccessor.StartReviewSession(watcher.UserID);
+           // Now record the new session.
+           dbAccessor.StartReviewSession(watcher.UserID);
 
             var message = new MessageBuilder();
 
@@ -192,8 +192,8 @@ namespace CVChatbot.Bot
             if (numberOfClosedSessions > 0)
             {
                 // Append a message saying how many there were.
-                message.AppendText("Note: ", TextFormattingOptions.Bold);
-                message.AppendText("You had {0} open {1}. I have closed {2}.".FormatInline(
+                message.AppendText("Note:", TextFormattingOptions.Bold);
+                message.AppendText(" You had {0} open {1}. I have closed {2}.".FormatInline(
                     numberOfClosedSessions,
                     numberOfClosedSessions > 1
                         ? "sessions"
@@ -276,8 +276,9 @@ namespace CVChatbot.Bot
         private void HandleCurrentTagsChanged(UserWatcher watcher, List<string> oldTags)
         {
             var message = new MessageBuilder();
+            var chatUser = room.GetUser(watcher.UserID);
 
-            message.AppendPing(room.GetUser(watcher.UserID));
+            message.AppendPing(chatUser);
             message.AppendText("It looks like you've finished reviewing ");
 
             if (oldTags.Count > 0)
@@ -304,33 +305,29 @@ namespace CVChatbot.Bot
                 return;
             }
 
-            var m = room.PostMessage(message.Message);
-            if (m == null) { throw new Exception("Unable to post message."); }
-            tagReviewedConfirmationQueue[m] = oldTags;
+            room.PostMessageOrThrow(message.Message);
+
+            tagReviewedConfirmationQueue[chatUser] = oldTags;
         }
 
-        private void HandleCurrentTagsChangedConfirmation(Message msg)
+        private void HandleCurrentTagsChangedConfirmation(Message reply)
         {
-            var parentMsgKv = tagReviewedConfirmationQueue.FirstOrDefault(kv => kv.Key.ID == msg.ParentID);
-            if (parentMsgKv.Key == null) { return; }
+            var tagConfirmationKv = tagReviewedConfirmationQueue.FirstOrDefault(kv => kv.Key.ID == reply.Author.ID);
+            if (tagConfirmationKv.Key == null) { return; }
 
-            // Stop other people confirming someone else's message.
-            var originalTarget = room[parentMsgKv.Key.ParentID].Author.ID;
-            if (originalTarget != msg.Author.ID) { return; }
-
-            if (yesRegex.IsMatch(parentMsgKv.Key.Content))
+            if (yesRegex.IsMatch(reply.Content))
             {
-                foreach (var tag in parentMsgKv.Value)
+                foreach (var tag in tagConfirmationKv.Value)
                 {
-                    dbAccessor.InsertNoItemsInFilterRecord(msg.Author.ID, tag);
+                    dbAccessor.InsertNoItemsInFilterRecord(reply.Author.ID, tag);
                 }
-                var outMsg = "Ok, I've marked " + (parentMsgKv.Value.Count > 1 ? "them as completed tags." : "it as a completed tag.");
-                room.PostReplyOrThrow(msg, outMsg);
+                var outMsg = "Ok, I've marked " + (tagConfirmationKv.Value.Count > 1 ? "them as completed tags." : "it as a completed tag.");
+                room.PostReplyOrThrow(reply, outMsg);
             }
-            else if (noRegex.IsMatch(parentMsgKv.Key.Content))
+            else if (noRegex.IsMatch(reply.Content))
             {
-                var outMsg = "Ok. Well don't forget to let me know when you've completed " + (parentMsgKv.Value.Count > 1 ? "them!" : "it!");
-                room.PostReplyOrThrow(msg, outMsg);
+                var outMsg = "Ok. Well don't forget to let me know when you've completed " + (tagConfirmationKv.Value.Count > 1 ? "them!" : "it!");
+                room.PostReplyOrThrow(reply, outMsg);
             }
             else
             {
@@ -338,7 +335,7 @@ namespace CVChatbot.Bot
             }
 
             List<string> temp;
-            tagReviewedConfirmationQueue.TryRemove(parentMsgKv.Key, out temp);
+            tagReviewedConfirmationQueue.TryRemove(tagConfirmationKv.Key, out temp);
         }
 
         private void HandleException(UserWatcher watcher, Exception ex)

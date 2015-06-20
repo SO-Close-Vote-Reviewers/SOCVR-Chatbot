@@ -198,6 +198,7 @@ namespace CVChatbot.Bot
         {
             da.InsertUnrecognizedCommand(command);
         }
+
         /// <summary>
         /// Call this method if you get an error while running a ChatbotAction.
         /// This will attempt to send a message to chat about error in a standard format.
