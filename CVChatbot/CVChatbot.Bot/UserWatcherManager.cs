@@ -340,7 +340,16 @@ namespace CVChatbot.Bot
 
         private void HandleException(UserWatcher watcher, Exception ex)
         {
-            room.PostMessageOrThrow("error happened!\n" + ex.FullErrorMessage(Environment.NewLine));
+            var headerLine = "An error happened in User Watcher Manager";
+            var errorMessage = "    " + ex.FullErrorMessage(Environment.NewLine + "    ");
+            var stackTraceMessage = ex.GetAllStackTraces();
+
+            var detailsLine = errorMessage + Environment.NewLine +
+                "    ----" + Environment.NewLine +
+                stackTraceMessage;
+
+            room.PostMessageOrThrow(headerLine);
+            room.PostMessageOrThrow(detailsLine);
         }
     }
 }
