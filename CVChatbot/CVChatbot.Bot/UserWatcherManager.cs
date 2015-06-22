@@ -65,7 +65,8 @@ namespace CVChatbot.Bot
 
             foreach (var user in pingable)
             {
-                if (dbAccessor.GetRegisteredUserByChatProfileId(user.ID) == null) { continue; }
+                if (dbAccessor.GetRegisteredUserByChatProfileId(user.ID) == null ||
+                    user.Reputation < 3000) { continue; }
 
                 var watcher = InitialiseWatcher(user.ID);
                 Watchers.Add(watcher);
