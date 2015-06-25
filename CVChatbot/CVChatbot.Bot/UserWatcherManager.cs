@@ -263,8 +263,8 @@ namespace CVChatbot.Bot
             message.AppendText(" passed a");
             // Basic grammar correction. Not foolproof, but it'll do.
             message.AppendText("aeiou".Contains(char.ToLowerInvariant(tag[0])) ? "n " : " ");
-            message.AppendText(tag, TextFormattingOptions.Tag);
-            message.AppendText(" audit!");
+            message.AppendText(tag, TextFormattingOptions.Tag, WhiteSpace.Space);
+            message.AppendLink("audit!", "http://stackoverflow.com/review/close/" + audit.ID);
 
             room.PostMessageOrThrow(message.Message);
         }
