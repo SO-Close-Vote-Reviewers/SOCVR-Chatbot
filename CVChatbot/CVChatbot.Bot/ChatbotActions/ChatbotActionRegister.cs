@@ -1,5 +1,5 @@
 ﻿/*
- * ChatExchange.Net. Chatbot for the SO Close Vote Reviewers Chat Room.
+ * CVChatbot. Chatbot for the SO Close Vote Reviewers Chat Room.
  * Copyright © 2015, SO-Close-Vote-Reviewers.
  *
  * This program is free software; you can redistribute it and/or modify
