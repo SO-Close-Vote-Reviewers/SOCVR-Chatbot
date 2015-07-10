@@ -1,5 +1,5 @@
 ﻿/*
- * ChatExchange.Net. Chatbot for the SO Close Vote Reviewers Chat Room.
+ * CVChatbot. Chatbot for the SO Close Vote Reviewers Chat Room.
  * Copyright © 2015, SO-Close-Vote-Reviewers.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -68,11 +68,11 @@ namespace CVChatbot.Bot
         /// </summary>
         /// <param name="chatRoom"></param>
         /// <param name="message"></param>
-        public static void PostMessageOrThrow(this Room chatRoom, string message)
+        public static void PostMessageOrThrow(this Room chatRoom, object message)
         {
-            var postedMessage = chatRoom.PostMessage(message);
+            var success = chatRoom.PostMessageFast(message);
 
-            if (postedMessage == null)
+            if (!success)
             {
                 throw new InvalidOperationException("Unable to post message");
             }
@@ -84,7 +84,7 @@ namespace CVChatbot.Bot
         /// <param name="chatRoom"></param>
         /// <param name="replyingToMessage"></param>
         /// <param name="message"></param>
-        public static void PostReplyOrThrow(this Room chatRoom, Message replyingToMessage, string message)
+        public static void PostReplyOrThrow(this Room chatRoom, Message replyingToMessage, object message)
         {
             chatRoom.PostReplyOrThrow(replyingToMessage.ID, message);
         }
@@ -95,7 +95,7 @@ namespace CVChatbot.Bot
         /// <param name="chatRoom"></param>
         /// <param name="replyingToMessageId"></param>
         /// <param name="message"></param>
-        public static void PostReplyOrThrow(this Room chatRoom, int replyingToMessageId, string message)
+        public static void PostReplyOrThrow(this Room chatRoom, int replyingToMessageId, object message)
         {
             var postedMessage = chatRoom.PostReply(replyingToMessageId, message);
 
