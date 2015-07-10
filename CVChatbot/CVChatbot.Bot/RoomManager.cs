@@ -1,5 +1,5 @@
 ﻿/*
- * ChatExchange.Net. Chatbot for the SO Close Vote Reviewers Chat Room.
+ * CVChatbot. Chatbot for the SO Close Vote Reviewers Chat Room.
  * Copyright © 2015, SO-Close-Vote-Reviewers.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -105,9 +105,9 @@ namespace CVChatbot.Bot
             if (!settings.StartUpMessage.IsNullOrWhiteSpace())
             {
                 // This is the one of the few instances to not using the "OrThrow" method.
-                var startMessage = cvChatRoom.PostMessage(settings.StartUpMessage);
+                var success = cvChatRoom.PostMessageFast(settings.StartUpMessage);
 
-                if (startMessage == null)
+                if (!success)
                 {
                     throw new InvalidOperationException("Unable to post start up message to room.");
                 }
@@ -118,7 +118,7 @@ namespace CVChatbot.Bot
         {
             // If there is a stop message, say it.
             if (!settings.StopMessage.IsNullOrWhiteSpace())
-                cvChatRoom.PostMessage(settings.StopMessage);
+                cvChatRoom.PostMessageFast(settings.StopMessage);
 
             cvChatRoom.Leave();
         }
