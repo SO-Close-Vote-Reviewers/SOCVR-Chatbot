@@ -17,7 +17,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
-            var lastSession = da.GetLatestCompletedSession(incommingChatMessage.AuthorID);
+            var lastSession = da.GetLatestCompletedSession(incommingChatMessage.Author.ID);
 
             if (lastSession == null)
             {
@@ -47,8 +47,8 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     Items Reviewed: {4} -> {5}
     Use the command 'last session stats' to see more details."
                 .FormatInline(
-                    incommingChatMessage.AuthorName,
-                    incommingChatMessage.AuthorID,
+                    incommingChatMessage.Author.Name,
+                    incommingChatMessage.Author.ID,
                     lastSession.SessionStart.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'"),
                     lastSession.SessionEnd.Value.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'"),
                     previousReviewCount.HasValue

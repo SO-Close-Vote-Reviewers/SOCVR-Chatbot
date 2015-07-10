@@ -19,7 +19,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         {
             var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
 
-            var recipientChatProfileIds = da.GetPingReviewersRecipientList(incommingChatMessage.AuthorID, roomSettings.PingReviewersDaysBackThreshold);
+            var recipientChatProfileIds = da.GetPingReviewersRecipientList(incommingChatMessage.Author.ID, roomSettings.PingReviewersDaysBackThreshold);
 
             if (!recipientChatProfileIds.Any())
             {

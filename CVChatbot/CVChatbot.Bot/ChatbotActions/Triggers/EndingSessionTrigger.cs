@@ -25,7 +25,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
             var da = new DatabaseAccessor(settings.DatabaseConnectionString);
 
             // Find the latest session by that user.
-            var latestSession = da.GetLatestOpenSessionForUser(userMessage.AuthorID);
+            var latestSession = da.GetLatestOpenSessionForUser(userMessage.Author.ID);
 
             // First, check if there is a session.
             if (latestSession == null)

@@ -14,7 +14,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         {
             var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
 
-            var latestSession = da.GetLatestSessionForUser(incommingChatMessage.AuthorID);
+            var latestSession = da.GetLatestSessionForUser(incommingChatMessage.Author.ID);
 
             if (latestSession == null)
             {

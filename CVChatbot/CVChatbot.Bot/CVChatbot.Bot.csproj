@@ -51,8 +51,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ChatExchange.Net, Version=2.2.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ChatExchange.Net.2.2.4-beta\lib\ChatExchange.Net.dll</HintPath>
+    <Reference Include="ChatExchange.Net, Version=2.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ChatExchange.Net.2.7.0-beta\lib\ChatExchange.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="CsQuery">

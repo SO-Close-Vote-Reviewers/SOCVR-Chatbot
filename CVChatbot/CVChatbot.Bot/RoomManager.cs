@@ -103,7 +103,7 @@ namespace CVChatbot.Bot
             try
             {
                 if (InformationMessageBroadcasted != null)
-                    InformationMessageBroadcasted(newMessage.Content, newMessage.AuthorName);
+                    InformationMessageBroadcasted(newMessage.Content, newMessage.Author.Name);
 
                 await Task.Run(() => cmp.ProcessChatMessage(newMessage, cvChatRoom));
             }

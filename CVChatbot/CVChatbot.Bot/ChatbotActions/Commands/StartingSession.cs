@@ -13,15 +13,15 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     {
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
-            var chatUser = chatRoom.GetUser(incommingChatMessage.AuthorID);
+            var chatUser = chatRoom.GetUser(incommingChatMessage.Author.ID);
 
             var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
 
             // first, check if the user has any open sessions, and close them
-            int numberOfClosedSessions = da.EndAnyOpenSessions(incommingChatMessage.AuthorID);
+            int numberOfClosedSessions = da.EndAnyOpenSessions(incommingChatMessage.Author.ID);
 
             // now record the new session
-            da.StartReviewSession(incommingChatMessage.AuthorID);
+            da.StartReviewSession(incommingChatMessage.Author.ID);
 
             var replyMessages = new List<string>()
             {

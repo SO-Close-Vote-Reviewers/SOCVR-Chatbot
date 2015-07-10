@@ -66,7 +66,7 @@ namespace CVChatbot.Bot
             var chatbotActionToRun = possibleChatbotActionsToRun.Single();
 
             // Now, do you have permission to run it?
-            if (DoesUserHavePermissionToRunAction(chatbotActionToRun, incommingChatMessage.AuthorID))
+            if (DoesUserHavePermissionToRunAction(chatbotActionToRun, incommingChatMessage.Author.ID))
             {
                 // Have permission, run it.
                 RunChatbotAction(chatbotActionToRun, incommingChatMessage, chatRoom);
@@ -125,7 +125,7 @@ namespace CVChatbot.Bot
                 return false;
 
             var parentMessage = chatRoom.GetMessage(chatMessage.ParentID);
-            return parentMessage.AuthorID == chatRoom.Me.ID;
+            return parentMessage.Author.ID == chatRoom.Me.ID;
         }
 
         /// <summary>
@@ -139,8 +139,8 @@ namespace CVChatbot.Bot
             // Record as started.
             var id = RunningChatbotActionsManager.MarkChatbotActionAsStarted(
                 action.GetActionName(),
-                incommingChatMessage.AuthorName,
-                incommingChatMessage.AuthorID);
+                incommingChatMessage.Author.Name,
+                incommingChatMessage.Author.ID);
 
             try
             {

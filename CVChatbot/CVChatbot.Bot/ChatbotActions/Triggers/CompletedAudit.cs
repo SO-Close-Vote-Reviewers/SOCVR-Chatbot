@@ -13,14 +13,14 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
     {
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
-            var chatUser = chatRoom.GetUser(incommingChatMessage.AuthorID);
+            var chatUser = chatRoom.GetUser(incommingChatMessage.Author.ID);
             var tagName = GetRegexMatchingObject()
                     .Match(GetMessageContentsReadyForRegexParsing(incommingChatMessage))
                     .Groups[1]
                     .Value;
 
             var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
-            da.InsertCompletedAuditEntry(incommingChatMessage.AuthorID, tagName);
+            da.InsertCompletedAuditEntry(incommingChatMessage.Author.ID, tagName);
         }
 
         public override ActionPermissionLevel GetPermissionLevel()
