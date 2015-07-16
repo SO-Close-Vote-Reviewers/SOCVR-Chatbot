@@ -97,9 +97,9 @@ namespace CVChatbot.Bot
         /// <param name="message"></param>
         public static void PostReplyOrThrow(this Room chatRoom, int replyingToMessageId, object message)
         {
-            var postedMessage = chatRoom.PostReply(replyingToMessageId, message);
+            var success = chatRoom.PostReplyFast(replyingToMessageId, message);
 
-            if (postedMessage == null)
+            if (!success)
             {
                 throw new InvalidOperationException("Unable to post message");
             }
