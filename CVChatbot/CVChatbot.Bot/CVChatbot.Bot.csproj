@@ -105,12 +105,15 @@
     <Compile Include="ChatbotActions\ChatbotActionRegister.cs" />
     <Compile Include="ChatbotActions\Commands\Alive.cs" />
     <Compile Include="ChatbotActions\Commands\AuditStats.cs" />
+    <Compile Include="ChatbotActions\Commands\Blame.cs" />
     <Compile Include="ChatbotActions\Commands\Commands.cs" />
     <Compile Include="ChatbotActions\Commands\CompletedTags.cs" />
     <Compile Include="ChatbotActions\Commands\CurrentTag.cs" />
     <Compile Include="ChatbotActions\Commands\CurrentSession.cs" />
     <Compile Include="ChatbotActions\Commands\EndSession.cs" />
+    <Compile Include="ChatbotActions\Commands\Fox.cs" />
     <Compile Include="ChatbotActions\Commands\Help.cs" />
+    <Compile Include="ChatbotActions\Commands\Panic.cs" />
     <Compile Include="ChatbotActions\Commands\PingReviewers.cs" />
     <Compile Include="ChatbotActions\Commands\LastSessionEditCount.cs" />
     <Compile Include="ChatbotActions\Commands\LastSessionStats.cs" />
