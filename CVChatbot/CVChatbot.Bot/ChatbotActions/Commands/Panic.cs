@@ -53,7 +53,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         protected override string GetRegexMatchingPattern()
         {
-            return @"\spanic[!.]*$";
+            return @"\s?panic[!.]*$";
         }
     }
 }
