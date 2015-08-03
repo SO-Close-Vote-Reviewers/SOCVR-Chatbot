@@ -1,4 +1,4 @@
-﻿/*
+/*
  * CVChatbot. Chatbot for the SO Close Vote Reviewers Chat Room.
  * Copyright © 2015, SO-Close-Vote-Reviewers.
  *
@@ -40,7 +40,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionUsage()
         {
-            return "When will ...";
+            return "when will ...";
         }
 
         public override ActionPermissionLevel GetPermissionLevel()
