@@ -20,7 +20,6 @@
 
 
 
-using System.Globalization;
 using ChatExchangeDotNet;
 using TCL.Extensions;
 
