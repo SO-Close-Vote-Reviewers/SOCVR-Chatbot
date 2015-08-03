@@ -40,7 +40,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionUsage()
         {
-            return "When ...?";
+            return "When will ...";
         }
 
         public override ActionPermissionLevel GetPermissionLevel()
@@ -68,7 +68,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             {
                 // Pick any date within 10 years from now.
                 var date = DateTime.UtcNow.Add(TimeSpan.FromDays(r.Next(-3650, 3650)));
-                message = date.Date.ToShortDateString();
+                message = date.ToString("yyyy/MM/dd", CultureInfo.InvariantCulture);
             }
             else
             {
