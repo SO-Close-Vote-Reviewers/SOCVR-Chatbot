@@ -58,14 +58,17 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 "Within a month.",
                 "Next year.",
                 "In 3... 2... 1...",
-                "Yes."
+                "Yes.",
+                "In 6 to 8 moons."
             };
             var r = new Random(DateTime.UtcNow.Millisecond);
             var message = "";
 
-            if (r.NextDouble() > 0.6)
+            if (r.NextDouble() > 0.5)
             {
-                message = DateTime.UtcNow.Add(TimeSpan.FromSeconds(r.Next())).Date.ToShortDateString();
+                // Pick any date within 10 years from now.
+                var date = DateTime.UtcNow.Add(TimeSpan.FromDays(r.Next(-3650, 3650)));
+                message = date.Date.ToShortDateString();
             }
             else
             {
