@@ -39,7 +39,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionUsage()
         {
-            return "who ...?";
+            return "who will ...";
         }
 
         public override ActionPermissionLevel GetPermissionLevel()
@@ -66,7 +66,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 "Everyone in this room, except X.",
                 "Everyone in this room, except X and Y.",
                 "Blame X and Y!",
-                "*X secretly picks Y*"
+                "*X secretly thinks it's Y*"
             };
             var users = chatRoom.GetPingableUsers();
             var userX = users.PickRandom();
