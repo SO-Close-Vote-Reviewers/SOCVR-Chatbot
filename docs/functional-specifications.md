@@ -1,4 +1,4 @@
-# Chatbot for the SO Close Vote Reviews Chat Room
+# Chatbot for the SO Close Vote Reviews Chat Room Functional Specifications
 
 This document describes the functionality of the chatbot that resides in the [SO Close Vote Reviewers chat room](http://chat.stackoverflow.com/rooms/41570/so-close-vote-reviewers).
 
@@ -15,7 +15,7 @@ Highlight the troubles that the old system had, and talk (in broad terms) of the
 
 ## History of v1
 
-Talk about what v1 could do, and it's short comings.
+Talk about what v1 could do, and its short comings.
 
 ## Goals for v2
 
@@ -25,6 +25,6 @@ What are the primary goals for this version of the software? The bullet point it
 
 * Minimum interactions needed from chat to operate - bot will work in the background to gather information, without needing it from chat.
 
-* Store review sessions by UTC day, not by indivual sessions - in v1 a person can have multiple sessions per day, which doesn't make a lot of sense and can be confusing. In v2, the chatbot will just record all reviews done within a UTC day and do computations from there.
+* Store review sessions by UTC day, not by individual sessions - in v1 a person can have multiple sessions per day, which doesn't make a lot of sense and can be confusing. In v2, the chatbot will just record all reviews done within a UTC day and do computations from there.
 
 > Consideration, have a command that prints out a link and date of all recorded reviews for the user in the same UTC day.
