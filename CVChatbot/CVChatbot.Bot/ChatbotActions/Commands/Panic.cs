@@ -48,7 +48,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override void RunAction(Message incommingChatMessage, Room chatRoom, InstallationSettings roomSettings)
         {
-            chatRoom.PostMessageOrThrow("http://rack.0.mshcdn.com/media/ZgkyMDEzLzA2LzE4LzdjL0JlYWtlci4zOWJhOC5naWYKcAl0aHVtYgkxMjAweDk2MDA-/4a93e3c4/4a4/Beaker.gif");
+            chatRoom.PostReplyOrThrow(incommingChatMessage, "http://rack.0.mshcdn.com/media/ZgkyMDEzLzA2LzE4LzdjL0JlYWtlci4zOWJhOC5naWYKcAl0aHVtYgkxMjAweDk2MDA-/4a93e3c4/4a4/Beaker.gif");
         }
 
         protected override string GetRegexMatchingPattern()
