@@ -1,4 +1,4 @@
-﻿/*
+/*
  * CVChatbot. Chatbot for the SO Close Vote Reviewers Chat Room.
  * Copyright © 2015, SO-Close-Vote-Reviewers.
  *
@@ -48,7 +48,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override void RunAction(Message incommingChatMessage, Room chatRoom, InstallationSettings roomSettings)
         {
-            chatRoom.PostMessageOrThrow("http://i.stack.imgur.com/0qaHz.gif");
+            chatRoom.PostReplyOrThrow(incommingChatMessage, "http://i.stack.imgur.com/0qaHz.gif");
         }
 
         protected override string GetRegexMatchingPattern()
