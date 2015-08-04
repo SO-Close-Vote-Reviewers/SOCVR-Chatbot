@@ -97,6 +97,7 @@ namespace CVChatbot.Bot
             cvChatRoom.StripMention = false;
 
             cvChatRoom.EventManager.ConnectListener(EventType.MessagePosted, new Action<Message>(cvChatRoom_NewMessage));
+            cvChatRoom.EventManager.ConnectListener(EventType.MessageEdited, new Action<Message>(cvChatRoom_NewMessage));
             return cvChatRoom;
         }
 
@@ -112,9 +113,6 @@ namespace CVChatbot.Bot
                     throw new InvalidOperationException("Unable to post start up message to room.");
                 }
             }
-
-            cvChatRoom.EventManager.ConnectListener(EventType.MessagePosted, new Action<Message>(cvChatRoom_NewMessage));
-            cvChatRoom.EventManager.ConnectListener(EventType.MessageEdited, new Action<Message>(cvChatRoom_NewMessage));
         }
 
         public void LeaveRoom()

@@ -68,7 +68,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 "Blame X and Y!",
                 "*X secretly thinks it's Y*"
             };
-            var users = chatRoom.GetPingableUsers();
+            var users = chatRoom.GetCurrentUsers();
             var userX = users.PickRandom();
             var userY = users.PickRandom();
             while (userX == userY)
