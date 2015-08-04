@@ -37,6 +37,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
         {
             var message = "You don't need to post this message anymore! When you finish reviewing I should notice it and record the end of the record.";
             chatRoom.PostReplyOrThrow(userMessage, message);
+            
             return true;
         }
     }
