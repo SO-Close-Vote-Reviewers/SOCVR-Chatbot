@@ -72,7 +72,7 @@ namespace CVChatbot.Bot
             chatClient = new Client(settings.Email, settings.Password);
             cvChatRoom = chatClient.JoinRoom(settings.ChatRoomUrl);
             ChatBotStats.LoginDate = DateTime.Now;
-            cvChatRoom.StripMentionFromMessages = false;
+            cvChatRoom.StripMention = false;
 
             // Say the startup message?
             if (!settings.StartUpMessage.IsNullOrWhiteSpace())

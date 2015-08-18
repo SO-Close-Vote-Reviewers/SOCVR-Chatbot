@@ -124,8 +124,17 @@ namespace CVChatbot.Bot
             if (chatMessage.ParentID == -1)
                 return false;
 
-            var parentMessage = chatRoom.GetMessage(chatMessage.ParentID);
-            return parentMessage.Author.ID == chatRoom.Me.ID;
+            // Check if we're trying to fetch a deleted message.
+            try
+            {
+                var parentMessage = chatRoom.GetMessage(chatMessage.ParentID);
+                return parentMessage.Author.ID == chatRoom.Me.ID;
+            }
+            catch (Exception ex)
+            {
+                // We may want to log this somewhere...
+                return false;
+            }
         }
 
         /// <summary>
@@ -174,6 +183,7 @@ namespace CVChatbot.Bot
         {
             da.InsertUnrecognizedCommand(command);
         }
+
         /// <summary>
         /// Call this method if you get an error while running a ChatbotAction.
         /// This will attempt to send a message to chat about error in a standard format.
