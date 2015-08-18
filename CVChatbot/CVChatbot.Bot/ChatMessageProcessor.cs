@@ -130,9 +130,8 @@ namespace CVChatbot.Bot
                 var parentMessage = chatRoom.GetMessage(chatMessage.ParentID);
                 return parentMessage.Author.ID == chatRoom.Me.ID;
             }
-            catch (Exception ex)
+            catch (MessageNotFoundException)
             {
-                // We may want to log this somewhere...
                 return false;
             }
         }
