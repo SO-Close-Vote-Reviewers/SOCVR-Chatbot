@@ -61,6 +61,8 @@ namespace CVChatbot.Bot
             noRegex = new Regex(@"(?i)\bno*(pe|t)?\b", RegexOptions.Compiled | RegexOptions.CultureInvariant);
             Watchers = new List<UserWatcher>();
             dbAccessor = new DatabaseAccessor(settings.DatabaseConnectionString);
+            //TODO: You may want to set this.
+            // ReviewMonitorPool.RequestThroughput = ?
             var pingable = chatRoom.GetPingableUsers();
 
             foreach (var user in pingable)
