@@ -118,14 +118,7 @@ namespace CVChatbot.Bot
 
         private UserWatcher InitialiseWatcher(int userID)
         {
-            var watcher = new UserWatcher(userID)
-            {
-                // TODO: You may want to set these.
-                TagTrackingEnabled = true,
-                AuditFailureFactor = 3,
-                IdleFactor = 5,
-                PollInterval = TimeSpan.FromSeconds(15)
-            };
+            var watcher = new UserWatcher(userID);
 
             watcher.EventManager.ConnectListener(UserEventType.ReviewingStarted,
                 new Action(() => HandleReviewingStarted(watcher)));
