@@ -27,13 +27,14 @@ namespace CVChatbot.Bot
         /// Notice that this baby is AppDomain wide used as it is static.
         /// </summary>
         private readonly static CookieContainer cookies = new CookieContainer();
-       
-       // private readonly static DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(JobResult));
 
         private bool disposed;
+
+        // holds the login method for when we are logged out
+        Action login;
         # endregion
 
-
+        
 
         # region Constructor/destructor.
 
@@ -42,7 +43,9 @@ namespace CVChatbot.Bot
             ThrowWhen.IsNullOrEmpty(email, "email");
             ThrowWhen.IsNullOrEmpty(password, "password");
 
-            SEOpenIDLogin(email, password);
+            login = () => { SEOpenIDLogin(email, password); };
+
+            login.Invoke();
         }
 
         ~SedeClient()
@@ -108,17 +111,27 @@ namespace CVChatbot.Bot
         /// <returns>The tag's name and the count in a Dictionary.</returns>
         public Dictionary<string, int> GetTags(JobResult jobResult)
         {
+            var dict = new Dictionary<string, int>();
             if (jobResult == null)
             {
-                return new Dictionary<string, int> { { "No tags found", 42 } };
+                dict.Add("No tags found", 42);
             }
-
-            var dict = new Dictionary<string, int>();
-            foreach (var row in jobResult.ResultSets[0].Rows)
+            else
             {
-                int value;
-                Int32.TryParse(row.Values.First(), out value);
-                dict.Add(row.Keys.First(), value);
+                if (jobResult.ResultSets != null &&
+                    jobResult.ResultSets.Length > 0)
+                {
+                    foreach (var row in jobResult.ResultSets[0].Rows)
+                    {
+                        int value;
+                        Int32.TryParse(row.Values.First(), out value);
+                        dict.Add(row.Keys.First(), value);
+                    }
+                }
+                else
+                {
+                    dict.Add("No resultsets found", 42);
+                }
             }
 
             return dict;
@@ -159,32 +172,38 @@ namespace CVChatbot.Bot
         private JobResult GetQueryResult(string url)
         {
             JobResult jobResult = null;
-            using (var jobStream = PostStream(String.Format(baseUrlFormat, url), null))
+            for (int loginAttemtps = 0; loginAttemtps < 3; loginAttemtps++)
             {
-
-                jobResult = JsonSerializer.DeserializeFromStream<JobResult>(jobStream);
-                if (jobResult.Captcha)
+                using (var jobStream = PostStream(String.Format(baseUrlFormat, url), null))
                 {
-                    Console.WriteLine("captcha requested! not logged in?");
-                }
-                else
-                {
-                    // If a job is started on the server
-                    // we have to poll for the result.
-                    // This call might block while polling but 
-                    // if the result is already there we return immediately.
-                    jobResult = GetQueryResultByPolling(jobResult);
 
-                    if (jobResult.ResultSets != null
-                        && jobResult.ResultSets.Length > 0)
+                    jobResult = JsonSerializer.DeserializeFromStream<JobResult>(jobStream);
+                    if (jobResult.Captcha)
                     {
-                        Console.WriteLine(jobResult.ResultSets[0].Rows.Count);
+                        Console.WriteLine("captcha requested! not logged in? Attempt: {0}", loginAttemtps);
+                        login.Invoke();
                     }
                     else
                     {
-                        Console.WriteLine("Hmm, no result sets...");
-                        // Maybe an error.
-                        Console.WriteLine(jobResult.Error);
+                        // If a job is started on the server
+                        // we have to poll for the result.
+                        // This call might block while polling but 
+                        // if the result is already there we return immediately.
+                        jobResult = GetQueryResultByPolling(jobResult);
+
+                        if (jobResult.ResultSets != null
+                            && jobResult.ResultSets.Length > 0)
+                        {
+                            Console.WriteLine(jobResult.ResultSets[0].Rows.Count);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Hmm, no result sets...");
+                            // Maybe an error.
+                            Console.WriteLine(jobResult.Error);
+                        }
+                        // we don't need to do any next attempts, we have something
+                        break;
                     }
                 }
             }
@@ -325,7 +344,7 @@ namespace CVChatbot.Bot
         /// </summary>
         private void SEOpenIDLogin(string email, string password)
         {
-            // Do a Get to retrieve the cookies.
+            //post
             var start = Post("http://data.stackexchange.com/user/authenticate?returnurl=/", "openid=https%3A%2F%2Fopenid.stackexchange.com%2F");
 
             var html = CQ.Create(start);
