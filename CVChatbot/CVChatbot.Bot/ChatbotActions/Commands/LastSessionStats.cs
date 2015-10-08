@@ -94,7 +94,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         protected override string GetRegexMatchingPattern()
         {
-            return @"^last session stats$";
+            return @"\bstat.+\b.+\blast\b.+\bsession\b|\blast\b.+\bsession\b.+\bstat.+\b";
         }
 
         public override string GetActionName()
