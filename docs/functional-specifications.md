@@ -60,3 +60,13 @@ Here's how a chat member should expect to use the bot in v2:
 ## V2 Command List
 
 Command for this version will focus on stats. Some commands will stick around incase manual intervention is needed.
+
+### Everyone
+Command that everyone can use
+
+#### Alive
+
+### Registered Users
+
+#### Who
+(all toy commands should only be usable by registered users)
