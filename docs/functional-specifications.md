@@ -9,9 +9,27 @@ What were we doing (in the chatroom in general) beforehand? What was the purpose
 
 How were we keeping track of data?
 
+Grab a chair and sit down. Let me tell you a tale of how things used to be.
+
+Back when I (gunr2171) joined SOCVR, the main members were rene and TGMCians. That's just about it. Some people popped in from time to time, but for the most part the only people consistanly helping on the CV queue were those two. It took me some time to get used to the queue but once I was accimated I joined in.
+
+The best way we had to keep track of what we were working on was manually. We would need to ping each other (usualy rene) to say when were done with a tag, or other such status updates.
+
+Audits were a different story. We wrote "passed c# audit" not to keep track of it, but to just tell the other person that we were still here and doing our part. It was a "hey look, I'm still going strong."
+
+All of the commands in version 1 are formatted to the way manual messages were made. It's not the cleanest, but it works.
+
+
+
 ## What does this program plan to solve?
 
 Highlight the troubles that the old system had, and talk (in broad terms) of the way it will be fixed or improved.
+
+Instead of 3 regulars we've got about 10+, depending on the day. I developed the bot primarily as a way of keeping track of what our chat room has accomplished so we know what to work on next.
+
+So the question this bot is designed to solve is:
+
+> Me and the other chat members are in the CV queue right now, what should we be working on to maximize the number of review items that get completed?
 
 ## History of v1
 
