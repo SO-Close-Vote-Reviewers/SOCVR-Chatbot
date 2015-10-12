@@ -41,7 +41,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionUsage()
         {
-            return "when will ...";
+            return "when ...";
         }
 
         public override ActionPermissionLevel GetPermissionLevel()
@@ -60,7 +60,8 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 "Next year.",
                 "In 3... 2... 1...",
                 "Yes.",
-                "In 6 to 8 moons."
+                "In 6 to 8 moons.",
+                "Whenever Shog says so."
             };
             var r = new Random(DateTime.UtcNow.Millisecond);
             var message = "";

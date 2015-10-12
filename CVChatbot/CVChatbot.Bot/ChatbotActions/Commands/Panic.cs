@@ -21,11 +21,21 @@
 
 
 using ChatExchangeDotNet;
+using TCL.Extensions;
 
 namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class Panic : UserCommand
     {
+        private string[] gifs = new string[] 
+        {
+            "http://rack.0.mshcdn.com/media/ZgkyMDEzLzA2LzE4LzdjL0JlYWtlci4zOWJhOC5naWYKcAl0aHVtYgkxMjAweDk2MDA-/4a93e3c4/4a4/Beaker.gif",
+            "http://i1094.photobucket.com/albums/i442/PeetaEverdeen/OHSHITRUNAROUND.gif",
+            "http://rack.0.mshcdn.com/media/ZgkyMDEzLzA2LzE4L2I2L0pvaG5ueURlcHBwLmM1YjNkLmdpZgpwCXRodW1iCTEyMDB4OTYwMD4/70417de1/fe5/Johnny-Depp-panics.gif",
+            "http://tech.graze.com/content/images/2014/Apr/colbert-panic.gif",
+            "http://media.giphy.com/media/HZs7JJYJ6rdqo/giphy.gif"
+        };
+
         public override string GetActionDescription()
         {
             return "A \"toy command\" for posting an appropriate gif.";
@@ -48,12 +58,12 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override void RunAction(Message incommingChatMessage, Room chatRoom, InstallationSettings roomSettings)
         {
-            chatRoom.PostReplyOrThrow(incommingChatMessage, "http://rack.0.mshcdn.com/media/ZgkyMDEzLzA2LzE4LzdjL0JlYWtlci4zOWJhOC5naWYKcAl0aHVtYgkxMjAweDk2MDA-/4a93e3c4/4a4/Beaker.gif");
+            chatRoom.PostReplyOrThrow(incommingChatMessage, gifs.PickRandom());
         }
 
         protected override string GetRegexMatchingPattern()
         {
-            return @"\s?panic[!.]*$";
+            return @"\s?panic[!1.]*$";
         }
     }
 }

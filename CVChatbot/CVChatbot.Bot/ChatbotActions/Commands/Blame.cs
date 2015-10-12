@@ -39,7 +39,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionUsage()
         {
-            return "who will ...";
+            return "who ...";
         }
 
         public override ActionPermissionLevel GetPermissionLevel()
