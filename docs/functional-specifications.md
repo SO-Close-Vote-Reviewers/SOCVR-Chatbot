@@ -24,16 +24,39 @@ So the question this bot is designed to solve is:
 
 ## History of v1
 
-Talk about what v1 could do, and its short comings.
+Version 1 was a really good stab. It got everything we really needed to have the bot do. Of course, there are a lot of things we wish it _could_ do. Version 2 is mostly improvement to the current system.
+
+Areas of Version 1 that we have problems with:
+
+* You needed to type chat commands for anything to happen.
+* It only knew about thing you told it about.
 
 ## Goals for v2
 
 What are the primary goals for this version of the software? The bullet point items should be no more than (around) 5, very broad in scope (because they will be explained in detail later), and give a "big picture" for the direction of the software
 
-* Runs as a Linux service - running the bot from Jenkins is not what Jenkins is designed for, so the software will be built to run as a service. Jenkins will still be used for testing the software and deploying it to test/production environments.
+* Runs as a Linux Docker image - running the bot from Jenkins is not what Jenkins is designed for, so the software will be built to run as a service. Jenkins will still be used for testing the software and deploying it to test/production environments.
 
 * Minimum interactions needed from chat to operate - bot will work in the background to gather information, without needing it from chat.
 
 * Store review sessions by UTC day, not by individual sessions - in v1 a person can have multiple sessions per day, which doesn't make a lot of sense and can be confusing. In v2, the chatbot will just record all reviews done within a UTC day and do computations from there.
 
 > Consideration, have a command that prints out a link and date of all recorded reviews for the user in the same UTC day.
+
+## V2 Member Workflow
+
+Here's how a chat member should expect to use the bot in v2:
+
+1. a UTC day starts
+2. the user does a single review
+3. the bot pings the user to say "I see you have started reviewing. Good luck!"
+4. the user may stop and start (human phrasing) multiple times, the bot will not care. This includes taking a hour between reviews.
+5. if the user passes an audit it will be posted to the chat room.
+6. as soon as the user completes 40 review items in a single UTC day, the bot will ping the user saying
+  > You've completed 40 CV review items today, thanks! The time between your first and last review today was X minutes, averaging to a review every Y minutes.
+
+7. the user then waits for the next UTC day to start.
+
+## V2 Command List
+
+Command for this version will focus on stats. Some commands will stick around incase manual intervention is needed.
