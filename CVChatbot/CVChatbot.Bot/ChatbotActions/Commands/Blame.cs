@@ -82,7 +82,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         protected override string GetRegexMatchingPattern()
         {
-            return @"^(blame|(wh(o|ich (user|one (of us|here)))).*)$";
+            return @"^(blame\??|(wh(o|ich (user|(one )?(of us|here)))).*)$";
         }
     }
 }
