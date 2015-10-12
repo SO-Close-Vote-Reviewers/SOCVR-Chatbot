@@ -3,11 +3,6 @@
 This document describes the functionality of the chatbot that resides in the [SO Close Vote Reviewers chat room](http://chat.stackoverflow.com/rooms/41570/so-close-vote-reviewers).
 
 ## Background
-How did this all start?
-
-What were we doing (in the chatroom in general) beforehand? What was the purpose of the chatroom?
-
-How were we keeping track of data?
 
 Grab a chair and sit down. Let me tell you a tale of how things used to be.
 
@@ -19,11 +14,7 @@ Audits were a different story. We wrote "passed c# audit" not to keep track of i
 
 All of the commands in version 1 are formatted to the way manual messages were made. It's not the cleanest, but it works.
 
-
-
 ## What does this program plan to solve?
-
-Highlight the troubles that the old system had, and talk (in broad terms) of the way it will be fixed or improved.
 
 Instead of 3 regulars we've got about 10+, depending on the day. I developed the bot primarily as a way of keeping track of what our chat room has accomplished so we know what to work on next.
 
