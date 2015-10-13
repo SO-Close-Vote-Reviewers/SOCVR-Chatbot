@@ -61,6 +61,11 @@ Here's how a chat member should expect to use the bot in v2:
 
 Command for this version will focus on stats. Some commands will stick around incase manual intervention is needed.
 
+General rule for commands:
+* "Everyone" commands are primarily to test if the bot is running
+* Only registered users can run toy commands
+* Moderators have access to all commands
+
 ### Everyone
 Command that everyone can use
 
