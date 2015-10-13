@@ -91,6 +91,39 @@ The following is a summary table of all commands. Extended details are in the ne
 | Bot Owner        | Ping reviewers       | Sends a message which includes an @reply to all users in the reviewers group that have done reviews recently |
 | Bot Owner        | Stop bot             | The bot will leave the chat room and quit the running application.                                           |
 
+### Alive
+This is just a quick command to test if the program is operational. When activated, the bot will respond with one of the following lines:
+
+> I'm alive and kicking!  
+> Still here you guys!  
+> I'm not dead yet!  
+> I feel... happy!  
+> I feel fine.
+
+### Commands
+The bot will make two messages. The first will be a reply to the command.
+
+> Below is a list of commands for the SOCVR Chatbot:
+
+The second will be a multilined messages containing the list of commands in this format:
+
+<pre>
+[group name]
+    [command 1 usage] - [command 1 description]
+    [command 2 usage] - [command 2 description]
+    [command 3 usage] - [command 3 description]
+
+[group name]
+    [command 1 usage] - [command 1 description]
+    [command 2 usage] - [command 2 description]
+    [command 3 usage] - [command 3 description]
+</pre>
+
+### Help
+The bot will post a general message in the following format:
+
+> This is a chat bot for the SO Close Vote Reviewers chat room, developed by members of the SO Close Vote Reviewers chat room. For more information see the [github page](https://github.com/SO-Close-Vote-Reviewers/SOCVR-Chatbot), or reply with `commands` to learn what you can do.
+
 ### Reviews Today
 
 Format: `reviews today`
