@@ -142,25 +142,47 @@ A user has 2 methods to request permission to a group.
 1. Attempt to run a command they don't have access to, then respond "yes" to the prompt.
 2. Run the `request permission for <group name>` command.
 
+Exception: you _can not_ use the first method to request access to Bot Owner. These messages will be ignored by the bot.
+
 **First method**
 
 If a user does not have the correct permissions to run a command the bot will respond with
 
-> Sorry, you are not in the <name of group> permission group. Do you want to request access? (reply with "yes")
+> Sorry, you are not in the [name of group] permission group. Do you want to request access? (reply with "yes")
 
 A permission request will be inserted into the request queue if either
 * The user replies "yes" (or limited variations) to the bot's message
 * The user's first message proceeding the bot's message, posted less than 1 minute after the bot's message, is "yes" (or limited variations)
 
+The above is the standard reply, assuming there are no issues with the user creating a request. The following are alternate replies the bot can make depending on if the user can make a request.
+
 If the user tries to run a command where they do not have permission to do so, and they have an active request for that permission, the bot will respond with
 
-> Sorry, you are not in the <name of group> permission group. There is already a request to get you this permission, please be patent.
+> Sorry, you are not in the [name of group] permission group. There is already a request to get you this permission, please be patent.
 
-If the user tries to run a command where they do not have permission to do so, the latest request for that permission has been denied, and that denial was within the last 48 hours, then the bot will ignore the message. Once 48 hours has ellapsed, the bot will allow them to ask for permission again. Note that there should not be a need to increase the amount of time a reject will encure. There is a already a "kick" and "ban" system in chat which which room owners should use if it gets to this point.
+If the user tries to run a Reviewers command where they do not have permission to do so, and the user has less than 3000 reputation, the bot will respond with
+
+> Sorry, this command requires that you have 3000 reputation and are a part of the Reviewers permission group.
+
+If the user tries to run a command where they do not have permission to do so, the latest request for that permission has been denied, and that denial was within the last 48 hours, then the bot will ignore the message (they will need to run `request permission for` to be informed of this). Once 48 hours has ellapsed, the bot will allow them to ask for permission again. Note that there should not be a need to increase the amount of time a reject will encure. There is a already a "kick" and "ban" system in chat which which room owners should use if it gets to this point.
 
 **Second method**
 
+A user can run the `request permission for <group name>` command.
 
+* If the user is already in that group
+  > You are already in the [group name] group.
+
+* If the user's last request for this permission was denied and that denial was less than 48 hours ago
+  > Sorry, your latest request for this permission was denied. Please wait [time until user can request again] to request again.
+
+  Note that any member of the requested group may add the user to the group during this "cool down" time.
+
+* If there is already an active request for this permission group
+  > There is already a request to get you this permission, please be patent.
+
+* If none of the above are true, create the request in the system and reply
+  > I'm created a request (#[request number]) to get you in the [group name] group.
 
 #### Viewing Requests
 
@@ -172,13 +194,23 @@ Any user non-public user can run the `View requests` command to see the full lis
 | 2         | rene         | 23456   | Bot Owner  | 2015-01-01 00:00:00 UTC |
 | 3         | sam          | 34567   | Toy User   | 2015-01-01 00:00:00 UTC |
 
+The table will be ordered by "Requested at" ascending (oldest requests first).
+
+If there are no active requests the bot will reply
+
+> There are no users requesting access to a permission group.
+
+In this version, there will be no way to view requests that have already been handled (other than searching the transcript).
+
 Non-public non-bot-owners must run the command to see this request list. The bot will send a general message (not a reply to any user) if
  * A Bot Owner has posted 3 messages within 5 minutes
  * There is one or more request in the system
  * This message has not been displayed in the last 6 hours.
 
+#### Handling Requests
+
 A group member has 2 method to approve or reject a request.
-1. Run `approve request <#>` or `reject request <#>`.
+1. Run `approve request <#>` or `reject request <#>`. This can be found out by running `view requests` or
 2. The user manually adds the user to the group (this will approve the request at the same time).
 
 ## Docker
