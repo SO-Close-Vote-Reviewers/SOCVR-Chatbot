@@ -93,31 +93,30 @@ The following is a summary table of all commands. Extended details are in the ne
 
 <!-- use https://ozh.github.io/ascii-tables/ to create this -->
 
-| Permission Level              | Command                             | Description                                                            |
-|-------------------------------|-------------------------------------|------------------------------------------------------------------------|
-| Public                        | Alive                               | Tests if the bot is running and listening to chat                      |
-| Public                        | Commands                            | Shows the list of commands to control the bot                          |
-| Public                        | Help                                | Prints information about the bot                                       |
-| Public                        | Running Commands                    | Displays a list of commands that the bot is curren                     |
-| Public                        | Status                              | The bot will display how long it has been running                      |
-| Reviewer                      | Audit stats                         | Shows the user how many of each tag they have pass                     |
-| Reviewer                      | Current Tag                         | Get the tag that has the most amount of manageable                     |
-| Reviewer                      | Next [#] tags                       | Displays the first X tags from the SEDE query to f                     |
-| Reviewer                      | Refresh tags                        | Forces a refresh of the tags obtained from the SED                     |
-| Reviewer                      | Queue stats                         | Shows the stats at the top of the /review/close/st                     |
-| Reviewer                      | Current Review Count                | Shows the number of review items the bot thinks th                     |
-| Reviewer                      | Reviews today                       | Prints a table of the reviews items that user has done today           |
-| Toy User                      | Who                                 | A toy command for blaming a chat room user.                            |
-| Toy User                      | Fox                                 | A toy command for posting the meme fox gif                             |
-| Toy User                      | Panic                               | A toy command for posting a gif of something panic                     |
-| Toy User                      | When                                | A toy command for getting a random date                                |
-| Bot Owner                     | Start event                         |                                                                        |
-| Bot Owner                     | Ping reviewers                      | Sends a message which includes an @reply to all us                     |
-| Bot Owner                     | Stop bot                            | The bot will leave the chat room and quit the runn                     |
-| Bot Owner                     | Reboot bot                          | The bot will shut down then start back up                              |
-| Everyone                      | Request permission for [group name] | Submits a request for the user to be added to a given permission group |
-| Toy User, Reviewer, Bot Owner | [approve/reject] request [#]        | Approves or rejects a request for a user to join a permission group    |
-
+| Permission Level              | Command                            | Description                                                                                                  |
+|-------------------------------|------------------------------------|--------------------------------------------------------------------------------------------------------------|
+| Public                        | Alive                              | Tests if the bot is running and listening to chat                                                            |
+| Public                        | Commands                           | Shows the list of commands to control the bot                                                                |
+| Public                        | Help                               | Prints information about the bot                                                                             |
+| Public                        | Running Commands                   | Displays a list of commands that the bot is currently executing                                              |
+| Public                        | Status                             | The bot will display how long it has been running for and what version is running                            |
+| Public                        | Request permission to <group name> | Submits a request for the user to be added to a given permission group                                       |
+| Reviewer                      | Audit stats                        | Shows the user how many of each tag they have passed audits for                                              |
+| Reviewer                      | Current Tag                        | Get the tag that has the most amount of manageable close queue items from the SEDE query.                    |
+| Reviewer                      | Next [#] tags                      | Displays the first X tags from the SEDE query to focus on.                                                   |
+| Reviewer                      | Refresh tags                       | Forces a refresh of the tags obtained from the SEDE query.                                                   |
+| Reviewer                      | Queue stats                        | Shows the stats at the top of the /review/close/stats page.                                                  |
+| Reviewer                      | Current Review Count               | Shows the number of review items the bot thinks the user has completed this day                              |
+| Reviewer                      | Reviews today                      | Prints a table of the reviews items that user has done today                                                 |
+| Toy User                      | Who                                | A toy command for blaming a chat room user.                                                                  |
+| Toy User                      | Fox                                | A toy command for posting the meme fox gif                                                                   |
+| Toy User                      | Panic                              | A toy command for posting a gif of something panicing                                                        |
+| Toy User                      | When                               | A toy command for getting a random date                                                                      |
+| Bot Owner                     | Start event                        | (description coming soon)                                                                                    |
+| Bot Owner                     | Ping reviewers                     | Sends a message which includes an @reply to all users in the reviewers group that have done reviews recently |
+| Bot Owner                     | Stop bot                           | The bot will leave the chat room and quit the running application.                                           |
+| Bot Owner                     | Reboot bot                         | The bot will shut down then start back up                                                                    |
+| Toy User, Reviewer, Bot Owner | <approve|reject> request <#>       | Approves or rejects a request for a user to join a permission group                                          |
 
 ### Alive
 This is just a quick command to test if the program is operational. When activated, the bot will respond with one of the following lines:
