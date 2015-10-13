@@ -92,8 +92,8 @@ The following is a summary table of all commands. Extended details are in the ne
 | Bot Owner                     | Ping reviewers                      | Sends a message which includes an @reply to all us                     |
 | Bot Owner                     | Stop bot                            | The bot will leave the chat room and quit the runn                     |
 | Bot Owner                     | Reboot bot                          | The bot will shut down then start back up                              |
-| Everyone                      | Request permission for <group name> | Submits a request for the user to be added to a given permission group |
-| Toy User, Reviewer, Bot Owner | <approve|reject> request <#>        | Approves or rejects a request for a user to join a permission group    |
+| Everyone                      | Request permission for [group name] | Submits a request for the user to be added to a given permission group |
+| Toy User, Reviewer, Bot Owner | [approve/reject] request [#]        | Approves or rejects a request for a user to join a permission group    |
 
 
 ### Alive
@@ -196,7 +196,7 @@ Note: a user may only have one request per permission group active at a time (ac
 
 A user has 2 methods to request permission to a group.
 1. Attempt to run a command they don't have access to, then respond "yes" to the prompt.
-2. Run the `request permission for <group name>` command.
+2. Run the `request permission for [group name]` command.
 
 Exception: you _can not_ use the first method to request access to Bot Owner. These messages will be ignored by the bot.
 
@@ -214,7 +214,7 @@ The above is the standard reply, assuming there are no issues with the user crea
 
 If the user tries to run a command where they do not have permission to do so, and they have an active request for that permission, the bot will respond with
 
-> Sorry, you are not in the <name of group> permission group. There is already a request to get you this permission, please be patient.
+> Sorry, you are not in the [group name] permission group. There is already a request to get you this permission, please be patient.
 
 If the user tries to run a command where they do not have permission to do so, the latest request for that permission has been denied, and that denial was within the last 48 hours, then the bot will ignore the message. Once 48 hours has ellapsed, the bot will allow them to ask for permission again. Note that there should not be a need to increase the amount of time a reject will encure. There is a already a "kick" and "ban" system in chat which which room owners should use if it gets to this point.
 If the user tries to run a Reviewers command where they do not have permission to do so, and the user has less than 3000 reputation, the bot will respond with
@@ -225,7 +225,7 @@ If the user tries to run a command where they do not have permission to do so, t
 
 **Second method**
 
-A user can run the `request permission for <group name>` command.
+A user can run the `request permission for [group name]` command.
 
 * If the user is already in that group
   > You are already in the [group name] group.
