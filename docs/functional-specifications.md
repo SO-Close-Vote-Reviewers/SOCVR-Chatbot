@@ -66,12 +66,65 @@ General rule for commands:
 * Only registered users can run toy commands
 * Moderators have access to all commands
 
-### Everyone
-Command that everyone can use
+<!-- use https://ozh.github.io/ascii-tables/ to create this -->
 
-#### Alive
+| Permission Level | Command              | Description                                                                                                  |
+|------------------|----------------------|---------------------------------------------------|
+| Everyone         | Alive                | Tests if the bot is running and listening to chat                                                            |
+| Everyone         | Commands             | Shows the list of commands to control the bot                                                                |
+| Everyone         | Help                 | Prints information about the bot                                                                             |
+| Everyone         | Running Commands     | Displays a list of commands that the bot is currently executing                                              |
+| Everyone         | Status               | The bot will display how long it has been running for and what version is running                            |
+| Toy              | Who                  | A toy command for blaming a chat room user.                                                                  |
+| Toy              | Fox                  | A toy command for posting the meme fox gif                                                                   |
+| Toy              | Panic                | A toy command for posting a gif of something panicing                                                        |
+| Toy              | When                 | A toy command for getting a random date                                                                      |
+| Reviewer         | Audit stats          | Shows the user how many of each tag they have passed audits for                                              |
+| Reviewer         | Current Tag          | Get the tag that has the most amount of manageable close queue items from the SEDE query.                    |
+| Reviewer         | Next [#] tags        | Displays the first X tags from the SEDE query to focus on.                                                   |
+| Reviewer         | Refresh tags         | Forces a refresh of the tags obtained from the SEDE query.                                                   |
+| Reviewer         | Queue stats          | Shows the stats at the top of the /review/close/stats page.                                                  |
+| Reviewer         | Current Review Count | Shows the number of review items the bot thinks the user has completed this day                              |
+| Bot Owner        | Start event          |                                                                                                              |
+| Bot Owner        | Ping reviewers       | Sends a message which includes an @reply to all users in the reviewers group that have done reviews recently |
+| Bot Owner        | Stop bot             | The bot will leave the chat room and quit the running application.                                           |
 
-### Registered Users
+## Permission system
 
-#### Who
-(all toy commands should only be usable by registered users)
+The new permission system will 4 groups:
+
+* Public
+* Reviewers
+* Toy Users
+* Bot Owners
+
+These groups are independent of each other. A person can be in multiple groups at once. Members of each group (besides Public) can add users to that group.
+
+Restrictions on joining a group:
+* In order to join the Reviewers group you must have 3000 reputation.
+* In order to join the Bot Owners group you must be in the Reviewers and the Toy Users group
+
+### Permission Request
+
+If a user does not have the correct permissions to run a command the bot will respond with
+
+> Sorry, you don't have enough permissions to run that command. Do you want to request access? (reply with "yes")
+
+If the user replied with "yes" in the message their request will go into a request queue.
+
+Any user non-public user can run the `View requests` command to see the full list. This is an example output:
+
+| Request # | Display Name | User Id | Requesting | Requested at            |
+|-----------|--------------|---------|------------|-------------------------|
+| 1         | gunr2171     | 12345   | Reviewer   | 2015-01-01 00:00:00 UTC |
+| 2         | rene         | 23456   | Bot Owner  | 2015-01-01 00:00:00 UTC |
+| 3         | sam          | 34567   | Toy User   | 2015-01-01 00:00:00 UTC |
+
+Non-public non-bot-owners must run the command to see this request list. The bot will send a general message (not a reply to any user) if
+ * A Bot Owner has posted 3 messages within 5 minutes
+ * There is one or more request in the system
+ * This message has not been displayed in the last 6 hours.
+
+A group member has 2 method to approve or reject a request.
+1. Run `approve request <#>` or `reject request <#>`.
+2. The user manually adds the user to the group (this will approve the request at the same time).
