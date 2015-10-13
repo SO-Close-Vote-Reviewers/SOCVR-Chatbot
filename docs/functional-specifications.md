@@ -2,6 +2,29 @@
 
 This document describes the functionality of the chatbot that resides in the [SO Close Vote Reviewers chat room](http://chat.stackoverflow.com/rooms/41570/so-close-vote-reviewers).
 
+<!-- TOC depth:6 withLinks:1 updateOnSave:1 orderedList:1 -->
+
+1. [Chatbot for the SO Close Vote Reviews Chat Room Functional Specifications](#chatbot-for-the-so-close-vote-reviews-chat-room-functional-specifications)
+	1. [Background](#background)
+	2. [What does this program plan to solve?](#what-does-this-program-plan-to-solve)
+	3. [History of v1](#history-of-v1)
+	4. [Goals for v2](#goals-for-v2)
+	5. [V2 Member Workflow](#v2-member-workflow)
+	6. [V2 Command List](#v2-command-list)
+		1. [Alive](#alive)
+		2. [Commands](#commands)
+		3. [Help](#help)
+		4. [Running Commands](#running-commands)
+		5. [Status](#status)
+		6. [Reviews Today](#reviews-today)
+	7. [Permission system](#permission-system)
+		1. [Permission Request](#permission-request)
+			1. [Asking for permission](#asking-for-permission)
+			2. [Viewing Requests](#viewing-requests)
+			3. [Handling Requests](#handling-requests)
+	8. [Docker](#docker)
+<!-- /TOC -->
+
 ## Background
 
 Grab a chair and sit down. Let me tell you a tale of how things used to be.
