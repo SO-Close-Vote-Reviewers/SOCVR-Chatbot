@@ -29,7 +29,7 @@ Version 1 was a really good stab. It got everything we really needed to have the
 Areas of Version 1 that we have problems with:
 
 * You needed to type chat commands for anything to happen.
-* It only knew about thing you told it about.
+* It only knew about things you told it about.
 
 ## Goals for v2
 
@@ -59,7 +59,7 @@ Here's how a chat member should expect to use the bot in v2:
 
 ## V2 Command List
 
-Command for this version will focus on stats. Some commands will stick around incase manual intervention is needed.
+Commands for this version will focus on stats. Some commands will stick around incase manual intervention is needed.
 
 General rule for commands:
 * "Everyone" commands are primarily to test if the bot is running
@@ -72,16 +72,16 @@ The following is a summary table of all commands. Extended details are in the ne
 
 | Permission Level | Command              | Description                                                                                                  |
 |------------------|----------------------|---------------------------------------------------|
-| Everyone         | Alive                | Tests if the bot is running and listening to chat                                                            |
-| Everyone         | Commands             | Shows the list of commands to control the bot                                                                |
-| Everyone         | Help                 | Prints information about the bot                                                                             |
-| Everyone         | Running Commands     | Displays a list of commands that the bot is currently executing                                              |
-| Everyone         | Status               | The bot will display how long it has been running for and what version is running                            |
+| Everyone         | Alive                | Tests if the bot is running and listening to chat.                                                            |
+| Everyone         | Commands             | Shows the list of commands to control the bot.                                                                |
+| Everyone         | Help                 | Prints information about the bot.                                                                             |
+| Everyone         | Running Commands     | Displays a list of commands that the bot is currently executing.                                              |
+| Everyone         | Status               | The bot will display how long it has been running for and what version is running.                            |
 | Toy              | Who                  | A toy command for blaming a chat room user.                                                                  |
-| Toy              | Fox                  | A toy command for posting the meme fox gif                                                                   |
-| Toy              | Panic                | A toy command for posting a gif of something panicing                                                        |
-| Toy              | When                 | A toy command for getting a random date                                                                      |
-| Reviewer         | Audit stats          | Shows the user how many of each tag they have passed audits for                                              |
+| Toy              | Fox                  | A toy command for posting the meme fox gif.                                                                   |
+| Toy              | Panic                | A toy command for posting a gif of something panicing.                                                        |
+| Toy              | When                 | A toy command for getting a random date.                                                                      |
+| Reviewer         | Audit stats          | Shows the user how many of each tag they have passed audits for.                                              |
 | Reviewer         | Current Tag          | Get the tag that has the most amount of manageable close queue items from the SEDE query.                    |
 | Reviewer         | Next [#] tags        | Displays the first X tags from the SEDE query to focus on.                                                   |
 | Reviewer         | Refresh tags         | Forces a refresh of the tags obtained from the SEDE query.                                                   |
@@ -130,6 +130,7 @@ Format: `reviews today`
 
 This command is used for showing what the bot knows of the user's completed review items. Here is an example table:
 
+<pre>
 +---------+------------+--------+-------------------------+
 | Item Id | Action     | Audit  | Completed At            |
 +---------+------------+--------+-------------------------+
@@ -137,6 +138,7 @@ This command is used for showing what the bot knows of the user's completed revi
 | 23456   | Edit       | Passed | 2015-01-02 03:23:11 UTC |
 | 34567   | Leave Open | Failed | 2015-01-02 03:23:11 UTC |
 +---------+------------+--------+-------------------------+
+</pre>
 
 The `Item Id` is the number in the URL for that review item. If the review item is not an audit then the Audit cell will be blank. Order this table by `Completed At` ascending.
 
@@ -191,8 +193,9 @@ The above is the standard reply, assuming there are no issues with the user crea
 
 If the user tries to run a command where they do not have permission to do so, and they have an active request for that permission, the bot will respond with
 
-> Sorry, you are not in the [name of group] permission group. There is already a request to get you this permission, please be patent.
+> Sorry, you are not in the <name of group> permission group. There is already a request to get you this permission, please be patient.
 
+If the user tries to run a command where they do not have permission to do so, the latest request for that permission has been denied, and that denial was within the last 48 hours, then the bot will ignore the message. Once 48 hours has ellapsed, the bot will allow them to ask for permission again. Note that there should not be a need to increase the amount of time a reject will encure. There is a already a "kick" and "ban" system in chat which which room owners should use if it gets to this point.
 If the user tries to run a Reviewers command where they do not have permission to do so, and the user has less than 3000 reputation, the bot will respond with
 
 > Sorry, this command requires that you have 3000 reputation and are a part of the Reviewers permission group.
