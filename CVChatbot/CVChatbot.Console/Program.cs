@@ -69,8 +69,8 @@ namespace CVChatbot.Console
 
                 // This could take a few mins, probably best to let
                 // the user know we're actually doing something.
-                WriteToConsole("Initialising UserWatcherManager");
-                using (var watcherManager = new UserWatcherManager(ref room, settings))
+                WriteToConsole("Initialising UserWatchersManager");
+                using (var watcherManager = new UserWatchersManager(ref room, settings))
                 {
                     // Now that we're all set up, post the start up message.
                     mng.PostStartUpMessage(settings);

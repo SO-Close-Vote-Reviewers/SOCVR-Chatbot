@@ -35,44 +35,35 @@ using User = ChatExchangeDotNet.User;
 
 namespace CVChatbot.Bot
 {
-    public class UserWatcherManager : IDisposable
+    public class UserWatchersManager : IDisposable
     {
+        private readonly ConcurrentDictionary<User, List<string>> tagReviewedConfirmationQueue;
+        private readonly ConcurrentDictionary<int, DateTime> latestReviews;
         private readonly DatabaseAccessor dbAccessor;
         private readonly InstallationSettings initSettings;
         private readonly Room room;
-        private readonly ConcurrentDictionary<User, List<string>> tagReviewedConfirmationQueue;
         private readonly Regex yesRegex;
         private readonly Regex noRegex;
         private bool dispose;
 
-        public List<UserWatcher> Watchers { get; private set; }
+        public UsersWatcher Watcher { get; private set; }
 
 
 
-        public UserWatcherManager(ref Room chatRoom, InstallationSettings settings)
+        public UserWatchersManager(ref Room chatRoom, InstallationSettings settings)
         {
             if (chatRoom == null) { throw new ArgumentNullException("chatRoom"); }
             if (settings == null) { throw new ArgumentNullException("settings"); }
 
             room = chatRoom;
             initSettings = settings;
+            latestReviews = new ConcurrentDictionary<int, DateTime>();
             tagReviewedConfirmationQueue = new ConcurrentDictionary<User, List<string>>();
             yesRegex = new Regex(@"(?i)\by[ue][aps]h?\b", RegexOptions.Compiled | RegexOptions.CultureInvariant);
             noRegex = new Regex(@"(?i)\bno*(pe|t)?\b", RegexOptions.Compiled | RegexOptions.CultureInvariant);
-            Watchers = new List<UserWatcher>();
             dbAccessor = new DatabaseAccessor(settings.DatabaseConnectionString);
-            //TODO: You may want to set this.
-            // ReviewMonitorPool.RequestThroughput = ?
-            var pingable = chatRoom.GetPingableUsers();
 
-            foreach (var user in pingable)
-            {
-                if (dbAccessor.GetRegisteredUserByChatProfileId(user.ID) == null ||
-                    user.Reputation < 3000) { continue; }
-
-                var watcher = InitialiseWatcher(user.ID);
-                Watchers.Add(watcher);
-            }
+            InitialiseWatcher();
 
             // Look out for registered members that haven't joined in a while.
             chatRoom.EventManager.ConnectListener(EventType.UserEntered, new Action<User>(u => AddNewUser(u.ID)));
@@ -84,7 +75,7 @@ namespace CVChatbot.Bot
             chatRoom.EventManager.ConnectListener(EventType.MessageReply, new Action<Message, Message>((parent, reply) => HandleCurrentTagsChangedConfirmation(reply)));
         }
 
-        ~UserWatcherManager()
+        ~UserWatchersManager()
         {
             Dispose();
         }
@@ -96,10 +87,7 @@ namespace CVChatbot.Bot
             if (dispose) { return; }
             dispose = true;
 
-            foreach (var watcher in Watchers)
-            {
-                watcher.Dispose();
-            }
+            Watcher.Dispose();
 
             GC.SuppressFinalize(this);
         }
@@ -118,30 +106,45 @@ namespace CVChatbot.Bot
 
 
 
-        private UserWatcher InitialiseWatcher(int userID)
+        private void InitialiseWatcher()
         {
-            var watcher = new UserWatcher(userID);
+            var pingable = room.GetPingableUsers();
+            var users = new HashSet<int>();
 
-            watcher.EventManager.ConnectListener(UserEventType.ReviewingStarted,
-                new Action(() => HandleReviewingStarted(watcher)));
+            foreach (var user in pingable)
+            {
+                if (dbAccessor.GetRegisteredUserByChatProfileId(user.ID) == null ||
+                    user.Reputation < 3000)
+                { continue; }
 
-            watcher.EventManager.ConnectListener(UserEventType.ReviewingFinished,
-                new Action<DateTime, DateTime, List<ReviewItem>>((start, end, rs) =>
-                HandleReviewingFinished(watcher, start, end, rs)));
+                users.Add(user.ID);
+            }
 
-            watcher.EventManager.ConnectListener(UserEventType.AuditFailed,
-                new Action<ReviewItem>(r => HandleAuditFailed(watcher, r)));
+            Watcher = new UsersWatcher(users);
 
-            watcher.EventManager.ConnectListener(UserEventType.AuditPassed,
-                new Action<ReviewItem>(r => HandleAuditPassed(watcher, r)));
+            //TODO: You may want to change this.
+            //Watcher.ReviewThroughput = ?
 
-            watcher.EventManager.ConnectListener(UserEventType.CurrentTagsChanged,
-                new Action<List<string>>((oldTags) => HandleCurrentTagsChanged(watcher, oldTags)));
+            foreach (var id in users)
+            {
+                Watcher.Users[id].EventManager.ConnectListener(UserEventType.ItemReviewed,
+                    new Action<ReviewItem>(r => HandleItemReviewed(Watcher.Users[id], r)));
 
-            watcher.EventManager.ConnectListener(UserEventType.InternalException,
-                new Action<Exception>(ex => HandleException(watcher, ex)));
+                Watcher.Users[id].EventManager.ConnectListener(UserEventType.ReviewLimitReached,
+                    new Action<ReviewItem>(r => HandleReviewLimitReached(Watcher.Users[id])));
 
-            return watcher;
+                Watcher.Users[id].EventManager.ConnectListener(UserEventType.AuditPassed,
+                    new Action<ReviewItem>(r => HandleAuditPassed(Watcher.Users[id], r)));
+
+                Watcher.Users[id].EventManager.ConnectListener(UserEventType.AuditFailed,
+                    new Action<ReviewItem>(r => HandleAuditFailed(Watcher.Users[id], r)));
+
+                Watcher.Users[id].EventManager.ConnectListener(UserEventType.CurrentTagsChanged,
+                    new Action<List<string>>((oldTags) => HandleCurrentTagsChanged(Watcher.Users[id], oldTags)));
+
+                Watcher.Users[id].EventManager.ConnectListener(UserEventType.InternalException,
+                    new Action<Exception>(ex => HandleException(ex)));
+            }
         }
 
         private void HandleTrackUserCommand(Message m)
@@ -162,99 +165,73 @@ namespace CVChatbot.Bot
         private void AddNewUser(int userID, bool checkDb = true)
         {
             if ((dbAccessor.GetRegisteredUserByChatProfileId(userID) == null && checkDb) ||
-                Watchers.Any(w => w.UserID == userID))
+                Watcher.Users.ContainsKey(userID))
             {
                 return;
             }
 
-            var watcher = InitialiseWatcher(userID);
-            Watchers.Add(watcher);
+            Watcher.AddUser(userID);
         }
 
-        private void HandleReviewingStarted(UserWatcher watcher)
+        private void HandleItemReviewed(SOCVRDotNet.User user, ReviewItem review)
         {
-            var chatUser = room.GetUser(watcher.UserID);
-            var numberOfClosedSessions = dbAccessor.EndAnyOpenSessions(watcher.UserID);
+            var reviewTime = review.Results.First(rr => rr.UserID == user.ID).Timestamp;
 
-           // Now record the new session.
-           dbAccessor.StartReviewSession(watcher.UserID);
-
-            var message = new MessageBuilder();
-
-            message.AppendPing(chatUser);
-            message.AppendText("I've noticed you've started reviewing. I'll make a new session for you. Good luck! ");
-
-            // If there was a closed session.
-            if (numberOfClosedSessions > 0)
+            if (!latestReviews.ContainsKey(user.ID) ||
+                (reviewTime - latestReviews[user.ID]).TotalHours > 1)
             {
-                // Append a message saying how many there were.
-                message.AppendText("Note:", TextFormattingOptions.Bold);
-                message.AppendText(" You had {0} open {1}. I have closed {2}.".FormatInline(
-                    numberOfClosedSessions,
-                    numberOfClosedSessions > 1
-                        ? "sessions"
-                        : "session",
-                    numberOfClosedSessions > 1
-                        ? "them"
-                        : "it"));
+                var msg = new MessageBuilder();
+                msg.AppendPing(room.GetUser(user.ID));
+                msg.AppendText("I've noticed you've started reviewing! I'll update your session record.");
+                room.PostMessageFast(msg);
+                latestReviews[user.ID] = reviewTime;
             }
 
-            room.PostMessageOrThrow(message.Message);
+
+
+            //TODO: I have no idea what we're doing with the below (old code).
+            //var chatUser = room.GetUser(user.ID);
+            //var numberOfClosedSessions = dbAccessor.EndAnyOpenSessions(user.ID);
+
+            //dbAccessor.StartReviewSession(user.ID);
+
+            //var message = new MessageBuilder();
+
+            //message.AppendPing(chatUser);
+            //message.AppendText("I've noticed you've started reviewing. I'll make a new session for you. Good luck! ");
+
+            //if (numberOfClosedSessions > 0)
+            //{
+            //    // Append a message saying how many there were.
+            //    message.AppendText("Note:", TextFormattingOptions.Bold);
+            //    message.AppendText(" You had {0} open {1}. I have closed {2}.".FormatInline(
+            //        numberOfClosedSessions,
+            //        numberOfClosedSessions > 1
+            //            ? "sessions"
+            //            : "session",
+            //        numberOfClosedSessions > 1
+            //            ? "them"
+            //            : "it"));
+            //}
+
+            //room.PostMessageOrThrow(message.Message);
         }
 
-        private void HandleReviewingFinished(UserWatcher watcher, DateTime startTime, DateTime endTime, List<ReviewItem> reviews)
+        private void HandleReviewLimitReached(SOCVRDotNet.User user)
         {
-            // Find the latest session by that user.
-            var latestSession = dbAccessor.GetLatestOpenSessionForUser(watcher.UserID);
-            var message = new MessageBuilder();
-
-            message.AppendPing(room.GetUser(watcher.UserID));
-
-            // First, check if there is a session.
-            if (latestSession == null)
-            {
-                message.AppendText("I don't seem to have the start of your review session on record. ");
-                message.AppendText("I might have not been running when you started, or some error happened.");
-                room.PostMessageOrThrow(message.Message);
-                return;
-            }
-
-            // Check if session is greater than [MAX_REVIEW_TIME].
-            var maxReviewTimeHours = initSettings.MaxReviewLengthHours;
-
-            var timeThreshold = DateTimeOffset.Now.AddHours(-maxReviewTimeHours);
-
-            if (latestSession.SessionStart < timeThreshold)
-            {
-                var timeDelta = DateTimeOffset.Now - latestSession.SessionStart;
-
-                message.AppendText("Your last uncompleted review session was {0} ago. " +
-                      "Because it has exceeded my threshold ({1} hours), " +
-                      "I can't mark that session with this information. "
-                      .FormatInline(timeDelta.ToUserFriendlyString(), maxReviewTimeHours) +
-                      "Use the command '{0}' to forcefully end that session."
-                      .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<EndSession>()));
-
-                room.PostMessageOrThrow(message.Message);
-                return;
-            }
-
-            // It's all good, mark the info as done.
-            dbAccessor.EndReviewSession(latestSession.Id, reviews.Count, endTime);
-
-            message.AppendText("Thanks for reviewing! To see more information use the command ");
-            message.AppendText(ChatbotActionRegister.GetChatBotActionUsage<LastSessionStats>(), TextFormattingOptions.InLineCode);
-            message.AppendText(".");
-            room.PostMessageOrThrow(message.Message);
+            var msg = new MessageBuilder();
+            msg.AppendPing(room.GetUser(user.ID));
+            msg.AppendText("Thanks for reviewing!"); //TODO: Add more details.
+            room.PostMessageFast(msg);
         }
 
-        private void HandleAuditPassed(UserWatcher watcher, ReviewItem audit)
+        private void HandleAuditPassed(SOCVRDotNet.User user, ReviewItem audit)
         {
             var message = new MessageBuilder();
             var tag = audit.Tags[0];
-            dbAccessor.InsertCompletedAuditEntry(watcher.UserID, tag);
+            dbAccessor.InsertCompletedAuditEntry(user.ID, tag);
 
-            message.AppendText(room.GetUser(watcher.UserID).Name);
+            message.AppendText(room.GetUser(user.ID).Name);
             message.AppendText(" passed a");
             // Basic grammar correction. Not foolproof, but it'll do.
             message.AppendText("aeiou".Contains(char.ToLowerInvariant(tag[0])) ? "n " : " ");
@@ -264,15 +241,15 @@ namespace CVChatbot.Bot
             room.PostMessageOrThrow(message.Message);
         }
 
-        private void HandleAuditFailed(UserWatcher watcher, ReviewItem audit)
+        private void HandleAuditFailed(SOCVRDotNet.User user, ReviewItem audit)
         {
             // Do something...
         }
 
-        private void HandleCurrentTagsChanged(UserWatcher watcher, List<string> oldTags)
+        private void HandleCurrentTagsChanged(SOCVRDotNet.User user, List<string> oldTags)
         {
             var message = new MessageBuilder();
-            var chatUser = room.GetUser(watcher.UserID);
+            var chatUser = room.GetUser(user.ID);
 
             message.AppendPing(chatUser);
             message.AppendText("It looks like you've finished reviewing ");
@@ -334,7 +311,7 @@ namespace CVChatbot.Bot
             tagReviewedConfirmationQueue.TryRemove(tagConfirmationKv.Key, out temp);
         }
 
-        private void HandleException(UserWatcher watcher, Exception ex)
+        private void HandleException(Exception ex)
         {
             var headerLine = "An error happened in User Watcher Manager";
             var errorMessage = "    " + ex.FullErrorMessage(Environment.NewLine + "    ");
