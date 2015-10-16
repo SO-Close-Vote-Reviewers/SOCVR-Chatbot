@@ -39,6 +39,7 @@ namespace CVChatbot.Bot
     {
         private readonly ConcurrentDictionary<User, List<string>> tagReviewedConfirmationQueue;
         private readonly ConcurrentDictionary<int, DateTime> latestReviews;
+        private readonly ConcurrentDictionary<int, DateTime> firstReviews;
         private readonly DatabaseAccessor dbAccessor;
         private readonly InstallationSettings initSettings;
         private readonly Room room;
@@ -57,6 +58,7 @@ namespace CVChatbot.Bot
 
             room = chatRoom;
             initSettings = settings;
+            firstReviews = new ConcurrentDictionary<int, DateTime>();
             latestReviews = new ConcurrentDictionary<int, DateTime>();
             tagReviewedConfirmationQueue = new ConcurrentDictionary<User, List<string>>();
             yesRegex = new Regex(@"(?i)\by[ue][aps]h?\b", RegexOptions.Compiled | RegexOptions.CultureInvariant);
@@ -187,6 +189,11 @@ namespace CVChatbot.Bot
                 latestReviews[user.ID] = reviewTime;
             }
 
+            if (!firstReviews.ContainsKey(user.ID) || firstReviews[user.ID].Day != DateTime.UtcNow.Day)
+            {
+                firstReviews[user.ID] = reviewTime;
+            }
+
 
 
             //TODO: I have no idea what we're doing with the below (old code).
@@ -219,9 +226,21 @@ namespace CVChatbot.Bot
 
         private void HandleReviewLimitReached(SOCVRDotNet.User user)
         {
+            var msgText = "You've completed {0} CV review items today, thanks! " + 
+                           "The time between your first and last review today was {1} minutes, " + 
+                           "averaging to a review every {2} seconds.";
+
+            var revDur = latestReviews[user.ID] - firstReviews[user.ID];
+            var avg = revDur.TotalSeconds / user.ReviewStatus.ReviewsCompletedCount;
+
+            msgText = msgText.FormatInline(
+                user.ReviewStatus.ReviewsCompletedCount,
+                Math.Round(revDur.TotalMinutes),
+                Math.Round(avg));
+
             var msg = new MessageBuilder();
             msg.AppendPing(room.GetUser(user.ID));
-            msg.AppendText("Thanks for reviewing!"); //TODO: Add more details.
+            msg.AppendText(msgText);
             room.PostMessageFast(msg);
         }
 
@@ -294,12 +313,14 @@ namespace CVChatbot.Bot
                 {
                     dbAccessor.InsertNoItemsInFilterRecord(reply.Author.ID, tag);
                 }
-                var outMsg = "Ok, I've marked " + (tagConfirmationKv.Value.Count > 1 ? "them as completed tags." : "it as a completed tag.");
+                var outMsg = "Ok, I've marked " + (tagConfirmationKv.Value.Count > 1 ?
+                    "them as completed tags." :
+                    "it as a completed tag.");
                 room.PostReplyOrThrow(reply, outMsg);
             }
             else if (noRegex.IsMatch(reply.Content))
             {
-                var outMsg = "Ok. Well don't forget to let me know when you've completed " + (tagConfirmationKv.Value.Count > 1 ? "them!" : "it!");
+                var outMsg = "Sorry, my mistake.";
                 room.PostReplyOrThrow(reply, outMsg);
             }
             else

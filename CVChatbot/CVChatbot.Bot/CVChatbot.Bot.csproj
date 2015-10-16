@@ -73,8 +73,8 @@
       <HintPath>..\packages\ServiceStack.Text.4.0.40\lib\net40\ServiceStack.Text.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SOCVR.Net, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SOCVR.Net.2.0.0-beta\lib\SOCVR.Net.dll</HintPath>
+    <Reference Include="SOCVR.Net, Version=2.0.0.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SOCVR.Net.2.0.4-beta\lib\SOCVR.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
