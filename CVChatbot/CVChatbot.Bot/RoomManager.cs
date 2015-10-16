@@ -95,7 +95,6 @@ namespace CVChatbot.Bot
             cvChatRoom = chatClient.JoinRoom(settings.ChatRoomUrl);
             ChatBotStats.LoginDate = DateTime.Now;
             cvChatRoom.StripMention = false;
-
             cvChatRoom.EventManager.ConnectListener(EventType.MessagePosted, new Action<Message>(cvChatRoom_NewMessage));
             cvChatRoom.EventManager.ConnectListener(EventType.MessageEdited, new Action<Message>(cvChatRoom_NewMessage));
             return cvChatRoom;

@@ -46,7 +46,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
 
         protected override string GetRegexMatchingPattern()
         {
-            return @"^(?:> +)?you have no more close votes today; come back in (\d+) hours\.$";
+            return @"^(?:> +)?you have no more close votes today; come back in (\d+) hours\.?$";
         }
 
         public override string GetActionName()

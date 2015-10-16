@@ -89,8 +89,8 @@ namespace CVChatbot.Bot
             // You have a single item to run.
             var chatbotActionToRun = possibleChatbotActionsToRun.Single();
 
-            // Now, do you have permission to run it?
-            if (DoesUserHavePermissionToRunAction(chatbotActionToRun, incommingChatMessage.Author.ID))
+            // Now, do you have permission to run it? If you are a mod the answer is yes, else you need to check.
+            if (incommingChatMessage.Author.IsMod || DoesUserHavePermissionToRunAction(chatbotActionToRun, incommingChatMessage.Author.ID))
             {
                 // Have permission, run it.
                 RunChatbotAction(chatbotActionToRun, incommingChatMessage, chatRoom);
@@ -148,8 +148,16 @@ namespace CVChatbot.Bot
             if (chatMessage.ParentID == -1)
                 return false;
 
-            var parentMessage = chatRoom.GetMessage(chatMessage.ParentID);
-            return parentMessage.Author.ID == chatRoom.Me.ID;
+            // Check if we're trying to fetch a deleted message.
+            try
+            {
+                var parentMessage = chatRoom.GetMessage(chatMessage.ParentID);
+                return parentMessage.Author.ID == chatRoom.Me.ID;
+            }
+            catch (MessageNotFoundException)
+            {
+                return false;
+            }
         }
 
         /// <summary>
