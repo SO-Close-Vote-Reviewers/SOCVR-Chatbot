@@ -236,7 +236,7 @@ namespace CVChatbot.Bot
             msgText = msgText.FormatInline(
                 user.ReviewStatus.ReviewsCompletedCount,
                 Math.Round(revDur.TotalMinutes),
-                Math.Round(avg));
+                Math.Round(avg, 1));
 
             var msg = new MessageBuilder();
             msg.AppendPing(room.GetUser(user.ID));
