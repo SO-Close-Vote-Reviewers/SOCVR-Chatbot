@@ -171,7 +171,7 @@ namespace CVChatbot.Bot
             // Record as started.
             var id = RunningChatbotActionsManager.MarkChatbotActionAsStarted(
                 action.GetActionName(),
-                incommingChatMessage.Author.Name,
+                incommingChatMessage.Author.GetChatFriendlyUsername(),
                 incommingChatMessage.Author.ID);
 
             try

@@ -51,31 +51,31 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         {
             var phrases = new[]
             {
-                "*points finger at X*",
-                "*looks at X*",
-                "Blame X!",
-                "It's definitely X.",
-                "...X.",
-                "I'm guessing it's X.",
-                "Smells like X...",
-                "It's X!",
-                "Either X or Y...",
-                "X and Y both look suspicious...",
-                "It's X! Blame X! No, wait. It's Y!",
-                "X and Y.",
-                "Everyone in this room, except X.",
-                "Everyone in this room, except X and Y.",
-                "Blame X and Y!",
-                "*X secretly thinks it's Y*"
+                "*points finger at {0}*",
+                "*looks at {0}*",
+                "Blame {0}!",
+                "It's definitely {0}.",
+                "...{0}.",
+                "I'm guessing it's {0}.",
+                "Smells like {0}...",
+                "It's {0}!",
+                "Either {0} or {1}...",
+                "{0} and {1} both look suspicious...",
+                "It's {0}! Blame {0}! No, wait. It's {1}!",
+                "{0} and {1}.",
+                "Everyone in this room, except {0}.",
+                "Everyone in this room, except {0} and {1}.",
+                "Blame {0} and {1}!",
+                "*{0} secretly thinks it's {1}*"
             };
             var users = chatRoom.GetCurrentUsers();
-            var userX = users.PickRandom();
-            var userY = users.PickRandom();
+            var userX = users.PickRandom().GetChatFriendlyUsername();
+            var userY = users.PickRandom().GetChatFriendlyUsername();
             while (userX == userY)
             {
-                userY = users.PickRandom();
+                userY = users.PickRandom().GetChatFriendlyUsername();
             }
-            var message = phrases.PickRandom().Replace("X", userX.Name).Replace("Y", userY.Name);
+            var message = phrases.PickRandom().FormatInline(userX, userY);
 
             chatRoom.PostReplyOrThrow(incommingChatMessage, message);
         }

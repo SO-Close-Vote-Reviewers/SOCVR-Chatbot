@@ -133,7 +133,7 @@ namespace CVChatbot.Bot
                     new Action<ReviewItem>(r => HandleItemReviewed(Watcher.Users[id], r)));
 
                 Watcher.Users[id].EventManager.ConnectListener(UserEventType.ReviewLimitReached,
-                    new Action<ReviewItem>(r => HandleReviewLimitReached(Watcher.Users[id])));
+                    new Action(() => HandleReviewLimitReached(Watcher.Users[id])));
 
                 Watcher.Users[id].EventManager.ConnectListener(UserEventType.AuditPassed,
                     new Action<ReviewItem>(r => HandleAuditPassed(Watcher.Users[id], r)));
@@ -250,7 +250,7 @@ namespace CVChatbot.Bot
             var tag = audit.Tags[0];
             dbAccessor.InsertCompletedAuditEntry(user.ID, tag);
 
-            message.AppendText(room.GetUser(user.ID).Name);
+            message.AppendText(room.GetUser(user.ID).GetChatFriendlyUsername());
             message.AppendText(" passed a");
             // Basic grammar correction. Not foolproof, but it'll do.
             message.AppendText("aeiou".Contains(char.ToLowerInvariant(tag[0])) ? "n " : " ");

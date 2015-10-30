@@ -29,6 +29,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using TCL.Extensions;
+using System.Text.RegularExpressions;
 
 namespace CVChatbot.Bot
 {
@@ -203,6 +204,39 @@ namespace CVChatbot.Bot
         {
             return String.Format("{0:#,##0} {1}",
                 value, (value == 1) ? description : String.Format("{0}s", description));
+        }
+
+        public static string GetChatFriendlyUsername(this User user)
+        {
+            if (DateTime.UtcNow.Ticks % 10 == 0)
+            {
+                switch (user.ID)
+                {
+                    case 1043380:
+                    {
+                        return "My Dad";
+                    }
+                    case 578411:
+                    {
+                        return "My Mom";
+                    }
+                    case 2246344:
+                    {
+                        return "My Uncle";
+                    }
+                }
+            }
+
+            var ms = Regex.Matches(user.Name, @"\p{Lu}?\p{Ll}*");
+            var name = "";
+
+            foreach (Match m in ms)
+            {
+                if (name.Length > 3) { break; }
+                name += m.Value;
+            }
+
+            return name;
         }
 
         /// <summary>

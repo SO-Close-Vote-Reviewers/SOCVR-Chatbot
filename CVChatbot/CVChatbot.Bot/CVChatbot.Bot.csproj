@@ -111,6 +111,7 @@
     <Compile Include="ChatbotActions\Commands\CurrentTag.cs" />
     <Compile Include="ChatbotActions\Commands\CurrentSession.cs" />
     <Compile Include="ChatbotActions\Commands\EndSession.cs" />
+    <Compile Include="ChatbotActions\Commands\Face.cs" />
     <Compile Include="ChatbotActions\Commands\Fox.cs" />
     <Compile Include="ChatbotActions\Commands\Help.cs" />
     <Compile Include="ChatbotActions\Commands\Panic.cs" />
