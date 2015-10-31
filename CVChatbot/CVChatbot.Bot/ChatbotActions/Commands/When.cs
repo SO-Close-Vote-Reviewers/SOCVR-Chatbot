@@ -84,7 +84,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         protected override string GetRegexMatchingPattern()
         {
-            return @"\bwhen\b";
+            return @"^when";
         }
     }
 }
