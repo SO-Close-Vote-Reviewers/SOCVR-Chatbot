@@ -22,6 +22,7 @@
 
 using System;
 using System.Globalization;
+using System.Security.Cryptography;
 using ChatExchangeDotNet;
 using TCL.Extensions;
 
@@ -29,6 +30,10 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class When : UserCommand
     {
+        private RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+
+
+
         public override string GetActionDescription()
         {
             return "A \"toy command\" for getting a random date.";
@@ -65,10 +70,11 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 "Whenever I finally get my waffles.",
                 "Never."
             };
-            var r = new Random(DateTime.UtcNow.Millisecond);
+            var n = new byte[4];
+            rng.GetBytes(n);
             var message = "";
 
-            if (r.NextDouble() > 0.5)
+            if (BitConverter.ToUInt32(n, 0) % 101 > 33)
             {
                 // Pick any date within 10 years from now.
                 var date = DateTime.UtcNow.Add(TimeSpan.FromDays(r.Next(-3652, 3652)));
