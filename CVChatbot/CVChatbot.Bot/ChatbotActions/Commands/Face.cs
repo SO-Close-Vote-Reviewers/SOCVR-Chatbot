@@ -66,7 +66,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 "o_o", "O_O", "O_o", "-_-", "'_'", ">_>", "<_<", "\\o", "o/", "\\o/"
             };
 
-            chatRoom.PostReplyOrThrow(incommingChatMessage, faces.PickRandom());
+            chatRoom.PostReplyOrThrow(incommingChatMessage, faces.PickRandomTheRightWay());
         }
 
         protected override string GetRegexMatchingPattern()

@@ -129,23 +129,7 @@ namespace CVChatbot.Bot
 
             foreach (var id in users)
             {
-                Watcher.Users[id].EventManager.ConnectListener(UserEventType.ItemReviewed,
-                    new Action<ReviewItem>(r => HandleItemReviewed(Watcher.Users[id], r)));
-
-                Watcher.Users[id].EventManager.ConnectListener(UserEventType.ReviewLimitReached,
-                    new Action(() => HandleReviewLimitReached(Watcher.Users[id])));
-
-                Watcher.Users[id].EventManager.ConnectListener(UserEventType.AuditPassed,
-                    new Action<ReviewItem>(r => HandleAuditPassed(Watcher.Users[id], r)));
-
-                Watcher.Users[id].EventManager.ConnectListener(UserEventType.AuditFailed,
-                    new Action<ReviewItem>(r => HandleAuditFailed(Watcher.Users[id], r)));
-
-                Watcher.Users[id].EventManager.ConnectListener(UserEventType.CurrentTagsChanged,
-                    new Action<List<string>>((oldTags) => HandleCurrentTagsChanged(Watcher.Users[id], oldTags)));
-
-                Watcher.Users[id].EventManager.ConnectListener(UserEventType.InternalException,
-                    new Action<Exception>(ex => HandleException(ex)));
+                HookUpUserEvents(id);
             }
         }
 
@@ -173,26 +157,48 @@ namespace CVChatbot.Bot
             }
 
             Watcher.AddUser(userID);
+            HookUpUserEvents(userID);
+        }
+
+        private void HookUpUserEvents(int id)
+        {
+            Watcher.Users[id].EventManager.ConnectListener(UserEventType.ItemReviewed,
+                    new Action<ReviewItem>(r => HandleItemReviewed(Watcher.Users[id], r)));
+
+            Watcher.Users[id].EventManager.ConnectListener(UserEventType.ReviewLimitReached,
+                new Action(() => HandleReviewLimitReached(Watcher.Users[id])));
+
+            Watcher.Users[id].EventManager.ConnectListener(UserEventType.AuditPassed,
+                new Action<ReviewItem>(r => HandleAuditPassed(Watcher.Users[id], r)));
+
+            Watcher.Users[id].EventManager.ConnectListener(UserEventType.AuditFailed,
+                new Action<ReviewItem>(r => HandleAuditFailed(Watcher.Users[id], r)));
+
+            Watcher.Users[id].EventManager.ConnectListener(UserEventType.CurrentTagsChanged,
+                new Action<List<string>>((oldTags) => HandleCurrentTagsChanged(Watcher.Users[id], oldTags)));
+
+            Watcher.Users[id].EventManager.ConnectListener(UserEventType.InternalException,
+                new Action<Exception>(ex => HandleException(ex)));
         }
 
         private void HandleItemReviewed(SOCVRDotNet.User user, ReviewItem review)
         {
             var reviewTime = review.Results.First(rr => rr.UserID == user.ID).Timestamp;
 
-            if (!latestReviews.ContainsKey(user.ID) ||
-                (reviewTime - latestReviews[user.ID]).TotalHours > 1)
+            if (!firstReviews.ContainsKey(user.ID) || firstReviews[user.ID].Day != DateTime.UtcNow.Day)
+            {
+                firstReviews[user.ID] = reviewTime;
+            }
+
+            if ((reviewTime - latestReviews[user.ID]).TotalHours > 1)
             {
                 var msg = new MessageBuilder();
                 msg.AppendPing(room.GetUser(user.ID));
                 msg.AppendText("I've noticed you've started reviewing! I'll update your session record.");
                 room.PostMessageFast(msg);
-                latestReviews[user.ID] = reviewTime;
             }
 
-            if (!firstReviews.ContainsKey(user.ID) || firstReviews[user.ID].Day != DateTime.UtcNow.Day)
-            {
-                firstReviews[user.ID] = reviewTime;
-            }
+            latestReviews[user.ID] = reviewTime;
 
 
 

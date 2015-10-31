@@ -206,6 +206,13 @@ namespace CVChatbot.Bot
                 value, (value == 1) ? description : String.Format("{0}s", description));
         }
 
+        public static T PickRandomTheRightWay/*™*/<T>(this IEnumerable<T> items)
+        {
+            items.ThrowIfNull("items");
+
+            return items.ElementAt((int)(DateTime.UtcNow.Ticks % items.Count()));
+        }
+
         public static string GetChatFriendlyUsername(this User user)
         {
             if (DateTime.UtcNow.Ticks % 10 == 0)

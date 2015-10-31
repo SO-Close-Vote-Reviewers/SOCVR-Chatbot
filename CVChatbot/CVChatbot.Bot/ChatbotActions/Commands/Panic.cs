@@ -58,7 +58,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override void RunAction(Message incommingChatMessage, Room chatRoom, InstallationSettings roomSettings)
         {
-            chatRoom.PostReplyOrThrow(incommingChatMessage, gifs.PickRandom());
+            chatRoom.PostReplyOrThrow(incommingChatMessage, gifs.PickRandomTheRightWay());
         }
 
         protected override string GetRegexMatchingPattern()

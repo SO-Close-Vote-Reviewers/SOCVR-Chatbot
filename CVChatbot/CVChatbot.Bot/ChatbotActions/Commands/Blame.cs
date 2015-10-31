@@ -63,19 +63,22 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 "{0} and {1} both look suspicious...",
                 "It's {0}! Blame {0}! No, wait. It's {1}!",
                 "{0} and {1}.",
-                "Everyone in this room, except {0}.",
-                "Everyone in this room, except {0} and {1}.",
+                "{0} or {1}.",
+                "Everyone in the room, except {0}.",
+                "Everyone in the room, except {0} and {1}.",
                 "Blame {0} and {1}!",
-                "*{0} secretly thinks it's {1}*"
+                "*{0} secretly thinks it's {1}*",
+                "Jon Skeet",
+                "Shog"
             };
             var users = chatRoom.GetCurrentUsers();
-            var userX = users.PickRandom().GetChatFriendlyUsername();
-            var userY = users.PickRandom().GetChatFriendlyUsername();
+            var userX = users.PickRandomTheRightWay().GetChatFriendlyUsername();
+            var userY = users.PickRandomTheRightWay().GetChatFriendlyUsername();
             while (userX == userY)
             {
-                userY = users.PickRandom().GetChatFriendlyUsername();
+                userY = users.PickRandomTheRightWay().GetChatFriendlyUsername();
             }
-            var message = phrases.PickRandom().FormatInline(userX, userY);
+            var message = phrases.PickRandomTheRightWay().FormatInline(userX, userY);
 
             chatRoom.PostReplyOrThrow(incommingChatMessage, message);
         }
