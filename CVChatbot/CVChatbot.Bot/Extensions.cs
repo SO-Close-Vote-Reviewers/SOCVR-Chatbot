@@ -39,7 +39,7 @@ namespace CVChatbot.Bot
     /// </summary>
     public static class Extensions
     {
-        private static RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+        private static readonly RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
 
 
 

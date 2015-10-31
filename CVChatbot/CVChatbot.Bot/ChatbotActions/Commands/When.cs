@@ -30,7 +30,8 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class When : UserCommand
     {
-        private RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+        private readonly RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+        private readonly Random r = new Random(DateTime.UtcNow.Millisecond);
 
 
 
