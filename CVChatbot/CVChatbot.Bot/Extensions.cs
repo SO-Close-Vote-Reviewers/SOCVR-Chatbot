@@ -30,6 +30,7 @@ using System.Reflection;
 using System.Text;
 using TCL.Extensions;
 using System.Text.RegularExpressions;
+using System.Security.Cryptography;
 
 namespace CVChatbot.Bot
 {
@@ -38,6 +39,10 @@ namespace CVChatbot.Bot
     /// </summary>
     public static class Extensions
     {
+        private static RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+
+
+
         /// <summary>
         ///  On a CQ dom find an <input name="foo" value="bar" > with the name foo and return bar or null for no match. 
         /// </summary>
@@ -210,7 +215,10 @@ namespace CVChatbot.Bot
         {
             items.ThrowIfNull("items");
 
-            return items.ElementAt((int)(DateTime.UtcNow.Ticks % items.Count()));
+            var n = new byte[4];
+            rng.GetBytes(n);
+
+            return items.ElementAt((int)(BitConverter.ToUInt32(n, 0) % items.Count()));
         }
 
         public static string GetChatFriendlyUsername(this User user)

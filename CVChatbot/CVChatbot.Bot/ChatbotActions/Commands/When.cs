@@ -61,7 +61,8 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 "In 3... 2... 1...",
                 "Yes.",
                 "In 6 to 8 moons.",
-                "Whenever Shog says so."
+                "When Shog says so.",
+                "Whenever I finally get my waffles."
             };
             var r = new Random(DateTime.UtcNow.Millisecond);
             var message = "";
@@ -69,12 +70,12 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             if (r.NextDouble() > 0.5)
             {
                 // Pick any date within 10 years from now.
-                var date = DateTime.UtcNow.Add(TimeSpan.FromDays(r.Next(-3650, 3650)));
+                var date = DateTime.UtcNow.Add(TimeSpan.FromDays(r.Next(-3652, 3652)));
                 message = date.ToString("yyyy/MM/dd", CultureInfo.InvariantCulture);
             }
             else
             {
-                message = phrases.PickRandom();
+                message = phrases.PickRandomTheRightWay();
             }
 
             chatRoom.PostReplyOrThrow(incommingChatMessage, message);
@@ -82,7 +83,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         protected override string GetRegexMatchingPattern()
         {
-            return @"^when.*";
+            return @"\bwhen\b";
         }
     }
 }

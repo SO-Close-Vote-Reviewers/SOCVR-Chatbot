@@ -130,6 +130,7 @@
     <Compile Include="ChatbotActions\Commands\TrackUser.cs" />
     <Compile Include="ChatbotActions\Commands\UserCommand.cs" />
     <Compile Include="ChatbotActions\Commands\When.cs" />
+    <Compile Include="ChatbotActions\Triggers\CompletedAudit.cs" />
     <Compile Include="ChatbotActions\Triggers\EmptyFilter.cs" />
     <Compile Include="ChatbotActions\Triggers\EndingSessionTrigger.cs" />
     <Compile Include="ChatbotActions\Triggers\OutOfCloseVotes.cs" />

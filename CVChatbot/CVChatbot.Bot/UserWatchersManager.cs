@@ -188,10 +188,7 @@ namespace CVChatbot.Bot
             if (!firstReviews.ContainsKey(user.ID) || firstReviews[user.ID].Day != DateTime.UtcNow.Day)
             {
                 firstReviews[user.ID] = reviewTime;
-            }
-
-            if ((reviewTime - latestReviews[user.ID]).TotalHours > 1)
-            {
+                latestReviews[user.ID] = reviewTime;
                 var msg = new MessageBuilder();
                 msg.AppendPing(room.GetUser(user.ID));
                 msg.AppendText("I've noticed you've started reviewing! I'll update your session record.");
@@ -199,7 +196,6 @@ namespace CVChatbot.Bot
             }
 
             latestReviews[user.ID] = reviewTime;
-
 
 
             //TODO: I have no idea what we're doing with the below (old code).
