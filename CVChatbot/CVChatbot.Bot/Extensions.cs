@@ -223,7 +223,10 @@ namespace CVChatbot.Bot
 
         public static string GetChatFriendlyUsername(this User user)
         {
-            if (DateTime.UtcNow.Ticks % 10 == 0)
+            var n = new byte[4];
+            rng.GetBytes(n);
+
+            if (BitConverter.ToUInt32(n, 0) % 15 == 0)
             {
                 switch (user.ID)
                 {

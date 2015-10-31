@@ -51,6 +51,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         {
             var phrases = new[]
             {
+                "{0}.",
                 "*points finger at {0}*",
                 "*looks at {0}*",
                 "Blame {0}!",

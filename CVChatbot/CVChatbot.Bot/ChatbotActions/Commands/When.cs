@@ -62,7 +62,8 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 "Yes.",
                 "In 6 to 8 moons.",
                 "When Shog says so.",
-                "Whenever I finally get my waffles."
+                "Whenever I finally get my waffles.",
+                "Never."
             };
             var r = new Random(DateTime.UtcNow.Millisecond);
             var message = "";
