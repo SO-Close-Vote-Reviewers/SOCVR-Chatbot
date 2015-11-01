@@ -69,12 +69,12 @@ Here's how a chat member should expect to use the bot in v2:
 
 1. A UTC day starts.
 2. The user does a single review.
-3. The bot pings the user to say
+3. The bot pings the user to say:
   > I see you have started reviewing @[username]. Good luck!"
 
 4. The user may stop and start (human phrasing) multiple times, the bot will not care (this includes taking an hour between reviews).
 5. If the user passes an audit it will be posted to the chat room.
-6. As soon as the user completes 40 review items in a single UTC day, the bot will ping the user saying
+6. As soon as the user completes 40 review items in a single UTC day, the bot will ping the user saying:
   > You've completed 40 CV review items today, thanks! The time between your first and last review today was X minutes, averaging to a review every Y minutes.
 
 7. The user waits for the next UTC day to start.
@@ -85,7 +85,7 @@ Commands for this version will focus on stats. Some commands will stick around i
 
 General rules for commands:
 
-* "Public" commands are primarily to test if the bot is running or get general information from the bot
+* "Public" commands are primarily to test if the bot is running or get general information from the bot.
 * Moderators have access to all commands.
 
 The following is a summary table of all commands. Extended details are in the next sections.
@@ -131,7 +131,7 @@ The following is a summary table of all commands. Extended details are in the ne
 
 | Command        | Description                                                                                                   |
 |----------------|---------------------------------------------------------------------------------------------------------------|
-| Start event    | (description coming soon to a cinema near you)                                                                |
+| Start event    | The Start Event command is a combination of the Next [3] Tags and Queue Stats command.                        |
 | Ping reviewers | Sends a message which includes an @reply to all users in the reviewers group that have done reviews recently. |
 | Stop bot       | Leaves the chat room and quits the running application.                                                       |
 | Reboot bot     | Shuts down then starts back up.                                                                               |
@@ -225,7 +225,7 @@ If a person wants to join a permission group, this is one method of requesting a
 ### Membership
 A user will want to know what permissions he/she currently has, and the permission groups of other people in the room (to see who to contact about things, for example). This command lists out each permission group.
 
-The first of the two messages the bot will post will be a reply to the command
+The first of the two messages the bot will post will be a reply to the command:
 
 > Below is a listing of the people in each permission group:
 
@@ -293,7 +293,7 @@ The Next Tags command will retrieve the top _n_ tags from that list.
 
 > The top [#] tags to work on are [tag] `[#]`, [tag] `[#]`, ...
 
-If the value given as the argument for the Next Tags command is not an integer between 1 and 15 inclusive, the bot will reply with
+If the value given as the argument for the Next Tags command is not an integer between 1 and 15 inclusive, the bot will reply with:
 
 > Please give me a number between 1 and 15.
 
@@ -354,7 +354,7 @@ The Start Event command is a combination of the Next [3] Tags and Queue Stats co
 The bot will output two messages. The first message will be the output of the Queue Stats command. The second message will be the output of the Next [3] Tags command, except the text before the tag list will be "The tags to work on are".
 
 ### Ping Reviewers
-This command allows the user to ping everyone in the Reviewer permissions group with a custom message. The user list will be composed
+This command allows the user to ping everyone in the Reviewer permissions group with a custom message. 
 
 In order for a user to appear in the user list they must have reviewed at least X reviews within the last Y days (configurable). Default is 50 reviews within 3 days.
 
@@ -410,7 +410,7 @@ These groups are independent of each other. A person can be in multiple groups a
 
 Restrictions on joining a group:
 * In order to join the Reviewers group you must have at least 3000 reputation.
-* In order to join the Bot Owners group you must be in the Reviewers and the Toy Users group
+* In order to join the Bot Owners group you must be in the Reviewers and the Toy Users group.
 
 Restrictions on approving or rejecting a request:
 * In order to approve or reject a request for the Reviewers or Toy Users group you must be in that group for at least 1 week.
@@ -436,22 +436,26 @@ Exception: you _can not_ use the first method to request access to Bot Owner. Th
 
 **First method**
 
-If a user does not have the correct permissions to run a command the bot will respond with
+If a user does not have the correct permissions to run a command the bot will respond with:
 
 > Sorry, you are not in the [name of group] permission group. Do you want to request access? (reply with "yes")
 
 A permission request will be inserted into the request queue if either:
 * The user replies "yes" (or limited variations) to the bot's message.
-* The user's first message proceeding the bot's message, posted less than 1 minute after the bot's message, is "yes" (or limited variations)
+* The user's first message proceeding the bot's message, posted less than 1 minute after the bot's message, is "yes" (or limited variations).
 
 The above is the standard reply, assuming there are no issues with the user creating a request. The following are alternate replies the bot can make depending on if the user can make a request.
 
-If the user tries to run a command where they do not have permission to do so, and they have an active request for that permission, the bot will respond with
+If the user tries to run a command where they do not have permission to do so, and they have an active request for that permission, the bot will respond with:
 
 > Sorry, you are not in the [group name] permission group. There is already a request to get you this permission, please be patient.
 
-If the user tries to run a command where they do not have permission to do so, the latest request for that permission has been denied, and that denial was within the last 48 hours, then the bot will ignore the message. Once 48 hours has ellapsed, the bot will allow them to ask for permission again. Note that there should not be a need to increase the amount of time a reject will encure. There is a already a "kick" and "ban" system in chat which which room owners should use if it gets to this point.
-If the user tries to run a Reviewers command where they do not have permission to do so, and the user has less than 3000 reputation, the bot will respond with
+If the user tries to run a command where they do not have permission to do so, the latest request for that permission has been denied, and that denial was within the last 48 hours, then the bot will ignore the message. Once 48 hours has ellapsed, the bot will allow them to ask for permission again. 
+
+*Note, there should not be a need to increase the amount of time a reject will encure.*
+
+There is a already a "kick" and "ban" system in chat which which room owners should use if it gets to this point.
+If the user tries to run a Reviewers command where they do not have permission to do so, and the user has less than 3000 reputation, the bot will respond with:
 
 > Sorry, this command requires that you have 3000 reputation and are a part of the Reviewers permission group.
 
@@ -461,18 +465,18 @@ If the user tries to run a command where they do not have permission to do so, t
 
 A user can run the `request permission for [group name]` command.
 
-* If the user is already in that group
+* If the user is already in that group:
   > You are already in the [group name] group.
 
-* If the user's last request for this permission was denied and that denial was less than 48 hours ago
+* If the user's last request for this permission was denied and that denial was less than 48 hours ago:
   > Sorry, your latest request for this permission was denied. Please wait [time until user can request again] to request again.
 
   Note that any member of the requested group may add the user to the group during this "cool down" time.
 
-* If there is already an active request for this permission group
+* If there is already an active request for this permission group:
   > There is already a request to get you this permission, please be patent.
 
-* If none of the above are true, create the request in the system and reply
+* If none of the above are true, create the request in the system and reply:
   > I'm created a request (#[request number]) to get you in the [group name] group.
 
 #### Viewing Requests
@@ -487,15 +491,15 @@ Any user non-public user can run the `View requests` command to see the full lis
 
 The table will be ordered by "Requested at" ascending (oldest requests first).
 
-If there are no active requests the bot will reply
+If there are no active requests the bot will reply:
 
 > There are no users requesting access to a permission group.
 
 In this version, there will be no way to view requests that have already been handled (other than searching the transcript).
 
-Non-public non-bot-owners must run the command to see this request list. The bot will send a general message (not a reply to any user) if
- * A Bot Owner has posted 3 messages within 5 minutes
- * There is one or more request in the system
+Non-public non-bot-owners must run the command to see this request list. The bot will send a general message (not a reply to any user) if:
+ * A Bot Owner has posted 3 messages within 5 minutes.
+ * There is one or more request in the system.
  * This message has not been displayed in the last 6 hours.
 
 #### Handling Requests
@@ -508,10 +512,10 @@ A group member has two methods to approve or reject a request.
 
 As previously stated, v1 primarily relies on information fed from chat users in the room. This worked to a degree, but allows users to supply [inaccurate data](http://chat.stackoverflow.com/transcript/41570?m=24910842#24910842) and can become tiresome after while. Thus we’ve introduced automated review data<sup>§</sup> gathering for:
 
-* Passed audits
-* Failed audits
-* Tags reviewed (experimental)
-* Items reviewed
+* Passed audits,
+* Failed audits,
+* Tags reviewed (experimental),
+* Items reviewed.
 
 <sup>§</sup> <sub>Data of posts that have been deleted are not detected (I.e., audits).</sub>
 
