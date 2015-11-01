@@ -349,7 +349,9 @@ Sometimes catastrophic events can only be responded to by an appropriate gif. Th
 Just to keep the meme alive, someone may want to see the fox gif meme (again). This command posts the gif (oneboxed).
 
 ### Start Event
-Description coming soon to a cinema near you…
+The Start Event command is a combination of the Next [3] Tags and Queue Stats command. This is used to formally start a weekly review event.
+
+The bot will output two messages. The first message will be the output of the Queue Stats command. The second message will be the output of the Next [3] Tags command, except the text before the tag list will be "The tags to work on are".
 
 ### Ping Reviewers
 This command allows the user to ping everyone in the Reviewer permissions group with a custom message. The user list will be composed
