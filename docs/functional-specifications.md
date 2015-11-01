@@ -567,9 +567,21 @@ If the user appears to be working on a new set of tags (this message will only b
 
 > Yesterday you were working on [tag], are you done with that?
 
-
 ## Docker
 
 Docker is a "virtual machine" system for linux. We should use the following methods when using docker.
 * Environment variables before config file - If a setting can be found as an environment variable, use it. If it can't, try and find it in the configuration file. If it still can't be found, use a built-in default.
 * Database in its own container, which is linked.
+
+## Configuration
+This program is designed to be very configurable.
+
+Some values used in the program have built-in defaults. However some values won't have built-in defaults. If these values are not configured from either the configuration file or environment variables then the bot should reply that the value(s) have not been configured.
+
+> This operation can't be performed because the following configuration values have not been set and no default exits: `value 1`, `value 2`, ...
+
+The order of operations for finding a configuration value is:
+
+1. If there is a configuration file, and the value is defined in the file, use this.
+2. If the value is defined in an environment variable, use this.
+3. Use built-in defaults if available
