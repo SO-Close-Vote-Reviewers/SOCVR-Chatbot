@@ -361,13 +361,48 @@ A user may want more detailed information than what has already been provided fr
 The Item Id is the number in the URL for that review item. If the review item is not an audit then the Audit cell will be blank. Order this table by Completed At ascending.
 
 ### Who
-Every now and then we just need someone to blame (instead of caching). Thankfully we have this command to randomly pick someone out of the room.
+Every now and then we just need someone to blame (instead of caching). Thankfully we have this command to randomly pick someone out of the room with one of these phrases:
+
+ * `{0}`.
+ * *points finger at `{0}`*
+ * *looks at `{0}`*
+ * Blame `{0}`!
+ * It's definitely `{0}`.
+ * "...`{0}`.
+ * "I'm guessing it's `{0}`.
+ * Smells like `{0}`...
+ * It's `{0}`!
+ * Either `{0}` or `{1}`...
+ * `{0}` and `{1}` both look suspicious...
+ * It's `{0}`! Blame `{0}`! No, wait. It's `{1}`!
+ * `{0}` and `{1}`.
+ * `{0}` or `{1}`.
+ * Everyone in the room, except `{0}`.
+ * Everyone in the room, except `{0}` and `{1}`.
+ * Blame `{0}` and `{1}`!
+ * *`{0}` secretly thinks it's `{1}`*
+ * Jon Skeet
+ * Shog"
+
+<sup>*`{0}` denotes the first randomly selected user, `{1}` denotes the second randomly selected user.*<sup>
 
 ### When
-For those days when you forget what the date is. This command returns a randomly chosen date +/-10 years from the present UTC time.
+For those days when you forget what the date is. This command returns a randomly chosen date +/-10 years from the present UTC time, or, there's a 33% chance the bot'll reply with one of these phrases:
+
+ * Tomorrow.
+ * Yesterday.
+ * Within a week.
+ * "Within a month.
+ * Next year.
+ * In 3... 2... 1...
+ * Yes.
+ * In 6 to 8 moons.
+ * When Shog says so.
+ * Whenever I finally get my waffles.
+ * Never.
 
 ### Face
-The latest addition to the “toy commands” group, this command posts a randomly selected ascii/unicode face (out of a collection of ~75) in response to any message containing the word “face”.
+The latest addition to the “toy commands” group, this command posts a randomly selected ascii/unicode face in response to any message containing the word “face”. You can find a full list of faces [here](https://github.com/SO-Close-Vote-Reviewers/SOCVR-Chatbot/blob/v2.0-func-spec/docs/Face%20Command%20Faces).
 
 ### Panic
 Sometimes catastrophic events can only be responded to by an appropriate gif. This command posts a randomly selected one-boxed gif (current selection of 5 gifs).
