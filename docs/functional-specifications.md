@@ -463,20 +463,20 @@ If the request was approved, the message will append the following:
 
 The new permission system will be made of 4 groups:
 
-* Public
-* Reviewers
-* Toy Users
-* Bot Owners
+* Public,
+* Reviewers,
+* Toy Users,
+* Bot Owners.
 
 These groups are independent of each other. A person can be in multiple groups at once. Members of each group (besides Public) can add users to that group.
 
 Restrictions on joining a group:
-* In order to join the Reviewers group you must have at least 3000 reputation.
-* In order to join the Bot Owners group you must be in the Reviewers and the Toy Users group.
+* To join the Reviewers group you must have at least 3000 reputation.
+* To join the Bot Owners group you must be in the Reviewers and the Toy Users group.
 
 Restrictions on approving or rejecting a request:
-* In order to approve or reject a request for the Reviewers or Toy Users group you must be in that group for at least 1 week.
-* In order to approve or reject a request for the Reviewers group you must have done at least 100 reviews in the last 7 days, including the current UTC day.
+* To approve or reject a request for the Reviewers or Toy Users group you must be in that group for at least 1 week.
+* To approve or reject a request for the Reviewers group you must have done at least 100 reviews in the last 7 days, including the current UTC day.
 
 ### Permission Request
 
