@@ -371,8 +371,31 @@ When executed, this command will cause the bot to leave the chatroom and then te
 ### Reboot Bot
 This command does the same as Stop Bot, but causes the bot to start back up again after successfully shutting down. This will not stop the Docker container.
 
-### Approve/Reject Request
-Depending on the message, this command will approve or reject a request from a user to join a chat command permission group. What happens if it’s accepted? What happens if it’s rejected?
+### Approve/Reject Request [#]
+Depending on the message, this command will approve or reject a request from a user to join a chat command permission group.
+
+The command will be in on of these formats:
+
+> approve request 1234  
+> reject request 1234
+
+The person who handled the request and the time it was handled will be recorded in the database, but it will not be publicly shown.
+
+If the given request cannot be found:
+
+> I can't find that permission request. Run `View Requests` to see the current list.
+
+If the given request has already been handled (note that there are no details given about how the request was handled);
+
+> That request has already been handled.
+
+If command is valid, and the process was successful, the bot will reply to the command message with:
+
+> Request processed successfully.
+
+If the request was approved, the message will append the following:
+
+> @[requesting user name] has been added to the [permission group] group.
 
 ## Permission system
 
@@ -477,8 +500,8 @@ Non-public non-bot-owners must run the command to see this request list. The bot
 
 #### Handling Requests
 
-A group member has 2 method to approve or reject a request.
-1. Run `approve request <#>` or `reject request <#>`. This can be found out by running `view requests` or
+A group member has two methods to approve or reject a request.
+1. Run `approve request <#>` or `reject request <#>`. The request number can be found out by running `view requests`.
 2. The user manually adds the user to the group (this will approve the request at the same time).
 
 ## User Tracking
