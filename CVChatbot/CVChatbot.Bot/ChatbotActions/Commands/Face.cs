@@ -71,7 +71,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         protected override string GetRegexMatchingPattern()
         {
-            return @"^((?!who|when|fox|panic).)*face((?!who|when|fox|panic).)*$";
+            return @"^((?!who|when|fox|panic).)*face((?!panic).)*$";
         }
     }
 }
