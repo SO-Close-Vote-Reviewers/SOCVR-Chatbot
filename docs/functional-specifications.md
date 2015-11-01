@@ -381,7 +381,7 @@ The Start Event command is a combination of the Next [3] Tags and Queue Stats co
 The bot will output two messages. The first message will be the output of the Queue Stats command. The second message will be the output of the Next [3] Tags command, except the text before the tag list will be "The tags to work on are".
 
 ### Ping Reviewers
-This command allows the user to ping everyone in the Reviewer permissions group with a custom message. 
+This command allows the user to ping everyone in the Reviewer permissions group with a custom message.
 
 In order for a user to appear in the user list they must have reviewed at least X reviews within the last Y days (configurable). Default is 50 reviews within 3 days.
 
@@ -477,7 +477,7 @@ If the user tries to run a command where they do not have permission to do so, a
 
 > Sorry, you are not in the [group name] permission group. There is already a request to get you this permission, please be patient.
 
-If the user tries to run a command where they do not have permission to do so, the latest request for that permission has been denied, and that denial was within the last 48 hours, then the bot will ignore the message. Once 48 hours has ellapsed, the bot will allow them to ask for permission again. 
+If the user tries to run a command where they do not have permission to do so, the latest request for that permission has been denied, and that denial was within the last 48 hours, then the bot will ignore the message. Once 48 hours has ellapsed, the bot will allow them to ask for permission again.
 
 *Note, there should not be a need to increase the amount of time a reject will encure.*
 
@@ -485,8 +485,6 @@ There is a already a "kick" and "ban" system in chat which which room owners sho
 If the user tries to run a Reviewers command where they do not have permission to do so, and the user has less than 3000 reputation, the bot will respond with:
 
 > Sorry, this command requires that you have 3000 reputation and are a part of the Reviewers permission group.
-
-If the user tries to run a command where they do not have permission to do so, the latest request for that permission has been denied, and that denial was within the last 48 hours, then the bot will ignore the message (they will need to run `request permission for` to be informed of this). Once 48 hours has ellapsed, the bot will allow them to ask for permission again. Note that there should not be a need to increase the amount of time a reject will encure. There is a already a "kick" and "ban" system in chat which which room owners should use if it gets to this point.
 
 **Second method**
 
