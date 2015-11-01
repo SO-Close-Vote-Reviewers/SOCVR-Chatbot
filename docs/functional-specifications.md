@@ -382,7 +382,7 @@ Every now and then we just need someone to blame (instead of caching). Thankfull
  * Blame `{0}` and `{1}`!
  * *`{0}` secretly thinks it's `{1}`*
  * Jon Skeet
- * Shog"
+ * Shog
 
 <sup>*`{0}` denotes the first randomly selected user, `{1}` denotes the second randomly selected user.*<sup>
 
