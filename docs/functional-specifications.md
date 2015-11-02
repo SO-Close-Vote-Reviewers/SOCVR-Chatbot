@@ -25,9 +25,9 @@ This document describes the functionality of the chatbot that resides in the [SO
 		- [Reviews Today](#reviews-today)
 		- [Request permission to [group name]](#request-permission-to-group-name)
 		- [Membership](#membership)
-		- [Opt-in / Opt-out](#opt-in-opt-out)
+		- [Opt-in / Opt-out](#opt-in--opt-out)
 		- [Audit stats](#audit-stats)
-		- [Current Tag / Next [#] tags](#current-tag-next-tags)
+		- [Current Tag / Next [#] tags](#current-tag--next--tags)
 		- [Refresh tags](#refresh-tags)
 		- [Queue stats](#queue-stats)
 		- [Current Review Count](#current-review-count)
@@ -207,7 +207,7 @@ The bot will post a general message in the following format:
 > This is a chatbot for the SO Close Vote Reviewers chat room, developed by members of the SO Close Vote Reviewers chat room. For more information see the [github page](https://github.com/SO-Close-Vote-Reviewers/SOCVR-Chatbot), or reply with `commands` to learn what you can do.
 
 ### Running Commands
-This is the "task manager" for the bot. All commands will be ran on their own threads, so the bot will keep track of which commands are currently being processed.
+This is the "task manager" for the bot. All commands will run on their own threads, so the bot will keep track of which commands are currently being processed.
 
 An example output:
 
