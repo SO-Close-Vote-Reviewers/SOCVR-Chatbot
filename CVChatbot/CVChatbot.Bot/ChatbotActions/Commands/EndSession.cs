@@ -56,7 +56,6 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<LastSessionStats>()) +
                 "In addition, the number of review items is most likely not set, use the command `{0}` to fix that."
                 .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<LastSessionEditCount>()));
-
         }
 
         public override ActionPermissionLevel GetPermissionLevel()
