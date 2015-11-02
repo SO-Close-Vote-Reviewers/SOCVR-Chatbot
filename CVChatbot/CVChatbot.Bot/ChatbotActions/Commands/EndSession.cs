@@ -75,7 +75,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionDescription()
         {
-            return "If a user has an open review session this command will force end that session.";
+            return "Deprecated - If a user has an open review session this command will force end that session.";
         }
 
         public override string GetActionUsage()

@@ -47,7 +47,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override string GetActionDescription()
         {
-            return "Unnecessary - Informs the chatbot that you are starting a new review session.";
+            return "Deprecated - Informs the chatbot that you are starting a new review session.";
         }
 
         public override string GetActionUsage()
