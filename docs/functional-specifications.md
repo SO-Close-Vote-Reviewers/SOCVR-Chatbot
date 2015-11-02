@@ -13,7 +13,6 @@ This document describes the functionality of the chatbot that resides in the [SO
 	- [V2 Command List](#v2-command-list)
 		- [Commands for Public permission group](#commands-for-public-permission-group)
 		- [Commands for Reviewer permission group](#commands-for-reviewer-permission-group)
-		- [Commands for Toy User permission group](#commands-for-toy-user-permission-group)
 		- [Commands for Room Owner permission group](#commands-for-room-owner-permission-group)
 		- [Commands for All Non-Public Users](#commands-for-all-non-public-users)
 	- [Commands - Descriptive](#commands-descriptive)
@@ -32,11 +31,6 @@ This document describes the functionality of the chatbot that resides in the [SO
 		- [Queue stats](#queue-stats)
 		- [Current Review Count](#current-review-count)
 		- [Reviews Today](#reviews-today)
-		- [Who](#who)
-		- [When](#when)
-		- [Face](#face)
-		- [Panic](#panic)
-		- [Fox](#fox)
 		- [Start Event](#start-event)
 		- [Ping Reviewers](#ping-reviewers)
 		- [Stop Bot](#stop-bot)
@@ -143,16 +137,6 @@ The following is a summary table of all commands. Extended details are in the ne
 | Current Review Count | Shows the number of review items the bot thinks the user has completed this day. This includes audits, because audits count towards your 40 items. |
 | Reviews today        | Prints a table of the reviews items that user has done today.                                                                                      |
 | opt out / opt in     | (also "opt-out" / "opt-in") Allows a user to be temporarily removed from the tracking system, or resume being tracked.                             |
-
-### Commands for Toy User permission group
-
-| Command | Description                         |
-|---------|-------------------------------------|
-| Who     | Randomly blames a chat room user.   |
-| Fox     | Posts the meme fox gif.             |
-| Panic   | Posts a gif of something panicking. |
-| When    | Returns a random date.              |
-| Face    | Posts a random unicode/ascii face.  |
 
 ### Commands for Room Owner permission group
 
@@ -360,56 +344,6 @@ A user may want more detailed information than what has already been provided fr
 
 The Item Id is the number in the URL for that review item. If the review item is not an audit then the Audit cell will be blank. Order this table by Completed At ascending.
 
-### Who
-Every now and then we just need someone to blame (instead of caching). Thankfully we have this command to randomly pick someone out of the room with one of these phrases:
-
- * `{0}`.
- * *points finger at `{0}`*
- * *looks at `{0}`*
- * Blame `{0}`!
- * It's definitely `{0}`.
- * "...`{0}`.
- * "I'm guessing it's `{0}`.
- * Smells like `{0}`...
- * It's `{0}`!
- * Either `{0}` or `{1}`...
- * `{0}` and `{1}` both look suspicious...
- * It's `{0}`! Blame `{0}`! No, wait. It's `{1}`!
- * `{0}` and `{1}`.
- * `{0}` or `{1}`.
- * Everyone in the room, except `{0}`.
- * Everyone in the room, except `{0}` and `{1}`.
- * Blame `{0}` and `{1}`!
- * *`{0}` secretly thinks it's `{1}`*
- * Jon Skeet
- * Shog
-
-<sup>*`{0}` denotes the first randomly selected user, `{1}` denotes the second randomly selected user.*<sup>
-
-### When
-For those days when you forget what the date is. This command returns a randomly chosen date +/-10 years from the present UTC time, or, there's a 33% chance the bot'll reply with one of these phrases:
-
- * Tomorrow.
- * Yesterday.
- * Within a week.
- * "Within a month.
- * Next year.
- * In 3... 2... 1...
- * Yes.
- * In 6 to 8 moons.
- * When Shog says so.
- * Whenever I finally get my waffles.
- * Never.
-
-### Face
-The latest addition to the “toy commands” group, this command posts a randomly selected ascii/unicode face in response to any message containing the word “face”. You can find a full list of faces [here](https://github.com/SO-Close-Vote-Reviewers/SOCVR-Chatbot/blob/v2.0-func-spec/docs/Face%20Command%20Faces).
-
-### Panic
-Sometimes catastrophic events can only be responded to by an appropriate gif. This command posts a randomly selected one-boxed gif (current selection of 5 gifs).
-
-### Fox
-Just to keep the meme alive, someone may want to see the fox gif meme (again). This command posts the gif (oneboxed).
-
 ### Start Event
 The Start Event command is a combination of the Next [3] Tags and Queue Stats command. This is used to formally start a weekly review event.
 
@@ -461,21 +395,20 @@ If the request was approved, the message will append the following:
 
 ## Permission system
 
-The new permission system will be made of 4 groups:
+The new permission system will be made of 3 groups:
 
 * Public,
 * Reviewers,
-* Toy Users,
 * Bot Owners.
 
 These groups are independent of each other. A person can be in multiple groups at once. Members of each group (besides Public) can add users to that group.
 
 Restrictions on joining a group:
 * To join the Reviewers group you must have at least 3000 reputation.
-* To join the Bot Owners group you must be in the Reviewers and the Toy Users group.
+* To join the Bot Owners group you must be in the Reviewers group.
 
 Restrictions on approving or rejecting a request:
-* To approve or reject a request for the Reviewers or Toy Users group you must be in that group for at least 1 week.
+* To approve or reject a request for the Reviewers group you must be in that group for at least 1 week.
 * To approve or reject a request for the Reviewers group you must have done at least 100 reviews in the last 7 days, including the current UTC day.
 
 ### Permission Request
@@ -547,7 +480,7 @@ Any user non-public user can run the `View requests` command to see the full lis
 |-----------|--------------|---------|------------|-------------------------|
 | 1         | gunr2171     | 12345   | Reviewer   | 2015-01-01 00:00:00 UTC |
 | 2         | rene         | 23456   | Bot Owner  | 2015-01-01 00:00:00 UTC |
-| 3         | sam          | 34567   | Toy User   | 2015-01-01 00:00:00 UTC |
+| 3         | sam          | 34567   | Reviewer   | 2015-01-01 00:00:00 UTC |
 
 The table will be ordered by "Requested at" ascending (oldest requests first).
 
