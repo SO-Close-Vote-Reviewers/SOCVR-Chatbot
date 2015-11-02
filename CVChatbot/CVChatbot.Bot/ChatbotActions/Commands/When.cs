@@ -75,11 +75,11 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             rng.GetBytes(n);
             var message = "";
 
-            if (BitConverter.ToUInt32(n, 0) % 101 > 33)
+            if (BitConverter.ToUInt32(n, 0) % 101 > 50)
             {
                 // Pick any date within 10 years from now.
                 var date = DateTime.UtcNow.Add(TimeSpan.FromDays(r.Next(-3652, 3652)));
-                message = date.ToString("yyyy/MM/dd", CultureInfo.InvariantCulture);
+                message = date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
             }
             else
             {
