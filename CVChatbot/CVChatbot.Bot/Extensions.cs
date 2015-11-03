@@ -211,40 +211,8 @@ namespace CVChatbot.Bot
                 value, (value == 1) ? description : String.Format("{0}s", description));
         }
 
-        public static T PickRandomTheRightWay/*™*/<T>(this IEnumerable<T> items)
-        {
-            items.ThrowIfNull("items");
-
-            var n = new byte[4];
-            rng.GetBytes(n);
-
-            return items.ElementAt((int)(BitConverter.ToUInt32(n, 0) % items.Count()));
-        }
-
         public static string GetChatFriendlyUsername(this User user)
         {
-            var n = new byte[4];
-            rng.GetBytes(n);
-
-            if (BitConverter.ToUInt32(n, 0) % 15 == 0)
-            {
-                switch (user.ID)
-                {
-                    case 1043380:
-                    {
-                        return "My Dad";
-                    }
-                    case 578411:
-                    {
-                        return "My Mom";
-                    }
-                    case 2246344:
-                    {
-                        return "My Uncle";
-                    }
-                }
-            }
-
             var ms = Regex.Matches(user.Name, @"\p{Lu}?\p{Ll}*");
             var name = "";
 
