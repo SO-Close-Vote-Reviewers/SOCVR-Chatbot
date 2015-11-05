@@ -249,13 +249,13 @@ namespace CVChatbot.Bot
         private void HandleAuditPassed(SOCVRDotNet.User user, ReviewItem audit)
         {
             var message = new MessageBuilder();
-            var tag = audit.Tags[0];
+            var tag = audit.Tags[0].ToLowerInvariant();
             dbAccessor.InsertCompletedAuditEntry(user.ID, tag);
 
             message.AppendText(room.GetUser(user.ID).GetChatFriendlyUsername());
             message.AppendText(" passed a");
             // Basic grammar correction. Not foolproof, but it'll do.
-            message.AppendText("aeiou".Contains(char.ToLowerInvariant(tag[0])) ? "n " : " ");
+            message.AppendText("aeiou".Contains(tag[0]) ? "n " : " ");
             message.AppendText(tag, TextFormattingOptions.Tag, WhiteSpace.Space);
             message.AppendLink("audit!", "http://stackoverflow.com/review/close/" + audit.ID);
 
