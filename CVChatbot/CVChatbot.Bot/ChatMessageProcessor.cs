@@ -1,4 +1,26 @@
-﻿using ChatExchangeDotNet;
+﻿/*
+ * CVChatbot. Chatbot for the SO Close Vote Reviewers Chat Room.
+ * Copyright © 2015, SO-Close-Vote-Reviewers.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
+
+
+
+using ChatExchangeDotNet;
 using CVChatbot.Bot.ChatbotActions;
 using CVChatbot.Bot.ChatbotActions.Commands;
 using CVChatbot.Bot.Database;
@@ -54,8 +76,10 @@ namespace CVChatbot.Bot
                 {
                     // User was trying to make a command.
                     SendUnrecognizedCommandToDatabase(incommingChatMessage.GetContentsWithStrippedMentions());
-                    chatRoom.PostReplyOrThrow(incommingChatMessage, "Sorry, I don't understand that. Use `{0}` for a list of commands."
-                        .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<Commands>()));
+                    // This'll fire if a user replies to a tag
+                    // confirmation message , so lets disable this for now.
+                    //chatRoom.PostReplyOrThrow(incommingChatMessage, "Sorry, I don't understand that. Use `{0}` for a list of commands."
+                    //    .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<Commands>()));
                 }
                 // Else it's a trigger, do nothing.
 
@@ -101,7 +125,7 @@ namespace CVChatbot.Bot
             var userRecordInDB = da.GetRegisteredUserByChatProfileId(chatUserId);
 
             if (userRecordInDB == null) // At this point, the permission is Registered or Owner,
-                return false;    // and if the user is not in the database at all then it can't work.
+                return false;           // and if the user is not in the database at all then it can't work.
 
             if (neededPermissionLevel == ActionPermissionLevel.Registered)
                 return true; // The user is in the list, that's all we need to check.
@@ -147,7 +171,7 @@ namespace CVChatbot.Bot
             // Record as started.
             var id = RunningChatbotActionsManager.MarkChatbotActionAsStarted(
                 action.GetActionName(),
-                incommingChatMessage.Author.Name,
+                incommingChatMessage.Author.GetChatFriendlyUsername(),
                 incommingChatMessage.Author.ID);
 
             try

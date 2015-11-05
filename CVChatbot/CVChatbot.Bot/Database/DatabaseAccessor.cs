@@ -1,11 +1,29 @@
-﻿using System;
+﻿/*
+ * CVChatbot. Chatbot for the SO Close Vote Reviewers Chat Room.
+ * Copyright © 2015, SO-Close-Vote-Reviewers.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
+
+
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TCL.DataAccess;
 using System.Data;
-using TCL.Extensions;
 
 #if MsSql
 using TCL.DataAccess.MsSql;
@@ -60,8 +78,17 @@ where 'Id' = @SessionId;".Replace("'", "\"");
             });
         }
 
-        public void EndReviewSession(int sessionId, int? itemsReviewed)
+        public void EndReviewSession(int sessionId, int? itemsReviewed, DateTimeOffset? endTime = null)
         {
+            // Assume the user finished literally just now.
+            var timeToInsert = DateTimeOffset.Now;
+
+            if (endTime != null)
+            {
+                // Use the passed end time rather then assuming the user finish *right now*.
+                timeToInsert = endTime.Value;
+            }
+
 #if MsSql
             var sql = @"
 update ReviewSession
@@ -72,7 +99,7 @@ where Id = @SessionId;";
             var sql = @"
 update 'ReviewSession'
 set 'ItemsReviewed' = @ItemsReviewed,
-    'SessionEnd' = current_timestamp
+    'SessionEnd' = @SessionEnd
 where 'Id' = @SessionId;".Replace("'", "\"");
 #endif
 
@@ -80,6 +107,7 @@ where 'Id' = @SessionId;".Replace("'", "\"");
             {
                 c.AddParam("@ItemsReviewed", itemsReviewed);
                 c.AddParam("@SessionId", sessionId);
+                c.AddParam("@SessionEnd", timeToInsert);
             });
         }
 
@@ -130,9 +158,9 @@ where 'Id' = @SessionId;".Replace("'", "\"");
 #if MsSql
                 dr.Field<DateTimeOffset?>("SessionStartTs")
 #elif Postgres
-                dr.Field<DateTime?>("SessionStartTs")
+ dr.Field<DateTime?>("SessionStartTs")
 #endif
-            ));
+));
         }
 
         public ReviewSession GetLatestCompletedSession(int chatProfileId)
@@ -456,7 +484,7 @@ insert into 'ReviewSession' ('RegisteredUserId', 'SessionStart')
         private ReviewSession ConvertDataRowToReviewSession(DataRow dr)
         {
             var rs = new ReviewSession();
-            
+
             rs.Id = dr.Field<int>("Id");
             rs.RegisteredUserId = dr.Field<int>("RegisteredUserId");
 #if MsSql
@@ -467,7 +495,7 @@ insert into 'ReviewSession' ('RegisteredUserId', 'SessionStart')
             rs.SessionEnd = dr.Field<DateTime?>("SessionEnd");
 #endif
             rs.ItemsReviewed = dr.Field<int?>("ItemsReviewed");
-            
+
             return rs;
         }
 

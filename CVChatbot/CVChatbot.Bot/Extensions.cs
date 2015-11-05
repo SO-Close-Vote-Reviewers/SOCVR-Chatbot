@@ -1,4 +1,26 @@
-﻿using ChatExchangeDotNet;
+﻿/*
+ * CVChatbot. Chatbot for the SO Close Vote Reviewers Chat Room.
+ * Copyright © 2015, SO-Close-Vote-Reviewers.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
+
+
+
+using ChatExchangeDotNet;
 using CsQuery;
 using System;
 using System.Collections.Generic;
@@ -7,6 +29,8 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using TCL.Extensions;
+using System.Text.RegularExpressions;
+using System.Security.Cryptography;
 
 namespace CVChatbot.Bot
 {
@@ -15,6 +39,10 @@ namespace CVChatbot.Bot
     /// </summary>
     public static class Extensions
     {
+        private static readonly RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+
+
+
         /// <summary>
         ///  On a CQ dom find an <input name="foo" value="bar" > with the name foo and return bar or null for no match. 
         /// </summary>
@@ -46,11 +74,11 @@ namespace CVChatbot.Bot
         /// </summary>
         /// <param name="chatRoom"></param>
         /// <param name="message"></param>
-        public static void PostMessageOrThrow(this Room chatRoom, string message)
+        public static void PostMessageOrThrow(this Room chatRoom, object message)
         {
-            var postedMessage = chatRoom.PostMessage(message);
+            var success = chatRoom.PostMessageFast(message);
 
-            if (postedMessage == null)
+            if (!success)
             {
                 throw new InvalidOperationException("Unable to post message");
             }
@@ -62,7 +90,7 @@ namespace CVChatbot.Bot
         /// <param name="chatRoom"></param>
         /// <param name="replyingToMessage"></param>
         /// <param name="message"></param>
-        public static void PostReplyOrThrow(this Room chatRoom, Message replyingToMessage, string message)
+        public static void PostReplyOrThrow(this Room chatRoom, Message replyingToMessage, object message)
         {
             chatRoom.PostReplyOrThrow(replyingToMessage.ID, message);
         }
@@ -73,11 +101,11 @@ namespace CVChatbot.Bot
         /// <param name="chatRoom"></param>
         /// <param name="replyingToMessageId"></param>
         /// <param name="message"></param>
-        public static void PostReplyOrThrow(this Room chatRoom, int replyingToMessageId, string message)
+        public static void PostReplyOrThrow(this Room chatRoom, int replyingToMessageId, object message)
         {
-            var postedMessage = chatRoom.PostReply(replyingToMessageId, message);
+            var success = chatRoom.PostReplyFast(replyingToMessageId, message);
 
-            if (postedMessage == null)
+            if (!success)
             {
                 throw new InvalidOperationException("Unable to post message");
             }
@@ -181,6 +209,20 @@ namespace CVChatbot.Bot
         {
             return String.Format("{0:#,##0} {1}",
                 value, (value == 1) ? description : String.Format("{0}s", description));
+        }
+
+        public static string GetChatFriendlyUsername(this User user)
+        {
+            var ms = Regex.Matches(user.Name, @"\p{Lu}?\p{Ll}*");
+            var name = "";
+
+            foreach (Match m in ms)
+            {
+                if (name.Length > 3) { break; }
+                name += m.Value;
+            }
+
+            return name;
         }
 
         /// <summary>

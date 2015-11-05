@@ -55,8 +55,9 @@
       <HintPath>..\packages\ChatExchange.Net.3.1.0-beta\lib\ChatExchange.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="CsQuery">
+    <Reference Include="CsQuery, Version=1.3.3.249, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CsQuery.1.3.4\lib\net40\CsQuery.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Mono.Security">
       <HintPath>..\packages\Npgsql.2.2.5\lib\net45\Mono.Security.dll</HintPath>
@@ -70,6 +71,10 @@
     </Reference>
     <Reference Include="ServiceStack.Text, Version=4.0.44.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ServiceStack.Text.4.0.44\lib\net40\ServiceStack.Text.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SOCVR.Net, Version=2.0.0.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SOCVR.Net.2.0.6-beta\lib\SOCVR.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -122,9 +127,6 @@
     <Compile Include="ChatbotActions\Commands\UserCommand.cs" />
     <Compile Include="ChatbotActions\Triggers\CompletedAudit.cs" />
     <Compile Include="ChatbotActions\Triggers\EmptyFilter.cs" />
-    <Compile Include="ChatbotActions\Triggers\EndingSessionTrigger.cs" />
-    <Compile Include="ChatbotActions\Triggers\OutOfCloseVotes.cs" />
-    <Compile Include="ChatbotActions\Triggers\OutOfReviewActions.cs" />
     <Compile Include="ChatbotActions\Triggers\Trigger.cs" />
     <Compile Include="ChatBotStats.cs" />
     <Compile Include="ChatMessageProcessor.cs" />
@@ -143,6 +145,7 @@
     <Compile Include="SEDEAccessor.cs" />
     <Compile Include="SedeClient.cs" />
     <Compile Include="ThrowWhen.cs" />
+    <Compile Include="UserWatchersManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.Config" />
