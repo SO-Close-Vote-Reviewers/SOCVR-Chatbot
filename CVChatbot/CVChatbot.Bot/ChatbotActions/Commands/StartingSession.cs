@@ -30,7 +30,8 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 "Don't get lost in the queue!",
                 "Watch out for audits!",
                 "May the Vote be with you!",
-                "May Shog9's Will be done.",
+                //"May Shog9's Will be done.",
+                "Make a dent!",
                 "By the power of the Vote! Review!"
             };
 
