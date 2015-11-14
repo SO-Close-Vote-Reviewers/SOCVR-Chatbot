@@ -58,7 +58,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
         public override ActionPermissionLevel GetPermissionLevel()
         {
-            return ActionPermissionLevel.Registered;
+            return ActionPermissionLevel.Owner;
         }
     }
 }
