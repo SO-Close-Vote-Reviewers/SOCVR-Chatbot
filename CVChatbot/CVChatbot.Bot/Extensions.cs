@@ -66,7 +66,7 @@ namespace CVChatbot.Bot
         /// <returns></returns>
         public static string GetContentsWithStrippedMentions(this Message message)
         {
-            return ExtensionMethods.StripMention(message.Content);
+            return Message.GetMessageContent(message.Host, message.ID);
         }
 
         /// <summary>

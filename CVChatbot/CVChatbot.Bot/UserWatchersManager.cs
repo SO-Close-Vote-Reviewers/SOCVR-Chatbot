@@ -53,16 +53,16 @@ namespace CVChatbot.Bot
 
         public UserWatchersManager(ref Room chatRoom, InstallationSettings settings)
         {
-            if (chatRoom == null) { throw new ArgumentNullException("chatRoom"); }
-            if (settings == null) { throw new ArgumentNullException("settings"); }
+            if (chatRoom == null) throw new ArgumentNullException("chatRoom");
+            if (settings == null) throw new ArgumentNullException("settings");
 
             room = chatRoom;
             initSettings = settings;
             firstReviews = new ConcurrentDictionary<int, DateTime>();
             latestReviews = new ConcurrentDictionary<int, DateTime>();
             tagReviewedConfirmationQueue = new ConcurrentDictionary<User, List<string>>();
-            yesRegex = new Regex(@"(?i)\by[ue][aps]h?\b", RegexOptions.Compiled | RegexOptions.CultureInvariant);
-            noRegex = new Regex(@"(?i)\bno*(pe|t)?\b", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+            yesRegex = new Regex(@"(?i)\b(y[eu][sp]|correct|right|true|tp)\b", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+            noRegex = new Regex(@"(?i)\b(no+(pe)?|wrong|incorrect|false|fp)\b", RegexOptions.Compiled | RegexOptions.CultureInvariant);
             dbAccessor = new DatabaseAccessor(settings.DatabaseConnectionString);
 
             InitialiseWatcher();
@@ -86,7 +86,7 @@ namespace CVChatbot.Bot
 
         public void Dispose()
         {
-            if (dispose) { return; }
+            if (dispose) return;
             dispose = true;
 
             Watcher.Dispose();
@@ -101,7 +101,7 @@ namespace CVChatbot.Bot
 
         public void AddUser(User user)
         {
-            if (user == null) { throw new ArgumentNullException("user"); }
+            if (user == null) throw new ArgumentNullException("user");
 
             AddUser(user.ID);
         }
@@ -117,7 +117,9 @@ namespace CVChatbot.Bot
             {
                 if (dbAccessor.GetRegisteredUserByChatProfileId(user.ID) == null ||
                     user.Reputation < 3000)
-                { continue; }
+                {
+                    continue;
+                }
 
                 users.Add(user.ID);
             }
@@ -143,7 +145,7 @@ namespace CVChatbot.Bot
 
             var newUserId = 0;
             var sucess = int.TryParse(new string(m.Content.Where(char.IsDigit).ToArray()), out newUserId);
-            if (!sucess) { return; }
+            if (!sucess) return;
 
             AddNewUser(newUserId, false);
         }
@@ -307,7 +309,7 @@ namespace CVChatbot.Bot
         private void HandleCurrentTagsChangedConfirmation(Message reply)
         {
             var tagConfirmationKv = tagReviewedConfirmationQueue.FirstOrDefault(kv => kv.Key.ID == reply.Author.ID);
-            if (tagConfirmationKv.Key == null) { return; }
+            if (tagConfirmationKv.Key == null) return;
 
             if (yesRegex.IsMatch(reply.Content))
             {
