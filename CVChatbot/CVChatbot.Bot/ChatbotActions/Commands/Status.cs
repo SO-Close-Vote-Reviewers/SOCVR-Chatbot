@@ -1,54 +1,36 @@
-﻿using ChatExchangeDotNet;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using TCL.Extensions;
+using System.Text.RegularExpressions;
 
 namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class Status : UserCommand
     {
+        private Regex ptn = new Regex(@"^((program|chatbot|bot|what'?s your) )?status(\?)?$", RegexObjOptions);
+
+        public override string ActionDescription =>
+            "Tests if the chatbot is alive and shows simple info about it.";
+
+        public override string ActionName => "Status";
+
+        public override string ActionUsage => "status";
+
+        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Everyone;
+
+        protected override Regex RegexMatchingObject => ptn;
+
+
+
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var elapsedTime = DateTime.Now - ChatBotStats.LoginDate;
-
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-            string version = fvi.FileVersion;
-
-            var message = "SOCVR ChatBot version {0}, running for {1}."
-                .FormatInline(version, elapsedTime.ToUserFriendlyString());
+            var assembly = Assembly.GetExecutingAssembly();
+            var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+            var version = fvi.FileVersion;
+            var message = $"SOCVR ChatBot version {version}, running for {elapsedTime.ToUserFriendlyString()}.";
 
             chatRoom.PostMessageOrThrow(message);
-        }
-
-        public override ActionPermissionLevel GetPermissionLevel()
-        {
-            return ActionPermissionLevel.Everyone;
-        }
-
-        protected override string GetRegexMatchingPattern()
-        {
-            return @"^((program|chatbot|bot|what'?s your) )?status(\?)?$";
-        }
-
-        public override string GetActionName()
-        {
-            return "Status";
-        }
-
-        public override string GetActionDescription()
-        {
-            return "Tests if the chatbot is alive and shows simple info about it.";
-        }
-
-        public override string GetActionUsage()
-        {
-            return "status";
         }
     }
 }

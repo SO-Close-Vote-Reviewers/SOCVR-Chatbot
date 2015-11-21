@@ -90,7 +90,7 @@ namespace CVChatbot.Bot
         /// <returns></returns>
         private bool DoesUserHavePermissionToRunAction(ChatbotAction actionToRun, int chatUserId)
         {
-            var neededPermissionLevel = actionToRun.GetPermissionLevel();
+            var neededPermissionLevel = actionToRun.PermissionLevel;
 
             // If the permission level of the action is "everyone" then just return true.
             // Don't need to do anything else, like searching though the database.
@@ -146,7 +146,7 @@ namespace CVChatbot.Bot
         {
             // Record as started.
             var id = RunningChatbotActionsManager.MarkChatbotActionAsStarted(
-                action.GetActionName(),
+                action.ActionName,
                 incommingChatMessage.Author.Name,
                 incommingChatMessage.Author.ID);
 
@@ -178,10 +178,8 @@ namespace CVChatbot.Bot
         /// a table of commands that the chatbot did not recognize.
         /// </summary>
         /// <param name="command"></param>
-        private void SendUnrecognizedCommandToDatabase(string command)
-        {
+        private void SendUnrecognizedCommandToDatabase(string command) =>
             da.InsertUnrecognizedCommand(command);
-        }
 
         /// <summary>
         /// Call this method if you get an error while running a ChatbotAction.
@@ -192,8 +190,7 @@ namespace CVChatbot.Bot
         /// <param name="actionToRun"></param>
         private void TellChatAboutErrorWhileRunningAction(Exception ex, Room chatRoom, ChatbotAction actionToRun)
         {
-            var headerLine = "I hit an error while trying to run '{0}':"
-                .FormatSafely(actionToRun.GetActionName());
+            var headerLine = $"I hit an error while trying to run '{actionToRun.ActionName}':";
 
             var errorMessage = "    " + ex.FullErrorMessage(Environment.NewLine + "    ");
 

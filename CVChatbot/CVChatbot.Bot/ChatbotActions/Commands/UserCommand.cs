@@ -1,9 +1,4 @@
 ﻿using ChatExchangeDotNet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CVChatbot.Bot.ChatbotActions.Commands
 {
@@ -29,9 +24,6 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
         /// If you want to run a User Command it must be a reply to the chatbot.
         /// </summary>
         /// <returns></returns>
-        protected override bool GetMessageIsReplyToChatbotRequiredValue()
-        {
-            return true;
-        }
+        protected override bool ReplyMessagesOnly => true;
     }
 }

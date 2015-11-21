@@ -26,9 +26,9 @@ namespace CVChatbot.Bot
         /// </remarks>
         internal static string GetInputValue(this CQ input, string elementName)
         {
-            var fkeyE = input["input"].FirstOrDefault(e => e.Attributes["name"] != null && e.Attributes["name"] == elementName);
+            var fkeyE = input["input"].FirstOrDefault(e => e?.Attributes["name"] == elementName);
 
-            return fkeyE == null ? null : fkeyE.Attributes["value"];
+            return fkeyE?.Attributes["value"];
         }
 
         /// <summary>
@@ -36,10 +36,8 @@ namespace CVChatbot.Bot
         /// </summary>
         /// <param name="message">The message to process.</param>
         /// <returns></returns>
-        public static string GetContentsWithStrippedMentions(this Message message)
-        {
-            return ExtensionMethods.StripMention(message.Content);
-        }
+        public static string GetContentsWithStrippedMentions(this Message message) =>
+            ExtensionMethods.StripMention(message.Content);
 
         /// <summary>
         /// Attempts to post the message to the chat room. If the message could not be posted an exception will be thrown.
@@ -62,10 +60,8 @@ namespace CVChatbot.Bot
         /// <param name="chatRoom"></param>
         /// <param name="replyingToMessage"></param>
         /// <param name="message"></param>
-        public static void PostReplyOrThrow(this Room chatRoom, Message replyingToMessage, string message)
-        {
+        public static void PostReplyOrThrow(this Room chatRoom, Message replyingToMessage, string message) =>
             chatRoom.PostReplyOrThrow(replyingToMessage.ID, message);
-        }
 
         /// <summary>
         /// Attempts to post the reply message to the chat room. If the message could not be posted an exception will be thrown.
@@ -192,10 +188,8 @@ namespace CVChatbot.Bot
         /// <param name="columnHeaders"></param>
         /// <param name="valueSelectors"></param>
         /// <returns></returns>
-        public static string ToStringTable<T>(this IEnumerable<T> values, string[] columnHeaders, params Func<T, object>[] valueSelectors)
-        {
-            return ToStringTable(values.ToArray(), columnHeaders, valueSelectors);
-        }
+        public static string ToStringTable<T>(this IEnumerable<T> values, string[] columnHeaders, params Func<T, object>[] valueSelectors) =>
+            ToStringTable(values.ToArray(), columnHeaders, valueSelectors);
 
         /// <summary>
         /// Creates an ascii table from the given array.
@@ -223,7 +217,7 @@ namespace CVChatbot.Bot
                 {
                     object value = valueSelectors[colIndex].Invoke(values[rowIndex - 1]);
 
-                    arrValues[rowIndex, colIndex] = value != null ? value.ToString() : "null";
+                    arrValues[rowIndex, colIndex] =  value?.ToString() ?? "null";
                 }
             }
 
@@ -274,16 +268,14 @@ namespace CVChatbot.Bot
         {
             var maxColumnsWidth = new int[arrValues.GetLength(1)];
             for (int colIndex = 0; colIndex < arrValues.GetLength(1); colIndex++)
+            for (int rowIndex = 0; rowIndex < arrValues.GetLength(0); rowIndex++)
             {
-                for (int rowIndex = 0; rowIndex < arrValues.GetLength(0); rowIndex++)
-                {
-                    int newLength = arrValues[rowIndex, colIndex].Length;
-                    int oldLength = maxColumnsWidth[colIndex];
+                int newLength = arrValues[rowIndex, colIndex].Length;
+                int oldLength = maxColumnsWidth[colIndex];
 
-                    if (newLength > oldLength)
-                    {
-                        maxColumnsWidth[colIndex] = newLength;
-                    }
+                if (newLength > oldLength)
+                {
+                    maxColumnsWidth[colIndex] = newLength;
                 }
             }
 

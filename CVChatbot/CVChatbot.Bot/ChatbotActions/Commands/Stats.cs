@@ -1,45 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TCL.Extensions;
+﻿using System.Text.RegularExpressions;
 
 namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class Stats : UserCommand
     {
+        private Regex ptn = new Regex("^(close vote )?stats( (please|pl[sz]))?$", RegexObjOptions);
+
+        public override string ActionDescription =>
+            "Shows the stats at the top of the /review/close/stats page.";
+
+        public override string ActionName => "Stats";
+
+        public override string ActionUsage => "stats";
+
+        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Registered;
+
+        protected override Regex RegexMatchingObject => ptn;
+
+
+
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var sa = new CloseQueueStatsAccessor();
             var message = sa.GetOverallQueueStats();
 
             chatRoom.PostMessageOrThrow(message);
-        }
-
-        public override ActionPermissionLevel GetPermissionLevel()
-        {
-            return ActionPermissionLevel.Registered;
-        }
-
-        protected override string GetRegexMatchingPattern()
-        {
-            return "^(close vote )?stats( (please|pl[sz]))?$";
-        }
-
-        public override string GetActionName()
-        {
-            return "Stats";
-        }
-
-        public override string GetActionDescription()
-        {
-            return "Shows the stats at the top of the /review/close/stats page.";
-        }
-
-        public override string GetActionUsage()
-        {
-            return "stats";
         }
     }
 }

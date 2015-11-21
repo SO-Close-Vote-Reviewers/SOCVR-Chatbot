@@ -1,15 +1,27 @@
 ﻿using CVChatbot.Bot.Database;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TCL.Extensions;
+using System.Text.RegularExpressions;
 
 namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class EndSession : UserCommand
     {
+        private Regex ptn = new Regex(@"^(end|done( with)?) (my )?(session|review(s|ing))( pl(ease|[sz]))?$", RegexObjOptions);
+
+        public override string ActionDescription =>
+            "If a user has an open review session this command will force end that session.";
+
+        public override string ActionName => "End Session";
+
+        public override string ActionUsage => "end session";
+
+        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Registered;
+
+        protected override Regex RegexMatchingObject => ptn;
+
+
+
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
@@ -38,32 +50,6 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<LastSessionStats>()) +
                 "In addition, the number of review items is most likely not set, use the command `{0}` to fix that."
                 .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<LastSessionEditCount>()));
-
-        }
-
-        public override ActionPermissionLevel GetPermissionLevel()
-        {
-            return ActionPermissionLevel.Registered;
-        }
-
-        protected override string GetRegexMatchingPattern()
-        {
-            return @"^(end|done( with)?) (my )?(session|review(s|ing))( pl(ease|[sz]))?$";
-        }
-
-        public override string GetActionName()
-        {
-            return "End Session";
-        }
-
-        public override string GetActionDescription()
-        {
-            return "If a user has an open review session this command will force end that session.";
-        }
-
-        public override string GetActionUsage()
-        {
-            return "end session";
         }
     }
 }

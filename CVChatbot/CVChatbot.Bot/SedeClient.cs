@@ -43,7 +43,7 @@ namespace CVChatbot.Bot
             ThrowWhen.IsNullOrEmpty(email, "email");
             ThrowWhen.IsNullOrEmpty(password, "password");
 
-            login = () => { SEOpenIDLogin(email, password); };
+            login = () => SEOpenIDLogin(email, password);
 
             login.Invoke();
         }
@@ -180,7 +180,7 @@ namespace CVChatbot.Bot
                     jobResult = JsonSerializer.DeserializeFromStream<JobResult>(jobStream);
                     if (jobResult.Captcha)
                     {
-                        Console.WriteLine("captcha requested! not logged in? Attempt: {0}", loginAttemtps);
+                        Console.WriteLine($"Captcha requested! Not logged in? Attempt: {loginAttemtps}");
                         login.Invoke();
                     }
                     else
@@ -285,10 +285,7 @@ namespace CVChatbot.Bot
         /// <summary>
         /// This seems a thin wrapper but this here for future use.
         /// </summary>
-        private string GetCSVQuery(string query)
-        {
-            return Get(query);
-        }
+        private string GetCSVQuery(string query) => Get(query);
 
         /// <summary>
         /// POST to the url the urlencoded data and return the contents as a string.

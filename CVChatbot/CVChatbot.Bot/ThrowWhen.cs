@@ -16,7 +16,7 @@ namespace CVChatbot.Bot
         {
             if (String.IsNullOrEmpty(value))
             {
-                throw new ArgumentException(String.Format("'{0}' must not be null or empty.", paramName), paramName);
+                throw new ArgumentException($"'{paramName}' must not be null or empty.", paramName);
             }
         }
     }

@@ -1,10 +1,5 @@
 ﻿using ChatExchangeDotNet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace CVChatbot.Bot.ChatbotActions
 {
@@ -13,6 +8,8 @@ namespace CVChatbot.Bot.ChatbotActions
     /// </summary>
     public abstract class ChatbotAction
     {
+        public static RegexOptions RegexObjOptions => RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase;
+
         /// <summary>
         /// Determines if the incoming chat message activates this action.
         /// </summary>
@@ -22,16 +19,13 @@ namespace CVChatbot.Bot.ChatbotActions
         public bool DoesChatMessageActiveAction(Message incomingMessage, bool isMessageAReplyToChatbot)
         {
             // First, check if the message is a reply or not and if the Action accepts that.
-            var requiredIsReplyValue = GetMessageIsReplyToChatbotRequiredValue();
-
-            if (isMessageAReplyToChatbot != requiredIsReplyValue)
+            if (isMessageAReplyToChatbot != ReplyMessagesOnly)
                 return false;
 
             // Now regex test it.
             var formattedContents = GetMessageContentsReadyForRegexParsing(incomingMessage);
-            var regex = GetRegexMatchingObject();
 
-            return regex.IsMatch(formattedContents);
+            return RegexMatchingObject.IsMatch(formattedContents);
         }
 
         /// <summary>
@@ -40,25 +34,14 @@ namespace CVChatbot.Bot.ChatbotActions
         /// action to be activated. For example, User Commands MUST be a reply to the chatbot.
         /// </summary>
         /// <returns></returns>
-        protected abstract bool GetMessageIsReplyToChatbotRequiredValue();
+        protected abstract bool ReplyMessagesOnly { get; }
 
         /// <summary>
-        /// Returns the regex matching pattern for this action. This is used to determine if the
+        /// Returns the regex matching object for this action. This is used to determine if the
         /// chat message is appropriate for this action.
         /// </summary>
-        /// <returns></returns>
-        protected abstract string GetRegexMatchingPattern();
-
-        /// <summary>
-        /// This is already populated with the necessary matching pattern text.
-        /// You may call this method from the RunAction() method if you need arguments within chat message.
-        /// </summary>
         /// <returns>The regex object needed for pattern matching with the incoming chat message.</returns>
-        protected Regex GetRegexMatchingObject()
-        {
-            var pattern = GetRegexMatchingPattern();
-            return new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-        }
+        protected abstract Regex RegexMatchingObject { get; }
 
         /// <summary>
         /// Formats the incoming message's contents so that it can be regex matched more reliably.
@@ -78,25 +61,25 @@ namespace CVChatbot.Bot.ChatbotActions
         /// Returns the human-friendly name of the chatbot action.
         /// </summary>
         /// <returns></returns>
-        public abstract string GetActionName();
+        public abstract string ActionName { get; }
 
         /// <summary>
         /// Returns a short description of what the action does. Triggers return null.
         /// </summary>
         /// <returns></returns>
-        public abstract string GetActionDescription();
+        public abstract string ActionDescription { get; }
 
         /// <summary>
         /// Returns the usage of the action, including optional arguments. Triggers return null.
         /// </summary>
         /// <returns></returns>
-        public abstract string GetActionUsage();
+        public abstract string ActionUsage { get; }
 
         /// <summary>
         /// Returns the minimum permission level needed by a user to run this action.
         /// </summary>
         /// <returns></returns>
-        public abstract ActionPermissionLevel GetPermissionLevel();
+        public abstract ActionPermissionLevel PermissionLevel { get; }
     }
 
     /// <summary>
