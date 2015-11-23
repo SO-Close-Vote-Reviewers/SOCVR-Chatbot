@@ -61,8 +61,8 @@ namespace CVChatbot.Bot
             firstReviews = new ConcurrentDictionary<int, DateTime>();
             latestReviews = new ConcurrentDictionary<int, DateTime>();
             tagReviewedConfirmationQueue = new ConcurrentDictionary<User, List<string>>();
-            yesRegex = new Regex(@"(?i)\b(y[eu][sp]|correct|right|true|tp)\b", RegexOptions.Compiled | RegexOptions.CultureInvariant);
-            noRegex = new Regex(@"(?i)\b(no+(pe)?|wrong|incorrect|false|fp)\b", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+            yesRegex = new Regex(@"^(y[eu][sp]|correct|right|true|tp)((\s\S+)*)$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+            noRegex = new Regex(@"(?i)^(no+(pe|t)?|wrong|incorrect|false|fp)((\s\S+)*)$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
             dbAccessor = new DatabaseAccessor(settings.DatabaseConnectionString);
 
             InitialiseWatcher();
@@ -310,22 +310,51 @@ namespace CVChatbot.Bot
         {
             var tagConfirmationKv = tagReviewedConfirmationQueue.FirstOrDefault(kv => kv.Key.ID == reply.Author.ID);
             if (tagConfirmationKv.Key == null) return;
-
             if (yesRegex.IsMatch(reply.Content))
             {
+                var selection = yesRegex.Match(reply.Content).Groups[3].Value.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                var savedTags = 0;
+
                 foreach (var tag in tagConfirmationKv.Value)
                 {
-                    dbAccessor.InsertNoItemsInFilterRecord(reply.Author.ID, tag);
+                    if (selection?.Length > 0 && selection.Any(t => tag.Contains(t)))
+                    {
+                        dbAccessor.InsertNoItemsInFilterRecord(reply.Author.ID, tag);
+                        savedTags++;
+                    }
                 }
-                var outMsg = "Ok, I've marked " + (tagConfirmationKv.Value.Count > 1 ?
+
+                var outMsg = "Ok, I've marked " + (savedTags > 1 ?
                     "them as completed tags." :
                     "it as a completed tag.");
                 room.PostReplyOrThrow(reply, outMsg);
             }
             else if (noRegex.IsMatch(reply.Content))
             {
-                var outMsg = "Sorry, my mistake.";
-                room.PostReplyOrThrow(reply, outMsg);
+                var selection = noRegex.Match(reply.Content).Groups[4].Value.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (selection?.Length == 0)
+                {
+                    room.PostReplyOrThrow(reply, "Sorry, my mistake.");
+                }
+                else
+                {
+                    var savedTags = 0;
+
+                    foreach (var tag in tagConfirmationKv.Value)
+                    {
+                        if (selection.All(t => !tag.Contains(t)))
+                        {
+                            dbAccessor.InsertNoItemsInFilterRecord(reply.Author.ID, tag);
+                            savedTags++;
+                        }
+                    }
+
+                    var outMsg = "Ok, I've marked " + (savedTags > 1 ?
+                        "the others as completed tags." :
+                        "the other as a completed tag.");
+                    room.PostReplyOrThrow(reply, outMsg);
+                }
             }
             else
             {

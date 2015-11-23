@@ -20,42 +20,15 @@
 
 
 
-using CVChatbot.Bot.Database;
-using System;
-using TCL.Extensions;
-
 namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class EndSession : UserCommand
     {
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
-            var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
-
-            var latestSession = da.GetLatestSessionForUser(incommingChatMessage.Author.ID);
-
-            if (latestSession == null)
-            {
-                chatRoom.PostReplyOrThrow(incommingChatMessage, "I don't have any review session for you on record. Use the `{0}` command to tell me you are starting a review session."
-                    .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<StartingSession>()));
-                return;
-            }
-
-            if (latestSession.SessionEnd != null)
-            {
-                chatRoom.PostReplyOrThrow(incommingChatMessage, "Your latest review session has already been completed. Use the command `{0}` to see more information."
-                    .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<LastSessionStats>()));
-                return;
-            }
-
-            // Else, lastestSession is open.
-
-            da.SetSessionEndTs(latestSession.Id, DateTimeOffset.Now);
-
-            chatRoom.PostReplyOrThrow(incommingChatMessage, "I have forcefully ended your last session. To see more details use the command `{0}`. "
-                .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<LastSessionStats>()) +
-                "In addition, the number of review items is most likely not set, use the command `{0}` to fix that."
-                .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<LastSessionEditCount>()));
+            var msg = "You don't need to run this command anymore!" +
+                " Your session automatically ends when you reach either 40 CVs or the end of this UTC day.";
+            chatRoom.PostReplyOrThrow(incommingChatMessage, msg);
         }
 
         public override ActionPermissionLevel GetPermissionLevel()
