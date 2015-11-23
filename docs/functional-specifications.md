@@ -503,7 +503,7 @@ A group member has two methods to approve or reject a request.
 
 ## User Tracking
 
-As previously stated, v1 primarily relies on information fed from chat users in the room. This worked to a degree, but allows users to supply [inaccurate data](http://chat.stackoverflow.com/transcript/41570?m=24910842#24910842) and can become tiresome after while. Thus we’ve introduced automated review data<sup>§</sup> gathering for:
+As previously stated, v1 primarily relies on information fed from chat users in the room. This worked to a degree, but allows users to supply [inaccurate data](http://chat.stackoverflow.com/transcript/41570?m=24910842#24910842) and can become tiresome after a while. Thus we’ve introduced automated review data<sup>§</sup> gathering for:
 
 * Passed audits,
 * Failed audits,
@@ -531,11 +531,13 @@ If a tracked user passes an audit:
 
 If a tracked user has completed 40 review items:
 
-> @[username], You've completed 40 CV review items today, thanks! The time between your first and last review today was X minutes, averaging to a review every Y minutes.
+> @[username], You've completed 40 CV review items today, thanks! The time between your first and last review today was X minutes, averaging to a review every Y [minutes|seconds].
 
-If the user appears to be working on a new set of tags (this message will only be said once per day per user):
+If the user appears to be working on a new set of tags (this message will only be said once per day per user)<sup>^</sup>:
 
 > Yesterday you were working on [tag], are you done with that?
+
+<sup><sup>^</sup> Additional discussion need (as a user may review multiple tag sets per day).</sup>
 
 ## Docker
 
