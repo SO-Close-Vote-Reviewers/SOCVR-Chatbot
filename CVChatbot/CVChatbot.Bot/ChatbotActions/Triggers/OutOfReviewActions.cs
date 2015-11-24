@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Configuration;
-using TCL.Extensions;
+﻿using TCL.Extensions;
 using CVChatbot.Bot.ChatbotActions.Commands;
+using System.Text.RegularExpressions;
 
 namespace CVChatbot.Bot.ChatbotActions.Triggers
 {
@@ -15,9 +9,23 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
     /// </summary>
     public class OutOfReviewActions : EndingSessionTrigger
     {
+        private Regex ptn = new Regex(@"^(?:> +)?thank you for reviewing (?!-)([1-9]|[1-3]\d|40) close votes today; come back in ([\w ]+) to continue reviewing\.?$", RegexObjOptions);
+
+        public override string ActionDescription => null;
+
+        public override string ActionName => "Out of Review Actions";
+
+        public override string ActionUsage => null;
+
+        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Registered;
+
+        protected override Regex RegexMatchingObject => ptn;
+
+
+
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
-            var itemsReviewed = GetRegexMatchingObject()
+            var itemsReviewed = RegexMatchingObject
                 .Match(GetMessageContentsReadyForRegexParsing(incommingChatMessage))
                 .Groups[1]
                 .Value
@@ -30,31 +38,6 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
                 chatRoom.PostReplyOrThrow(incommingChatMessage, "Thanks for reviewing! To see more information use the command `{0}`."
                     .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<LastSessionStats>()));
             }
-        }
-
-        public override ActionPermissionLevel GetPermissionLevel()
-        {
-            return ActionPermissionLevel.Registered;
-        }
-
-        protected override string GetRegexMatchingPattern()
-        {
-            return @"^(?:> +)?thank you for reviewing (\d+) close votes today; come back in ([\w ]+) to continue reviewing\.$";
-        }
-
-        public override string GetActionName()
-        {
-            return "Out of Review Actions";
-        }
-
-        public override string GetActionDescription()
-        {
-            return null;
-        }
-
-        public override string GetActionUsage()
-        {
-            return null;
         }
     }
 }

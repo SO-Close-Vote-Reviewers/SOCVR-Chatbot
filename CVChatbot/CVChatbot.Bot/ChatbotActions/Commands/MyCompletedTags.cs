@@ -1,23 +1,29 @@
 ﻿using CVChatbot.Bot.Database;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class MyCompletedTags : UserCommand
     {
-        protected override string GetRegexMatchingPattern()
-        {
-            return @"^my completed tags$";
-        }
+        private Regex ptn = new Regex("^my completed tags$", RegexObjOptions);
+
+        public override string ActionDescription => "Returns a list of tags you have completed.";
+
+        public override string ActionName => "My Completed Tags";
+
+        public override string ActionUsage => "my completed tags";
+
+        protected override Regex RegexMatchingObject => ptn;
+
+        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Registered;
+
+
 
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
-            var completedTags = da.GetUserCompletedTags(incommingChatMessage.AuthorID);
+            var completedTags = da.GetUserCompletedTags(incommingChatMessage.Author.ID);
 
             if (!completedTags.Any())
             {
@@ -34,26 +40,6 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
             chatRoom.PostReplyOrThrow(incommingChatMessage, headerMessage);
             chatRoom.PostMessageOrThrow(dataMessage);
-        }
-
-        public override string GetActionName()
-        {
-            return "My Completed Tags";
-        }
-
-        public override string GetActionDescription()
-        {
-            return "Returns a list of tags you have completed.";
-        }
-
-        public override string GetActionUsage()
-        {
-            return "my completed tags";
-        }
-
-        public override ActionPermissionLevel GetPermissionLevel()
-        {
-            return ActionPermissionLevel.Registered;
         }
     }
 }

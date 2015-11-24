@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TCL.DataAccess;
 using System.Data;
-using TCL.Extensions;
 
 #if MsSql
 using TCL.DataAccess.MsSql;

@@ -2,11 +2,6 @@
 using CVChatbot.Bot.ChatbotActions.Commands;
 using CVChatbot.Bot.Database;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TCL.Extensions;
 
 namespace CVChatbot.Bot.ChatbotActions.Triggers
@@ -25,7 +20,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
             var da = new DatabaseAccessor(settings.DatabaseConnectionString);
 
             // Find the latest session by that user.
-            var latestSession = da.GetLatestOpenSessionForUser(userMessage.AuthorID);
+            var latestSession = da.GetLatestOpenSessionForUser(userMessage.Author.ID);
 
             // First, check if there is a session.
             if (latestSession == null)

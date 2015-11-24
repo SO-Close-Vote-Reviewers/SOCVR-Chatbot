@@ -1,16 +1,25 @@
-﻿using CVChatbot.Bot.ChatbotActions.Commands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
+using CVChatbot.Bot.ChatbotActions.Commands;
 using TCL.Extensions;
 
 namespace CVChatbot.Bot.ChatbotActions.Triggers
 {
     public class OutOfCloseVotes : EndingSessionTrigger
     {
+        private Regex ptn = new Regex(@"^(?:> +)?you have no more close votes today; come back in (\d+) hours\.?$", RegexObjOptions);
+
+        public override string ActionDescription => null;
+
+        public override string ActionName => "Out of Close Votes";
+
+        public override string ActionUsage => null;
+
+        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Registered;
+
+        protected override Regex RegexMatchingObject => ptn;
+
+
+
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var success = EndSession(incommingChatMessage, chatRoom, null, roomSettings);
@@ -21,31 +30,6 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
                     .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<LastSessionEditCount>());
                 chatRoom.PostReplyOrThrow(incommingChatMessage, message);
             }
-        }
-
-        public override ActionPermissionLevel GetPermissionLevel()
-        {
-            return ActionPermissionLevel.Registered;
-        }
-
-        protected override string GetRegexMatchingPattern()
-        {
-            return @"^(?:> +)?you have no more close votes today; come back in (\d+) hours\.$";
-        }
-
-        public override string GetActionName()
-        {
-            return "Out of Close Votes";
-        }
-
-        public override string GetActionDescription()
-        {
-            return null;
-        }
-
-        public override string GetActionUsage()
-        {
-            return null;
         }
     }
 }

@@ -1,11 +1,7 @@
 ﻿using CVChatbot.Bot.Database;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using TCL.Extensions;
+using System.Text.RegularExpressions;
 
 namespace CVChatbot.Bot.ChatbotActions.Commands
 {
@@ -14,9 +10,24 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     /// </summary>
     public class CompletedTags : UserCommand
     {
+        private Regex ptn = new Regex(@"^completed tags(?: min (\d+))?$", RegexObjOptions);
+
+        public override string ActionDescription =>
+            "Shows the latest tags that have been completed by multiple people.";
+
+        public override string ActionName => "Completed Tags";
+
+        public override string ActionUsage => "completed tags [min <#>]";
+
+        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Registered;
+
+        protected override Regex RegexMatchingObject => ptn;
+
+
+
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
-            var thresholdInCommand =  GetRegexMatchingObject()
+            var thresholdInCommand =  RegexMatchingObject
                 .Match(GetMessageContentsReadyForRegexParsing(incommingChatMessage))
                 .Groups[1]
                 .Value
@@ -34,7 +45,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             var usingDefault = thresholdInCommand == null;
 
             var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
-            var completedTagsData = da.GetCompletedTags(peopleThreshold, 10); //10 is hard coded for now, could be changed later
+            var completedTagsData = da.GetCompletedTags(peopleThreshold, 10); // 10 is hard coded for now, could be changed later
 
             var headerMessage = "Showing the latest 10 tags that have been cleared by at least {0} {1}."
                 .FormatInline(peopleThreshold, peopleThreshold != 1 ? "people" : "person");
@@ -51,9 +62,9 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             {
                 dataMessage = completedTagsData
                     .ToStringTable(new[] { "Tag Name", "Count", "Latest Time Cleared" },
-                        (x) => x.TagName,
-                        (x) => x.PeopleWhoCompletedTag,
-                        (x) => x.LastEntryTs.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'"));
+                        x => x.TagName,
+                        x => x.PeopleWhoCompletedTag,
+                        x => x.LastEntryTs.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'"));
             }
             else
             {
@@ -62,32 +73,6 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
             chatRoom.PostReplyOrThrow(incommingChatMessage, headerMessage);
             chatRoom.PostMessageOrThrow(dataMessage);
-            
-        }
-
-        public override ActionPermissionLevel GetPermissionLevel()
-        {
-            return ActionPermissionLevel.Registered;
-        }
-
-        protected override string GetRegexMatchingPattern()
-        {
-            return @"^completed tags(?: min (\d+))?$";
-        }
-
-        public override string GetActionName()
-        {
-            return "Completed Tags";
-        }
-
-        public override string GetActionDescription()
-        {
-            return "Shows the latest tags that have been completed by multiple people.";
-        }
-
-        public override string GetActionUsage()
-        {
-            return "completed tags [min <#>]";
         }
     }
 }

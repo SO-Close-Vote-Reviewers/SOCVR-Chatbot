@@ -1,20 +1,31 @@
 ﻿using CVChatbot.Bot.Database;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using TCL.Extensions;
+using System.Text.RegularExpressions;
 
 namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class CurrentSession : UserCommand
     {
+        private Regex ptn = new Regex(@"^(do i have an? |what is my )?(current|active|review)( review)? session( going( on)?)?\??$", RegexObjOptions);
+
+        public override string ActionDescription =>
+            "Tells if the user has an open session or not, and when it started.";
+
+        public override string ActionName => "Current Session";
+
+        public override string ActionUsage => "current session";
+
+        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Registered;
+
+        protected override Regex RegexMatchingObject => ptn;
+
+
+
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
-            var currentSessionStartTs = da.GetCurrentSessionStartTs(incommingChatMessage.AuthorID);
+            var currentSessionStartTs = da.GetCurrentSessionStartTs(incommingChatMessage.Author.ID);
 
             if (currentSessionStartTs == null)
             {
@@ -30,31 +41,6 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
                 chatRoom.PostReplyOrThrow(incommingChatMessage, message);
             }
-        }
-
-        public override ActionPermissionLevel GetPermissionLevel()
-        {
-            return ActionPermissionLevel.Registered;
-        }
-
-        protected override string GetRegexMatchingPattern()
-        {
-            return @"^(do i have an? |what is my )?(current|active|review)( review)? session( going( on)?)?\??$";
-        }
-
-        public override string GetActionName()
-        {
-            return "Current Session";
-        }
-
-        public override string GetActionDescription()
-        {
-            return "Tells if the user has an open session or not, and when it started.";
-        }
-
-        public override string GetActionUsage()
-        {
-            return "current session";
         }
     }
 }

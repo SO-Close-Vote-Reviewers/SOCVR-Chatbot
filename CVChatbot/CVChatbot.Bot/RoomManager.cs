@@ -43,10 +43,7 @@ namespace CVChatbot.Bot
             }
         }
 
-        public void Dispose()
-        {
-            Dispose(!disposed);
-        }
+        public void Dispose() => Dispose(!disposed);
 
         void cmp_StopBotCommandIssued(object sender, EventArgs e)
         {
@@ -72,7 +69,7 @@ namespace CVChatbot.Bot
             chatClient = new Client(settings.Email, settings.Password);
             cvChatRoom = chatClient.JoinRoom(settings.ChatRoomUrl);
             ChatBotStats.LoginDate = DateTime.Now;
-            cvChatRoom.StripMentionFromMessages = false;
+            cvChatRoom.StripMention = false;
 
             // Say the startup message?
             if (!settings.StartUpMessage.IsNullOrWhiteSpace())
@@ -87,6 +84,7 @@ namespace CVChatbot.Bot
             }
 
             cvChatRoom.EventManager.ConnectListener(EventType.MessagePosted, new Action<Message>(cvChatRoom_NewMessage));
+            cvChatRoom.EventManager.ConnectListener(EventType.MessageEdited, new Action<Message>(cvChatRoom_NewMessage));
         }
 
         public void LeaveRoom()
@@ -103,7 +101,7 @@ namespace CVChatbot.Bot
             try
             {
                 if (InformationMessageBroadcasted != null)
-                    InformationMessageBroadcasted(newMessage.Content, newMessage.AuthorName);
+                    InformationMessageBroadcasted(newMessage.Content, newMessage.Author.Name);
 
                 await Task.Run(() => cmp.ProcessChatMessage(newMessage, cvChatRoom));
             }

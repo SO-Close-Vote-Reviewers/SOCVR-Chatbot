@@ -55,12 +55,8 @@ namespace CVChatbot.Bot
         /// Returns a listing of all currently running chatbot actions.
         /// </summary>
         /// <returns></returns>
-        public static List<RunningChatbotAction> GetRunningChatbotActions()
-        {
-            return runningChatbotActions
-                .Select(x => x.Value)
-                .ToList();
-        }
+        public static List<RunningChatbotAction> GetRunningChatbotActions() => 
+            runningChatbotActions.Select(x => x.Value).ToList();
     }
 
     /// <summary>

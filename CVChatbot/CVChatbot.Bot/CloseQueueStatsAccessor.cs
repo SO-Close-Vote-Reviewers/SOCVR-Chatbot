@@ -33,9 +33,9 @@ namespace CVChatbot.Bot
 
             var message = new[]
             {
-                "{0} need review".FormatInline(needReview),
-                "{0} reviews today".FormatInline(reviewsToday),
-                "{0} reviews all-time".FormatInline(allTime),
+                $"{needReview} need review",
+                $"{reviewsToday} reviews today",
+                $"{allTime} reviews all-time",
             }
             .ToCSV(Environment.NewLine);
             return message;

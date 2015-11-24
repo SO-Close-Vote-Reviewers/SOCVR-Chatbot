@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using TCL.Extensions;
 using CVChatbot.Bot.Database;
+using System.Text.RegularExpressions;
 
 namespace CVChatbot.Bot.ChatbotActions.Commands
 {
@@ -14,10 +10,24 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     /// </summary>
     public class LastSessionStats : UserCommand
     {
+        private Regex ptn = new Regex("^last session stats$", RegexObjOptions);
+
+        public override string ActionDescription => "Shows stats about your last review session.";
+
+        public override string ActionName => "Lass Session Stats";
+
+        public override string ActionUsage => "last session stats";
+
+        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Registered;
+
+        protected override Regex RegexMatchingObject => ptn;
+
+
+
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
-            var lastFinishedSession = da.GetLatestCompletedSession(incommingChatMessage.AuthorID);
+            var lastFinishedSession = da.GetLatestCompletedSession(incommingChatMessage.Author.ID);
 
             if (lastFinishedSession == null)
             {
@@ -59,7 +69,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             }
 
             // Check if there is a on-going review session.
-            var ongoingSessionStartTs = da.GetCurrentSessionStartTs(incommingChatMessage.AuthorID);
+            var ongoingSessionStartTs = da.GetCurrentSessionStartTs(incommingChatMessage.Author.ID);
 
             if (ongoingSessionStartTs != null)
             {
@@ -68,31 +78,6 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             }
 
             chatRoom.PostReplyOrThrow(incommingChatMessage, statMessage);
-        }
-
-        public override ActionPermissionLevel GetPermissionLevel()
-        {
-            return ActionPermissionLevel.Registered;
-        }
-
-        protected override string GetRegexMatchingPattern()
-        {
-            return @"^last session stats$";
-        }
-
-        public override string GetActionName()
-        {
-            return "Lass Session Stats";
-        }
-
-        public override string GetActionDescription()
-        {
-            return "Shows stats about your last review session.";
-        }
-
-        public override string GetActionUsage()
-        {
-            return "last session stats";
         }
     }
 }

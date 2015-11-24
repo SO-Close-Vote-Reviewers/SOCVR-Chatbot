@@ -1,10 +1,5 @@
-﻿using CVChatbot.Bot.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
+using CVChatbot.Bot.Database;
 using TCL.Extensions;
 
 namespace CVChatbot.Bot.ChatbotActions.Commands
@@ -14,10 +9,25 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     /// </summary>
     public class LastSessionEditCount : UserCommand
     {
+        private Regex ptn = new Regex(@"^last session edit count (\d+)$", RegexObjOptions);
+
+        public override string ActionDescription =>
+            "Edits the number of reviewed items in your last review session.";
+
+        public override string ActionName => "Last Session Edit Count";
+
+        public override string ActionUsage => "last session edit count <new count>";
+
+        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Registered;
+
+        protected override Regex RegexMatchingObject => ptn;
+
+
+
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
-            var lastSession = da.GetLatestCompletedSession(incommingChatMessage.AuthorID);
+            var lastSession = da.GetLatestCompletedSession(incommingChatMessage.Author.ID);
 
             if (lastSession == null)
             {
@@ -25,7 +35,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 return;
             }
 
-            var newReviewCount = GetRegexMatchingObject()
+            var newReviewCount = RegexMatchingObject
                 .Match(GetMessageContentsReadyForRegexParsing(incommingChatMessage))
                 .Groups[1]
                 .Value
@@ -47,8 +57,8 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     Items Reviewed: {4} -> {5}
     Use the command 'last session stats' to see more details."
                 .FormatInline(
-                    incommingChatMessage.AuthorName,
-                    incommingChatMessage.AuthorID,
+                    incommingChatMessage.Author.Name,
+                    incommingChatMessage.Author.ID,
                     lastSession.SessionStart.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'"),
                     lastSession.SessionEnd.Value.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'"),
                     previousReviewCount.HasValue
@@ -59,31 +69,6 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             da.EditLatestCompletedSessionItemsReviewedCount(lastSession.Id, newReviewCount);
 
             chatRoom.PostReplyOrThrow(incommingChatMessage, replyMessage);
-        }
-
-        public override ActionPermissionLevel GetPermissionLevel()
-        {
-            return ActionPermissionLevel.Registered;
-        }
-
-        protected override string GetRegexMatchingPattern()
-        {
-            return @"^last session edit count (\d+)$";
-        }
-
-        public override string GetActionName()
-        {
-            return "Last Session Edit Count";
-        }
-
-        public override string GetActionDescription()
-        {
-            return "Edits the number of reviewed items in your last review session.";
-        }
-
-        public override string GetActionUsage()
-        {
-            return "last session edit count <new count>";
         }
     }
 }

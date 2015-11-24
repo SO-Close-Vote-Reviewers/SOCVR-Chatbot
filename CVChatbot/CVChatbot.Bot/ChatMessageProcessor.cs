@@ -65,8 +65,8 @@ namespace CVChatbot.Bot
             // You have a single item to run.
             var chatbotActionToRun = possibleChatbotActionsToRun.Single();
 
-            // Now, do you have permission to run it?
-            if (DoesUserHavePermissionToRunAction(chatbotActionToRun, incommingChatMessage.AuthorID))
+            // Now, do you have permission to run it? If you are a mod the answer is yes, else you need to check.
+            if (incommingChatMessage.Author.IsMod || DoesUserHavePermissionToRunAction(chatbotActionToRun, incommingChatMessage.Author.ID))
             {
                 // Have permission, run it.
                 RunChatbotAction(chatbotActionToRun, incommingChatMessage, chatRoom);
@@ -90,7 +90,7 @@ namespace CVChatbot.Bot
         /// <returns></returns>
         private bool DoesUserHavePermissionToRunAction(ChatbotAction actionToRun, int chatUserId)
         {
-            var neededPermissionLevel = actionToRun.GetPermissionLevel();
+            var neededPermissionLevel = actionToRun.PermissionLevel;
 
             // If the permission level of the action is "everyone" then just return true.
             // Don't need to do anything else, like searching though the database.
@@ -124,8 +124,16 @@ namespace CVChatbot.Bot
             if (chatMessage.ParentID == -1)
                 return false;
 
-            var parentMessage = chatRoom.GetMessage(chatMessage.ParentID);
-            return parentMessage.AuthorID == chatRoom.Me.ID;
+            // Check if we're trying to fetch a deleted message.
+            try
+            {
+                var parentMessage = chatRoom.GetMessage(chatMessage.ParentID);
+                return parentMessage.Author.ID == chatRoom.Me.ID;
+            }
+            catch (MessageNotFoundException)
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -138,9 +146,9 @@ namespace CVChatbot.Bot
         {
             // Record as started.
             var id = RunningChatbotActionsManager.MarkChatbotActionAsStarted(
-                action.GetActionName(),
-                incommingChatMessage.AuthorName,
-                incommingChatMessage.AuthorID);
+                action.ActionName,
+                incommingChatMessage.Author.Name,
+                incommingChatMessage.Author.ID);
 
             try
             {
@@ -170,10 +178,9 @@ namespace CVChatbot.Bot
         /// a table of commands that the chatbot did not recognize.
         /// </summary>
         /// <param name="command"></param>
-        private void SendUnrecognizedCommandToDatabase(string command)
-        {
+        private void SendUnrecognizedCommandToDatabase(string command) =>
             da.InsertUnrecognizedCommand(command);
-        }
+
         /// <summary>
         /// Call this method if you get an error while running a ChatbotAction.
         /// This will attempt to send a message to chat about error in a standard format.
@@ -183,8 +190,7 @@ namespace CVChatbot.Bot
         /// <param name="actionToRun"></param>
         private void TellChatAboutErrorWhileRunningAction(Exception ex, Room chatRoom, ChatbotAction actionToRun)
         {
-            var headerLine = "I hit an error while trying to run '{0}':"
-                .FormatSafely(actionToRun.GetActionName());
+            var headerLine = $"I hit an error while trying to run '{actionToRun.ActionName}':";
 
             var errorMessage = "    " + ex.FullErrorMessage(Environment.NewLine + "    ");
 

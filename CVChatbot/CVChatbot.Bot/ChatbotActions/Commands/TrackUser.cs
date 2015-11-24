@@ -1,19 +1,28 @@
-﻿using CVChatbot.Bot.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
+using CVChatbot.Bot.Database;
 using TCL.Extensions;
 
 namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class TrackUser : UserCommand
     {
+        private Regex ptn = new Regex(@"^(?:add|track) user (\d+)$", RegexObjOptions);
+
+        public override string ActionDescription => "Adds the user to the registered users list.";
+
+        public override string ActionName => "Add user";
+
+        public override string ActionUsage => "(add | track) user <chat id>";
+
+        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Owner;
+
+        protected override Regex RegexMatchingObject => ptn;
+
+
+
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
-            var userIdToAdd = GetRegexMatchingObject()
+            var userIdToAdd = RegexMatchingObject
                 .Match(GetMessageContentsReadyForRegexParsing(incommingChatMessage))
                 .Groups[1]
                 .Value
@@ -32,33 +41,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             da.AddUserToRegisteredUsersList(userIdToAdd);
 
             var chatUser = chatRoom.GetUser(userIdToAdd);
-            chatRoom.PostReplyOrThrow(incommingChatMessage, "Ok, I added {0} ({1}) to the tracked users list."
-                .FormatInline(chatUser.Name, chatUser.ID));
-        }
-
-        public override ActionPermissionLevel GetPermissionLevel()
-        {
-            return ActionPermissionLevel.Owner;
-        }
-
-        protected override string GetRegexMatchingPattern()
-        {
-            return @"^(?:add|track) user (\d+)$";
-        }
-
-        public override string GetActionName()
-        {
-            return "Add user";
-        }
-
-        public override string GetActionDescription()
-        {
-            return "Adds the user to the registered users list.";
-        }
-
-        public override string GetActionUsage()
-        {
-            return "(add | track) user <chat id>";
+            chatRoom.PostReplyOrThrow(incommingChatMessage, $"Ok, I added {chatUser.Name} ({chatUser.ID}) to the ---stalked--- tracked users list.");
         }
     }
 }

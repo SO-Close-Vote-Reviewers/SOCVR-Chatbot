@@ -1,10 +1,8 @@
-﻿using ChatExchangeDotNet;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using TCL.Extensions;
 
 namespace CVChatbot.Bot.ChatbotActions.Commands
@@ -14,6 +12,20 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     /// </summary>
     public class Commands : UserCommand
     {
+        private Regex ptn = new Regex("^(show the )?(list of )?(user )?command(s| list)( pl(ease|[sz]))?$", RegexObjOptions);
+
+        public override string ActionDescription => "Shows this list.";
+
+        public override string ActionName => "Commands";
+
+        public override string ActionUsage => "commands";
+
+        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Everyone;
+
+        protected override Regex RegexMatchingObject => ptn;
+
+
+
         private static class ReflectiveEnumerator
         {
             public static IEnumerable<T> GetEnumerableOfType<T>(params object[] constructorArgs) where T : class
@@ -29,13 +41,11 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             }
         }
 
-
-
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var groupedCommands = ChatbotActionRegister.AllChatActions
                 .Where(x => x is UserCommand)
-                .GroupBy(x => x.GetPermissionLevel());
+                .GroupBy(x => x.PermissionLevel);
 
             var finalMessageLines = new List<string>();
             finalMessageLines.Add("Below is a list of commands for the Close Vote Chat Bot");
@@ -43,11 +53,11 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
             foreach (var group in groupedCommands)
             {
-                finalMessageLines.Add("{0}".FormatInline(group.Key.ToString()));
+                finalMessageLines.Add(group.Key.ToString());
 
                 var groupCommandLines = group
-                    .OrderBy(x => x.GetActionName())
-                    .Select(x => "    {0} - {1}".FormatInline(x.GetActionUsage(), x.GetActionDescription()));
+                    .OrderBy(x => x.ActionName)
+                    .Select(x => $"    {x.ActionUsage} - {x.ActionDescription}");
 
                 finalMessageLines.AddRange(groupCommandLines);
                 finalMessageLines.Add("");
@@ -58,31 +68,6 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 .ToCSV(Environment.NewLine);
 
             chatRoom.PostMessageOrThrow(finalMessage);
-        }
-
-        public override ActionPermissionLevel GetPermissionLevel()
-        {
-            return ActionPermissionLevel.Everyone;
-        }
-
-        protected override string GetRegexMatchingPattern()
-        {
-            return "^(show the )?(list of )?(user )?command(s| list)( pl(ease|[sz]))?$";
-        }
-
-        public override string GetActionName()
-        {
-            return "Commands";
-        }
-
-        public override string GetActionDescription()
-        {
-            return "Shows this list.";
-        }
-
-        public override string GetActionUsage()
-        {
-            return "commands";
         }
     }
 }
