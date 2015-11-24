@@ -53,6 +53,8 @@ Grab a chair and sit down. Let me tell you a tale of how things used to be.
 
 Back when I (gunr2171) joined SOCVR, the main members were rene and TGMCians. That's just about it. Some people popped in from time to time, but for the most part the only people consistently helping on the CV queue were those two. It took me some time to get used to the queue but once I was acclimated I joined in.
 
+With such a small crew, the only way we could make a dent in the queue would be to all work on the same tag. This way, there would be a high chance we would be reviewing the same post, and ensuring that more review items were completed.
+
 The best way we had to keep track of what we were working on was manually. We would need to ping each other (usually rene) to say when we're done with a tag, or other such status updates. With only 3 members, this wasn't a problem.
 
 Audits were a different story. We wrote "passed c# audit" not to keep track of it, but to just tell the other person that we were still here and doing our part. It was a "hey look, I'm still going strong."
