@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CVChatbot.Bot.ChatbotActions
 {
@@ -37,7 +35,7 @@ namespace CVChatbot.Bot.ChatbotActions
         {
             return AllChatActions
                 .Single(x => x is TAction)
-                .GetActionUsage();
+                .ActionUsage;
         }
 
         private static class ReflectiveEnumerator

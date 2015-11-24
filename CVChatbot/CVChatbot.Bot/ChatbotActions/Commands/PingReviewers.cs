@@ -1,19 +1,26 @@
 ﻿using CVChatbot.Bot.Database;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TCL.Extensions;
+using System.Text.RegularExpressions;
 
 namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class PingReviewers : UserCommand
     {
-        protected override string GetRegexMatchingPattern()
-        {
-            return @"^ping reviewers (.+)$";
-        }
+        private Regex ptn = new Regex("^ping reviewers (.+)$");
+
+        public override string ActionDescription =>
+            "The bot will send a message with an @reply to all users that have done reviews recently.";
+
+        public override string ActionName => "Ping Reviewers";
+
+        public override string ActionUsage => "ping reviewers <message>";
+
+        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Owner;
+
+        protected override Regex RegexMatchingObject => ptn;
+
+
 
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
@@ -34,33 +41,13 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
             var combinedUserNames = userNames.ToCSV(" ");
 
-            var messageFromIncommingChatMessage = GetRegexMatchingObject()
+            var messageFromIncommingChatMessage = RegexMatchingObject
                 .Match(GetMessageContentsReadyForRegexParsing(incommingChatMessage))
                 .Groups[1]
                 .Value;
 
-            var outboundMessage = "{0} {1}".FormatInline(messageFromIncommingChatMessage, combinedUserNames);
+            var outboundMessage = $"{messageFromIncommingChatMessage} {combinedUserNames}";
             chatRoom.PostMessageOrThrow(outboundMessage);
-        }
-
-        public override string GetActionName()
-        {
-            return "Ping Reviewers";
-        }
-
-        public override string GetActionDescription()
-        {
-            return "The bot will send a message with an @reply to all users that have done reviews recently.";
-        }
-
-        public override string GetActionUsage()
-        {
-            return "ping reviewers <message>";
-        }
-
-        public override ActionPermissionLevel GetPermissionLevel()
-        {
-            return ActionPermissionLevel.Owner;
         }
     }
 }

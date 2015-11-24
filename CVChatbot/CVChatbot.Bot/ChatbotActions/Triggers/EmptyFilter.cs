@@ -1,26 +1,35 @@
-﻿using ChatExchangeDotNet;
-using CVChatbot.Bot.Database;
-using System;
-using System.Collections.Generic;
+﻿using CVChatbot.Bot.Database;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace CVChatbot.Bot.ChatbotActions.Triggers
 {
     public class EmptyFilter : Trigger
     {
+        private Regex ptn = new Regex("^(?:> +)?there are no items for you to review, matching the filter \"(?:[A-z-, ']+; )?([\\S ]+)\"");
+        private Regex tagMatchingPattern = new Regex(@"\[(\S+?)\] ?", RegexObjOptions);
+
+        public override string ActionDescription => null;
+
+        public override string ActionName => "Empty Filter";
+
+        public override string ActionUsage => null;
+
+        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Registered;
+
+        protected override Regex RegexMatchingObject => ptn;
+
+
+
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             // First, get the tags that were used.
-            string tags = GetRegexMatchingObject()
+            string tags = RegexMatchingObject
                     .Match(GetMessageContentsReadyForRegexParsing(incommingChatMessage))
                     .Groups[1]
                     .Value;
 
             // Split out tags.
-            var tagMatchingPattern = new Regex(@"\[(\S+?)\] ?", RegexOptions.CultureInvariant);
             var parsedTagNames = tagMatchingPattern.Matches(incommingChatMessage.Content.ToLower())
                 .Cast<Match>()
                 .Select(x => x.Groups[1].Value)
@@ -33,31 +42,6 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
             {
                 da.InsertNoItemsInFilterRecord(incommingChatMessage.Author.ID, tagName);
             }
-        }
-
-        public override ActionPermissionLevel GetPermissionLevel()
-        {
-            return ActionPermissionLevel.Registered;
-        }
-
-        protected override string GetRegexMatchingPattern()
-        {
-            return "^(?:> +)?there are no items for you to review, matching the filter \"(?:[A-z-, ']+; )?([\\S ]+)\"";
-        }
-
-        public override string GetActionName()
-        {
-            return "Empty Filter";
-        }
-
-        public override string GetActionDescription()
-        {
-            return null;
-        }
-
-        public override string GetActionUsage()
-        {
-            return null;
         }
     }
 }

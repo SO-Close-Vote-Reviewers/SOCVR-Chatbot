@@ -1,14 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using TCL.Extensions;
 
 namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class RunningCommands : UserCommand
     {
+        private Regex ptn = new Regex(@"^(show (a |me )?)?(list of |the )?running (commands|actions)( (please|pl[sz]))?$", RegexObjOptions);
+
+        public override string ActionDescription =>
+            "Displays a list of all commands that the chat bot is currently running.";
+
+        public override string ActionName => "Running Commands";
+
+        public override string ActionUsage => "running commands";
+
+        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Everyone;
+
+        protected override Regex RegexMatchingObject => ptn;
+
+
+
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var runningCommands = RunningChatbotActionsManager.GetRunningChatbotActions();
@@ -18,7 +31,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
                 .Select(x => new
                 {
                     Command = x.ChatbotActionName,
-                    ForUser = "{0} ({1})".FormatInline(x.RunningForUserName, x.RunningForUserId),
+                    ForUser = $"{x.RunningForUserName} ({x.RunningForUserId})",
                     Started = (now - x.StartTs).ToUserFriendlyString() + " ago",
                 })
                 .ToStringTable(new[] { "Command", "For User", "Started" },
@@ -28,31 +41,6 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
 
             chatRoom.PostReplyOrThrow(incommingChatMessage, "The following is a list of commands that I'm currently running:");
             chatRoom.PostMessageOrThrow(tableMessage);
-        }
-
-        public override ActionPermissionLevel GetPermissionLevel()
-        {
-            return ActionPermissionLevel.Everyone;
-        }
-
-        protected override string GetRegexMatchingPattern()
-        {
-            return @"^(show (a |me )?)?(list of |the )?running (commands|actions)( (please|pl[sz]))?$";
-        }
-
-        public override string GetActionName()
-        {
-            return "Running Commands";
-        }
-
-        public override string GetActionDescription()
-        {
-            return "Displays a list of all commands that the chat bot is currently running.";
-        }
-
-        public override string GetActionUsage()
-        {
-            return "running commands";
         }
     }
 }

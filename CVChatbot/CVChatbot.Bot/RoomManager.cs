@@ -43,10 +43,7 @@ namespace CVChatbot.Bot
             }
         }
 
-        public void Dispose()
-        {
-            Dispose(!disposed);
-        }
+        public void Dispose() => Dispose(!disposed);
 
         void cmp_StopBotCommandIssued(object sender, EventArgs e)
         {

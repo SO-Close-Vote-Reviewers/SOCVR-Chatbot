@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TCL.Extensions;
+﻿using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace CVChatbot.Bot.ChatbotActions.Commands
 {
@@ -13,25 +8,20 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
     /// </summary>
     public class CurrentTag : UserCommand
     {
-        public override string GetActionDescription()
-        {
-            return "Get the tag that has the most amount of manageable close queue items from the SEDE query.";
-        }
+        private Regex ptn = new Regex(@"^(what is the )?current tag( pl(ease|[sz]))?\??$", RegexObjOptions);
 
-        public override string GetActionName()
-        {
-            return "Current Tag";
-        }
+        public override string ActionDescription =>
+            "Get the tag that has the most amount of manageable close queue items from the SEDE query.";
 
-        public override string GetActionUsage()
-        {
-            return "current tag";
-        }
+        public override string ActionName => "Current Tag";
 
-        public override ActionPermissionLevel GetPermissionLevel()
-        {
-            return ActionPermissionLevel.Registered;
-        }
+        public override string ActionUsage => "current tag";
+
+        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Registered;
+
+        protected override Regex RegexMatchingObject => ptn;
+
+
 
         /// <summary>
         /// Outputs the tag.
@@ -51,7 +41,7 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             string dataMessage;
             if (tags != null)
             {
-                dataMessage = "The current tag is [tag:{0}] with {1} known review items.".FormatInline(tags.First().Key, tags.First().Value);
+                dataMessage = $"The current tag is [tag:{tags.First().Key}] with {tags.First().Value} known review items.";
             }
             else
             {
@@ -59,11 +49,6 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             }
 
             chatRoom.PostReplyOrThrow(incommingChatMessage, dataMessage);
-        }
-
-        protected override string GetRegexMatchingPattern()
-        {
-            return @"^(what is the )?current tag( pl(ease|[sz]))?\??$";
         }
     }
 }

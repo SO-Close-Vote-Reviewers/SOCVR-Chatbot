@@ -1,14 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using TCL.Extensions;
 
 namespace CVChatbot.Bot.ChatbotActions.Commands
 {
     public class Alive : UserCommand
     {
+        private Regex ptn = new Regex(@"^(?:(?:are )?you )?(alive|still there|(still )?with us)\??$", RegexObjOptions);
+
+        public override string ActionDescription => "A simple ping command to test if the bot is running.";
+
+        public override string ActionName => "Alive";
+
+        public override string ActionUsage => "alive";
+
+        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Everyone;
+
+        protected override Regex RegexMatchingObject => ptn;
+
+
+
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
         {
             var responsePhrases = new List<string>()
@@ -25,31 +36,6 @@ namespace CVChatbot.Bot.ChatbotActions.Commands
             var phrase = responsePhrases.PickRandom();
 
             chatRoom.PostReplyOrThrow(incommingChatMessage, phrase);
-        }
-
-        public override ActionPermissionLevel GetPermissionLevel()
-        {
-            return ActionPermissionLevel.Everyone;
-        }
-
-        protected override string GetRegexMatchingPattern()
-        {
-            return @"^(?:(?:are )?you )?(alive|still there|(still )?with us)\??$";
-        }
-
-        public override string GetActionName()
-        {
-            return "Alive";
-        }
-
-        public override string GetActionDescription()
-        {
-            return "A simple ping command to test if the bot is running.";
-        }
-
-        public override string GetActionUsage()
-        {
-            return "alive";
         }
     }
 }

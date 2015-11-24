@@ -54,7 +54,7 @@ namespace CVChatbot.Console
 
         static void mng_InformationMessageBroadcasted(string message, string author)
         {
-            WriteToConsole("[{0}] {1}".FormatInline(author, message));
+            WriteToConsole($"[{author}] {message}");
         }
 
         static void mng_ShutdownOrderGiven(object sender, EventArgs e)
