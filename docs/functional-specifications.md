@@ -59,15 +59,16 @@ The best way we had to keep track of what we were working on was manually. We wo
 
 Audits were a different story. We wrote "passed c# audit" not to keep track of it, but to just tell the other person that we were still here and doing our part. It was a "hey look, I'm still going strong."
 
-All of the commands in version 1 are formatted to the way manual messages were made. It's not the cleanest, but it works.
+All of the commands in version 1 are formatted to accept the way manual messages were made. It's not the cleanest, but it works.
 
 ## What does this program plan to solve?
 
 Instead of 3 regulars we've got about 10 or more, depending on the day. I developed the bot primarily as a way of keeping track of what our chat room has accomplished so we know what to work on next.
 
-The question this bot is designed to solve is:
+The questions this bot is designed to solve are:
 
-> The other chat members and I are in the CV queue right now, what should we work on to maximize the number of review items that get completed?
+> The other chat members and I are in the CV queue right now, what should we work on to maximize the number of review items that get completed?  
+> How am I doing in the CV queue? (stats)
 
 ## History of v1
 
@@ -80,7 +81,7 @@ Areas of Version 1 that we have problems with:
 
 ## Goals for v2
 
-What are the primary goals for this version of the software? The bullet point items should be no more than (around) 5, very broad in scope (because they will be explained in detail later), and give a "big picture" for the direction of the software:
+The high level goals for version 2 are:
 
 * Runs as a Linux Docker image - running the bot from Jenkins is not what Jenkins is designed for, so the software will be built to run as a service. Jenkins will still be used for testing the software and deploying it to test/production environments.
 * Minimum interactions needed from chat to operate - bot will work in the background to gather information, without needing it from chat.
@@ -104,18 +105,21 @@ Here's how a chat member should expect to use the bot in v2:
 
 ## V2 Command List
 
-Commands for this version will focus on stats. Some commands will stick around incase manual intervention is needed.
+Commands for this version will focus on stats. Some commands will stick around in case manual intervention is needed.
 
-General rules for commands:
+**General rules for commands:**
 
 * "Public" commands are primarily to test if the bot is running or get general information from the bot.
 * Moderators have access to all commands.
+* Commands and arguments are case-insensitive
 
 The following is a summary table of all commands. Extended details are in the next sections.
 
 ### Commands for Public permission group
 
 <!-- use https://ozh.github.io/ascii-tables/ to create this -->
+
+Anyone in chat can run these commands.
 
 | Command                            | Description                                                                        |
 |------------------------------------|------------------------------------------------------------------------------------|
@@ -131,7 +135,7 @@ The following is a summary table of all commands. Extended details are in the ne
 
 | Command              | Description                                                                                                                                        |
 |----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
-| Audit stats          | Shows the user how many of each tag they have passed audits for.                                                                                   |
+| Audit stats          | Shows the user how many audits of each tag they have passed.                                                                                       |
 | Current Tag          | Fetches the tag that has the most amount of manageable close queue items from the SEDE query.                                                      |
 | Next [#] tags        | Displays the first X tags from the SEDE query to focus on.                                                                                         |
 | Refresh tags         | Forces a refresh of the tags obtained from the SEDE query.                                                                                         |
@@ -253,6 +257,13 @@ Then followed by a multilined message in the following format:
 	[display name] [user id]
 </pre>
 
+The groups shown are shown, in this order:
+
+1. Reviewers
+2. Bot Owners
+
+The `Public` permission group will not be shown in this list.
+
 ### Opt-in / Opt-out
 By default, when a user joins the Reviews permission group, they are opted-in to the tracking system. A Reviewer might want to be ignored by the tracking system for a period of time (this could be hours, days, months, etc). The Opt-out command will allow that user to be ignored until they run the opt-in command. The bot will also record the date of the last "opt-" change.
 
@@ -346,6 +357,8 @@ A user may want more detailed information than what has already been provided fr
 
 The Item Id is the number in the URL for that review item. If the review item is not an audit then the Audit cell will be blank. Order this table by Completed At ascending.
 
+This is the only place in the entire program which will display failed audits.
+
 ### Start Event
 The Start Event command is a combination of the Next [3] Tags and Queue Stats command. This is used to formally start a weekly review event.
 
@@ -399,9 +412,9 @@ If the request was approved, the message will append the following:
 
 The new permission system will be made of 3 groups:
 
-* Public,
-* Reviewers,
-* Bot Owners.
+* Public
+* Reviewers
+* Bot Owners
 
 These groups are independent of each other. A person can be in multiple groups at once. Members of each group (besides Public) can add users to that group.
 
@@ -539,7 +552,7 @@ If the user appears to be working on a new set of tags (this message will only b
 
 > Yesterday you were working on [tag], are you done with that?
 
-<sup><sup>^</sup> Additional discussion need (as a user may review multiple tag sets per day).</sup>
+<sup><sup>^</sup> Additional discussion needed (as a user may review multiple tag sets per day).</sup>
 
 ## Docker
 
