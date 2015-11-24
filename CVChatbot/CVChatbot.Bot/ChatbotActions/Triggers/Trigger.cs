@@ -1,4 +1,4 @@
-﻿namespace CVChatbot.Bot.ChatbotActions.Triggers
+﻿namespace SOCVR.Chatbot.Core.ChatbotActions.Triggers
 {
     /// <summary>
     /// A Trigger is a message said in chat which is not a direct reply to the chatbot, but the chatbot will take action on the message.

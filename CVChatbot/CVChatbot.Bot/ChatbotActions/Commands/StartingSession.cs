@@ -1,9 +1,9 @@
-﻿using CVChatbot.Bot.Database;
-using System.Collections.Generic;
-using TCL.Extensions;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using SOCVR.Chatbot.Core.Database;
+using TCL.Extensions;
 
-namespace CVChatbot.Bot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.Core.ChatbotActions.Commands
 {
     public class StartingSession : UserCommand
     {

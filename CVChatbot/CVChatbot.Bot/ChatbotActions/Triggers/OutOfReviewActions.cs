@@ -1,8 +1,8 @@
-﻿using TCL.Extensions;
-using CVChatbot.Bot.ChatbotActions.Commands;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+using SOCVR.Chatbot.Core.ChatbotActions.Commands;
+using TCL.Extensions;
 
-namespace CVChatbot.Bot.ChatbotActions.Triggers
+namespace SOCVR.Chatbot.Core.ChatbotActions.Triggers
 {
     /// <summary>
     /// For when a person does 40 review items and has ran out of review actions.

@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
-using CVChatbot.Bot.Database;
+using SOCVR.Chatbot.Core.Database;
 
-namespace CVChatbot.Bot.ChatbotActions.Triggers
+namespace SOCVR.Chatbot.Core.ChatbotActions.Triggers
 {
     public class CompletedAudit : Trigger
     {

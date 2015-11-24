@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CVChatbot.Bot")]
+[assembly: AssemblyTitle("SOCVR.Chatbot.Core")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Information Technology")]
-[assembly: AssemblyProduct("CVChatbot.Bot")]
-[assembly: AssemblyCopyright("Copyright © Information Technology 2015")]
+[assembly: AssemblyCompany("SOCVR")]
+[assembly: AssemblyProduct("SOCVR.Chatbot.Core")]
+[assembly: AssemblyCopyright("Copyright © SOCVR 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

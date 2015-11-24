@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using TCL.Extensions;
 
-namespace CVChatbot.Bot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.Core.ChatbotActions.Commands
 {
     /// <summary>
     /// Command to show the list of commands on the server.

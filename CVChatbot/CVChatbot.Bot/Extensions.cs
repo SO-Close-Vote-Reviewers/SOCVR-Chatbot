@@ -1,14 +1,14 @@
-﻿using ChatExchangeDotNet;
-using CsQuery;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using ChatExchangeDotNet;
+using CsQuery;
 using TCL.Extensions;
 
-namespace CVChatbot.Bot
+namespace SOCVR.Chatbot.Core
 {
     /// <summary>
     /// Extension methods used in this project.

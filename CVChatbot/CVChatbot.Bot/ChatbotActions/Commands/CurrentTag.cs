@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace CVChatbot.Bot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.Core.ChatbotActions.Commands
 {
     /// <summary>
     /// Implements the current command that takes the first tag from the SEDE query and post it to the room.

@@ -7,8 +7,8 @@
     <ProjectGuid>{A28BE12F-BE83-4313-B55F-C8706FD1AAC2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CVChatbot.Bot</RootNamespace>
-    <AssemblyName>CVChatbot.Bot</AssemblyName>
+    <RootNamespace>SOCVR.Chatbot.Core</RootNamespace>
+    <AssemblyName>SOCVR.Chatbot.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>

@@ -1,9 +1,9 @@
-﻿using ChatExchangeDotNet;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using ChatExchangeDotNet;
 using TCL.Extensions;
 
-namespace CVChatbot.Bot
+namespace SOCVR.Chatbot.Core
 {
     /// <summary>
     /// This class joins and keeps track of the chat room.

@@ -1,10 +1,10 @@
-﻿using ChatExchangeDotNet;
-using CVChatbot.Bot.ChatbotActions.Commands;
-using CVChatbot.Bot.Database;
-using System;
+﻿using System;
+using ChatExchangeDotNet;
+using SOCVR.Chatbot.Core.ChatbotActions.Commands;
+using SOCVR.Chatbot.Core.Database;
 using TCL.Extensions;
 
-namespace CVChatbot.Bot.ChatbotActions.Triggers
+namespace SOCVR.Chatbot.Core.ChatbotActions.Triggers
 {
     public abstract class EndingSessionTrigger : Trigger
     {

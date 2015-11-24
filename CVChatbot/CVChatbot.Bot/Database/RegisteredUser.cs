@@ -1,4 +1,4 @@
-﻿namespace CVChatbot.Bot.Database
+﻿namespace SOCVR.Chatbot.Core.Database
 {
     class RegisteredUser
     {

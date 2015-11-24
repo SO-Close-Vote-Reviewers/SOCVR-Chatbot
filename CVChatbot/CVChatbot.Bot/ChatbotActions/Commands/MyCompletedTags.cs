@@ -1,8 +1,8 @@
-﻿using CVChatbot.Bot.Database;
-using System.Linq;
+﻿using System.Linq;
 using System.Text.RegularExpressions;
+using SOCVR.Chatbot.Core.Database;
 
-namespace CVChatbot.Bot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.Core.ChatbotActions.Commands
 {
     public class MyCompletedTags : UserCommand
     {

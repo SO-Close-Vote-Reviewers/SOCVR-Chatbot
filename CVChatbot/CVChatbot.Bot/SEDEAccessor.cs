@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using ChatExchangeDotNet;
-using CVChatbot.Bot;
 
-namespace CVChatbot
+namespace SOCVR.Chatbot.Core
 {
     /// <summary>
     /// Creates a singleton SedeClient for getting the tag listing from SEDE.

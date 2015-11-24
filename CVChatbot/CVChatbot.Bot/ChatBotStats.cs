@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CVChatbot.Bot
+namespace SOCVR.Chatbot.Core
 {
     /// <summary>
     /// Class to hold status about how the chatbot is running for this instance.

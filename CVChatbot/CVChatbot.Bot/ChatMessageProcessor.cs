@@ -1,12 +1,12 @@
-﻿using ChatExchangeDotNet;
-using CVChatbot.Bot.ChatbotActions;
-using CVChatbot.Bot.ChatbotActions.Commands;
-using CVChatbot.Bot.Database;
-using System;
+﻿using System;
 using System.Linq;
+using ChatExchangeDotNet;
+using SOCVR.Chatbot.Core.ChatbotActions;
+using SOCVR.Chatbot.Core.ChatbotActions.Commands;
+using SOCVR.Chatbot.Core.Database;
 using TCL.Extensions;
 
-namespace CVChatbot.Bot
+namespace SOCVR.Chatbot.Core
 {
     /// <summary>
     /// This class is responsible for determining whether to act on an incoming chat message or not,

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CVChatbot.Bot
+namespace SOCVR.Chatbot.Core
 {
     /// <summary>
     /// Helper to throw exceptions to enforce incoming contracts.

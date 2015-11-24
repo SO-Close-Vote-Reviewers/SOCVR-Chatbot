@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Text.RegularExpressions;
-using CVChatbot.Bot.Database;
+using SOCVR.Chatbot.Core.Database;
 
-namespace CVChatbot.Bot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.Core.ChatbotActions.Commands
 {
     public class AuditStats : UserCommand
     {

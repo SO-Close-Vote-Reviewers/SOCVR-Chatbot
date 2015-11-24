@@ -7,8 +7,8 @@
     <ProjectGuid>{E9523CB8-D234-4C34-BDE1-7E11B5066986}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CVChatbot.Console</RootNamespace>
-    <AssemblyName>CVChatbot.Console</AssemblyName>
+    <RootNamespace>SOCVR.Chatbot.Frontend</RootNamespace>
+    <AssemblyName>SOCVR.Chatbot.Frontend</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

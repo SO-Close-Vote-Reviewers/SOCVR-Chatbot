@@ -1,9 +1,9 @@
 ﻿using System;
-using TCL.Extensions;
-using CVChatbot.Bot.Database;
 using System.Text.RegularExpressions;
+using SOCVR.Chatbot.Core.Database;
+using TCL.Extensions;
 
-namespace CVChatbot.Bot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.Core.ChatbotActions.Commands
 {
     /// <summary>
     /// Shows stats about the last session

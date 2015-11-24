@@ -1,8 +1,8 @@
 ﻿using System.Text.RegularExpressions;
-using CVChatbot.Bot.ChatbotActions.Commands;
+using SOCVR.Chatbot.Core.ChatbotActions.Commands;
 using TCL.Extensions;
 
-namespace CVChatbot.Bot.ChatbotActions.Triggers
+namespace SOCVR.Chatbot.Core.ChatbotActions.Triggers
 {
     public class OutOfCloseVotes : EndingSessionTrigger
     {

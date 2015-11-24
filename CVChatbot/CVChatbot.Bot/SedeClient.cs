@@ -1,13 +1,13 @@
-﻿using CsQuery;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using CsQuery;
 using ServiceStack.Text;
 
-namespace CVChatbot.Bot
+namespace SOCVR.Chatbot.Core
 {
     /// <summary>
     /// Client responsible to login and run queries on data.stackexchange.com.

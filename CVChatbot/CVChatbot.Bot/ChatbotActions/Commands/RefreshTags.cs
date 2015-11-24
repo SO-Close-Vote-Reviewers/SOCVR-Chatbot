@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace CVChatbot.Bot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.Core.ChatbotActions.Commands
 {
     public class RefreshTags : UserCommand
     {

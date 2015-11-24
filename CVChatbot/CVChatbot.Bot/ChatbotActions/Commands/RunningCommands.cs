@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Text.RegularExpressions;
-using TCL.Extensions;
 
-namespace CVChatbot.Bot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.Core.ChatbotActions.Commands
 {
     public class RunningCommands : UserCommand
     {

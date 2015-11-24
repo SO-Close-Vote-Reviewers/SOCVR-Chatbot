@@ -1,9 +1,9 @@
-﻿using CVChatbot.Bot;
-using System;
+﻿using System;
 using System.Threading;
+using SOCVR.Chatbot.Core;
 using TCL.Extensions;
 
-namespace CVChatbot.Console
+namespace SOCVR.Chatbot.Frontend
 {
     class Program
     {

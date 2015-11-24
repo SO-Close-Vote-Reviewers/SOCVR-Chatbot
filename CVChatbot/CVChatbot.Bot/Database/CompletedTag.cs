@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CVChatbot.Bot.Database
+namespace SOCVR.Chatbot.Core.Database
 {
     class CompletedTag
     {
