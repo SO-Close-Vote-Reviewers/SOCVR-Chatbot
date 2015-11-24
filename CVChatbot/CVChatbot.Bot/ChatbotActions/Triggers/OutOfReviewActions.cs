@@ -9,7 +9,7 @@ namespace CVChatbot.Bot.ChatbotActions.Triggers
     /// </summary>
     public class OutOfReviewActions : EndingSessionTrigger
     {
-        private Regex ptn = new Regex(@"^(?:> +)?thank you for reviewing (\d+) close votes today; come back in ([\w ]+) to continue reviewing\.?$", RegexObjOptions);
+        private Regex ptn = new Regex(@"^(?:> +)?thank you for reviewing (?!-)([1-9]|[1-3]\d|40) close votes today; come back in ([\w ]+) to continue reviewing\.?$", RegexObjOptions);
 
         public override string ActionDescription => null;
 
