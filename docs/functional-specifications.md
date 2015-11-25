@@ -45,6 +45,7 @@ This document describes the functionality of the chatbot that resides in the [SO
 	- [User Tracking](#user-tracking)
 		- [Bot Messages](#bot-messages)
 	- [Docker](#docker)
+	- [Database](#database)
 
 <!-- /TOC -->
 
@@ -589,3 +590,8 @@ The order of operations for finding a configuration value is:
 1. If there is a configuration file, and the value is defined in the file, use this.
 2. If the value is defined in an environment variable, use this.
 3. Use built-in defaults if available
+
+## Database
+Information that the bot gets will be stored in a database.
+
+When the bot starts up it will check if the database can be found (using the provided connection string). If the database can't be found the program will create a new empty database and add all Room Owners to the Bot Owners permission group.
