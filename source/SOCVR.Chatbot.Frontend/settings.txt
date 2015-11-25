@@ -1,0 +1,17 @@
+# This is a sample settings file
+# Values are stored in Key=Value pairs
+# place this file named "settings.txt" in the same folder as the created exe
+
+LoginEmail=vyfcalt@gmail.com
+LoginPassword=AntiIdle-1
+DatabaseConnectionString=data source=SERVER;initial catalog=DATABASE;integrated security=True;
+ChatRoomUrl=http://chat.stackoverflow.com/rooms/68414/socvr-testing-facility
+
+MaxReviewLengthHours=5
+DefaultCompletedTagsPeopleThreshold=3
+MaxFetchTags=15
+PingReviewersDaysBackThreshold=7
+DefaultNextTagCount=5
+
+StartUpMessage=SO Close Vote Chatbot started (debugin' your probz)
+StopMessage=Cya
