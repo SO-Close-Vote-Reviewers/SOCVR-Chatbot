@@ -1,0 +1,465 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TCL.Extensions</name>
+    </assembly>
+    <members>
+        <member name="T:TCL.Extensions.BoolExtensions">
+            <summary>
+            Extensions for booleans.
+            </summary>
+        </member>
+        <member name="M:TCL.Extensions.BoolExtensions.ToYesNo(System.Boolean)">
+            <summary>
+            Turns a boolean into "Yes" or "No"
+            </summary>
+            <param name="source"></param>
+            <returns></returns>
+        </member>
+        <member name="T:TCL.Extensions.EnumExtensions">
+            <summary>
+            Extensions for Enumerations.
+            </summary>
+        </member>
+        <member name="M:TCL.Extensions.EnumExtensions.GetAttributeValue``1(System.Enum)">
+            <summary>
+            Finds the attribute of the given type and returns the entire attribute, or null if the attribute cannot be found.
+            Expects that that there is only one attribute of the given type on the enum value.
+            </summary>
+            <typeparam name="TAttribute">The type of the attribute.</typeparam>
+            <param name="enumeration">The enum value to pull the attribute from.</param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.EnumExtensions.GetAttributeValue``2(System.Enum,System.Func{``0,``1})">
+            <summary>
+            Finds the attribute of the given type and returns the value from the expressions, or null if the attribute cannot be found.
+            Useful for only pulling a particular value from the attribute, instead of the entire attribute.
+            Expects that there is only one attribute of the given type on the enum value.
+            </summary>
+            <typeparam name="TAttribute">The type of the attribute.</typeparam>
+            <typeparam name="TExpected">The return type from the expression. "What datatype would you like to return?"</typeparam>
+            <param name="enumeration"></param>
+            <param name="expression">A function that takes the attribute and returns a value from within.</param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.EnumExtensions.GetAttributeValues``2(System.Enum,System.Func{``0,``1})">
+            <summary>
+            Finds all attributes of the given type on the enum value and returns the value from the expressions argument foreach attribute found.
+            Useful for only pulling a particular value from the attribute, instead of the entire attribute.
+            </summary>
+            <typeparam name="TAttribute"></typeparam>
+            <typeparam name="TExpected"></typeparam>
+            <param name="enumeration"></param>
+            <param name="expression">A function that takes the attribute and returns a value from within.</param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.EnumExtensions.GetAttributeValues``1(System.Enum)">
+            <summary>
+            Finds all attributes of the given type on the enum value and returns each attribute found.
+            </summary>
+            <typeparam name="TAttribute"></typeparam>
+            <param name="enumeration"></param>
+            <returns></returns>
+        </member>
+        <member name="T:TCL.Extensions.ExceptionsExtensions">
+            <summary>
+            Extensions for Exception objects.
+            </summary>
+        </member>
+        <member name="M:TCL.Extensions.ExceptionsExtensions.FullErrorMessage(System.Exception)">
+            <summary>
+            Returns the exception's error message, along with all inner exception messages.
+            </summary>
+            <param name="ex"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.ExceptionsExtensions.FullErrorMessage(System.Exception,System.String)">
+            <summary>
+            Returns the exception's error message, along with all inner exception messages.
+            </summary>
+            <param name="ex"></param>
+            <param name="delimitor"></param>
+            <returns></returns>
+        </member>
+        <member name="T:TCL.Extensions.ExponentsHelper">
+            <summary>
+            Helper methods for exponents.
+            </summary>
+        </member>
+        <member name="M:TCL.Extensions.ExponentsHelper.ConvertFromString(System.String)">
+            <summary>
+            Converts a string number input into a decimal. This will allow string using scientific notation, like "3.4E-1".
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.ExponentsHelper.TryConvertFromString(System.String,System.Decimal@)">
+            <summary>
+            Attempts to convert a string (either as in decimal form or exponent form) into a decimal.
+            The return value indicates if the conversion was successful.
+            </summary>
+            <param name="input">The string to convert.</param>
+            <param name="output">If successful the value will be placed in this variable.</param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.ExponentsHelper.ConvertFromDecimal(System.Decimal)">
+            <summary>
+            Creates a scientific notation string from the given decimal input. An example is "3.4E-1".
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="T:TCL.Extensions.FullGenericsExtensions">
+            <summary>
+            Extensions for any data type. The "this" parameter is a generic argument with
+            no or limited restrictions.
+            </summary>
+        </member>
+        <member name="M:TCL.Extensions.FullGenericsExtensions.In``1(``0,``0[])">
+            <summary>
+            Returns true if the source object is contained within the list of arguments
+            </summary>
+            <typeparam name="TSoruce"></typeparam>
+            <param name="source"></param>
+            <param name="list"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.FullGenericsExtensions.In``1(``0,System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns true if the source object is contained within the list of arguments
+            </summary>
+            <typeparam name="TSource"></typeparam>
+            <param name="source"></param>
+            <param name="list"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.FullGenericsExtensions.ValueOrTypeDefault``1(``0)">
+            <summary>
+            Returns the value of the object or the default value for the type if the object is null.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <returns></returns>
+        </member>
+        <member name="T:TCL.Extensions.ICollectionExtensions">
+            <summary>
+            Extensions for ICollection objects.
+            </summary>
+        </member>
+        <member name="M:TCL.Extensions.ICollectionExtensions.AddRange``1(System.Collections.Generic.ICollection{``0},``0[])">
+            <summary>
+            Adds the param values to the collection.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <param name="values"></param>
+        </member>
+        <member name="T:TCL.Extensions.IComparableExtensions">
+            <summary>
+            Extensions for IComparable objects.
+            </summary>
+        </member>
+        <member name="M:TCL.Extensions.IComparableExtensions.Between``1(``0,``0,``0)">
+            <summary>
+            Tells if the value is between the inclusive min and max bounds.
+            </summary>
+            <typeparam name="T">The data type of the comparison. Must implement <see cref="T:System.IComparable"/></typeparam>
+            <param name="value"></param>
+            <param name="min">The minimum inclusive bound.</param>
+            <param name="max">The maximum inclusive bound.</param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.IComparableExtensions.Between``1(``0,``0,``0,System.Boolean,System.Boolean)">
+            <summary>
+            Tells if the value is between the min and max bounds. Min and Max can be inclusive or exclusive.
+            </summary>
+            <typeparam name="T">The data type of the comparison. Must implement <see cref="T:System.IComparable"/></typeparam>
+            <param name="value"></param>
+            <param name="min">The min bound.</param>
+            <param name="max">The max bound.</param>
+            <param name="minInclusive">Should the min bound be inclusive or exclusive?</param>
+            <param name="maxInclusive">Should the max bound be inclusive or exclusive?</param>
+            <returns></returns>
+        </member>
+        <member name="T:TCL.Extensions.IDictionaryExtensions">
+            <summary>
+            Extensions for IDictionary objects.
+            </summary>
+        </member>
+        <member name="M:TCL.Extensions.IDictionaryExtensions.GetValueOrDefault``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1)">
+            <summary>
+            Gets the value from the given key, or the default value if the key can't be found.
+            </summary>
+            <typeparam name="TKey">The data type of the key.</typeparam>
+            <typeparam name="TValue">The data type of the value.</typeparam>
+            <param name="dictionary">The dictionary to search through.</param>
+            <param name="key">The key to search for.</param>
+            <param name="defaultValue">If the key can't be found in the dictionary, this value will be returned.</param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.IDictionaryExtensions.GetValueOrNull``2(System.Collections.Generic.IDictionary{``0,``1},``0)">
+            <summary>
+            Gets the value from the given key, or null if the key can't be found.
+            </summary>
+            <typeparam name="TKey">The data type of the key.</typeparam>
+            <typeparam name="TValue">The data type of the value.</typeparam>
+            <param name="dictionary">The dictionary to search through.</param>
+            <param name="key">The key to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="T:TCL.Extensions.IEnumerableExtensions">
+            <summary>
+            Extensions for IEnumerables.
+            </summary>
+        </member>
+        <member name="M:TCL.Extensions.IEnumerableExtensions.PickRandom``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns a single random element from a List.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.IEnumerableExtensions.PickRandom``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            Helper function for PickRandom
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="count"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.IEnumerableExtensions.Shuffle``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Helper function for PickRandom
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.IEnumerableExtensions.ToCSV``1(System.Collections.Generic.IEnumerable{``0},System.String)">
+            <summary>
+            Builds a string of a CSV for a string, using a defined delimiter.
+            Returns null if the source is null.
+            Returns an empty string if the source contains no elements.
+            Returns the only element if the source contains 1 element.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="delimitor">The value to separate the elements with.</param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.IEnumerableExtensions.ToCSV``1(System.Collections.Generic.IEnumerable{``0},System.String,System.Func{``0,System.String})">
+            <summary>
+            Builds a string of a CSV for a string, using a defined delimiter.
+            Returns null if the source is null.
+            Returns an empty string if the source contains no elements.
+            Returns the only element if the source contains 1 element.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="delimitor">The value to separate the elements with.</param>
+            <param name="toStringConversionAction">The function to convert each element in the source to a string.</param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.IEnumerableExtensions.WhereIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Func{``0,System.Boolean},System.Func{``0,System.Boolean})">
+            <summary>
+            Creates a conditional Where statement for each item in the source. This is a replacement to an in-line ternary operator inside a Where clause.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="condition"></param>
+            <param name="truePredicate">The predicate to perform if the condition is true.</param>
+            <param name="falsePredicate">The predicate to perform if the condition is false.</param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.IEnumerableExtensions.SplitByPartSize``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            Splits the IEnumerable into groups with a fixed size.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="chunkSize">When the IEnumerable is split, this will be the max size of each group.</param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.IEnumerableExtensions.SplitByPartNumber``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            Splits the IEnumerable into a set number of groups.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <param name="parts">The number of groups to split the IEnumerable into.</param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.IEnumerableExtensions.EmptyIfNull``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns the sequence or an empty sequence if the list is null.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <returns></returns>
+        </member>
+        <member name="T:TCL.Extensions.MathExtensions">
+            <summary>
+            Extensions for math-related data types.
+            </summary>
+        </member>
+        <member name="M:TCL.Extensions.MathExtensions.RoundValue(System.Decimal)">
+            <summary>
+            Rounds a decimal value to the nearest integral value.
+            </summary>
+            <param name="source">A decimal number to be rounded.</param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.MathExtensions.RoundValue(System.Decimal,System.Int32)">
+            <summary>
+            Rounds a decimal value to a specified number of fractional digits.
+            </summary>
+            <param name="source">A decimal number to be rounded.</param>
+            <param name="decimals">The number of decimal places in the return value.</param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.MathExtensions.RoundValue(System.Double,System.Int32)">
+            <summary>
+            Rounds a double-precision floating-point value to a specified number of fractional digits.
+            </summary>
+            <param name="source">A double-precision floating-point number to be rounded.</param>
+            <param name="digits">The number of fractional digits in the return value.</param>
+            <returns></returns>
+        </member>
+        <member name="T:TCL.Extensions.ObjectExtensions">
+            <summary>
+            Extensions for objects.
+            </summary>
+        </member>
+        <member name="M:TCL.Extensions.ObjectExtensions.ToStringOrEmpty(System.Object)">
+            <summary>
+            Returns the value converted to a string or an empty string if the value is null.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.ObjectExtensions.ToStringOrNull(System.Object)">
+            <summary>
+            If an object is null, returns null.  Otherwise, returns o.ToString().
+            </summary>
+        </member>
+        <member name="M:TCL.Extensions.ObjectExtensions.ToStringOrDefault(System.Object,System.String)">
+            <summary>
+            Returns the value converted to a string or the given default value if the value is null.
+            </summary>
+            <param name="value"></param>
+            <param name="defaultValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.ObjectExtensions.InnerValueOrDefault``2(``0,System.Func{``0,``1},``1)">
+            <summary>
+            Gets an inner value from the object, or the default value if the object is null. Best used if the selector points to an internal property.
+            </summary>
+            <typeparam name="TValue"></typeparam>
+            <typeparam name="TReturn"></typeparam>
+            <param name="value"></param>
+            <param name="selector"></param>
+            <param name="defaultValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.ObjectExtensions.InnerValueOrNull``2(``0,System.Func{``0,``1})">
+            <summary>
+            Gets an inner value from the object, or null if the object is null. Best used if the selector points to an internal property.
+            </summary>
+            <typeparam name="TValue"></typeparam>
+            <typeparam name="TReturn"></typeparam>
+            <param name="value"></param>
+            <param name="selector"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.ObjectExtensions.ThrowIfNull(System.Object,System.String)">
+            <summary>
+            Throws a NullReferenceException if the source object is null.
+            </summary>
+            <param name="source"></param>
+            <param name="variableName"></param>
+        </member>
+        <member name="M:TCL.Extensions.ObjectExtensions.ThrowIfNull``1(System.Object)">
+            <summary>
+            Throws an exception of the given type if the source object is null.
+            </summary>
+            <typeparam name="TExecption"></typeparam>
+            <param name="source"></param>
+        </member>
+        <member name="M:TCL.Extensions.ObjectExtensions.IsNull(System.Object)">
+            <summary>
+            Returns true if the source object is null.
+            </summary>
+            <param name="source"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.ObjectExtensions.Clone``1(``0)">
+            <summary>
+            Makes a copy from the object.
+            Doesn't copy the reference memory, only data.
+            </summary>
+            <typeparam name="T">Type of the return object.</typeparam>
+            <param name="item">Object to be copied.</param>
+            <returns>Returns the copied object.</returns>
+        </member>
+        <member name="T:TCL.Extensions.SqlExtensions">
+            <summary>
+            Extensions for Sql related objects.
+            </summary>
+        </member>
+        <member name="T:TCL.Extensions.StringExtensions">
+            <summary>
+            Extensions for strings.
+            </summary>
+        </member>
+        <member name="M:TCL.Extensions.StringExtensions.FormatInline(System.String,System.Object[])">
+            <summary>
+            Formats a string via string.Format() and returns the results. Makes using string.Format easier. 
+            Throws an exception if the call fails.
+            </summary>
+            <param name="format">The string to be formatted.</param>
+            <param name="args">The arguments with which to format the string.</param>
+            <returns>The formatted string.</returns>
+        </member>
+        <member name="M:TCL.Extensions.StringExtensions.FormatSafely(System.String,System.Object[])">
+            <summary>
+            Formats a string and returns the results, if possible. 
+            If the string can't be formatted the format itself is returned. 
+            If that's still doesn't work, an empty string is returned. 
+            This method won't return null or throw an exception.
+            </summary>
+            <param name="format">The string to be formatted.</param>
+            <param name="args">The arguments with which to format the string.</param>
+            <returns>The formatted string, or the format itself if the string could not be formatted, or an empty string if something else went wrong.</returns>
+        </member>
+        <member name="M:TCL.Extensions.StringExtensions.EmptyIfNull(System.String)">
+            <summary>
+            Returns the string if not null, otherwise returns the empty string.
+            </summary>
+        </member>
+        <member name="M:TCL.Extensions.StringExtensions.IsNullOrWhiteSpace(System.String)">
+            <summary>
+            Returns true if the string is null, empty, or pure whitespace.  Returns false if the
+            string contains any non-whitespace.  Safe to call on null strings (this is guaranteed,
+            since the method is actually a static extension method).
+            </summary>
+        </member>
+        <member name="M:TCL.Extensions.StringExtensions.Left(System.String,System.Int32)">
+            <summary>
+            Returns the left X characters from the string.
+            </summary>
+            <param name="s"></param>
+            <param name="numChars"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TCL.Extensions.StringExtensions.Parse``1(System.String)">
+            <summary>
+            Parses the string into any available data type, including nullables.
+            </summary>
+            <typeparam name="T">The data type to convert the string into.</typeparam>
+            <param name="value">The string to convert.</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
