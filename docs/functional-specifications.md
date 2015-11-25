@@ -22,6 +22,7 @@ This document describes the functionality of the chatbot that resides in the [SO
 		- [Running Commands](#running-commands)
 		- [Status](#status)
 		- [Reviews Today](#reviews-today)
+		- [Total reviews today](#total-reviews-today)
 		- [Request permission to [group name]](#request-permission-to-group-name)
 		- [Membership](#membership)
 		- [Opt-in / Opt-out](#opt-in--opt-out)
@@ -142,6 +143,7 @@ Anyone in chat can run these commands.
 | Queue stats          | Shows the stats at the top of the /review/close/stats page.                                                                                        |
 | Current Review Count | Shows the number of review items the bot thinks the user has completed this day. This includes audits, because audits count towards your 40 items. |
 | Reviews today        | Prints a table of the reviews items that user has done today.                                                                                      |
+| Total reviews today  | Shows summary information and a table of the people who have completed reviews today.                                                              |
 | opt out / opt in     | (also "opt-out" / "opt-in") Allows a user to be temporarily removed from the tracking system, or resume being tracked.                             |
 
 ### Commands for Room Owner permission group
@@ -235,6 +237,20 @@ This command is used for showing what the bot knows of the user's completed revi
 </pre>
 
 The `Item Id` is the number in the URL for that review item. If the review item is not an audit then the Audit cell will be blank. Order this table by `Completed At` ascending.
+
+### Total reviews today
+This command shows summary information about all reviews done in the current day along with a breakdown table of reviews by user. The table will be sorted by `Review Items Today` descending. Only members that have reviewed at least one item today will be used in these stats.
+
+<pre>
+Today, 4 members have reviewed a total of 60 items. They are 55% of the way to processing all review items for the day.
++----------+--------------------+
+| User     | Review Items Today |
++----------+--------------------+
+| person 1 | 20                 |
+| person 3 | 14                 |
+| person 2 | 4                  |
++----------+--------------------+
+</pre>
 
 ### Request permission to [group name]
 If a person wants to join a permission group, this is one method of requesting access. See Permission System / Asking For Permission / Second Method for more details.
@@ -530,6 +546,7 @@ As previously stated, v1 primarily relies on information fed from chat users in 
 A user will only be eligible for tracking if:
 * The user is in the Reviewers permission group.
 * The user is currently opted-in to tracking.
+* The user is not a moderator.
 
 ### Bot Messages
 The bot will write messages in chat when it detects particular events from the user tracking system. However, a message will only be posted if the user is currently in the chat room.
