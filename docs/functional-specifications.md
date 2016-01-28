@@ -2,53 +2,52 @@
 
 This document describes the functionality of the chatbot that resides in the [SO Close Vote Reviewers chat room](http://chat.stackoverflow.com/rooms/41570/so-close-vote-reviewers).
 
-<!-- TOC depthFrom:undefined depthTo:undefined withLinks:1 updateOnSave:1 orderedList:0 -->
+<!-- TOC depthFrom:2 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
-- [Chatbot for the SO Close Vote Reviews Chat Room Functional Specifications](#chatbot-for-the-so-close-vote-reviews-chat-room-functional-specifications)
-	- [Background](#background)
-	- [What does this program plan to solve?](#what-does-this-program-plan-to-solve)
-	- [History of v1](#history-of-v1)
-	- [Goals for v2](#goals-for-v2)
-	- [V2 Member Workflow](#v2-member-workflow)
-	- [V2 Command List](#v2-command-list)
-		- [Commands for Public permission group](#commands-for-public-permission-group)
-		- [Commands for Reviewer permission group](#commands-for-reviewer-permission-group)
-		- [Commands for Room Owner permission group](#commands-for-room-owner-permission-group)
-		- [Commands for All Non-Public Users](#commands-for-all-non-public-users)
-	- [Commands - Descriptive](#commands-descriptive)
-		- [Alive](#alive)
-		- [Commands](#commands)
-		- [Help](#help)
-		- [Running Commands](#running-commands)
-		- [Status](#status)
-		- [Reviews Today](#reviews-today)
-		- [Total reviews today](#total-reviews-today)
-		- [Request permission to [group name]](#request-permission-to-group-name)
-		- [Membership](#membership)
-		- [Opt-in / Opt-out](#opt-in--opt-out)
-		- [Audit stats](#audit-stats)
-		- [Current Tag / Next [#] tags](#current-tag--next--tags)
-		- [Refresh tags](#refresh-tags)
-		- [Queue stats](#queue-stats)
-		- [Current Review Count](#current-review-count)
-		- [Reviews Today](#reviews-today)
-		- [Start Event](#start-event)
-		- [Ping Reviewers](#ping-reviewers)
-		- [Stop Bot](#stop-bot)
-		- [Reboot Bot](#reboot-bot)
-		- [Approve/Reject Request [#]](#approvereject-request-)
-		- [Add User To [group name]](#add-user-to-group-name)
-		- [Remove User From [group name]](#remove-user-from-group-name)
-	- [Permission system](#permission-system)
-		- [Permission Request](#permission-request)
-			- [Asking for permission](#asking-for-permission)
-			- [Viewing Requests](#viewing-requests)
-		- [Handling Requests](#handling-requests)
-	- [User Tracking](#user-tracking)
-		- [Bot Messages](#bot-messages)
-	- [Docker](#docker)
-	- [Configuration](#configuration)
-	- [Database](#database)
+- [Background](#background)
+- [What does this program plan to solve?](#what-does-this-program-plan-to-solve)
+- [History of v1](#history-of-v1)
+- [Goals for v2](#goals-for-v2)
+- [V2 Member Workflow](#v2-member-workflow)
+- [V2 Command List](#v2-command-list)
+	- [Commands for Public permission group](#commands-for-public-permission-group)
+	- [Commands for Reviewer permission group](#commands-for-reviewer-permission-group)
+	- [Commands for Room Owner permission group](#commands-for-room-owner-permission-group)
+	- [Commands for All Non-Public Users](#commands-for-all-non-public-users)
+- [Commands - Descriptive](#commands-descriptive)
+	- [Alive](#alive)
+	- [Commands](#commands)
+	- [Help](#help)
+	- [Running Commands](#running-commands)
+	- [Status](#status)
+	- [Reviews Today](#reviews-today)
+	- [Total reviews today](#total-reviews-today)
+	- [Request permission to group](#request-permission-to-group)
+	- [Membership](#membership)
+	- [Opt-in and Opt-out](#opt-in-and-opt-out)
+	- [Audit stats](#audit-stats)
+	- [Current Tag and Next # tags](#current-tag-and-next-tags)
+	- [Refresh tags](#refresh-tags)
+	- [Queue stats](#queue-stats)
+	- [Current Review Count](#current-review-count)
+	- [Reviews Today](#reviews-today)
+	- [Start Event](#start-event)
+	- [Ping Reviewers](#ping-reviewers)
+	- [Stop Bot](#stop-bot)
+	- [Reboot Bot](#reboot-bot)
+	- [Approve and Reject Request #](#approve-and-reject-request-)
+	- [Add User To Group](#add-user-to-group)
+	- [Remove User From Group](#remove-user-from-group)
+- [Permission system](#permission-system)
+	- [Permission Request](#permission-request)
+		- [Asking for permission](#asking-for-permission)
+		- [Viewing Requests](#viewing-requests)
+	- [Handling Requests](#handling-requests)
+- [User Tracking](#user-tracking)
+	- [Bot Messages](#bot-messages)
+- [Docker](#docker)
+- [Configuration](#configuration)
+- [Database](#database)
 
 <!-- /TOC -->
 
@@ -133,7 +132,7 @@ Anyone in chat can run these commands.
 | Help                               | Prints information about the bot.                                                  |
 | Running Commands                   | Displays a list of commands that the bot is currently executing.                   |
 | Status                             | Displays how long it has been running for and what version is running.             |
-| Request permission to [group name] | Submits a request for the user to be added to a given permission group.            |
+| Request permission to group        | Submits a request for the user to be added to a given permission group.            |
 | Membership                         | Shows a list of all permission groups, and the members in those permission groups. |
 
 ### Commands for Reviewer permission group
@@ -142,12 +141,12 @@ Anyone in chat can run these commands.
 |----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
 | Audit stats          | Shows the user how many audits of each tag they have passed.                                                                                       |
 | Current Tag          | Fetches the tag that has the most amount of manageable close queue items from the SEDE query.                                                      |
-| Next [#] tags        | Displays the first X tags from the SEDE query to focus on.                                                                                         |
+| Next # tags          | Displays the first X tags from the SEDE query to focus on.                                                                                         |
 | Refresh tags         | Forces a refresh of the tags obtained from the SEDE query.                                                                                         |
 | Queue stats          | Shows the stats at the top of the /review/close/stats page.                                                                                        |
 | Reviews today        | Shows user's stats for the reviews they have made in the current UTC day. Adding "Details" will print a table of those reviews.                    |
 | Total reviews today  | Shows summary information and a table of the people who have completed reviews today.                                                              |
-| opt out / opt in     | (also "opt-out" / "opt-in") Allows a user to be temporarily removed from the tracking system, or resume being tracked.                             |
+| opt out and opt in   | (also "opt-out" / "opt-in") Allows a user to be temporarily removed from the tracking system, or resume being tracked.                             |
 
 ### Commands for Room Owner permission group
 
@@ -265,7 +264,7 @@ Today, 4 members have reviewed a total of 60 items. They are 55% of the way to p
 +----------+--------------------+
 </pre>
 
-### Request permission to [group name]
+### Request permission to group
 If a person wants to join a permission group, this is one method of requesting access. See Permission System / Asking For Permission / Second Method for more details.
 
 ### Membership
@@ -293,7 +292,7 @@ The groups shown are shown, in this order:
 
 The `Public` permission group will not be shown in this list.
 
-### Opt-in / Opt-out
+### Opt-in and Opt-out
 By default, when a user joins the Reviews permission group, they are opted-in to the tracking system. A Reviewer might want to be ignored by the tracking system for a period of time (this could be hours, days, months, etc). The Opt-out command will allow that user to be ignored until they run the opt-in command. The bot will also record the date of the last "opt-" change.
 
 Running opt-out while opted-in:
@@ -335,7 +334,7 @@ All tracked audits by tag:
 
 Both tables will be ordered by the Count column descending.
 
-### Current Tag / Next [#] tags
+### Current Tag and Next # tags
 The bot will run a pre-determined SEDE query to figure out what tags the room should be working on.
 
 The Current Tag command will display the first one from the list.
@@ -411,7 +410,7 @@ When executed, this command will cause the bot to leave the chatroom and then te
 ### Reboot Bot
 This command does the same as Stop Bot, but causes the bot to start back up again after successfully shutting down. This will not stop the Docker container.
 
-### Approve/Reject Request [#]
+### Approve and Reject Request #
 Depending on the message, this command will approve or reject a request from a user to join a chat command permission group.
 
 The command will be in on of these formats:
@@ -437,7 +436,7 @@ If the request was approved, the message will append the following:
 
 > @[requesting user name] has been added to the [permission group] group.
 
-### Add User To [group name]
+### Add User To Group
 The previous command is for add a user to a permission group if he/she has already requested it. However, chat members will want to add users without needing a request from the recipient.
 
 The command syntax is:
@@ -462,7 +461,7 @@ If the user cannot be added to the group because of restrictions
 
 > I can't add (username) to the [group name] because (restriction message).
 
-### Remove User From [group name]
+### Remove User From Group
 This is the mirror of the `Add user to` command.
 
     remove [user id] from [group name]
