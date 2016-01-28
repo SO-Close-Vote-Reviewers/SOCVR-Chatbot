@@ -18,8 +18,6 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         protected override Regex RegexMatchingObject => ptn;
 
-
-
         public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
             var responsePhrases = new List<string>()

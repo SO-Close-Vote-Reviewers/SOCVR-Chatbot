@@ -24,8 +24,6 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         protected override Regex RegexMatchingObject => ptn;
 
-
-
         private static class ReflectiveEnumerator
         {
             public static IEnumerable<T> GetEnumerableOfType<T>(params object[] constructorArgs) where T : class

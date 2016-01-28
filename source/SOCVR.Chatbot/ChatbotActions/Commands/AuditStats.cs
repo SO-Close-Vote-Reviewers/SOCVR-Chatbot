@@ -1,4 +1,5 @@
-﻿using SOCVR.Chatbot.Database;
+﻿using ChatExchangeDotNet;
+using SOCVR.Chatbot.Database;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -19,9 +20,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         protected override Regex RegexMatchingObject => ptn;
 
-
-
-        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(Message incommingChatMessage, Room chatRoom)
         {
             var userId = incommingChatMessage.Author.ID;
 
