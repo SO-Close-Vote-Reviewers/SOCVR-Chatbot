@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SOCVR.Chatbot
+namespace SOCVR.Chatbot.ChatRoom
 {
     /// <summary>
     /// Keeps track of which ChatbotActions are running.
