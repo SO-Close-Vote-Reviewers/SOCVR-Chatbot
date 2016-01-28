@@ -2,7 +2,7 @@
 
 This document describes the functionality of the chatbot that resides in the [SO Close Vote Reviewers chat room](http://chat.stackoverflow.com/rooms/41570/so-close-vote-reviewers).
 
-<!-- TOC depth:6 withLinks:1 updateOnSave:0 orderedList:0 -->
+<!-- TOC depthFrom:undefined depthTo:undefined withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [Chatbot for the SO Close Vote Reviews Chat Room Functional Specifications](#chatbot-for-the-so-close-vote-reviews-chat-room-functional-specifications)
 	- [Background](#background)
@@ -37,14 +37,17 @@ This document describes the functionality of the chatbot that resides in the [SO
 		- [Stop Bot](#stop-bot)
 		- [Reboot Bot](#reboot-bot)
 		- [Approve/Reject Request [#]](#approvereject-request-)
+		- [Add User To [group name]](#add-user-to-group-name)
+		- [Remove User From [group name]](#remove-user-from-group-name)
 	- [Permission system](#permission-system)
 		- [Permission Request](#permission-request)
 			- [Asking for permission](#asking-for-permission)
 			- [Viewing Requests](#viewing-requests)
-			- [Handling Requests](#handling-requests)
+		- [Handling Requests](#handling-requests)
 	- [User Tracking](#user-tracking)
 		- [Bot Messages](#bot-messages)
 	- [Docker](#docker)
+	- [Configuration](#configuration)
 	- [Database](#database)
 
 <!-- /TOC -->
@@ -568,7 +571,7 @@ Non-public non-bot-owners must run the command to see this request list. The bot
  * There is one or more request in the system.
  * This message has not been displayed in the last 6 hours.
 
-#### Handling Requests
+### Handling Requests
 
 A group member has two methods to approve or reject a request.
 1. Run `approve request <#>` or `reject request <#>`. The request number can be found out by running `view requests`.
