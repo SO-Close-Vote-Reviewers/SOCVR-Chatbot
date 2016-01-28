@@ -2,6 +2,7 @@
 using System.Threading;
 using SOCVR.Chatbot.Bot;
 using TCL.Extensions;
+using SOCVR.Chatbot.ChatRoom;
 
 namespace SOCVR.Chatbot
 {
@@ -26,23 +27,8 @@ namespace SOCVR.Chatbot
 
                 WriteToConsole("Gathering settings");
 
-                var settings = new InstallationSettings()
-                {
-                    ChatRoomUrl = SettingsFileAccessor.GetSettingValue<string>("ChatRoomUrl"),
-                    Email = SettingsFileAccessor.GetSettingValue<string>("LoginEmail"),
-                    Password = SettingsFileAccessor.GetSettingValue<string>("LoginPassword"),
-                    StartUpMessage = SettingsFileAccessor.GetSettingValue<string>("StartUpMessage"),
-                    StopMessage = SettingsFileAccessor.GetSettingValue<string>("StopMessage"),
-                    MaxReviewLengthHours = SettingsFileAccessor.GetSettingValue<int>("MaxReviewLengthHours"),
-                    DefaultCompletedTagsPeopleThreshold = SettingsFileAccessor.GetSettingValue<int>("DefaultCompletedTagsPeopleThreshold"),
-                    MaxTagsToFetch = SettingsFileAccessor.GetSettingValue<int>("MaxFetchTags"),
-                    DatabaseConnectionString = SettingsFileAccessor.GetSettingValue<string>("DatabaseConnectionString"),
-                    PingReviewersDaysBackThreshold = SettingsFileAccessor.GetSettingValue<int>("PingReviewersDaysBackThreshold"),
-                    DefaultNextTagCount = SettingsFileAccessor.GetSettingValue<int>("DefaultNextTagCount"),
-                };
-
                 WriteToConsole("Joining room");
-                mng.JoinRoom(settings);
+                mng.JoinRoom();
 
                 WriteToConsole("Running wait loop");
 

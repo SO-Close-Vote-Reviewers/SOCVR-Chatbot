@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Linq;
 using ChatExchangeDotNet;
-using SOCVR.Chatbot.Bot.ChatbotActions;
-using SOCVR.Chatbot.Bot.ChatbotActions.Commands;
-using SOCVR.Chatbot.Bot.Database;
 using TCL.Extensions;
 
 namespace SOCVR.Chatbot.ChatRoom
@@ -14,12 +11,10 @@ namespace SOCVR.Chatbot.ChatRoom
     /// </summary>
     public class ChatMessageProcessor
     {
-        private InstallationSettings roomSettings;
         private DatabaseAccessor da;
 
-        public ChatMessageProcessor(InstallationSettings settings)
+        public ChatMessageProcessor()
         {
-            roomSettings = settings;
             da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
         }
 

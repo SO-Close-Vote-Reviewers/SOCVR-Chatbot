@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using ChatExchangeDotNet;
 using TCL.Extensions;
+using SOCVR.Chatbot.Configuration;
 
 namespace SOCVR.Chatbot.ChatRoom
 {
@@ -13,7 +14,6 @@ namespace SOCVR.Chatbot.ChatRoom
         private Room cvChatRoom;
         private Client chatClient;
         private ChatMessageProcessor cmp;
-        private InstallationSettings settings;
         private bool disposed = false;
 
         public delegate void ShutdownOrderGivenHandler(object sender, EventArgs e);
@@ -26,10 +26,7 @@ namespace SOCVR.Chatbot.ChatRoom
         /// Creates a new RoomManger object.
         /// Initializes the ChatMessageProcessor for internal use.
         /// </summary>
-        public RoomManager()
-        {
-
-        }
+        public RoomManager() { }
 
         protected virtual void Dispose(bool dispose)
         {
@@ -56,26 +53,23 @@ namespace SOCVR.Chatbot.ChatRoom
         /// <summary>
         /// Joins the room with the settings passed in.
         /// </summary>
-        public void JoinRoom(InstallationSettings settings)
+        public void JoinRoom()
         {
-            // Copy over the settings into this class so this class can use it.
-            this.settings = settings;
-
             // Create the ChatMessageProcessor.
-            cmp = new ChatMessageProcessor(settings);
+            cmp = new ChatMessageProcessor();
             cmp.StopBotCommandIssued += cmp_StopBotCommandIssued;
 
             // Logic to join the chat room.
-            chatClient = new Client(settings.Email, settings.Password);
-            cvChatRoom = chatClient.JoinRoom(settings.ChatRoomUrl);
+            chatClient = new Client(ConfigurationAccessor.LoginEmail, ConfigurationAccessor.LoginPassword);
+            cvChatRoom = chatClient.JoinRoom(ConfigurationAccessor.ChatRoomUrl);
             ChatBotStats.LoginDate = DateTime.Now;
             cvChatRoom.StripMention = false;
 
             // Say the startup message?
-            if (!settings.StartUpMessage.IsNullOrWhiteSpace())
+            if (!ConfigurationAccessor.StartUpMessage.IsNullOrWhiteSpace())
             {
                 // This is the one of the few instances to not using the "OrThrow" method.
-                var startMessage = cvChatRoom.PostMessage(settings.StartUpMessage);
+                var startMessage = cvChatRoom.PostMessage(ConfigurationAccessor.StartUpMessage);
 
                 if (startMessage == null)
                 {
@@ -90,8 +84,8 @@ namespace SOCVR.Chatbot.ChatRoom
         public void LeaveRoom()
         {
             // If there is a stop message, say it.
-            if (!settings.StopMessage.IsNullOrWhiteSpace())
-                cvChatRoom.PostMessage(settings.StopMessage);
+            if (!ConfigurationAccessor.StopMessage.IsNullOrWhiteSpace())
+                cvChatRoom.PostMessage(ConfigurationAccessor.StopMessage);
 
             cvChatRoom.Leave();
         }
@@ -112,69 +106,5 @@ namespace SOCVR.Chatbot.ChatRoom
                 cvChatRoom.PostMessageOrThrow("error happened!\n" + ex.FullErrorMessage(Environment.NewLine)); // For now, more verbose later.
             }
         }
-    }
-
-    /// <summary>
-    /// Settings needed to join a room.
-    /// </summary>
-    public class InstallationSettings
-    {
-        /// <summary>
-        /// The url of the chat room to join.
-        /// </summary>
-        public string ChatRoomUrl { get; set; }
-
-        /// <summary>
-        /// The Stack Exchange OAuth email to login with.
-        /// </summary>
-        public string Email { get; set; }
-
-        /// <summary>
-        /// The Stack Exchange OAuth password to login with.
-        /// </summary>
-        public string Password { get; set; }
-
-        /// <summary>
-        /// The message that the bot will announce when it first enters the chat room.
-        /// If the message is null, empty, or entirely whitespace, then no announcement message will be said.
-        /// </summary>
-        public string StartUpMessage { get; set; }
-
-        /// <summary>
-        /// The message that the bot will announce when it shuts down.
-        /// If the message is null, empty, or entirely whitespace, then no announcement message will be said.
-        /// </summary>
-        public string StopMessage { get; set; }
-
-        /// <summary>
-        /// The maximum number of hours a review session can last and still be closed by a trigger.
-        /// If a session is longer than this value, only a forced EndSession command can end the session.
-        /// </summary>
-        public int MaxReviewLengthHours { get; set; }
-
-        /// <summary>
-        /// The default value used in the CompletedTags command when no argument is given.
-        /// </summary>
-        public int DefaultCompletedTagsPeopleThreshold { get; set; }
-
-        /// <summary>
-        /// The maximum number of tags that can be fetched with the NextTags command.
-        /// </summary>
-        public int MaxTagsToFetch { get; set; }
-
-        /// <summary>
-        /// The connection string for the database.
-        /// </summary>
-        public string DatabaseConnectionString { get; set; }
-
-        /// <summary>
-        /// When using the Ping Reviewers command, this is the max numbers of days back to search for users by their review sessions.
-        /// </summary>
-        public int PingReviewersDaysBackThreshold { get; set; }
-
-        /// <summary>
-        /// This is the default number of tags to fetch if no argument is used in the Next Tags command.
-        /// </summary>
-        public int DefaultNextTagCount { get; set; }
     }
 }

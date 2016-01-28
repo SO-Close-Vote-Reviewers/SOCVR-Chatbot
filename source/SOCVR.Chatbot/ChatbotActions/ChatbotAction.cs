@@ -55,7 +55,7 @@ namespace SOCVR.Chatbot.ChatbotActions
         /// </summary>
         /// <param name="incommingChatMessage">The chat message received.</param>
         /// <param name="chatRoom">The chat room the message was said in.</param>
-        public abstract void RunAction(Message incommingChatMessage, Room chatRoom, InstallationSettings roomSettings);
+        public abstract void RunAction(Message incommingChatMessage, Room chatRoom);
 
         /// <summary>
         /// Returns the human-friendly name of the chatbot action.
