@@ -3,7 +3,7 @@ using System.Threading;
 using SOCVR.Chatbot.Bot;
 using TCL.Extensions;
 
-namespace SOCVR.Chatbot.Frontend
+namespace SOCVR.Chatbot
 {
     class Program
     {

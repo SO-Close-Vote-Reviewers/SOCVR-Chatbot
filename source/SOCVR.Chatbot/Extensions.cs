@@ -8,7 +8,7 @@ using ChatExchangeDotNet;
 using CsQuery;
 using TCL.Extensions;
 
-namespace SOCVR.Chatbot.Bot
+namespace SOCVR.Chatbot
 {
     /// <summary>
     /// Extension methods used in this project.

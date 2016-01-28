@@ -3,7 +3,7 @@ using System.Linq;
 using CsQuery;
 using TCL.Extensions;
 
-namespace SOCVR.Chatbot.Bot
+namespace SOCVR.Chatbot
 {
     /// <summary>
     /// Class for getting stats about the Close Vote Queue.

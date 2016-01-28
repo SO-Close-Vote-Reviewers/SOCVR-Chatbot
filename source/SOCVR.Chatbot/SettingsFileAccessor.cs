@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using TCL.Extensions;
 
-namespace SOCVR.Chatbot.Frontend
+namespace SOCVR.Chatbot
 {
     /// <summary>
     /// Used for getting values in the settings.txt file.
