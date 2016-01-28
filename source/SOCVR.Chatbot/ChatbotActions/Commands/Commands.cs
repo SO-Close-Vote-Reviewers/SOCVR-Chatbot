@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using TCL.Extensions;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands
@@ -12,8 +11,6 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
     /// </summary>
     public class Commands : UserCommand
     {
-        private Regex ptn = new Regex("^(show the )?(list of )?(user )?command(s| list)( pl(ease|[sz]))?$", RegexObjOptions);
-
         public override string ActionDescription => "Shows this list.";
 
         public override string ActionName => "Commands";
@@ -22,7 +19,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Everyone;
 
-        protected override Regex RegexMatchingObject => ptn;
+        protected override string RegexMatchingPattern => "^(show the )?(list of )?(user )?command(s| list)( pl(ease|[sz]))?$";
 
         private static class ReflectiveEnumerator
         {
@@ -39,7 +36,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
             }
         }
 
-        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
             var groupedCommands = ChatbotActionRegister.AllChatActions
                 .Where(x => x is UserCommand)

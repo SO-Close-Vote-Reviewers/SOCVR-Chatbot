@@ -22,21 +22,21 @@ namespace SOCVR.Chatbot.ChatRoom
         /// Main entry point for the class.
         /// Takes a message revived from chat, determines what action should be taken, then performs that action.
         /// </summary>
-        /// <param name="incommingChatMessage">The chat message that was said.</param>
+        /// <param name="incomingChatMessage">The chat message that was said.</param>
         /// <param name="chatRoom">The room the chat message was said in.</param>
-        public void ProcessChatMessage(Message incommingChatMessage, Room chatRoom)
+        public void ProcessChatMessage(Message incomingChatMessage, Room chatRoom)
         {
             // Do this first so I only have to find the result once per chat message.
-            bool isReplyToChatbot = MessageIsReplyToChatbot(incommingChatMessage, chatRoom);
+            bool isReplyToChatbot = MessageIsReplyToChatbot(incomingChatMessage, chatRoom);
 
             // Determine the list of possible actions that work from the message.
             var possibleChatbotActionsToRun = ChatbotActionRegister.AllChatActions
-                .Where(x => x.DoesChatMessageActiveAction(incommingChatMessage, isReplyToChatbot))
+                .Where(x => x.DoesChatMessageActiveAction(incomingChatMessage, isReplyToChatbot))
                 .ToList();
 
             if (possibleChatbotActionsToRun.Count > 1)
                 throw new Exception("More than one possible chat bot action to run for the input '{0}'"
-                    .FormatSafely(incommingChatMessage.Content));
+                    .FormatSafely(incomingChatMessage.Content));
 
             if (!possibleChatbotActionsToRun.Any())
             {
@@ -45,8 +45,7 @@ namespace SOCVR.Chatbot.ChatRoom
                 if (isReplyToChatbot)
                 {
                     // User was trying to make a command.
-                    SendUnrecognizedCommandToDatabase(incommingChatMessage.GetContentsWithStrippedMentions());
-                    chatRoom.PostReplyOrThrow(incommingChatMessage, "Sorry, I don't understand that. Use `{0}` for a list of commands."
+                    chatRoom.PostReplyOrThrow(incomingChatMessage, "Sorry, I don't understand that. Use `{0}` for a list of commands."
                         .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<Commands>()));
                 }
                 // Else it's a trigger, do nothing.
@@ -58,17 +57,17 @@ namespace SOCVR.Chatbot.ChatRoom
             var chatbotActionToRun = possibleChatbotActionsToRun.Single();
 
             // Now, do you have permission to run it? If you are a mod the answer is yes, else you need to check.
-            if (incommingChatMessage.Author.IsMod || DoesUserHavePermissionToRunAction(chatbotActionToRun, incommingChatMessage.Author.ID))
+            if (incomingChatMessage.Author.IsMod || DoesUserHavePermissionToRunAction(chatbotActionToRun, incomingChatMessage.Author.ID))
             {
                 // Have permission, run it.
-                RunChatbotAction(chatbotActionToRun, incommingChatMessage, chatRoom);
+                RunChatbotAction(chatbotActionToRun, incomingChatMessage, chatRoom);
             }
             else
             {
                 // Don't have permission, tell the user only if it's a command.
                 if (isReplyToChatbot)
                 {
-                    chatRoom.PostReplyOrThrow(incommingChatMessage, "Sorry, you need more permissions to run that command.");
+                    chatRoom.PostReplyOrThrow(incomingChatMessage, "Sorry, you need more permissions to run that command.");
                 }
                 // Don't do anything for triggers.
             }
@@ -134,19 +133,19 @@ namespace SOCVR.Chatbot.ChatRoom
         /// Runs the logic for the chatbot action and records the start and stop of the action.
         /// </summary>
         /// <param name="action"></param>
-        /// <param name="incommingChatMessage"></param>
+        /// <param name="incomingChatMessage"></param>
         /// <param name="chatRoom"></param>
-        private void RunChatbotAction(ChatbotAction action, Message incommingChatMessage, Room chatRoom)
+        private void RunChatbotAction(ChatbotAction action, Message incomingChatMessage, Room chatRoom)
         {
             // Record as started.
             var id = RunningChatbotActionsManager.MarkChatbotActionAsStarted(
                 action.ActionName,
-                incommingChatMessage.Author.Name,
-                incommingChatMessage.Author.ID);
+                incomingChatMessage.Author.Name,
+                incomingChatMessage.Author.ID);
 
             try
             {
-                action.RunAction(incommingChatMessage, chatRoom, roomSettings);
+                action.RunAction(incomingChatMessage, chatRoom);
 
                 // If the command was "stop bot", need to trigger a program shutdown.
                 if (action is StopBot)
@@ -166,14 +165,6 @@ namespace SOCVR.Chatbot.ChatRoom
             // Mark as finished.
             RunningChatbotActionsManager.MarkChatbotActionAsFinished(id);
         }
-
-        /// <summary>
-        /// Takes a command (already stripped of mentions and trimmed) and inserts it into
-        /// a table of commands that the chatbot did not recognize.
-        /// </summary>
-        /// <param name="command"></param>
-        private void SendUnrecognizedCommandToDatabase(string command) =>
-            da.InsertUnrecognizedCommand(command);
 
         /// <summary>
         /// Call this method if you get an error while running a ChatbotAction.

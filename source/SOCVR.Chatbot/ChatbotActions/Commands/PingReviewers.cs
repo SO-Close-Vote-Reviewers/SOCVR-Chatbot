@@ -1,13 +1,15 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
+using ChatExchangeDotNet;
+using SOCVR.Chatbot.Configuration;
+using SOCVR.Chatbot.Database;
 using TCL.Extensions;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
     public class PingReviewers : UserCommand
     {
-        private Regex ptn = new Regex("^ping reviewers (.+)$");
-
         public override string ActionDescription =>
             "The bot will send a message with an @reply to all users that have done reviews recently.";
 
@@ -17,36 +19,41 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Owner;
 
-        protected override Regex RegexMatchingObject => ptn;
+        protected override string RegexMatchingPattern => "^ping reviewers(.+)$";
 
 
 
-        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
-            var da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
-
-            var recipientChatProfileIds = da.GetPingReviewersRecipientList(incommingChatMessage.Author.ID, roomSettings.PingReviewersDaysBackThreshold);
-
-            if (!recipientChatProfileIds.Any())
+            using (var db = new DatabaseContext())
             {
-                chatRoom.PostReplyOrThrow(incommingChatMessage, "No one has a completed review session in the last {0} days"
-                    .FormatInline(roomSettings.PingReviewersDaysBackThreshold));
-                return;
+                var days = 14;
+                int.TryParse(ConfigurationAccessor.PingReviewersDaysBackThreshold, out days);
+
+                var users = db.Users.Where(x => (DateTimeOffset.UtcNow - x.ReviewedItems.Max(t => t.ReviewedOn)).TotalDays <= days);
+
+                if (!users.Any())
+                {
+                    chatRoom.PostReplyOrThrow(incomingChatMessage, $"No one has a completed review session in the last {days} days");
+                    return;
+                }
+
+                var msg = new MessageBuilder();
+
+                var messageFromincomingChatMessage = GetRegexMatchingObject()
+                    .Match(incomingChatMessage.Content)
+                    .Groups[1]
+                    .Value;
+
+                msg.AppendText(messageFromincomingChatMessage + " ");
+
+                foreach (var u in users)
+                {
+                    msg.AppendPing(chatRoom.GetUser(u.ProfileId));
+                }
+
+                chatRoom.PostMessageOrThrow(msg);
             }
-
-            var userNames = recipientChatProfileIds
-                .Select(x => chatRoom.GetUser(x).Name)
-                .Select(x => "@" + x.Replace(" ", ""));
-
-            var combinedUserNames = userNames.ToCSV(" ");
-
-            var messageFromIncommingChatMessage = RegexMatchingObject
-                .Match(GetMessageContentsReadyForRegexParsing(incommingChatMessage))
-                .Groups[1]
-                .Value;
-
-            var outboundMessage = $"{messageFromIncommingChatMessage} {combinedUserNames}";
-            chatRoom.PostMessageOrThrow(outboundMessage);
         }
     }
 }

@@ -12,12 +12,12 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
         /// </summary>
         /// <param name="incommingMessage"></param>
         /// <returns></returns>
-        protected override sealed string GetMessageContentsReadyForRegexParsing(Message incommingMessage)
-        {
-            return incommingMessage
-                .GetContentsWithStrippedMentions()
-                .Trim();
-        }
+        //protected override sealed string GetMessageContentsReadyForRegexParsing(Message incommingMessage)
+        //{
+        //    return incommingMessage
+        //        .GetContentsWithStrippedMentions()
+        //        .Trim();
+        //}
 
         /// <summary>
         /// Hard-coded to return true.

@@ -8,13 +8,11 @@ namespace SOCVR.Chatbot.ChatbotActions
     /// </summary>
     public abstract class ChatbotAction
     {
-        public static RegexOptions RegexObjOptions => RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase;
-
         /// <summary>
         /// Determines if the incoming chat message activates this action.
         /// </summary>
         /// <param name="incomingMessage">The message said in the chat room.</param>
-        /// <param name="isMessageAReplyToChatbot">A precomputed value indicating if the message is a directly reply to the chatbot.</param>
+        /// <param name="isMessageAReplyToChatbot">A precomputed value indicating if the message is a direct reply to the chatbot.</param>
         /// <returns></returns>
         public bool DoesChatMessageActiveAction(Message incomingMessage, bool isMessageAReplyToChatbot)
         {
@@ -23,9 +21,9 @@ namespace SOCVR.Chatbot.ChatbotActions
                 return false;
 
             // Now regex test it.
-            var formattedContents = GetMessageContentsReadyForRegexParsing(incomingMessage);
+            var regex = GetRegexMatchingObject();
 
-            return RegexMatchingObject.IsMatch(formattedContents);
+            return regex.IsMatch(incomingMessage.Content);
         }
 
         /// <summary>
@@ -37,25 +35,28 @@ namespace SOCVR.Chatbot.ChatbotActions
         protected abstract bool ReplyMessagesOnly { get; }
 
         /// <summary>
-        /// Returns the regex matching object for this action. This is used to determine if the
+        /// Returns the regex matching pattern for this action. This is used to determine if the
         /// chat message is appropriate for this action.
         /// </summary>
-        /// <returns>The regex object needed for pattern matching with the incoming chat message.</returns>
-        protected abstract Regex RegexMatchingObject { get; }
+        /// <returns></returns>
+        protected abstract string RegexMatchingPattern { get; }
 
         /// <summary>
-        /// Formats the incoming message's contents so that it can be regex matched more reliably.
+        /// This is already populated with the necessary matching pattern text.
+        /// You may call this method from the RunAction() method if you need arguments within chat message.
         /// </summary>
-        /// <param name="incommingMessage"></param>
-        /// <returns></returns>
-        protected abstract string GetMessageContentsReadyForRegexParsing(Message incommingMessage);
+        /// <returns>The regex object needed for pattern matching with the incoming chat message.</returns>
+        protected Regex GetRegexMatchingObject()
+        {
+            return new Regex(RegexMatchingPattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        }
 
         /// <summary>
         /// Runs the core logic to this action.
         /// </summary>
-        /// <param name="incommingChatMessage">The chat message received.</param>
+        /// <param name="incomingChatMessage">The chat message received.</param>
         /// <param name="chatRoom">The chat room the message was said in.</param>
-        public abstract void RunAction(Message incommingChatMessage, Room chatRoom);
+        public abstract void RunAction(Message incomingChatMessage, Room chatRoom);
 
         /// <summary>
         /// Returns the human-friendly name of the chatbot action.

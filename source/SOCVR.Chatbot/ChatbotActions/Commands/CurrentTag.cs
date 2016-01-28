@@ -1,6 +1,7 @@
 ﻿using SOCVR.Chatbot.Sede;
 using System.Linq;
 using System.Text.RegularExpressions;
+using SOCVR.Chatbot.Configuration;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
@@ -9,8 +10,6 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
     /// </summary>
     public class CurrentTag : UserCommand
     {
-        private Regex ptn = new Regex(@"^(what is the )?current tag( pl(ease|[sz]))?\??$", RegexObjOptions);
-
         public override string ActionDescription =>
             "Get the tag that has the most amount of manageable close queue items from the SEDE query.";
 
@@ -20,22 +19,22 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Registered;
 
-        protected override Regex RegexMatchingObject => ptn;
+        protected override string RegexMatchingPattern => @"^(what is the )?current tag( pl(ease|[sz]))?\??$";
 
 
 
         /// <summary>
         /// Outputs the tag.
         /// </summary>
-        /// <param name="incommingChatMessage"></param>
+        /// <param name="incomingChatMessage"></param>
         /// <param name="chatRoom"></param>
-        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
-            var tags = SedeAccessor.GetTags(chatRoom, roomSettings.Email, roomSettings.Password);
+            var tags = SedeAccessor.GetTags(chatRoom, ConfigurationAccessor.LoginEmail, ConfigurationAccessor.LoginPassword);
 
             if (tags == null)
             {
-                chatRoom.PostReplyOrThrow(incommingChatMessage, "My attempt to get tag data returned no information. This could be due to the site being down or blocked for me, or a programming error. Try again in a few minutes, or tell the developer if this happens often.");
+                chatRoom.PostReplyOrThrow(incomingChatMessage, "My attempt to get tag data returned no information. This could be due to the site being down or blocked for me, or a programming error. Try again in a few minutes, or tell the developer if this happens often.");
                 return;
             }
 
@@ -49,7 +48,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
                 dataMessage = "I couldn't find any tags! Either the query is empty or something bad happened.";
             }
 
-            chatRoom.PostReplyOrThrow(incommingChatMessage, dataMessage);
+            chatRoom.PostReplyOrThrow(incomingChatMessage, dataMessage);
         }
     }
 }

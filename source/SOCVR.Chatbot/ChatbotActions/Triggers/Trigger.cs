@@ -17,7 +17,7 @@
         /// </summary>
         /// <param name="incommingMessage"></param>
         /// <returns></returns>
-        protected override string GetMessageContentsReadyForRegexParsing(ChatExchangeDotNet.Message incommingMessage) =>
-            incommingMessage.Content.Trim();
+        //protected override string GetMessageContentsReadyForRegexParsing(ChatExchangeDotNet.Message incommingMessage) =>
+        //    incommingMessage.Content.Trim();
     }
 }

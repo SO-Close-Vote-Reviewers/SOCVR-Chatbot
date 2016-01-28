@@ -6,8 +6,6 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
     public class Alive : UserCommand
     {
-        private Regex ptn = new Regex(@"^(?:(?:are )?you )?(alive|still there|(still )?with us)\??$", RegexObjOptions);
-
         public override string ActionDescription => "A simple ping command to test if the bot is running.";
 
         public override string ActionName => "Alive";
@@ -16,9 +14,9 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Everyone;
 
-        protected override Regex RegexMatchingObject => ptn;
+        protected override string RegexMatchingPattern => @"^(?:(?:are )?you )?(alive|still there|(still )?with us)\??$";
 
-        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
             var responsePhrases = new List<string>()
             {
@@ -33,7 +31,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
             var phrase = responsePhrases.PickRandom();
 
-            chatRoom.PostReplyOrThrow(incommingChatMessage, phrase);
+            chatRoom.PostReplyOrThrow(incomingChatMessage, phrase);
         }
     }
 }

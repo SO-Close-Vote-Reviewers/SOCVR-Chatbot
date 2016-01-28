@@ -7,8 +7,6 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
     public class Status : UserCommand
     {
-        private Regex ptn = new Regex(@"^((program|chatbot|bot|what'?s your) )?status(\?)?$", RegexObjOptions);
-
         public override string ActionDescription =>
             "Tests if the chatbot is alive and shows simple info about it.";
 
@@ -18,11 +16,11 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Everyone;
 
-        protected override Regex RegexMatchingObject => ptn;
+        protected override string RegexMatchingPattern => @"^((program|chatbot|bot|what'?s your) )?status(\?)?$";
 
 
 
-        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
             var elapsedTime = DateTime.Now - ChatBotStats.LoginDate;
             var assembly = Assembly.GetExecutingAssembly();

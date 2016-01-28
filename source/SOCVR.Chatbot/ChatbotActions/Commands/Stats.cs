@@ -4,8 +4,6 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
     public class Stats : UserCommand
     {
-        private Regex ptn = new Regex("^(close vote )?stats( (please|pl[sz]))?$", RegexObjOptions);
-
         public override string ActionDescription =>
             "Shows the stats at the top of the /review/close/stats page.";
 
@@ -15,11 +13,11 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Registered;
 
-        protected override Regex RegexMatchingObject => ptn;
+        protected override string RegexMatchingPattern => "^(close vote )?stats( (please|pl[sz]))?$";
 
 
 
-        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
             var sa = new CloseQueueStatsAccessor();
             var message = sa.GetOverallQueueStats();

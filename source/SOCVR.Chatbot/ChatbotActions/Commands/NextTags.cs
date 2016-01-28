@@ -1,13 +1,13 @@
 ﻿using System.Linq;
 using System.Text.RegularExpressions;
+using SOCVR.Chatbot.Configuration;
+using SOCVR.Chatbot.Sede;
 using TCL.Extensions;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
     public class NextTags : UserCommand
     {
-        private Regex ptn = new Regex(@"^next(?: (\d+))? tags$", RegexObjOptions);
-
         public override string ActionDescription =>
             "Displays the first X tags from the SEDE query to focus on.";
 
@@ -17,34 +17,36 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Registered;
 
-        protected override Regex RegexMatchingObject => ptn;
+        protected override string RegexMatchingPattern => @"^next(?: (\d+))? tags$";
 
 
 
-        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
             // First, get the number in the command
-            var tagsToFetchArgument = RegexMatchingObject
-                .Match(GetMessageContentsReadyForRegexParsing(incommingChatMessage))
+            var tagsToFetchArgument = GetRegexMatchingObject()
+                .Match(incomingChatMessage.Content)
                 .Groups[1]
                 .Value
                 .Parse<int?>();
 
             int tagsToFetch;
+            var maxTagsToFetch = 15;
+            int.TryParse(ConfigurationAccessor.MaxFetchTags, out maxTagsToFetch);
 
             if (tagsToFetchArgument != null)
             {
                 if (tagsToFetchArgument <= 0)
                 {
-                    chatRoom.PostReplyOrThrow(incommingChatMessage, "I can't fetch zero tags or a negative number of tags! Please use a number between 1 and {0}."
-                        .FormatInline(roomSettings.MaxTagsToFetch));
+                    chatRoom.PostReplyOrThrow(incomingChatMessage, "I can't fetch zero tags or a negative number of tags! Please use a number between 1 and {0}."
+                        .FormatInline(maxTagsToFetch));
                     return;
                 }
 
-                if (tagsToFetchArgument > roomSettings.MaxTagsToFetch)
+                if (tagsToFetchArgument > maxTagsToFetch)
                 {
-                    chatRoom.PostReplyOrThrow(incommingChatMessage, "Sorry, that's too many tags for me. Please choose a number between 1 and {0}"
-                        .FormatInline(roomSettings.MaxTagsToFetch));
+                    chatRoom.PostReplyOrThrow(incomingChatMessage, "Sorry, that's too many tags for me. Please choose a number between 1 and {0}"
+                        .FormatInline(maxTagsToFetch));
                     return;
                 }
 
@@ -52,14 +54,15 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
             }
             else
             {
-                tagsToFetch = roomSettings.DefaultNextTagCount;
+                tagsToFetch = 3;
+                int.TryParse(ConfigurationAccessor.DefaultNextTagCount, out tagsToFetch);
             }
 
-            var tags = SedeAccessor.GetTags(chatRoom, roomSettings.Email, roomSettings.Password);
+            var tags = SedeAccessor.GetTags(chatRoom, ConfigurationAccessor.LoginEmail, ConfigurationAccessor.LoginPassword);
 
             if (tags == null)
             {
-                chatRoom.PostReplyOrThrow(incommingChatMessage, "My attempt to get tag data returned no information. This could be due to the site being down or blocked for me, or a programming error. Try again in a few minutes, or tell the developer if this happens often.");
+                chatRoom.PostReplyOrThrow(incomingChatMessage, "My attempt to get tag data returned no information. This could be due to the site being down or blocked for me, or a programming error. Try again in a few minutes, or tell the developer if this happens often.");
                 return;
             }
 
@@ -69,7 +72,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
                 .ToCSV(", ");
 
             var message = $"The next {tagsToFetch} tags are: {tagString}";
-            chatRoom.PostReplyOrThrow(incommingChatMessage, message);
+            chatRoom.PostReplyOrThrow(incomingChatMessage, message);
         }
     }
 }

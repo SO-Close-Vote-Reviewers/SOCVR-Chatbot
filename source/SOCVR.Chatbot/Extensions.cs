@@ -36,15 +36,15 @@ namespace SOCVR.Chatbot
         /// </summary>
         /// <param name="message">The message to process.</param>
         /// <returns></returns>
-        public static string GetContentsWithStrippedMentions(this Message message) =>
-            ExtensionMethods.StripMention(message.Content);
+        //public static string GetContentsWithStrippedMentions(this Message message) =>
+        //    ExtensionMethods.StripMention(message.Content);
 
         /// <summary>
         /// Attempts to post the message to the chat room. If the message could not be posted an exception will be thrown.
         /// </summary>
         /// <param name="chatRoom"></param>
         /// <param name="message"></param>
-        public static void PostMessageOrThrow(this Room chatRoom, string message)
+        public static void PostMessageOrThrow(this Room chatRoom, object message)
         {
             var postedMessage = chatRoom.PostMessage(message);
 
@@ -60,7 +60,7 @@ namespace SOCVR.Chatbot
         /// <param name="chatRoom"></param>
         /// <param name="replyingToMessage"></param>
         /// <param name="message"></param>
-        public static void PostReplyOrThrow(this Room chatRoom, Message replyingToMessage, string message) =>
+        public static void PostReplyOrThrow(this Room chatRoom, Message replyingToMessage, object message) =>
             chatRoom.PostReplyOrThrow(replyingToMessage.ID, message);
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace SOCVR.Chatbot
         /// <param name="chatRoom"></param>
         /// <param name="replyingToMessageId"></param>
         /// <param name="message"></param>
-        public static void PostReplyOrThrow(this Room chatRoom, int replyingToMessageId, string message)
+        public static void PostReplyOrThrow(this Room chatRoom, int replyingToMessageId, object message)
         {
             var postedMessage = chatRoom.PostReply(replyingToMessageId, message);
 

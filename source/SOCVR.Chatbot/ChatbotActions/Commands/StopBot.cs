@@ -1,11 +1,10 @@
 ﻿using System.Text.RegularExpressions;
+using ChatExchangeDotNet;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
     public class StopBot : UserCommand
     {
-        private Regex ptn = new Regex("^(stop( bot)?|die|shutdown)$", RegexObjOptions);
-
         public override string ActionDescription =>
             "The bot will leave the chat room and quit the running application.";
 
@@ -15,11 +14,11 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Owner;
 
-        protected override Regex RegexMatchingObject => ptn;
+        protected override string RegexMatchingPattern => "^(stop( bot)?|die|shutdown)$";
 
 
 
-        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom) => 
-            chatRoom.PostReplyOrThrow(incommingChatMessage, "I'm shutting down...");
+        public override void RunAction(Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom) => 
+            chatRoom.PostReplyOrThrow(incomingChatMessage, "I'm shutting down...");
     }
 }

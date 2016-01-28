@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using ChatExchangeDotNet;
+using SOCVR.Chatbot.ChatRoom;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
     public class RunningCommands : UserCommand
     {
-        private Regex ptn = new Regex(@"^(show (a |me )?)?(list of |the )?running (commands|actions)( (please|pl[sz]))?$", RegexObjOptions);
-
         public override string ActionDescription =>
             "Displays a list of all commands that the chat bot is currently running.";
 
@@ -17,11 +17,11 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Everyone;
 
-        protected override Regex RegexMatchingObject => ptn;
+        protected override string RegexMatchingPattern => @"^(show (a |me )?)?(list of |the )?running (commands|actions)( (please|pl[sz]))?$";
 
 
 
-        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
             var runningCommands = RunningChatbotActionsManager.GetRunningChatbotActions();
             var now = DateTimeOffset.Now;
@@ -38,7 +38,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
                     x => x.ForUser,
                     x => x.Started);
 
-            chatRoom.PostReplyOrThrow(incommingChatMessage, "The following is a list of commands that I'm currently running:");
+            chatRoom.PostReplyOrThrow(incomingChatMessage, "The following is a list of commands that I'm currently running:");
             chatRoom.PostMessageOrThrow(tableMessage);
         }
     }
