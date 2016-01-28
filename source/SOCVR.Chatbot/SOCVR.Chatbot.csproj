@@ -177,12 +177,6 @@
     <Compile Include="ChatRoom\RoomManager.cs" />
     <Compile Include="ChatRoom\RunningChatbotActionsManager.cs" />
     <Compile Include="CloseQueueStatsAccessor.cs" />
-    <Compile Include="Database\CompletedTag.cs" />
-    <Compile Include="Database\DatabaseAccessor.cs" />
-    <Compile Include="Database\RegisteredUser.cs" />
-    <Compile Include="Database\ReviewSession.cs" />
-    <Compile Include="Database\UserAuditStatEntry.cs" />
-    <Compile Include="Database\UserCompletedTag.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -198,6 +192,7 @@
     <Content Include="settings-sample.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Database\" />
     <Folder Include="Logic\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
