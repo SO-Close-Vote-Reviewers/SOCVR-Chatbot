@@ -1,12 +1,13 @@
 ﻿using System.Text.RegularExpressions;
 using ChatExchangeDotNet;
+using SOCVR.Chatbot.Database;
 
 namespace SOCVR.Chatbot.ChatbotActions
 {
     /// <summary>
     /// An action the chatbot will take based on a chat message.
     /// </summary>
-    public abstract class ChatbotAction
+    internal abstract class ChatbotAction
     {
         /// <summary>
         /// Determines if the incoming chat message activates this action.
@@ -77,30 +78,10 @@ namespace SOCVR.Chatbot.ChatbotActions
         public abstract string ActionUsage { get; }
 
         /// <summary>
-        /// Returns the minimum permission level needed by a user to run this action.
+        /// Returns the permission group the user must be in to run the command.
+        /// Null means the user does not need to belong to a permission group to run the command.
         /// </summary>
         /// <returns></returns>
-        public abstract ActionPermissionLevel PermissionLevel { get; }
-    }
-
-    /// <summary>
-    /// Describes the permission levels a ChatbotAction can have.
-    /// </summary>
-    public enum ActionPermissionLevel
-    {
-        /// <summary>
-        /// All people who join the chat room are allowed to run this action.
-        /// </summary>
-        Everyone,
-
-        /// <summary>
-        /// Only people in the tracked users list can run this action.
-        /// </summary>
-        Registered,
-
-        /// <summary>
-        /// Only people in the tracked users list who are labeled as "owner" can run this action.
-        /// </summary>
-        Owner,
+        public abstract PermissionGroup? RequiredPermissionGroup { get; }
     }
 }

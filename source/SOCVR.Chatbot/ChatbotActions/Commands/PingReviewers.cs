@@ -8,7 +8,7 @@ using TCL.Extensions;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
-    public class PingReviewers : UserCommand
+    internal class PingReviewers : UserCommand
     {
         public override string ActionDescription =>
             "The bot will send a message with an @reply to all users that have done reviews recently.";
@@ -17,18 +17,15 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override string ActionUsage => "ping reviewers <message>";
 
-        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Owner;
+        public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.BotOwner;
 
         protected override string RegexMatchingPattern => "^ping reviewers(.+)$";
 
-
-
-        public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(Message incomingChatMessage, Room chatRoom)
         {
             using (var db = new DatabaseContext())
             {
-                var days = 14;
-                int.TryParse(ConfigurationAccessor.PingReviewersDaysBackThreshold, out days);
+                var days = ConfigurationAccessor.PingReviewersDaysBackThreshold;
 
                 var users = db.Users.Where(x => (DateTimeOffset.UtcNow - x.ReviewedItems.Max(t => t.ReviewedOn)).TotalDays <= days);
 

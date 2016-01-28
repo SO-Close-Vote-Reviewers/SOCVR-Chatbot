@@ -2,13 +2,14 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using SOCVR.Chatbot.Configuration;
+using SOCVR.Chatbot.Database;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
     /// <summary>
     /// Implements the current command that takes the first tag from the SEDE query and post it to the room.
     /// </summary>
-    public class CurrentTag : UserCommand
+    internal class CurrentTag : UserCommand
     {
         public override string ActionDescription =>
             "Get the tag that has the most amount of manageable close queue items from the SEDE query.";
@@ -17,17 +18,10 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override string ActionUsage => "current tag";
 
-        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Registered;
+        public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.Reviewer;
 
         protected override string RegexMatchingPattern => @"^(what is the )?current tag( pl(ease|[sz]))?\??$";
 
-
-
-        /// <summary>
-        /// Outputs the tag.
-        /// </summary>
-        /// <param name="incomingChatMessage"></param>
-        /// <param name="chatRoom"></param>
         public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
             var tags = SedeAccessor.GetTags(chatRoom, ConfigurationAccessor.LoginEmail, ConfigurationAccessor.LoginPassword);

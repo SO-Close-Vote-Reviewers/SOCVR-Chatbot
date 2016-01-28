@@ -3,10 +3,11 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using ChatExchangeDotNet;
 using SOCVR.Chatbot.ChatRoom;
+using SOCVR.Chatbot.Database;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
-    public class RunningCommands : UserCommand
+    internal class RunningCommands : UserCommand
     {
         public override string ActionDescription =>
             "Displays a list of all commands that the chat bot is currently running.";
@@ -15,11 +16,9 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override string ActionUsage => "running commands";
 
-        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Everyone;
+        public override PermissionGroup? RequiredPermissionGroup => null;
 
         protected override string RegexMatchingPattern => @"^(show (a |me )?)?(list of |the )?running (commands|actions)( (please|pl[sz]))?$";
-
-
 
         public override void RunAction(Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {

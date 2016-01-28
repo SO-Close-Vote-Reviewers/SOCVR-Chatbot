@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using SOCVR.Chatbot.Database;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using TCL.Extensions;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
-    public class Alive : UserCommand
+    internal class Alive : UserCommand
     {
         public override string ActionDescription => "A simple ping command to test if the bot is running.";
 
@@ -12,7 +13,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override string ActionUsage => "alive";
 
-        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Everyone;
+        public override PermissionGroup? RequiredPermissionGroup => null;
 
         protected override string RegexMatchingPattern => @"^(?:(?:are )?you )?(alive|still there|(still )?with us)\??$";
 

@@ -6,7 +6,7 @@ using TCL.Extensions;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
-    public class TrackUser : UserCommand
+    internal class TrackUser : UserCommand
     {
         public override string ActionDescription => "Adds the user to the registered users list.";
 
@@ -14,11 +14,11 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override string ActionUsage => "(add | track) user <chat id>";
 
-        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Owner;
+        public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.BotOwner;
 
         protected override string RegexMatchingPattern => @"^(?:add|track) user (\d+)$";
 
-
+#error this command is going away / renamed
 
         public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {

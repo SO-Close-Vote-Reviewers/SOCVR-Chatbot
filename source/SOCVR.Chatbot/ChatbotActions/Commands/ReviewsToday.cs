@@ -7,7 +7,7 @@ using TCL.Extensions;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
-    public class ReviewsToday : UserCommand
+    internal class ReviewsToday : UserCommand
     {
         public override string ActionDescription =>
             "Shows stats about your reviews completed today. Or, if requesting a full data dump (`review today details`), prints a table of the reviews items you've done today.";
@@ -16,15 +16,11 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override string ActionUsage => "reviews today";
 
-        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Registered;
+        public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.Reviewer;
 
         protected override string RegexMatchingPattern => @"^reviews today (full|detail(ed|s)|verbose)?$";
 
-
-        /// <summary>
-        /// Warning, completely untested code ahead.
-        /// </summary>
-        public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
+        public override void RunAction(Message incomingChatMessage, Room chatRoom)
         {
             using (var db = new DatabaseContext())
             {
@@ -58,7 +54,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
                     {
                         var revDur = reviews.Max(r => r.ReviewedOn) - reviews.Min(r => r.ReviewedOn);
                         var avg = new TimeSpan(revDur.Ticks / (revCount - 1));
-
+#error fix this, use built in extension method
                         msgText += "The time between your first and last review today was ";
                         msgText += revDur.Hours > 0 ? $"{revDur.Hours} hour{(revDur.Hours > 1 ? "s" : "")} and " : "";
                         msgText += $"{revDur.Minutes} minute{(revDur.Minutes > 1 ? "s" : "")}";

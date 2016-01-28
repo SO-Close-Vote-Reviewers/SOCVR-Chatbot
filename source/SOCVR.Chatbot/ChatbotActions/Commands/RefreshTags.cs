@@ -1,10 +1,11 @@
 ﻿using System.Text.RegularExpressions;
 using SOCVR.Chatbot.Configuration;
 using SOCVR.Chatbot.Sede;
+using SOCVR.Chatbot.Database;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
-    public class RefreshTags : UserCommand
+    internal class RefreshTags : UserCommand
     {
         public override string ActionDescription =>
             "Forces a refresh of the tags obtained from the SEDE query.";
@@ -13,11 +14,9 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override string ActionUsage => "refresh tags";
 
-        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Registered;
+        public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.Reviewer;
 
         protected override string RegexMatchingPattern => "^refresh tags$";
-
-
 
         public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {

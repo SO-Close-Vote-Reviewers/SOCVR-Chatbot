@@ -5,7 +5,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
     /// <summary>
     /// A User Command is a message sent directly to the chatbot which wants the chatbot to perform an action.
     /// </summary>
-    public abstract class UserCommand : ChatbotAction
+    internal abstract class UserCommand : ChatbotAction
     {
         /// <summary>
         /// Takes the contents from the message, strips out any "mentions", and trims the sides of the string.

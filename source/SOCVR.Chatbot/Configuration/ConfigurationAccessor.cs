@@ -14,10 +14,10 @@ namespace SOCVR.Chatbot.Configuration
         public static string DatabaseConnectionString { get { return GetConfigurationOption<string>("DatabaseConnectionString"); } }
         public static string ChatRoomUrl { get { return GetConfigurationOption<string>("ChatRoomUrl"); } }
 
-        public static string DefaultCompletedTagsPeopleThreshold { get { return GetConfigurationOption<string>("DefaultCompletedTagsPeopleThreshold"); } }
-        public static string MaxFetchTags { get { return GetConfigurationOption<string>("MaxFetchTags"); } }
-        public static string PingReviewersDaysBackThreshold { get { return GetConfigurationOption<string>("PingReviewersDaysBackThreshold"); } }
-        public static string DefaultNextTagCount { get { return GetConfigurationOption<string>("DefaultNextTagCount"); } }
+        public static int DefaultCompletedTagsPeopleThreshold { get { return GetConfigurationOption<int>("DefaultCompletedTagsPeopleThreshold"); } }
+        public static int MaxFetchTags { get { return GetConfigurationOption<int>("MaxFetchTags"); } }
+        public static int PingReviewersDaysBackThreshold { get { return GetConfigurationOption<int>("PingReviewersDaysBackThreshold"); } }
+        public static int DefaultNextTagCount { get { return GetConfigurationOption<int>("DefaultNextTagCount"); } }
 
         public static string StartUpMessage { get { return GetConfigurationOption<string>("StartUpMessage"); } }
         public static string StopMessage { get { return GetConfigurationOption<string>("StopMessage"); } }

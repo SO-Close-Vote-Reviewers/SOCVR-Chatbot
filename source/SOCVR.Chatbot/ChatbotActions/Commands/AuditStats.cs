@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
-    public class AuditStats : UserCommand
+    internal class AuditStats : UserCommand
     {
         public override string ActionDescription => "Shows stats about your recorded audits.";
 
@@ -14,7 +14,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override string ActionUsage => "audit stats";
 
-        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Registered;
+        public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.Reviewer;
 
         protected override string RegexMatchingPattern => "^(show (me )?|display )?(my )?(audit stats|stats (of|about) my audits)( pl(ease|[sz]))?$";
 

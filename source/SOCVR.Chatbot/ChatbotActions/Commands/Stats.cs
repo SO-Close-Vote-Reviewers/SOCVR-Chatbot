@@ -1,8 +1,9 @@
-﻿using System.Text.RegularExpressions;
+﻿using SOCVR.Chatbot.Database;
+using System.Text.RegularExpressions;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
-    public class Stats : UserCommand
+    internal class Stats : UserCommand
     {
         public override string ActionDescription =>
             "Shows the stats at the top of the /review/close/stats page.";
@@ -11,11 +12,9 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override string ActionUsage => "stats";
 
-        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Registered;
+        public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.Reviewer;
 
         protected override string RegexMatchingPattern => "^(close vote )?stats( (please|pl[sz]))?$";
-
-
 
         public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {

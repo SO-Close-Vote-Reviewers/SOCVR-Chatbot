@@ -3,10 +3,11 @@ using System.Text.RegularExpressions;
 using SOCVR.Chatbot.Configuration;
 using SOCVR.Chatbot.Sede;
 using TCL.Extensions;
+using SOCVR.Chatbot.Database;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
-    public class NextTags : UserCommand
+    internal class NextTags : UserCommand
     {
         public override string ActionDescription =>
             "Displays the first X tags from the SEDE query to focus on.";
@@ -15,11 +16,9 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override string ActionUsage => "next [#] tags";
 
-        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Registered;
+        public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.Reviewer;
 
         protected override string RegexMatchingPattern => @"^next(?: (\d+))? tags$";
-
-
 
         public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
@@ -31,8 +30,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
                 .Parse<int?>();
 
             int tagsToFetch;
-            var maxTagsToFetch = 15;
-            int.TryParse(ConfigurationAccessor.MaxFetchTags, out maxTagsToFetch);
+            var maxTagsToFetch = ConfigurationAccessor.MaxFetchTags;
 
             if (tagsToFetchArgument != null)
             {
@@ -54,8 +52,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
             }
             else
             {
-                tagsToFetch = 3;
-                int.TryParse(ConfigurationAccessor.DefaultNextTagCount, out tagsToFetch);
+                tagsToFetch = ConfigurationAccessor.DefaultNextTagCount;
             }
 
             var tags = SedeAccessor.GetTags(chatRoom, ConfigurationAccessor.LoginEmail, ConfigurationAccessor.LoginPassword);

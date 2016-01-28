@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using SOCVR.Chatbot.Database;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using TCL.Extensions;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
-    public class StartingSession : UserCommand
+    internal class StartingSession : UserCommand
     {
         public override string ActionDescription =>
             "Deprecated - Informs the chatbot that you are starting a new review session.";
@@ -13,11 +14,9 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override string ActionUsage => "starting";
 
-        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Registered;
+        public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.Reviewer;
 
         protected override string RegexMatchingPattern => "^(?:i'?m )?start(ing|ed)(?: now)?$";
-
-
 
         public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {

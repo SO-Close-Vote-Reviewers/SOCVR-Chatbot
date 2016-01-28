@@ -81,6 +81,8 @@ namespace SOCVR.Chatbot.ChatRoom
         /// <returns></returns>
         private bool DoesUserHavePermissionToRunAction(ChatbotAction actionToRun, int chatUserId)
         {
+
+
             throw new NotImplementedException();
 
             //var neededPermissionLevel = actionToRun.PermissionLevel;

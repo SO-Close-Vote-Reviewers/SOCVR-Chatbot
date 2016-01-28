@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SOCVR.Chatbot.Database;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -9,7 +10,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
     /// <summary>
     /// Command to show the list of commands on the server.
     /// </summary>
-    public class Commands : UserCommand
+    internal class Commands : UserCommand
     {
         public override string ActionDescription => "Shows this list.";
 
@@ -17,7 +18,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override string ActionUsage => "commands";
 
-        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Everyone;
+        public override PermissionGroup? RequiredPermissionGroup => null;
 
         protected override string RegexMatchingPattern => "^(show the )?(list of )?(user )?command(s| list)( pl(ease|[sz]))?$";
 
@@ -40,7 +41,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
         {
             var groupedCommands = ChatbotActionRegister.AllChatActions
                 .Where(x => x is UserCommand)
-                .GroupBy(x => x.PermissionLevel);
+                .GroupBy(x => x.RequiredPermissionGroup);
 
             var finalMessageLines = new List<string>();
             finalMessageLines.Add("Below is a list of commands for the Close Vote Chat Bot");

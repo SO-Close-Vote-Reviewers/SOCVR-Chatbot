@@ -15,7 +15,7 @@ namespace SOCVR.Chatbot.ChatbotActions
         /// Returns list where each element is an instance of a different class that inherits ChatBotAction and is not abstract.
         /// Use this value to loop through all the UserCommands and Triggers in the program.
         /// </summary>
-        public static List<ChatbotAction> AllChatActions
+        internal static List<ChatbotAction> AllChatActions
         {
             get
             {
@@ -30,7 +30,7 @@ namespace SOCVR.Chatbot.ChatbotActions
         /// </summary>
         /// <typeparam name="TAction">A type that inherits ChatbotAction.</typeparam>
         /// <returns></returns>
-        public static string GetChatBotActionUsage<TAction>()
+        internal static string GetChatBotActionUsage<TAction>()
             where TAction : ChatbotAction
         {
             return AllChatActions
@@ -38,7 +38,7 @@ namespace SOCVR.Chatbot.ChatbotActions
                 .ActionUsage;
         }
 
-        private static class ReflectiveEnumerator
+        internal static class ReflectiveEnumerator
         {
             public static IEnumerable<T> GetEnumerableOfType<T>(params object[] constructorArgs) where T : class
             {

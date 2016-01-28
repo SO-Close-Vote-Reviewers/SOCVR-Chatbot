@@ -1,10 +1,11 @@
 ﻿using System.Text.RegularExpressions;
 using ChatExchangeDotNet;
 using TCL.Extensions;
+using SOCVR.Chatbot.Database;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
-    public class Help : UserCommand
+    internal class Help : UserCommand
     {
         public override string ActionDescription => "Prints info about this software.";
 
@@ -12,11 +13,9 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override string ActionUsage => "help";
 
-        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Everyone;
+        public override PermissionGroup? RequiredPermissionGroup => null;
 
         protected override string RegexMatchingPattern => "^(i need )?(help|assistance|halp|an adult)( me)?( (please|pl[sz]))?$";
-
-
 
         public override void RunAction(Message incomingChatMessage, Room chatRoom)
         {

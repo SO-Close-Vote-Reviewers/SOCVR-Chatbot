@@ -3,10 +3,11 @@ using System.Text.RegularExpressions;
 using SOCVR.Chatbot.Configuration;
 using SOCVR.Chatbot.Sede;
 using TCL.Extensions;
+using SOCVR.Chatbot.Database;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
-    public class StartEvent : UserCommand
+    internal class StartEvent : UserCommand
     {
         public override string ActionDescription =>
             "Shows the current stats from the /review/close/stats page and the next 3 tags to work on.";
@@ -15,11 +16,9 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override string ActionUsage => "start event";
 
-        public override ActionPermissionLevel PermissionLevel => ActionPermissionLevel.Owner;
+        public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.BotOwner;
 
         protected override string RegexMatchingPattern => "^(pl(ease|[sz]) )?((start(ing)?( the)? event)|(event start(ed)?))( pl(eas|[sz]))?$";
-
-
 
         public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
