@@ -38,6 +38,7 @@ This document describes the functionality of the chatbot that resides in the [SO
 	- [Approve and Reject Request #](#approve-and-reject-request-)
 	- [Add User To Group](#add-user-to-group)
 	- [Remove User From Group](#remove-user-from-group)
+- [Command Interpretation](#command-interpretation)
 - [Permission system](#permission-system)
 	- [Permission Request](#permission-request)
 		- [Asking for permission](#asking-for-permission)
@@ -467,6 +468,17 @@ This is the mirror of the `Add user to` command.
     remove [user id] from [group name]
 
 Use the opposite logic as the last command.
+
+## Command Interpretation
+The bot will make an attempt to correct a user if they type in a wrong command (such as spelling).
+
+The bot will look at the input and see if it within a configurable % of a known command (if multiple commands match the one with the highest percent match will be chosen) and suggest to the user if they meant that:
+
+> Did you mean to run "(command name)"? Reply "yes" to run it.
+
+If the user replies yes to the message then the bot will attempt to run the command as normal. Remember that permissions and restrictions still need to be checked.
+
+If no command matched the % threshold, then the bot will ignore the message.
 
 ## Permission system
 
