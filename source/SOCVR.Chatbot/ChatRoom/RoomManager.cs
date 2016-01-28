@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using ChatExchangeDotNet;
 using TCL.Extensions;
 
-namespace SOCVR.Chatbot.Bot
+namespace SOCVR.Chatbot
 {
     /// <summary>
     /// This class joins and keeps track of the chat room.

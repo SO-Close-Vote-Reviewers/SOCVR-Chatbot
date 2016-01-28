@@ -2,7 +2,7 @@
 using SOCVR.Chatbot.Bot.ChatbotActions.Commands;
 using TCL.Extensions;
 
-namespace SOCVR.Chatbot.Bot.ChatbotActions.Triggers
+namespace SOCVR.Chatbot.ChatbotActions.Triggers
 {
     /// <summary>
     /// For when a person does 40 review items and has ran out of review actions.

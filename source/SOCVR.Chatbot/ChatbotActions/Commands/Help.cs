@@ -2,7 +2,7 @@
 using ChatExchangeDotNet;
 using TCL.Extensions;
 
-namespace SOCVR.Chatbot.Bot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
     public class Help : UserCommand
     {

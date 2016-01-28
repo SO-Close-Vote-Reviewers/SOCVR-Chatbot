@@ -6,7 +6,7 @@ using SOCVR.Chatbot.Bot.ChatbotActions.Commands;
 using SOCVR.Chatbot.Bot.Database;
 using TCL.Extensions;
 
-namespace SOCVR.Chatbot.Bot
+namespace SOCVR.Chatbot
 {
     /// <summary>
     /// This class is responsible for determining whether to act on an incoming chat message or not,

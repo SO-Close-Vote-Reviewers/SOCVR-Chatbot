@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace SOCVR.Chatbot.Bot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
     public class StopBot : UserCommand
     {

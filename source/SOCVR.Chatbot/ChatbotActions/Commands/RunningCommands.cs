@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace SOCVR.Chatbot.Bot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
     public class RunningCommands : UserCommand
     {

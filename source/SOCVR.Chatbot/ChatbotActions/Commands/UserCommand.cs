@@ -1,6 +1,6 @@
 ﻿using ChatExchangeDotNet;
 
-namespace SOCVR.Chatbot.Bot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
     /// <summary>
     /// A User Command is a message sent directly to the chatbot which wants the chatbot to perform an action.

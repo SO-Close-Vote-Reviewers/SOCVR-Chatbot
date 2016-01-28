@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace SOCVR.Chatbot.Bot.ChatbotActions
+namespace SOCVR.Chatbot.ChatbotActions
 {
     /// <summary>
     /// Holds a list of instances that inherit from ChatbotAction.

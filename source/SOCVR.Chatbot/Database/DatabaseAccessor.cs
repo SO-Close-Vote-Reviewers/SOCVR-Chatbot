@@ -9,7 +9,7 @@
 //using TCL.DataAccess.Postgres;
 //#endif
 
-//namespace SOCVR.Chatbot.Bot.Database
+//namespace SOCVR.Chatbot.Database
 //{
 //    class DatabaseAccessor :
 //#if MsSql

@@ -7,7 +7,7 @@ using System.Threading;
 using CsQuery;
 using ServiceStack.Text;
 
-namespace SOCVR.Chatbot.Bot
+namespace SOCVR.Chatbot
 {
     /// <summary>
     /// Client responsible to login and run queries on data.stackexchange.com.

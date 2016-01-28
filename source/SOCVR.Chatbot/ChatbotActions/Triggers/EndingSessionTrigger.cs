@@ -4,7 +4,7 @@ using SOCVR.Chatbot.Bot.ChatbotActions.Commands;
 using SOCVR.Chatbot.Bot.Database;
 using TCL.Extensions;
 
-namespace SOCVR.Chatbot.Bot.ChatbotActions.Triggers
+namespace SOCVR.Chatbot.ChatbotActions.Triggers
 {
     public abstract class EndingSessionTrigger : Trigger
     {

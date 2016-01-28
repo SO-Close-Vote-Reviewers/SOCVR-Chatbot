@@ -2,7 +2,7 @@
 using SOCVR.Chatbot.Bot.ChatbotActions.Commands;
 using TCL.Extensions;
 
-namespace SOCVR.Chatbot.Bot.ChatbotActions.Triggers
+namespace SOCVR.Chatbot.ChatbotActions.Triggers
 {
     public class OutOfCloseVotes : EndingSessionTrigger
     {

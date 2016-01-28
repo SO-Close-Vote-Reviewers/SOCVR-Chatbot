@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SOCVR.Chatbot.Bot.Database
+namespace SOCVR.Chatbot.Database
 {
     class ReviewSession
     {

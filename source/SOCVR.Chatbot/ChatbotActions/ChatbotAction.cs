@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using ChatExchangeDotNet;
 
-namespace SOCVR.Chatbot.Bot.ChatbotActions
+namespace SOCVR.Chatbot.ChatbotActions
 {
     /// <summary>
     /// An action the chatbot will take based on a chat message.
