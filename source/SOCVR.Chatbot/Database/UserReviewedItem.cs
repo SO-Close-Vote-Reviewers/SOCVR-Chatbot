@@ -29,6 +29,8 @@ namespace SOCVR.Chatbot.Database
         public int ReviewerId { get; set; }
 
         public ReviewItemAction ActionTaken { get; set; }
+
+        public string PrimaryTag { get; set; }
     }
 
     internal enum ReviewItemAction

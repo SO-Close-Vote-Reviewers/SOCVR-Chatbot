@@ -2,6 +2,8 @@
 using System.Linq;
 using ChatExchangeDotNet;
 using TCL.Extensions;
+using SOCVR.Chatbot.ChatbotActions;
+using SOCVR.Chatbot.ChatbotActions.Commands;
 
 namespace SOCVR.Chatbot.ChatRoom
 {
@@ -11,12 +13,7 @@ namespace SOCVR.Chatbot.ChatRoom
     /// </summary>
     public class ChatMessageProcessor
     {
-        private DatabaseAccessor da;
-
-        public ChatMessageProcessor()
-        {
-            da = new DatabaseAccessor(roomSettings.DatabaseConnectionString);
-        }
+        public ChatMessageProcessor() { }
 
         public delegate void StopBotCommandIssuedHandler(object sender, EventArgs e);
         public event StopBotCommandIssuedHandler StopBotCommandIssued;
@@ -85,27 +82,29 @@ namespace SOCVR.Chatbot.ChatRoom
         /// <returns></returns>
         private bool DoesUserHavePermissionToRunAction(ChatbotAction actionToRun, int chatUserId)
         {
-            var neededPermissionLevel = actionToRun.PermissionLevel;
+            throw new NotImplementedException();
 
-            // If the permission level of the action is "everyone" then just return true.
-            // Don't need to do anything else, like searching though the database.
-            if (neededPermissionLevel == ActionPermissionLevel.Everyone)
-                return true;
+            //var neededPermissionLevel = actionToRun.PermissionLevel;
 
-            // Now you need to look up the person in the database
-            var userRecordInDB = da.GetRegisteredUserByChatProfileId(chatUserId);
+            //// If the permission level of the action is "everyone" then just return true.
+            //// Don't need to do anything else, like searching though the database.
+            //if (neededPermissionLevel == ActionPermissionLevel.Everyone)
+            //    return true;
 
-            if (userRecordInDB == null) // At this point, the permission is Registered or Owner,
-                return false;    // and if the user is not in the database at all then it can't work.
+            //// Now you need to look up the person in the database
+            //var userRecordInDB = da.GetRegisteredUserByChatProfileId(chatUserId);
 
-            if (neededPermissionLevel == ActionPermissionLevel.Registered)
-                return true; // The user is in the list, that's all we need to check.
+            //if (userRecordInDB == null) // At this point, the permission is Registered or Owner,
+            //    return false;    // and if the user is not in the database at all then it can't work.
 
-            if (userRecordInDB.IsOwner && neededPermissionLevel == ActionPermissionLevel.Owner)
-                return true;
+            //if (neededPermissionLevel == ActionPermissionLevel.Registered)
+            //    return true; // The user is in the list, that's all we need to check.
 
-            // Fall past the last check (for owner), so default to "no".
-            return false;
+            //if (userRecordInDB.IsOwner && neededPermissionLevel == ActionPermissionLevel.Owner)
+            //    return true;
+
+            //// Fall past the last check (for owner), so default to "no".
+            //return false;
         }
 
         /// <summary>

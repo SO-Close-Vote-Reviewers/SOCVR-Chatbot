@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.Entity;
+using SOCVR.Chatbot.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace SOCVR.Chatbot.Database
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("");
+            optionsBuilder.UseNpgsql(ConfigurationAccessor.DatabaseConnectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -36,6 +37,10 @@ namespace SOCVR.Chatbot.Database
                 .HasOne(i => i.Reviewer)
                 .WithMany(u => u.ReviewedItems)
                 .HasForeignKey(i => i.ReviewerId)
+                .IsRequired();
+
+            modelBuilder.Entity<UserReviewedItem>()
+                .Property(i => i.PrimaryTag)
                 .IsRequired();
 
             //user permission

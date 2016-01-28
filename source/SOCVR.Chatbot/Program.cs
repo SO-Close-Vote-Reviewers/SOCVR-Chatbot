@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using SOCVR.Chatbot.Bot;
 using TCL.Extensions;
 using SOCVR.Chatbot.ChatRoom;
 
