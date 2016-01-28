@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SOCVR.Chatbot.Bot", "SOCVR.Chatbot.Bot\SOCVR.Chatbot.Bot.csproj", "{A28BE12F-BE83-4313-B55F-C8706FD1AAC2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SOCVR.Chatbot.Frontend", "SOCVR.Chatbot.Frontend\SOCVR.Chatbot.Frontend.csproj", "{E9523CB8-D234-4C34-BDE1-7E11B5066986}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SOCVR.Chatbot", "SOCVR.Chatbot\SOCVR.Chatbot.csproj", "{5C489262-135E-42BE-91EA-7DB1C38C1BC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +38,16 @@ Global
 		{E9523CB8-D234-4C34-BDE1-7E11B5066986}.Release_Postgres|Any CPU.Build.0 = Release|Any CPU
 		{E9523CB8-D234-4C34-BDE1-7E11B5066986}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E9523CB8-D234-4C34-BDE1-7E11B5066986}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C489262-135E-42BE-91EA-7DB1C38C1BC0}.Debug_Postgres|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C489262-135E-42BE-91EA-7DB1C38C1BC0}.Debug_Postgres|Any CPU.Build.0 = Debug|Any CPU
+		{5C489262-135E-42BE-91EA-7DB1C38C1BC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C489262-135E-42BE-91EA-7DB1C38C1BC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C489262-135E-42BE-91EA-7DB1C38C1BC0}.LocalPublish|Any CPU.ActiveCfg = Release|Any CPU
+		{5C489262-135E-42BE-91EA-7DB1C38C1BC0}.LocalPublish|Any CPU.Build.0 = Release|Any CPU
+		{5C489262-135E-42BE-91EA-7DB1C38C1BC0}.Release_Postgres|Any CPU.ActiveCfg = Release|Any CPU
+		{5C489262-135E-42BE-91EA-7DB1C38C1BC0}.Release_Postgres|Any CPU.Build.0 = Release|Any CPU
+		{5C489262-135E-42BE-91EA-7DB1C38C1BC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C489262-135E-42BE-91EA-7DB1C38C1BC0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
