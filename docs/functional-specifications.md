@@ -158,9 +158,11 @@ Anyone in chat can run these commands.
 
 ### Commands for All Non-Public Users
 
-| Command                      | Description                                                          |
-|------------------------------|----------------------------------------------------------------------|
-| [approve/reject] request [#] | Approves or rejects a request for a user to join a permission group. |
+| Command                       | Description                                                          |
+|-------------------------------|----------------------------------------------------------------------|
+| [approve/reject] request [#]  | Approves or rejects a request for a user to join a permission group. |
+| add user to [group name]      | Manually adds a user to the given permission group.                  |
+| remove user from [group name] | Manually removes a user from the given permission group.             |
 
 ## Commands - Descriptive
 
@@ -424,6 +426,38 @@ If command is valid, and the process was successful, the bot will reply to the c
 If the request was approved, the message will append the following:
 
 > @[requesting user name] has been added to the [permission group] group.
+
+### Add User To [group name]
+The previous command is for add a user to a permission group if he/she has already requested it. However, chat members will want to add users without needing a request from the recipient.
+
+The command syntax is:
+
+    add [user id] to [group name]
+
+Group name is the name of any permission group, so "reviewers" or "bot owner". You can't add a user to public.
+
+When a user is successfully added to a group using this command, the following message will be said as a reply to the command:
+
+> I've added @(user) to the [group name] group.
+
+If the user running the command is not in the permission group specified, the bot responds with
+
+> You need to be in the [group name] group in order to add people to it.
+
+If the target user is already in the mentioned group
+
+> (username) is already in the [group name] group.
+
+If the user cannot be added to the group because of restrictions
+
+> I can't add (username) to the [group name] because (restriction message).
+
+### Remove User From [group name]
+This is the mirror of the `Add user to` command.
+
+    remove [user id] from [group name]
+
+Use the opposite logic as the last command.
 
 ## Permission system
 
