@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SOCVR.Chatbot.Database.DatabaseContext">
+    <Position X="0.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAQAAAAAAAAAAAAAAEAQAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Database\DatabaseContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SOCVR.Chatbot.Database.UserPermission">
+    <Position X="3.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAADAAAAAAAAAAAAAAAAEAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Database\UserPermission.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="User" />
+      <Property Name="PermissionGroup" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="SOCVR.Chatbot.Database.UserReviewedItem">
+    <Position X="10.75" Y="4" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACBUAABAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>Database\UserReviewedItem.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Reviewer" />
+      <Property Name="ActionTaken" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="SOCVR.Chatbot.Database.User">
+    <Position X="7.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAkQAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAgAA=</HashCode>
+      <FileName>Database\User.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Permissions" />
+      <Property Name="ReviewedItems" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="SOCVR.Chatbot.Database.PermissionRequest">
+    <Position X="3.25" Y="4.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAQAAAAAAAAIAEAAAAAIAAAAAAAAAAAgAAAAAI=</HashCode>
+      <FileName>Database\PermissionRequest.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="RequestingUser" />
+      <Property Name="ReviewingUser" />
+      <Property Name="RequestedPermissionGroup" />
+    </ShowAsAssociation>
+  </Class>
+  <Enum Name="SOCVR.Chatbot.Database.PermissionGroup">
+    <Position X="3.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>Database\UserPermission.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SOCVR.Chatbot.Database.ReviewItemAction">
+    <Position X="13.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAIAAAACAAAA=</HashCode>
+      <FileName>Database\UserReviewedItem.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

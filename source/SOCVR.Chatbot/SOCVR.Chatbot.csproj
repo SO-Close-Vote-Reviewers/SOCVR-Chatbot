@@ -178,6 +178,11 @@
     <Compile Include="ChatRoom\RunningChatbotActionsManager.cs" />
     <Compile Include="CloseQueueStatsAccessor.cs" />
     <Compile Include="Configuration\ConfigurationAccessor.cs" />
+    <Compile Include="Database\DatabaseContext.cs" />
+    <Compile Include="Database\PermissionRequest.cs" />
+    <Compile Include="Database\User.cs" />
+    <Compile Include="Database\UserPermission.cs" />
+    <Compile Include="Database\UserReviewedItem.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -186,13 +191,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Database\ModelDiagram.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="settings-sample.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Database\" />
     <Folder Include="Logic\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
