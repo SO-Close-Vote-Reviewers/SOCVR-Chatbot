@@ -7,7 +7,7 @@ using System.Threading;
 using CsQuery;
 using ServiceStack.Text;
 
-namespace SOCVR.Chatbot
+namespace SOCVR.Chatbot.Sede
 {
     /// <summary>
     /// Client responsible to login and run queries on data.stackexchange.com.
@@ -369,8 +369,6 @@ namespace SOCVR.Chatbot
 
         # endregion
 
-        #region serialization classes
-
         public class ResultSet
         {
             public JsonArrayObjects Rows { get; set; }
@@ -386,6 +384,6 @@ namespace SOCVR.Chatbot
             public int RevisionId { get; set; }
             public ResultSet[] ResultSets { get; set; }
         }
-        #endregion
+
     }
 }
