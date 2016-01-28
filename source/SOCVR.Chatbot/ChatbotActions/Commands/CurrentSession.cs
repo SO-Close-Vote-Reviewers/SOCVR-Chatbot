@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using SOCVR.Chatbot.Bot.Database;
 using TCL.Extensions;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands

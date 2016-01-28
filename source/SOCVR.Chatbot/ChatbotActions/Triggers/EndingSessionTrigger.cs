@@ -1,7 +1,5 @@
 ﻿using System;
 using ChatExchangeDotNet;
-using SOCVR.Chatbot.Bot.ChatbotActions.Commands;
-using SOCVR.Chatbot.Bot.Database;
 using TCL.Extensions;
 
 namespace SOCVR.Chatbot.ChatbotActions.Triggers
@@ -15,41 +13,43 @@ namespace SOCVR.Chatbot.ChatbotActions.Triggers
         /// <param name="chatRoom"></param>
         /// <param name="itemsReviewed"></param>
         /// <returns></returns>
-        protected bool EndSession(Message userMessage, Room chatRoom, int? itemsReviewed, InstallationSettings settings)
+        protected bool EndSession(Message userMessage, Room chatRoom, int? itemsReviewed)
         {
-            var da = new DatabaseAccessor(settings.DatabaseConnectionString);
+            throw new NotSupportedException();
 
-            // Find the latest session by that user.
-            var latestSession = da.GetLatestOpenSessionForUser(userMessage.Author.ID);
+            //var da = new DatabaseAccessor(settings.DatabaseConnectionString);
 
-            // First, check if there is a session.
-            if (latestSession == null)
-            {
-                chatRoom.PostReplyOrThrow(userMessage, "I don't seem to have the start of your review session on record. I might have not been running when you started, or some error happened.");
-                return false;
-            }
+            //// Find the latest session by that user.
+            //var latestSession = da.GetLatestOpenSessionForUser(userMessage.Author.ID);
 
-            // Check if session is greater than [MAX_REVIEW_TIME].
-            var maxReviewTimeHours = settings.MaxReviewLengthHours;
+            //// First, check if there is a session.
+            //if (latestSession == null)
+            //{
+            //    chatRoom.PostReplyOrThrow(userMessage, "I don't seem to have the start of your review session on record. I might have not been running when you started, or some error happened.");
+            //    return false;
+            //}
 
-            var timeThreshold = DateTimeOffset.Now.AddHours(-maxReviewTimeHours);
+            //// Check if session is greater than [MAX_REVIEW_TIME].
+            //var maxReviewTimeHours = ConfigurationAccessor.MaxReviewLengthHours;
 
-            if (latestSession.SessionStart < timeThreshold)
-            {
-                var timeDelta = DateTimeOffset.Now - latestSession.SessionStart;
+            //var timeThreshold = DateTimeOffset.Now.AddHours(-maxReviewTimeHours);
 
-                var message = "Your last uncompleted review session was {0} ago. Because it has exceeded my threshold ({1} hours), I can't mark that session with this information. "
-                    .FormatInline(timeDelta.ToUserFriendlyString(), maxReviewTimeHours) +
-                    "Use the command '{0}' to forcefully end that session."
-                    .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<EndSession>());
+            //if (latestSession.SessionStart < timeThreshold)
+            //{
+            //    var timeDelta = DateTimeOffset.Now - latestSession.SessionStart;
 
-                chatRoom.PostReplyOrThrow(userMessage, message);
-                return false;
-            }
+            //    var message = "Your last uncompleted review session was {0} ago. Because it has exceeded my threshold ({1} hours), I can't mark that session with this information. "
+            //        .FormatInline(timeDelta.ToUserFriendlyString(), maxReviewTimeHours) +
+            //        "Use the command '{0}' to forcefully end that session."
+            //        .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<EndSession>());
 
-            // It's all good, mark the info as done.
-            da.EndReviewSession(latestSession.Id, itemsReviewed);
-            return true;
+            //    chatRoom.PostReplyOrThrow(userMessage, message);
+            //    return false;
+            //}
+
+            //// It's all good, mark the info as done.
+            //da.EndReviewSession(latestSession.Id, itemsReviewed);
+            //return true;
         }
     }
 }
