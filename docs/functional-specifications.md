@@ -142,8 +142,7 @@ Anyone in chat can run these commands.
 | Next [#] tags        | Displays the first X tags from the SEDE query to focus on.                                                                                         |
 | Refresh tags         | Forces a refresh of the tags obtained from the SEDE query.                                                                                         |
 | Queue stats          | Shows the stats at the top of the /review/close/stats page.                                                                                        |
-| Current Review Count | Shows the number of review items the bot thinks the user has completed this day. This includes audits, because audits count towards your 40 items. |
-| Reviews today        | Prints a table of the reviews items that user has done today.                                                                                      |
+| Reviews today        | Shows user's stats for the reviews they have made in the current UTC day. Adding "Details" will print a table of those reviews.                    |
 | Total reviews today  | Shows summary information and a table of the people who have completed reviews today.                                                              |
 | opt out / opt in     | (also "opt-out" / "opt-in") Allows a user to be temporarily removed from the tracking system, or resume being tracked.                             |
 
@@ -227,7 +226,15 @@ This command has the bot display what version of code it is currently running al
 > SOCVR Chatbot production version abcd1234 (commited 2015-01-02 00:00:00 UTC), running for 4 hours, 2 minutes, and 23 seconds.
 
 ### Reviews Today
-This command is used for showing what the bot knows of the user's completed review items. Here is an example table:
+This command is used to show summary stats for the reviews a user has completed in the current UTC day. The syntax is:
+
+    reviews today [details]
+
+This is an example reply:
+
+> Today you have completed 30 review items, 2 of which were audits. The time between your first and last review item was 31 minutes and 23 seconds, averaging a review every 14 seconds.
+
+If the user adds `details` to the end of the command, the following table will be displayed under the bot's given stats. Adding `details` is optional.
 
 <pre>
 +---------+------------+--------+-------------------------+
