@@ -48,17 +48,10 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SettingsFileAccessor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SOCVR.Chatbot.Bot\SOCVR.Chatbot.Bot.csproj">
-      <Project>{a28be12f-be83-4313-b55f-c8706fd1aac2}</Project>
-      <Name>CVChatbot.Bot</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="settings-sample.txt" />

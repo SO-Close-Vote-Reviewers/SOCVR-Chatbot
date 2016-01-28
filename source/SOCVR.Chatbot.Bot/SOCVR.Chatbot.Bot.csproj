@@ -83,53 +83,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChatbotActions\ChatbotAction.cs" />
-    <Compile Include="ChatbotActions\ChatbotActionRegister.cs" />
-    <Compile Include="ChatbotActions\Commands\Alive.cs" />
-    <Compile Include="ChatbotActions\Commands\AuditStats.cs" />
-    <Compile Include="ChatbotActions\Commands\Commands.cs" />
-    <Compile Include="ChatbotActions\Commands\CompletedTags.cs" />
-    <Compile Include="ChatbotActions\Commands\CurrentTag.cs" />
-    <Compile Include="ChatbotActions\Commands\CurrentSession.cs" />
-    <Compile Include="ChatbotActions\Commands\EndSession.cs" />
-    <Compile Include="ChatbotActions\Commands\Help.cs" />
-    <Compile Include="ChatbotActions\Commands\PingReviewers.cs" />
-    <Compile Include="ChatbotActions\Commands\LastSessionEditCount.cs" />
-    <Compile Include="ChatbotActions\Commands\LastSessionStats.cs" />
-    <Compile Include="ChatbotActions\Commands\MyCompletedTags.cs" />
-    <Compile Include="ChatbotActions\Commands\NextTags.cs" />
-    <Compile Include="ChatbotActions\Commands\RefreshTags.cs" />
-    <Compile Include="ChatbotActions\Commands\StartEvent.cs" />
-    <Compile Include="ChatbotActions\Commands\StopBot.cs" />
-    <Compile Include="ChatbotActions\Commands\RunningCommands.cs" />
-    <Compile Include="ChatbotActions\Commands\StartingSession.cs" />
-    <Compile Include="ChatbotActions\Commands\Stats.cs" />
-    <Compile Include="ChatbotActions\Commands\Status.cs" />
-    <Compile Include="ChatbotActions\Commands\TrackUser.cs" />
-    <Compile Include="ChatbotActions\Commands\UserCommand.cs" />
-    <Compile Include="ChatbotActions\Triggers\CompletedAudit.cs" />
-    <Compile Include="ChatbotActions\Triggers\EmptyFilter.cs" />
-    <Compile Include="ChatbotActions\Triggers\EndingSessionTrigger.cs" />
-    <Compile Include="ChatbotActions\Triggers\OutOfCloseVotes.cs" />
-    <Compile Include="ChatbotActions\Triggers\OutOfReviewActions.cs" />
-    <Compile Include="ChatbotActions\Triggers\Trigger.cs" />
-    <Compile Include="ChatBotStats.cs" />
-    <Compile Include="ChatMessageProcessor.cs" />
-    <Compile Include="CloseQueueStatsAccessor.cs" />
-    <Compile Include="Database\CompletedTag.cs" />
-    <Compile Include="Database\DatabaseAccessor.cs" />
-    <Compile Include="Database\RegisteredUser.cs" />
-    <Compile Include="Database\ReviewSession.cs" />
-    <Compile Include="Database\UserAuditStatEntry.cs" />
-    <Compile Include="Database\UserCompletedTag.cs" />
-    <Compile Include="Extensions.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RoomManager.cs" />
-    <Compile Include="RunningChatbotActionsManager.cs" />
-    <Compile Include="SEDEAccessor.cs" />
-    <Compile Include="SedeClient.cs" />
-    <Compile Include="ThrowWhen.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.Config" />
