@@ -28,7 +28,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
         /// </summary>
         /// <param name="incommingChatMessage"></param>
         /// <param name="chatRoom"></param>
-        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
             var tags = SedeAccessor.GetTags(chatRoom, roomSettings.Email, roomSettings.Password);
 

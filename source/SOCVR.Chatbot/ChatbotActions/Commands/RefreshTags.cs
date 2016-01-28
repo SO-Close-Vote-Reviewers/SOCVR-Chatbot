@@ -19,7 +19,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
 
 
-        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
             SedeAccessor.InvalidateCache();
             var dataData = SedeAccessor.GetTags(chatRoom, roomSettings.Email, roomSettings.Password);

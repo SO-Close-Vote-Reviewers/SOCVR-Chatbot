@@ -19,7 +19,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Triggers
 
 
 
-        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
             var chatUser = chatRoom.GetUser(incommingChatMessage.Author.ID);
             var tagName = RegexMatchingObject

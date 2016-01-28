@@ -41,7 +41,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
             }
         }
 
-        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
             var groupedCommands = ChatbotActionRegister.AllChatActions
                 .Where(x => x is UserCommand)

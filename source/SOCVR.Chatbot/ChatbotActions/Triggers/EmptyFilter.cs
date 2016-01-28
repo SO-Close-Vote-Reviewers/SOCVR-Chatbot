@@ -21,7 +21,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Triggers
 
 
 
-        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom, InstallationSettings roomSettings)
+        public override void RunAction(ChatExchangeDotNet.Message incommingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
             // First, get the tags that were used.
             string tags = RegexMatchingObject
