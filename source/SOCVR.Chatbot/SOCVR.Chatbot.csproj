@@ -190,7 +190,6 @@
     <Compile Include="Sede\SEDEAccessor.cs" />
     <Compile Include="Sede\SedeClient.cs" />
     <Compile Include="SettingsFileAccessor.cs" />
-    <Compile Include="ThrowWhen.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
