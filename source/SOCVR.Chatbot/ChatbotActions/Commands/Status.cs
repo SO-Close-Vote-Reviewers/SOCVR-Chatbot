@@ -20,6 +20,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
+#warning fix this to include the git commit (first 8 chars)
             var elapsedTime = DateTime.Now - ChatBotStats.LoginDate;
             var assembly = Assembly.GetExecutingAssembly();
             var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
