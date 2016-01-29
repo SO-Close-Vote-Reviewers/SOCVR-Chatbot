@@ -13,6 +13,7 @@ namespace SOCVR.Chatbot.Database
         public DbSet<User> Users { get; set; }
         public DbSet<UserReviewedItem> ReviewedItems { get; set; }
         public DbSet<PermissionRequest> PermissionRequests { get; set; }
+        public DbSet<UserPermission> UserPermissions { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

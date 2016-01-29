@@ -158,6 +158,7 @@
     <Compile Include="ChatbotActions\Commands\Alive.cs" />
     <Compile Include="ChatbotActions\Commands\AuditStats.cs" />
     <Compile Include="ChatbotActions\Commands\Commands.cs" />
+    <Compile Include="ChatbotActions\Commands\Membership.cs" />
     <Compile Include="ChatbotActions\Commands\ReviewsToday.cs" />
     <Compile Include="ChatbotActions\Commands\CurrentTag.cs" />
     <Compile Include="ChatbotActions\Commands\Help.cs" />
