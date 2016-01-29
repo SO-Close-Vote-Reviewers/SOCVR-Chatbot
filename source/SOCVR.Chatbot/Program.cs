@@ -24,11 +24,12 @@ namespace SOCVR.Chatbot
 
             using (var db = new DatabaseContext())
             {
-                //create the database if it does not exist and push
-                //and new migrations to it
+                WriteToConsole("Connecting to database");
+
+                //create the database if it does not exist and push and new migrations to it
                 db.Database.Migrate();
 
-                //yes, yes I'm really doing this
+#warning replace this with a lookup of the actual ROs in the room
                 var roList = new[] { 1043380, 2246344 };
 
                 foreach (var roId in roList)
@@ -54,8 +55,6 @@ namespace SOCVR.Chatbot
             {
                 mng.ShutdownOrderGiven += mng_ShutdownOrderGiven;
                 mng.InformationMessageBroadcasted += mng_InformationMessageBroadcasted;
-
-                WriteToConsole("Gathering settings");
 
                 WriteToConsole("Joining room");
                 mng.JoinRoom();
