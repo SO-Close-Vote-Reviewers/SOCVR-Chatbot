@@ -4,6 +4,7 @@ using ChatExchangeDotNet;
 using TCL.Extensions;
 using SOCVR.Chatbot.ChatbotActions;
 using SOCVR.Chatbot.ChatbotActions.Commands;
+using SOCVR.Chatbot.Database;
 
 namespace SOCVR.Chatbot.ChatRoom
 {
@@ -81,31 +82,40 @@ namespace SOCVR.Chatbot.ChatRoom
         /// <returns></returns>
         private bool DoesUserHavePermissionToRunAction(ChatbotAction actionToRun, int chatUserId)
         {
+            //if the command does not require a permission group to run
+            if (actionToRun.RequiredPermissionGroup == null)
+            {
+                return true;
+            }
 
+            //command requires permission. look up user in database
 
-            throw new NotImplementedException();
+            using (var db = new DatabaseContext())
+            {
+                var dbUser = db.Users.SingleOrDefault(x => x.ProfileId == chatUserId);
 
-            //var neededPermissionLevel = actionToRun.PermissionLevel;
+                if (dbUser == null)
+                {
+                    //this user does not exist in the database, and because this command requires permission
+                    //we have to deny usage
+                    return false;
+                }
 
-            //// If the permission level of the action is "everyone" then just return true.
-            //// Don't need to do anything else, like searching though the database.
-            //if (neededPermissionLevel == ActionPermissionLevel.Everyone)
-            //    return true;
+                //check if the user is in the necessary permission group
+                var userPermissionGroups = dbUser.Permissions
+                    .Select(x => x.PermissionGroup);
 
-            //// Now you need to look up the person in the database
-            //var userRecordInDB = da.GetRegisteredUserByChatProfileId(chatUserId);
-
-            //if (userRecordInDB == null) // At this point, the permission is Registered or Owner,
-            //    return false;    // and if the user is not in the database at all then it can't work.
-
-            //if (neededPermissionLevel == ActionPermissionLevel.Registered)
-            //    return true; // The user is in the list, that's all we need to check.
-
-            //if (userRecordInDB.IsOwner && neededPermissionLevel == ActionPermissionLevel.Owner)
-            //    return true;
-
-            //// Fall past the last check (for owner), so default to "no".
-            //return false;
+                if (!actionToRun.RequiredPermissionGroup.Value.In(userPermissionGroups))
+                {
+                    //user is not in the required permission group
+                    return false;
+                }
+                else
+                {
+                    //user is in the required permission group
+                    return true;
+                }
+            }
         }
 
         /// <summary>
