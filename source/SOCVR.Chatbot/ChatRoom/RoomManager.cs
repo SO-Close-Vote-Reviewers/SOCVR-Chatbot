@@ -63,7 +63,8 @@ namespace SOCVR.Chatbot.ChatRoom
             chatClient = new Client(ConfigurationAccessor.LoginEmail, ConfigurationAccessor.LoginPassword);
             cvChatRoom = chatClient.JoinRoom(ConfigurationAccessor.ChatRoomUrl);
             ChatBotStats.LoginDate = DateTime.Now;
-            cvChatRoom.StripMention = false;
+            cvChatRoom.StripMention = true;
+            cvChatRoom.InitialisePrimaryContentOnly = true;
 
             // Say the startup message?
             if (!ConfigurationAccessor.StartUpMessage.IsNullOrWhiteSpace())
