@@ -69,7 +69,8 @@ namespace SOCVR.Chatbot.ChatRoom
                 // Don't have permission, tell the user only if it's a command.
                 if (isReplyToChatbot)
                 {
-                    chatRoom.PostReplyOrThrow(incomingChatMessage, "Sorry, you need more permissions to run that command.");
+                    chatRoom.PostReplyOrThrow(incomingChatMessage, 
+                        $"Sorry, you are not in the {chatbotActionToRun.RequiredPermissionGroup.ToString()} permission group. Do you want to request access? (reply with 'yes')");
                 }
                 // Don't do anything for triggers.
             }
