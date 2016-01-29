@@ -21,6 +21,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using SOCVR.Chatbot.ChatbotActions;
@@ -31,7 +32,7 @@ namespace CVChatbot.Bot
     {
         private Regex cmdOptions = new Regex(@"[()<>\[\]].*?[()<>\[\]]");
 
-        public ChatbotAction FindCommand(string message, double threshold = 2D / 3)
+        public KeyValuePair<string, ChatbotAction>? FindCommand(string message, double threshold = 2D / 3)
         {
             if (string.IsNullOrWhiteSpace(message)) return null;
 
@@ -67,9 +68,35 @@ namespace CVChatbot.Bot
                 }
             }
 
-            return (y.Length - cmdDist) / y.Length > threshold
-                ? act
-                : null;
+            if ((y.Length - cmdDist) / y.Length < threshold)
+            {
+                return null;
+            }
+
+            var dynCmdOpt = "";
+
+            var msgWords = message.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            var cmdWords = cmdOptions.Replace(act.ActionUsage, "").Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            var minWCount = Math.Min(msgWords.Length, cmdWords.Length);
+            var ignoreWords = new List<int>();
+            for (var i = 0; i < minWCount; i++)
+            {
+                var dist = Calculate(msgWords[i], cmdWords[i], int.MaxValue);
+                if ((msgWords[i].Length - dist) / msgWords.Length > (threshold / 1.5))
+                {
+                    ignoreWords.Add(i);
+                }
+            }
+            for (var i = 0; i < msgWords.Length; i++)
+            {
+                if (ignoreWords.Contains(i)) continue;
+
+                dynCmdOpt += msgWords[i] + " ";
+            }
+
+            var cmdTxt = cmdOptions.Replace(act.ActionUsage, dynCmdOpt.Trim());
+
+            return new KeyValuePair<string, ChatbotAction>(cmdTxt, act);
         }
 
 

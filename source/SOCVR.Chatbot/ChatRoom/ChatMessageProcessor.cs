@@ -53,6 +53,10 @@ namespace SOCVR.Chatbot.ChatRoom
                 if (cmd.Key != null)
                 {
                     chatbotActionToRun = cmd.Value.Value;
+                    //TODO: we should probably change the incoming message.
+                    // But this ain't right either (we're just fetching the
+                    // old rejected command again.)
+                    //incomingChatMessage = chatRoom[cmd.Key.ParentID];
                     KeyValuePair<Message, ChatbotAction> temp;
                     unrecdCmds.TryRemove(cmd.Key, out temp);
                 }
@@ -85,7 +89,7 @@ namespace SOCVR.Chatbot.ChatRoom
 
                         if (similarCommand != null)
                         {
-                            msg += $"Did you mean `{similarCommand.ActionUsage}`?";
+                            msg += $"Did you mean `{similarCommand.Value.Key}`?";
 
                             var reply = chatRoom.PostReply(incomingChatMessage, msg);
                             if (reply == null)
@@ -93,7 +97,7 @@ namespace SOCVR.Chatbot.ChatRoom
                                 throw new InvalidOperationException("Unable to post message");
                             }
 
-                            unrecdCmds[incomingChatMessage] = new KeyValuePair<Message, ChatbotAction>(reply, similarCommand);
+                            unrecdCmds[incomingChatMessage] = new KeyValuePair<Message, ChatbotAction>(reply, similarCommand.Value.Value);
                         }
                     }
 
