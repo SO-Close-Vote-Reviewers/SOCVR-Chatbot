@@ -54,7 +54,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
                     {
                         var revDur = reviews.Max(r => r.ReviewedOn) - reviews.Min(r => r.ReviewedOn);
                         var avg = new TimeSpan(revDur.Ticks / (revCount - 1));
-#error fix this, use built in extension method
+#warning fix this, use built in extension method
                         msgText += "The time between your first and last review today was ";
                         msgText += revDur.Hours > 0 ? $"{revDur.Hours} hour{(revDur.Hours > 1 ? "s" : "")} and " : "";
                         msgText += $"{revDur.Minutes} minute{(revDur.Minutes > 1 ? "s" : "")}";

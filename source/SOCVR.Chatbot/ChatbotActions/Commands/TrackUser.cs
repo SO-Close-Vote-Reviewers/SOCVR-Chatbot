@@ -18,7 +18,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         protected override string RegexMatchingPattern => @"^(?:add|track) user (\d+)$";
 
-#error this command is going away / renamed
+#warning this command is going away / renamed
 
         public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
