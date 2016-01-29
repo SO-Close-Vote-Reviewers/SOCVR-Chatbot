@@ -9,6 +9,14 @@ namespace SOCVR.Chatbot.Database
 {
     internal class User
     {
+        public User()
+        {
+            Permissions = new List<UserPermission>();
+            ReviewedItems = new List<UserReviewedItem>();
+            PermissionsRequested = new List<PermissionRequest>();
+            PermissionsReviewed = new List<PermissionRequest>();
+        }
+
         /// <summary>
         /// The Stack Overflow Id number for this user.
         /// </summary>
