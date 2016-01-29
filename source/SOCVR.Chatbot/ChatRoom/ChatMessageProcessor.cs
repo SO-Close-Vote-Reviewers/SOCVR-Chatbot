@@ -6,6 +6,10 @@ using SOCVR.Chatbot.ChatbotActions;
 using SOCVR.Chatbot.ChatbotActions.Commands;
 using SOCVR.Chatbot.Database;
 using Microsoft.Data.Entity;
+using CVChatbot.Bot;
+using System.Collections.Concurrent;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 namespace SOCVR.Chatbot.ChatRoom
 {
@@ -15,7 +19,16 @@ namespace SOCVR.Chatbot.ChatRoom
     /// </summary>
     public class ChatMessageProcessor
     {
-        public ChatMessageProcessor() { }
+        private Regex yesReply;
+        private ConcurrentDictionary<Message, KeyValuePair<Message, ChatbotAction>> unrecdCmds;
+        private SimilarCommand simCmd;
+
+        public ChatMessageProcessor()
+        {
+            simCmd = new SimilarCommand();
+            unrecdCmds = new ConcurrentDictionary<Message, KeyValuePair<Message, ChatbotAction>>();
+            yesReply = new Regex(@"(?i)^y([eu]+s+|[ue]+p|eah?)\b", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        }
 
         public delegate void StopBotCommandIssuedHandler(object sender, EventArgs e);
         public event StopBotCommandIssuedHandler StopBotCommandIssued;
@@ -28,35 +41,69 @@ namespace SOCVR.Chatbot.ChatRoom
         /// <param name="chatRoom">The room the chat message was said in.</param>
         public void ProcessChatMessage(Message incomingChatMessage, Room chatRoom)
         {
-            // Do this first so I only have to find the result once per chat message.
-            bool isReplyToChatbot = MessageIsReplyToChatbot(incomingChatMessage, chatRoom);
+            var isReplyToChatbot = false;
+            ChatbotAction chatbotActionToRun = null;
 
-            // Determine the list of possible actions that work from the message.
-            var possibleChatbotActionsToRun = ChatbotActionRegister.AllChatActions
-                .Where(x => x.DoesChatMessageActiveAction(incomingChatMessage, isReplyToChatbot))
-                .ToList();
-
-            if (possibleChatbotActionsToRun.Count > 1)
-                throw new Exception("More than one possible chat bot action to run for the input '{0}'"
-                    .FormatSafely(incomingChatMessage.Content));
-
-            if (!possibleChatbotActionsToRun.Any())
+            // Is the message a confirmation to a command suggestion?
+            if (yesReply.IsMatch(incomingChatMessage.Content))
             {
-                // Didn't find an action to run, what to do next depends of if the message was
-                // a reply to the chatbot or not.
-                if (isReplyToChatbot)
-                {
-                    // User was trying to make a command.
-                    chatRoom.PostReplyOrThrow(incomingChatMessage, "Sorry, I don't understand that. Use `{0}` for a list of commands."
-                        .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<Commands>()));
-                }
-                // Else it's a trigger, do nothing.
+                var cmd = unrecdCmds.FirstOrDefault(kv => kv.Value.Key.ID == incomingChatMessage.ParentID &&
+                    kv.Key.Author.ID == incomingChatMessage.Author.ID);
 
-                return;
+                if (cmd.Key != null)
+                {
+                    chatbotActionToRun = cmd.Value.Value;
+                    KeyValuePair<Message, ChatbotAction> temp;
+                    unrecdCmds.TryRemove(cmd.Key, out temp);
+                }
             }
 
-            // You have a single item to run.
-            var chatbotActionToRun = possibleChatbotActionsToRun.Single();
+            if (chatbotActionToRun == null)
+            {
+                // Do this first so I only have to find the result once per chat message.
+                isReplyToChatbot = MessageIsReplyToChatbot(incomingChatMessage, chatRoom);
+
+                // Determine the list of possible actions that work from the message.
+                var possibleChatbotActionsToRun = ChatbotActionRegister.AllChatActions
+                    .Where(x => x.DoesChatMessageActiveAction(incomingChatMessage, isReplyToChatbot))
+                    .ToList();
+
+                if (possibleChatbotActionsToRun.Count > 1)
+                {
+                    throw new Exception("More than one possible chat bot action to run for the input '{0}'"
+                        .FormatSafely(incomingChatMessage.Content));
+                }
+
+                if (!possibleChatbotActionsToRun.Any())
+                {
+                    // Didn't find an action to run, what to do next depends of if the message was
+                    // a reply to the chatbot or not.
+                    if (isReplyToChatbot)
+                    {
+                        var similarCommand = simCmd.FindCommand(incomingChatMessage.Content);
+                        var msg = "Sorry, I don't understand that. ";
+
+                        if (similarCommand != null)
+                        {
+                            msg += $"Did you mean `{similarCommand.ActionUsage}`?";
+
+                            var reply = chatRoom.PostReply(incomingChatMessage, msg);
+                            if (reply == null)
+                            {
+                                throw new InvalidOperationException("Unable to post message");
+                            }
+
+                            unrecdCmds[incomingChatMessage] = new KeyValuePair<Message, ChatbotAction>(reply, similarCommand);
+                        }
+                    }
+
+                    // Else it's a trigger, do nothing.
+                    return;
+                }
+
+                // You have a single item to run.
+                chatbotActionToRun = possibleChatbotActionsToRun.Single();
+            }
 
             // Now, do you have permission to run it? If you are a mod the answer is yes, else you need to check.
             if (incomingChatMessage.Author.IsMod || DoesUserHavePermissionToRunAction(chatbotActionToRun, incomingChatMessage.Author.ID))
@@ -69,7 +116,7 @@ namespace SOCVR.Chatbot.ChatRoom
                 // Don't have permission, tell the user only if it's a command.
                 if (isReplyToChatbot)
                 {
-                    chatRoom.PostReplyOrThrow(incomingChatMessage, 
+                    chatRoom.PostReplyOrThrow(incomingChatMessage,
                         $"Sorry, you are not in the {chatbotActionToRun.RequiredPermissionGroup.ToString()} permission group. Do you want to request access? (reply with 'yes')");
                 }
                 // Don't do anything for triggers.
