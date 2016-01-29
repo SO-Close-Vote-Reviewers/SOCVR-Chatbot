@@ -4,6 +4,8 @@ using TCL.Extensions;
 using SOCVR.Chatbot.ChatRoom;
 using SOCVR.Chatbot.Database;
 using Microsoft.Data.Entity;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace SOCVR.Chatbot
 {
@@ -25,6 +27,26 @@ namespace SOCVR.Chatbot
                 //create the database if it does not exist and push
                 //and new migrations to it
                 db.Database.Migrate();
+
+                //yes, yes I'm really doing this
+                var roList = new[] { 1043380, 2246344 };
+
+                foreach (var roId in roList)
+                {
+                    if (!db.Users.Any(x => x.ProfileId == roId))
+                    {
+                        db.Users.Add(new User
+                        {
+                            ProfileId = roId,
+                            Permissions = new List<UserPermission>
+                            {
+                                new UserPermission { PermissionGroup = PermissionGroup.Reviewer },
+                                new UserPermission { PermissionGroup = PermissionGroup.BotOwner }
+                            }
+                        });
+                        db.SaveChanges();
+                    }
+                }
             }
 
             // dispose our RoomManager
