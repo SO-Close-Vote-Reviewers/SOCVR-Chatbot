@@ -15,7 +15,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.Reviewer;
 
-        protected override string RegexMatchingPattern => "^(show (me )?|display )?(my )?(audit stats|stats (of|about) my audits)( pl(ease|[sz]))?$";
+        protected override string RegexMatchingPattern => "^audit stats$";
 
         public override void RunAction(Message incomingChatMessage, Room chatRoom)
         {

@@ -11,11 +11,11 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override string ActionName => "Add user";
 
-        public override string ActionUsage => "(add | track) user <chat id>";
+        public override string ActionUsage => "add user <chat id>";
 
         public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.BotOwner;
 
-        protected override string RegexMatchingPattern => @"^(?:add|track) user (\d+)$";
+        protected override string RegexMatchingPattern => @"^add user (\d+)$";
 
 #warning this command is going away / renamed
 

@@ -12,7 +12,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override string ActionName => "Reviews Today";
 
-        public override string ActionUsage => "reviews today";
+        public override string ActionUsage => "reviews today [full]";
 
         public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.Reviewer;
 
