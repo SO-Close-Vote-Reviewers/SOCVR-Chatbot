@@ -31,14 +31,14 @@ namespace CVChatbot.Bot
     {
         private Regex cmdOptions = new Regex(@"[()<>\[\]].*?[()<>\[\]]");
 
-        public ChatbotAction FindCommand(string message, double threshold = 0.5)
+        public ChatbotAction FindCommand(string message, double threshold = 2D / 3)
         {
             if (string.IsNullOrWhiteSpace(message)) return null;
 
             var y = new string(message.Where(c => char.IsLetter(c) || c == ' ').ToArray())
                 .Trim()
                 .ToLowerInvariant();
-            var cmdDist = int.MaxValue;
+            var cmdDist = double.MaxValue;
             ChatbotAction act = null;
 
             foreach (var cmd in ChatbotActionRegister.AllChatActions)
@@ -50,12 +50,14 @@ namespace CVChatbot.Bot
                 if (!string.IsNullOrWhiteSpace(x))
                 {
                     var z = y;
+                    var lenDiff = 1D;
                     if (z.Length > x.Length)
                     {
-                        z = z.Substring(0, x.Length);
+                        z = z.Substring(0, (int)Math.Round(x.Length + Math.Max(1, (y.Length - x.Length) / 4D)));
+                        lenDiff = (double)y.Length / x.Length;
                     }
 
-                    var dist = Calculate(x, z, int.MaxValue);
+                    var dist = Calculate(x, z, int.MaxValue) * lenDiff;
 
                     if (dist < cmdDist)
                     {
@@ -65,9 +67,9 @@ namespace CVChatbot.Bot
                 }
             }
 
-            return (float)cmdDist / Math.Max(message.Length, act.ActionUsage.Length) > threshold
-                ? null
-                : act;
+            return (y.Length - cmdDist) / y.Length > threshold
+                ? act
+                : null;
         }
 
 
