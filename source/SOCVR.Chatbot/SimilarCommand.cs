@@ -54,7 +54,7 @@ namespace CVChatbot.Bot
                     var lenDiff = 1D;
                     if (z.Length > x.Length)
                     {
-                        z = z.Substring(0, (int)Math.Round(x.Length + Math.Max(1, (y.Length - x.Length) / 4D)));
+                        z = z.Substring(0, (int)Math.Round(x.Length + Math.Max(1, (y.Length - x.Length) / 5D)));
                         lenDiff = (double)y.Length / x.Length;
                     }
 
@@ -77,12 +77,22 @@ namespace CVChatbot.Bot
 
             var msgWords = message.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
             var cmdWords = cmdOptions.Replace(act.ActionUsage, "").Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-            var minWCount = Math.Min(msgWords.Length, cmdWords.Length);
             var ignoreWords = new List<int>();
-            for (var i = 0; i < minWCount; i++)
+            for (var i = 0; i < msgWords.Length; i++)
             {
-                var dist = Calculate(msgWords[i], cmdWords[i], int.MaxValue);
-                if ((msgWords[i].Length - dist) / msgWords.Length > (threshold / 1.5))
+                var dist = double.MaxValue;
+
+                for (var j = 0; j < cmdWords.Length; j++)
+                {
+                    var d = Calculate(msgWords[i], cmdWords[j], int.MaxValue);
+
+                    if (d < dist)
+                    {
+                        dist = d;
+                    }
+                }
+
+                if ((msgWords[i].Length - dist) / msgWords[i].Length > (threshold / 1.5))
                 {
                     ignoreWords.Add(i);
                 }
