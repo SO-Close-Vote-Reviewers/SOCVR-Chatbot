@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using ChatExchangeDotNet;
+﻿using ChatExchangeDotNet;
 using SOCVR.Chatbot.Database;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands

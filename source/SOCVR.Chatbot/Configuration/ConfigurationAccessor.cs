@@ -1,10 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using TCL.Extensions;
 
 namespace SOCVR.Chatbot.Configuration
@@ -27,7 +23,7 @@ namespace SOCVR.Chatbot.Configuration
 
         /// <summary>
         /// Searches for a configuration setting by the given key.
-        /// First search will be enviornment variables.
+        /// First search will be environment variables.
         /// Second search will be a "settings.json" file.
         /// If the setting cannot be found in either place an exception is thrown.
         /// </summary>
@@ -36,7 +32,7 @@ namespace SOCVR.Chatbot.Configuration
         /// <returns></returns>
         private static T GetConfigurationOption<T>(string key)
         {
-            //first, check enviornment variables
+            //first, check environment variables
             var envValue = Environment.GetEnvironmentVariable(key);
 
             if (!envValue.IsNullOrWhiteSpace())

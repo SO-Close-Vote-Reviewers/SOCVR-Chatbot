@@ -173,9 +173,6 @@
     <Compile Include="ChatbotActions\Commands\StopBot.cs" />
     <Compile Include="ChatbotActions\Commands\TrackUser.cs" />
     <Compile Include="ChatbotActions\Commands\UserCommand.cs" />
-    <Compile Include="ChatbotActions\Triggers\CompletedAudit.cs" />
-    <Compile Include="ChatbotActions\Triggers\EmptyFilter.cs" />
-    <Compile Include="ChatbotActions\Triggers\Trigger.cs" />
     <Compile Include="ChatBotStats.cs" />
     <Compile Include="ChatRoom\ChatMessageProcessor.cs" />
     <Compile Include="ChatRoom\RoomManager.cs" />

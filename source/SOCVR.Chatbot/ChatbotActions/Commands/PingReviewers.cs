@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using ChatExchangeDotNet;
 using SOCVR.Chatbot.Configuration;
 using SOCVR.Chatbot.Database;
-using TCL.Extensions;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands
 {

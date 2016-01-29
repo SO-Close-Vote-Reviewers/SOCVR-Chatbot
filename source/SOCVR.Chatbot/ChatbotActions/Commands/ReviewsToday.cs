@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using ChatExchangeDotNet;
 using SOCVR.Chatbot.Database;
-using TCL.Extensions;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
@@ -18,61 +16,51 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.Reviewer;
 
-        protected override string RegexMatchingPattern => @"^reviews today (full|detail(ed|s)|verbose)?$";
+        protected override string RegexMatchingPattern => @"^reviews today( full|detail(ed|s)|verbose)?$";
 
         public override void RunAction(Message incomingChatMessage, Room chatRoom)
         {
             using (var db = new DatabaseContext())
             {
-                var msgText = "";
+                var msg = new MessageBuilder();
                 var reviews = db.ReviewedItems.Where(x => x.ReviewerId == incomingChatMessage.Author.ID);
                 var revCount = reviews.Count();
 
                 if (GetRegexMatchingObject().Match(incomingChatMessage.Content).Groups[1] != null)
                 {
-                    msgText = reviews.ToStringTable(new[] { "Item Id", "Action", "Audit", "Completed At" },
+                    msg.AppendText(reviews.ToStringTable(new[] { "Item Id", "Action", "Audit", "Completed At" },
                         x => x.Id,
                         x => x.ActionTaken,
                         x => GetFriendlyAuditResult(x.AuditPassed),
-                        x => x.ReviewedOn.ToString("yyyy-MM-dd HH:mm:ss UTC"));
+                        x => x.ReviewedOn.ToString("yyyy-MM-dd HH:mm:ss UTC")));
 
-                    chatRoom.PostMessageOrThrow(msgText);
+                    chatRoom.PostMessageOrThrow(msg);
                 }
                 else
                 {
-                    msgText = $"You've reviewed {(revCount > 1 ? $"{revCount} posts today" : "a post today")}";
+                    msg.AppendText($"You've reviewed {(revCount > 1 ? $"{revCount} posts today" : "a post today")}");
                     var audits = reviews.Count(x => x.AuditPassed != null);
                     if (audits > 0)
                     {
-                        msgText += $" ({audits} of which {(audits > 1 ? "were audits" : "was an audit")})";
+                        msg.AppendText($" ({audits} of which {(audits > 1 ? "were audits" : "was an audit")})");
                     }
 
-                    msgText += ". ";
+                    msg.AppendText(". ");
 
                     // It's always possible...
                     if (revCount > 1)
                     {
                         var revDur = reviews.Max(r => r.ReviewedOn) - reviews.Min(r => r.ReviewedOn);
                         var avg = new TimeSpan(revDur.Ticks / (revCount - 1));
-#warning fix this, use built in extension method
-                        msgText += "The time between your first and last review today was ";
-                        msgText += revDur.Hours > 0 ? $"{revDur.Hours} hour{(revDur.Hours > 1 ? "s" : "")} and " : "";
-                        msgText += $"{revDur.Minutes} minute{(revDur.Minutes > 1 ? "s" : "")}";
-                        msgText += ", averaging to a review every ";
 
-                        if (avg.Hours > 0)
-                        {
-                            msgText += avg.Hours > 0 ? $"{avg.Hours} hour{(avg.Hours > 1 ? "s" : "")} and " : "";
-                            msgText += $"{avg.Minutes} minute{(avg.Minutes > 1 ? "s" : "")}.";
-                        }
-                        else
-                        {
-                            msgText += avg.Minutes > 0 ? $"{avg.Minutes} minute{(avg.Minutes > 1 ? "s" : "")} and " : "";
-                            msgText += $"{avg.Seconds} second{(avg.Seconds > 1 ? "s" : "")}.";
-                        }
+                        msg.AppendText("The time between your first and last review today was ");
+                        msg.AppendText(revDur.ToUserFriendlyString());
+                        msg.AppendText(", averaging to a review every ");
+                        msg.AppendText(avg.ToUserFriendlyString());
+                        msg.AppendText(".");
                     }
 
-                    chatRoom.PostReplyOrThrow(incomingChatMessage, msgText);
+                    chatRoom.PostReplyOrThrow(incomingChatMessage, msg);
                 }
             }
         }

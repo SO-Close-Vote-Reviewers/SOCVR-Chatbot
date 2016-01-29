@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using ChatExchangeDotNet;
 using SOCVR.Chatbot.ChatRoom;
 using SOCVR.Chatbot.Database;

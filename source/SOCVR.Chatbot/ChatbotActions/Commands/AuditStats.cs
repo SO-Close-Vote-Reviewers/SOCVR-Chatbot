@@ -2,7 +2,6 @@
 using SOCVR.Chatbot.Database;
 using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands
 {
