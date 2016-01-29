@@ -2,6 +2,8 @@
 using System.Threading;
 using TCL.Extensions;
 using SOCVR.Chatbot.ChatRoom;
+using SOCVR.Chatbot.Database;
+using Microsoft.Data.Entity;
 
 namespace SOCVR.Chatbot
 {
@@ -17,6 +19,13 @@ namespace SOCVR.Chatbot
         static void Main(string[] args)
         {
             WriteToConsole("Starting program");
+
+            using (var db = new DatabaseContext())
+            {
+                //create the database if it does not exist and push
+                //and new migrations to it
+                db.Database.Migrate();
+            }
 
             // dispose our RoomManager
             using (mng = new RoomManager())
