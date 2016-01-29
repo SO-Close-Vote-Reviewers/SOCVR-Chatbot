@@ -5,6 +5,7 @@ using TCL.Extensions;
 using SOCVR.Chatbot.ChatbotActions;
 using SOCVR.Chatbot.ChatbotActions.Commands;
 using SOCVR.Chatbot.Database;
+using Microsoft.Data.Entity;
 
 namespace SOCVR.Chatbot.ChatRoom
 {
@@ -92,7 +93,9 @@ namespace SOCVR.Chatbot.ChatRoom
 
             using (var db = new DatabaseContext())
             {
-                var dbUser = db.Users.SingleOrDefault(x => x.ProfileId == chatUserId);
+                var dbUser = db.Users
+                    .Include(x => x.Permissions)
+                    .SingleOrDefault(x => x.ProfileId == chatUserId);
 
                 if (dbUser == null)
                 {
