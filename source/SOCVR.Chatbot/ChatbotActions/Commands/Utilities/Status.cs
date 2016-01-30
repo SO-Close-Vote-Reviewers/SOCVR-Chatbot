@@ -3,7 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace SOCVR.Chatbot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
 {
     internal class Status : UserCommand
     {

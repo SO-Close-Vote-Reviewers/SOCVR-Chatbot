@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using TCL.Extensions;
 
-namespace SOCVR.Chatbot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
 {
     /// <summary>
     /// Command to show the list of commands on the server.
@@ -39,6 +39,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands
 
         public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
+#warning the first header, "public", is missing
             var groupedCommands = ChatbotActionRegister.AllChatActions
                 .Where(x => x is UserCommand)
                 .GroupBy(x => x.RequiredPermissionGroup);

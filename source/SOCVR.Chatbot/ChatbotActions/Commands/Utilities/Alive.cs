@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using TCL.Extensions;
 
-namespace SOCVR.Chatbot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
 {
     internal class Alive : UserCommand
     {

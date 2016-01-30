@@ -3,7 +3,7 @@ using System.Linq;
 using SOCVR.Chatbot.Database;
 using TCL.Extensions;
 
-namespace SOCVR.Chatbot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.ChatbotActions.Commands.Admin
 {
     internal class TrackUser : UserCommand
     {

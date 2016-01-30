@@ -3,7 +3,7 @@ using SOCVR.Chatbot.Database;
 using System;
 using System.Linq;
 
-namespace SOCVR.Chatbot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
 {
     internal class AuditStats : UserCommand
     {

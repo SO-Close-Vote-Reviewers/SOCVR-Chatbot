@@ -3,7 +3,7 @@ using System.Linq;
 using ChatExchangeDotNet;
 using SOCVR.Chatbot.Database;
 
-namespace SOCVR.Chatbot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
 {
     internal class ReviewsToday : UserCommand
     {

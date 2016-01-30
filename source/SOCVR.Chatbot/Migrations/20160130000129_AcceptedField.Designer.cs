@@ -8,9 +8,10 @@ using SOCVR.Chatbot.Database;
 namespace SOCVR.Chatbot.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20160130000129_AcceptedField")]
+    partial class AcceptedField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.0-rc1-16348");
@@ -28,7 +29,7 @@ namespace SOCVR.Chatbot.Migrations
 
                     b.Property<int>("RequestingUserId");
 
-                    b.Property<int?>("ReviewingUserId");
+                    b.Property<int>("ReviewingUserId");
 
                     b.HasKey("Id");
                 });

@@ -1,6 +1,6 @@
 ﻿using SOCVR.Chatbot.Database;
 
-namespace SOCVR.Chatbot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
 {
     internal class StartingSession : UserCommand
     {

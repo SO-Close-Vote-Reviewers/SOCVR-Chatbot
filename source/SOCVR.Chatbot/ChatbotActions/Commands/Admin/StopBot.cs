@@ -1,7 +1,7 @@
 ﻿using ChatExchangeDotNet;
 using SOCVR.Chatbot.Database;
 
-namespace SOCVR.Chatbot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.ChatbotActions.Commands.Admin
 {
     internal class StopBot : UserCommand
     {
