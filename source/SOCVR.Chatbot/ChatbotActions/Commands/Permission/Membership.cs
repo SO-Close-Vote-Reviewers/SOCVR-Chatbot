@@ -3,7 +3,7 @@ using SOCVR.Chatbot.Database;
 using System.Linq;
 using System.Text;
 
-namespace SOCVR.Chatbot.ChatbotActions.Commands.Permissions
+namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
 {
     internal class Membership : UserCommand
     {
