@@ -39,6 +39,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
 
         public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
+#warning the first header, "public", is missing
             var groupedCommands = ChatbotActionRegister.AllChatActions
                 .Where(x => x is UserCommand)
                 .GroupBy(x => x.RequiredPermissionGroup);
