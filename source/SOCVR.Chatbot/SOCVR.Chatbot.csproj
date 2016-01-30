@@ -173,6 +173,7 @@
     <Compile Include="ChatbotActions\Commands\StopBot.cs" />
     <Compile Include="ChatbotActions\Commands\TrackUser.cs" />
     <Compile Include="ChatbotActions\Commands\UserCommand.cs" />
+    <Compile Include="ChatbotActions\Commands\ViewRequests.cs" />
     <Compile Include="ChatBotStats.cs" />
     <Compile Include="ChatRoom\ChatMessageProcessor.cs" />
     <Compile Include="ChatRoom\RoomManager.cs" />
@@ -188,6 +189,10 @@
     <Compile Include="Migrations\20160129011042_InitialMigration.cs" />
     <Compile Include="Migrations\20160129011042_InitialMigration.designer.cs">
       <DependentUpon>20160129011042_InitialMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20160130000129_AcceptedField.cs" />
+    <Compile Include="Migrations\20160130000129_AcceptedField.designer.cs">
+      <DependentUpon>20160130000129_AcceptedField.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\DatabaseContextModelSnapshot.cs" />
     <Compile Include="Program.cs" />

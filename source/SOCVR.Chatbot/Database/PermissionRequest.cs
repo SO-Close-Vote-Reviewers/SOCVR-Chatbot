@@ -21,5 +21,12 @@ namespace SOCVR.Chatbot.Database
         public DateTimeOffset RequestedOn { get; set; }
 
         public PermissionGroup RequestedPermissionGroup { get; set; }
+
+        /// <summary>
+        /// True = accepted,
+        /// False = rejected,
+        /// Null = not processed
+        /// </summary>
+        public bool? Accepted { get; set; }
     }
 }
