@@ -10,6 +10,7 @@ using CVChatbot.Bot;
 using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using SOCVR.Chatbot.ChatbotActions.Commands.Admin;
 
 namespace SOCVR.Chatbot.ChatRoom
 {
