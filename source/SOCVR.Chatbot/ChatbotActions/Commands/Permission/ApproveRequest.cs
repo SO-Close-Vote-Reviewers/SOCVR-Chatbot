@@ -8,7 +8,7 @@ using ChatExchangeDotNet;
 using TCL.Extensions;
 using Microsoft.Data.Entity;
 
-namespace SOCVR.Chatbot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.ChatbotActions.Commands.Permissions
 {
     internal class ApproveRequest : UserCommand
     {

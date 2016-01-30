@@ -2,7 +2,7 @@
 using SOCVR.Chatbot.Sede;
 using SOCVR.Chatbot.Database;
 
-namespace SOCVR.Chatbot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.ChatbotActions.Commands.Tags
 {
     internal class RefreshTags : UserCommand
     {

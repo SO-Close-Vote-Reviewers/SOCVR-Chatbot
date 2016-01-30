@@ -4,7 +4,7 @@ using SOCVR.Chatbot.Sede;
 using TCL.Extensions;
 using SOCVR.Chatbot.Database;
 
-namespace SOCVR.Chatbot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.ChatbotActions.Commands.Tags
 {
     internal class NextTags : UserCommand
     {

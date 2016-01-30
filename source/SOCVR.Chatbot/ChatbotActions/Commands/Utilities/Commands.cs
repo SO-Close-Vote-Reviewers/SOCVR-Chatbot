@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using TCL.Extensions;
 
-namespace SOCVR.Chatbot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
 {
     /// <summary>
     /// Command to show the list of commands on the server.

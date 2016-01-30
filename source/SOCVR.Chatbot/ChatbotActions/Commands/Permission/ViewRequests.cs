@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SOCVR.Chatbot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.ChatbotActions.Commands.Permissions
 {
     internal class ViewRequests : UserCommand
     {

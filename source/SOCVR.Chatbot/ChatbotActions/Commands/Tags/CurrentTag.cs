@@ -3,7 +3,7 @@ using System.Linq;
 using SOCVR.Chatbot.Configuration;
 using SOCVR.Chatbot.Database;
 
-namespace SOCVR.Chatbot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.ChatbotActions.Commands.Tags
 {
     /// <summary>
     /// Implements the current command that takes the first tag from the SEDE query and post it to the room.

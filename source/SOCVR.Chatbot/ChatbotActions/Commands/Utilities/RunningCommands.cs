@@ -4,7 +4,7 @@ using ChatExchangeDotNet;
 using SOCVR.Chatbot.ChatRoom;
 using SOCVR.Chatbot.Database;
 
-namespace SOCVR.Chatbot.ChatbotActions.Commands
+namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
 {
     internal class RunningCommands : UserCommand
     {
