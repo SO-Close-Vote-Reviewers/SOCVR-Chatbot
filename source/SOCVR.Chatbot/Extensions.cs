@@ -46,9 +46,9 @@ namespace SOCVR.Chatbot
         /// <param name="message"></param>
         public static void PostMessageOrThrow(this Room chatRoom, object message)
         {
-            var postedMessage = chatRoom.PostMessage(message);
+            var success = chatRoom.PostMessageLight(message);
 
-            if (postedMessage == null)
+            if (!success)
             {
                 throw new InvalidOperationException("Unable to post message");
             }
@@ -71,9 +71,9 @@ namespace SOCVR.Chatbot
         /// <param name="message"></param>
         public static void PostReplyOrThrow(this Room chatRoom, int replyingToMessageId, object message)
         {
-            var postedMessage = chatRoom.PostReply(replyingToMessageId, message);
+            var success = chatRoom.PostReplyLight(replyingToMessageId, message);
 
-            if (postedMessage == null)
+            if (!success)
             {
                 throw new InvalidOperationException("Unable to post message");
             }

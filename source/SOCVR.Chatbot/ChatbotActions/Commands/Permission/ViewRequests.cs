@@ -52,7 +52,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                     x => x.RequestedOn.ToString("yyyy-MM-dd HH:mm:ss 'UTC'"));
 
                 chatRoom.PostReplyOrThrow(incomingChatMessage, "The following is a list of users requesting access to a permission group. If you are part of these groups, you may use the commands `approve request [#]` or `reject request [#]` to process them.");
-                chatRoom.PostMessageFast(tableText);
+                chatRoom.PostMessageLight(tableText);
             }
         }
     }
