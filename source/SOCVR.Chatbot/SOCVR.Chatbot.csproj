@@ -162,6 +162,7 @@
     <Compile Include="ChatbotActions\Commands\Permission\ApproveRequest.cs" />
     <Compile Include="ChatbotActions\Commands\Permission\Membership.cs" />
     <Compile Include="ChatbotActions\Commands\Permission\RejectRequest.cs" />
+    <Compile Include="ChatbotActions\Commands\Permission\RequestPermissionToGroup.cs" />
     <Compile Include="ChatbotActions\Commands\Permission\RequestProcessingCommand.cs" />
     <Compile Include="ChatbotActions\Commands\Permission\ViewRequests.cs" />
     <Compile Include="ChatbotActions\Commands\Stats\AuditStats.cs" />

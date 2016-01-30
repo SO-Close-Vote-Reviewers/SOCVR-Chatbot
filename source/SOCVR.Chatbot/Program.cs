@@ -30,7 +30,7 @@ namespace SOCVR.Chatbot
                 db.Database.Migrate();
 
 #warning replace this with a lookup of the actual ROs in the room
-                var roList = new[] { 1043380, 2246344 };
+                var roList = new[] { 1043380 };
 
                 foreach (var roId in roList)
                 {
