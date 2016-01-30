@@ -16,7 +16,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
 
         protected override string RegexMatchingPattern => @"^reject request (\d+)$";
 
-        protected override string GetProcessSuccessfulMessage(Message incomingChatMessage, PermissionRequest request)
+        protected override string GetProcessSuccessfulMessage(PermissionRequest request, Room chatRoom)
         {
             return "Request processed successfully.";
         }

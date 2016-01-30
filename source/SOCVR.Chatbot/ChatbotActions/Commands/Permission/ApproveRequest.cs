@@ -17,9 +17,10 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
 
         protected override string RegexMatchingPattern => @"^approve request (\d+)$";
 
-        protected override string GetProcessSuccessfulMessage(Message incomingChatMessage, PermissionRequest request)
+        protected override string GetProcessSuccessfulMessage(PermissionRequest request, Room chatRoom)
         {
-            return $"@{incomingChatMessage.Author.Name} has been added to the {request.RequestedPermissionGroup} group.";
+            var displayName = chatRoom.GetUser(request.RequestingUserId).Name;
+            return $"@{displayName} has been added to the {request.RequestedPermissionGroup} group.";
         }
 
         protected override bool RequestValueAfterProcessing() => true;

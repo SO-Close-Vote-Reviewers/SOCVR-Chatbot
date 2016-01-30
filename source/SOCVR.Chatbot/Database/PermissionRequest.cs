@@ -16,7 +16,7 @@ namespace SOCVR.Chatbot.Database
         /// The user that either approved or rejected the permission.
         /// </summary>
         public User ReviewingUser { get; set; }
-        public int ReviewingUserId { get; set; }
+        public int? ReviewingUserId { get; set; }
 
         public DateTimeOffset RequestedOn { get; set; }
 

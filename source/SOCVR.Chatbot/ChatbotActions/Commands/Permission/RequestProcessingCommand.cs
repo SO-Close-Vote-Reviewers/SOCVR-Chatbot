@@ -19,7 +19,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
         /// <returns></returns>
         protected abstract bool RequestValueAfterProcessing();
 
-        protected abstract string GetProcessSuccessfulMessage(Message incomingChatMessage, PermissionRequest request);
+        protected abstract string GetProcessSuccessfulMessage(PermissionRequest request, Room chatRoom);
 
         public override sealed void RunAction(Message incomingChatMessage, Room chatRoom)
         {
@@ -32,7 +32,10 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                     .Parse<int>();
 
                 //look up the request
-                var request = db.PermissionRequests.SingleOrDefault(x => x.Id == requestId);
+                var request = db.PermissionRequests
+                    .Include(x => x.RequestingUser)
+                    .Include(x => x.RequestingUser.Permissions)
+                    .SingleOrDefault(x => x.Id == requestId);
 
                 //does it exist?
                 if (request == null)
@@ -60,13 +63,43 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                     return;
                 }
 
+                //check if there are any restrictions to joining the group
+                switch (request.RequestedPermissionGroup)
+                {
+                    case PermissionGroup.Reviewer:
+                        //user needs 3k rep
+                        if (incomingChatMessage.Author.Reputation < 3000)
+                        {
+                            chatRoom.PostReplyOrThrow(incomingChatMessage, "Sorry, you need 3k reputation to join the Reviews group.");
+                            return;
+                        }
+                        break;
+                    case PermissionGroup.BotOwner:
+                        //user needs to be in the Reviews group
+                        if (!PermissionGroup.Reviewer.In(request.RequestingUser.Permissions.Select(x => x.PermissionGroup)))
+                        {
+                            chatRoom.PostReplyOrThrow(incomingChatMessage, "You need to be in the Reviews group before you can join the Bot Owners group.");
+                            return;
+                        }
+                        break;
+                }
+
+
                 //all is good, set the new values
                 request.ReviewingUserId = incomingChatMessage.Author.ID;
-                request.Accepted = true;
+                request.Accepted = RequestValueAfterProcessing();
+
+                //add to permissions list of requesting user
+                var newUserPermission = new UserPermission()
+                {
+                    PermissionGroup = request.RequestedPermissionGroup,
+                    UserId = request.RequestingUserId
+                };
+                db.UserPermissions.Add(newUserPermission);
 
                 db.SaveChanges();
 
-                var outputMessage = GetProcessSuccessfulMessage(incomingChatMessage, request);
+                var outputMessage = GetProcessSuccessfulMessage(request, chatRoom);
                 chatRoom.PostReplyOrThrow(incomingChatMessage, outputMessage);
             }
         }

@@ -55,6 +55,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                         ProfileId = incomingChatMessage.Author.ID
                     };
 
+                    db.Users.Add(requestingUser);
                     db.SaveChanges();
                 }
 
@@ -124,7 +125,8 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                     Accepted = null,
                     RequestedOn = DateTimeOffset.UtcNow,
                     RequestedPermissionGroup = requestingPermissionGroup.Value,
-                    RequestingUser = requestingUser
+                    RequestingUser = requestingUser,
+                    RequestingUserId = requestingUser.ProfileId
                 };
 
                 db.PermissionRequests.Add(newRequest);

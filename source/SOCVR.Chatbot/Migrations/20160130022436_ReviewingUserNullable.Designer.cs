@@ -8,9 +8,10 @@ using SOCVR.Chatbot.Database;
 namespace SOCVR.Chatbot.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20160130022436_ReviewingUserNullable")]
+    partial class ReviewingUserNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.0-rc1-16348");

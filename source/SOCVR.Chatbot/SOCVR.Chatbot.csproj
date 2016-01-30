@@ -198,6 +198,10 @@
     <Compile Include="Migrations\20160130000129_AcceptedField.designer.cs">
       <DependentUpon>20160130000129_AcceptedField.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20160130022436_ReviewingUserNullable.cs" />
+    <Compile Include="Migrations\20160130022436_ReviewingUserNullable.designer.cs">
+      <DependentUpon>20160130022436_ReviewingUserNullable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\DatabaseContextModelSnapshot.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
