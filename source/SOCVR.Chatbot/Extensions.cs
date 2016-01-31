@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using ChatExchangeDotNet;
 using CsQuery;
 using TCL.Extensions;
@@ -30,14 +31,6 @@ namespace SOCVR.Chatbot
 
             return fkeyE?.Attributes["value"];
         }
-
-        /// <summary>
-        /// Takes a chat message and return its contents with any "mentions" stripped out.
-        /// </summary>
-        /// <param name="message">The message to process.</param>
-        /// <returns></returns>
-        //public static string GetContentsWithStrippedMentions(this Message message) =>
-        //    ExtensionMethods.StripMention(message.Content);
 
         /// <summary>
         /// Attempts to post the message to the chat room. If the message could not be posted an exception will be thrown.
@@ -93,6 +86,57 @@ namespace SOCVR.Chatbot
             return allStackTraces
                 .ToCSV(Environment.NewLine + "    " + Environment.NewLine);
         }
+
+        /// <summary>
+        /// Attempts to returns a more "user friendly" variation of a user's name.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public static string GetChatFriendlyUsername(this User user)
+        {
+            var ms = Regex.Matches(user.Name, @"\p{Lu}*\p{Ll}*");
+            var matches = new List<string>();
+            var name = "";
+
+            foreach (Match m in ms)
+            {
+                if (string.IsNullOrWhiteSpace(m.Value)) continue;
+
+                matches.Add(m.Value);
+            }
+
+            if (matches.All(m => m.Length > 2))
+            {
+                var avg = matches.Average(x => x.Length);
+                if (Math.Abs(matches[0].Length - avg) > avg / 3)
+                {
+                    name = matches.OrderBy(x => x.Length).First();
+                }
+                else
+                {
+                    name = matches[0];
+                }
+            }
+            else
+            {
+                var spaceCount = 0;
+                foreach (var m in matches)
+                {
+                    if (name.Length - spaceCount > 2) break;
+                    name += m + " ";
+                    spaceCount++;
+                }
+            }
+
+            if (name.All(char.IsUpper))
+            {
+                name = name.ToLowerInvariant();
+            }
+
+            return (char.ToUpperInvariant(name[0]) + name.Remove(0, 1)).Trim();
+        }
+
+
 
         private static List<string> GetAllStackTracesInner(this Exception ex)
         {

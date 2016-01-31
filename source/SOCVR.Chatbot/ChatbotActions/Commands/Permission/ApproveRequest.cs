@@ -19,8 +19,10 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
 
         protected override string GetProcessSuccessfulMessage(PermissionRequest request, Room chatRoom)
         {
-            var displayName = chatRoom.GetUser(request.RequestingUserId).Name;
-            return $"@{displayName} has been added to the {request.RequestedPermissionGroup} group.";
+            var msg = new MessageBuilder();
+            msg.AppendPing(chatRoom.GetUser(request.RequestingUserId));
+            msg.AppendText($"has been added to the {request.RequestedPermissionGroup} group.");
+            return msg.ToString();
         }
 
         protected override bool RequestValueAfterProcessing() => true;

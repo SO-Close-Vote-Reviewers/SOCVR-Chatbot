@@ -208,7 +208,7 @@ namespace SOCVR.Chatbot.ChatRoom
             // Record as started.
             var id = RunningChatbotActionsManager.MarkChatbotActionAsStarted(
                 action.ActionName,
-                incomingChatMessage.Author.Name,
+                incomingChatMessage.Author.GetChatFriendlyUsername(),
                 incomingChatMessage.Author.ID);
 
             try
