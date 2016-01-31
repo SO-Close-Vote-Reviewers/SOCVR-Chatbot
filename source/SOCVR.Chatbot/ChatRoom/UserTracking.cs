@@ -31,7 +31,7 @@ namespace SOCVR.Chatbot
 
 
 
-        public UsersWatcher(ref Room chatRoom)
+        public UserTracking(ref Room chatRoom)
         {
             if (chatRoom == null) throw new ArgumentNullException("chatRoom");
 
@@ -49,7 +49,7 @@ namespace SOCVR.Chatbot
             chatRoom.EventManager.ConnectListener(CEEventType.MessageReply, new Action<Message, Message>((parent, reply) => HandleCurrentTagsChangedConfirmation(reply)));
         }
 
-        ~UsersWatcher()
+        ~UserTracking()
         {
             Dispose();
         }
