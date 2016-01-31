@@ -22,8 +22,6 @@ namespace SOCVR.Chatbot
         {
             WriteToConsole("Starting program");
 
-
-
             // dispose our RoomManager
             using (mng = new RoomManager())
             {
@@ -64,10 +62,10 @@ namespace SOCVR.Chatbot
                 {
                     ProfileId = ro.ID,
                     Permissions = new List<UserPermission>
-                            {
-                                new UserPermission { PermissionGroup = PermissionGroup.Reviewer },
-                                new UserPermission { PermissionGroup = PermissionGroup.BotOwner }
-                            }
+                    {
+                        new UserPermission { PermissionGroup = PermissionGroup.Reviewer },
+                        new UserPermission { PermissionGroup = PermissionGroup.BotOwner }
+                    }
                 });
                 db.SaveChanges();
             }

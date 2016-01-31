@@ -18,7 +18,7 @@ using User = SOCVRDotNet.User;
 
 namespace SOCVR.Chatbot
 {
-    internal class UsersWatcher : IDisposable
+    internal class UserTracking : IDisposable
     {
         //private readonly ConcurrentDictionary<KeyValuePair<CEUser, Message>, List<string>> tagReviewedConfirmationQueue;
         private readonly ManualResetEvent dbWatcherMre = new ManualResetEvent(false);
@@ -31,7 +31,7 @@ namespace SOCVR.Chatbot
 
 
 
-        public UsersWatcher(ref Room chatRoom)
+        public UserTracking(ref Room chatRoom)
         {
             if (chatRoom == null) throw new ArgumentNullException("chatRoom");
 
@@ -49,7 +49,7 @@ namespace SOCVR.Chatbot
             chatRoom.EventManager.ConnectListener(CEEventType.MessageReply, new Action<Message, Message>((parent, reply) => HandleCurrentTagsChangedConfirmation(reply)));
         }
 
-        ~UsersWatcher()
+        ~UserTracking()
         {
             Dispose();
         }
@@ -125,8 +125,12 @@ namespace SOCVR.Chatbot
                     {
                         if (!curUsers.Any(x => x.UserId == id))
                         {
-                            RemoveUser(id);
+                            usersToRemove.Add(id);
                         }
+                    }
+                    foreach (var id in usersToRemove)
+                    {
+                        RemoveUser(id);
                     }
 
                     dbWatcherMre.WaitOne(TimeSpan.FromSeconds(5));
@@ -165,8 +169,8 @@ namespace SOCVR.Chatbot
             WatchedUsers[id].EventManager.ConnectListener(EventType.AuditPassed,
                 new Action<ReviewItem>(r => HandleAuditPassed(WatchedUsers[id], r)));
 
-            WatchedUsers[id].EventManager.ConnectListener(EventType.AuditFailed,
-                new Action<ReviewItem>(r => SaveReview(r)));
+            //WatchedUsers[id].EventManager.ConnectListener(EventType.AuditFailed,
+            //    new Action<ReviewItem>(r => ???));
 
             WatchedUsers[id].EventManager.ConnectListener(EventType.CurrentTagsChanged,
                 new Action<List<string>>((oldTags) => HandleCurrentTagsChanged(WatchedUsers[id], oldTags)));
@@ -205,7 +209,7 @@ namespace SOCVR.Chatbot
                 var revRes = reviews.Select(r => r.Results.First(rr => rr.UserID == user.ID));
                 var durRaw = revRes.Max(r => r.Timestamp) - revRes.Min(r => r.Timestamp);
                 var durInf = new TimeSpan((durRaw.Ticks / revCount) * (revCount + 1));
-                var avgInf = TimeSpan.FromSeconds(durInf.Seconds / revCount);
+                var avgInf = TimeSpan.FromSeconds(durInf.TotalSeconds / revCount);
 
                 msg.AppendText("The time between your first and last review today was ");
                 msg.AppendText(durInf.ToUserFriendlyString());

@@ -192,7 +192,7 @@
     <Compile Include="ChatRoom\ChatMessageProcessor.cs" />
     <Compile Include="ChatRoom\RoomManager.cs" />
     <Compile Include="ChatRoom\RunningChatbotActionsManager.cs" />
-    <Compile Include="ChatRoom\UserTracking.cs" />
+    <Compile Include="UserTracking.cs" />
     <Compile Include="CloseQueueStatsAccessor.cs" />
     <Compile Include="Configuration\ConfigurationAccessor.cs" />
     <Compile Include="Database\DatabaseContext.cs" />

@@ -130,7 +130,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
 
                 db.SaveChanges();
 
-                chatRoom.PostReplyOrThrow(incomingChatMessage, $"I've added @{chatTargetUser.GetChatFriendlyUsername()} to the {requestingPermissionGroup} group.");
+                chatRoom.PostReplyOrThrow(incomingChatMessage, $"I've added @{chatTargetUser.Name.Replace(" ", "")} to the {requestingPermissionGroup} group.");
             }
         }
     }

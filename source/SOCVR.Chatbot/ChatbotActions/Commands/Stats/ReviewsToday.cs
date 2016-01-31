@@ -52,7 +52,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
                     {
                         var durRaw = reviews.Max(r => r.ReviewedOn) - reviews.Min(r => r.ReviewedOn);
                         var durInf = new TimeSpan((durRaw.Ticks / revCount) * (revCount + 1));
-                        var avgInf = TimeSpan.FromSeconds(durInf.Seconds / revCount);
+                        var avgInf = TimeSpan.FromSeconds(durInf.TotalSeconds / revCount);
 
                         msg.AppendText("The time between your first and last review today was ");
                         msg.AppendText(durInf.ToUserFriendlyString());
