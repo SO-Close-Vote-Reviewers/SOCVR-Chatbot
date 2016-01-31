@@ -54,7 +54,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Admin
                 db.Users.Add(user);
 
                 var chatUser = chatRoom.GetUser(userIdToAdd).GetChatFriendlyUsername();
-                chatRoom.PostReplyOrThrow(incomingChatMessage, $"Ok, I added {chatUser} ({chatUser.ID}) to the tracked users list.");
+                chatRoom.PostReplyOrThrow(incomingChatMessage, $"Ok, I added {chatUser} ({chatUser}) to the tracked users list.");
             }
         }
     }
