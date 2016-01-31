@@ -209,7 +209,7 @@ namespace SOCVR.Chatbot
                 var revRes = reviews.Select(r => r.Results.First(rr => rr.UserID == user.ID));
                 var durRaw = revRes.Max(r => r.Timestamp) - revRes.Min(r => r.Timestamp);
                 var durInf = new TimeSpan((durRaw.Ticks / revCount) * (revCount + 1));
-                var avgInf = TimeSpan.FromSeconds(durInf.Seconds / revCount);
+                var avgInf = TimeSpan.FromSeconds(durInf.TotalSeconds / revCount);
 
                 msg.AppendText("The time between your first and last review today was ");
                 msg.AppendText(durInf.ToUserFriendlyString());
