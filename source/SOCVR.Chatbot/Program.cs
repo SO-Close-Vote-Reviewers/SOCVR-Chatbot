@@ -22,33 +22,7 @@ namespace SOCVR.Chatbot
         {
             WriteToConsole("Starting program");
 
-            using (var db = new DatabaseContext())
-            {
-                WriteToConsole("Connecting to database");
 
-                //create the database if it does not exist and push and new migrations to it
-                db.Database.Migrate();
-
-#warning replace this with a lookup of the actual ROs in the room
-                var roList = new[] { 1043380 };
-
-                foreach (var roId in roList)
-                {
-                    if (!db.Users.Any(x => x.ProfileId == roId))
-                    {
-                        db.Users.Add(new User
-                        {
-                            ProfileId = roId,
-                            Permissions = new List<UserPermission>
-                            {
-                                new UserPermission { PermissionGroup = PermissionGroup.Reviewer },
-                                new UserPermission { PermissionGroup = PermissionGroup.BotOwner }
-                            }
-                        });
-                        db.SaveChanges();
-                    }
-                }
-            }
 
             // dispose our RoomManager
             using (mng = new RoomManager())
@@ -59,9 +33,36 @@ namespace SOCVR.Chatbot
                 WriteToConsole("Joining room");
                 mng.JoinRoom();
 
+                using (var db = new DatabaseContext())
+                {
+                    WriteToConsole("Connecting to database");
+
+                    //create the database if it does not exist and push and new migrations to it
+                    db.Database.Migrate();
+                    var roList = mng.CvChatRoom.GetRoomOwners();
+
+                    foreach (var ro in roList)
+                    {
+                        if (db.Users.Any(x => x.ProfileId == ro.ID)) continue;
+
+                        db.Users.Add(new User
+                        {
+                            ProfileId = ro.ID,
+                            Permissions = new List<UserPermission>
+                            {
+                                new UserPermission { PermissionGroup = PermissionGroup.Reviewer },
+                                new UserPermission { PermissionGroup = PermissionGroup.BotOwner }
+                            }
+                        });
+                        db.SaveChanges();
+                    }
+                }
+
+                mng.PostStartupMessage();
+
                 WriteToConsole("Running wait loop");
 
-                // wait to get signaled
+                // wait to get signalled
                 // we do it this way because this is cross-thread
                 shutdownEvent.WaitOne();
             }

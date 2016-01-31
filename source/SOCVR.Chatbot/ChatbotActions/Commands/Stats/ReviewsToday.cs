@@ -50,13 +50,14 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
                     // It's always possible...
                     if (revCount > 1)
                     {
-                        var revDur = reviews.Max(r => r.ReviewedOn) - reviews.Min(r => r.ReviewedOn);
-                        var avg = new TimeSpan(revDur.Ticks / (revCount - 1));
+                        var durRaw = reviews.Max(r => r.ReviewedOn) - reviews.Min(r => r.ReviewedOn);
+                        var durInf = new TimeSpan((durRaw.Ticks / revCount) * (revCount + 1));
+                        var avgInf = TimeSpan.FromSeconds(durInf.Seconds / revCount);
 
                         msg.AppendText("The time between your first and last review today was ");
-                        msg.AppendText(revDur.ToUserFriendlyString());
+                        msg.AppendText(durInf.ToUserFriendlyString());
                         msg.AppendText(", averaging to a review every ");
-                        msg.AppendText(avg.ToUserFriendlyString());
+                        msg.AppendText(avgInf.ToUserFriendlyString());
                         msg.AppendText(".");
                     }
 
