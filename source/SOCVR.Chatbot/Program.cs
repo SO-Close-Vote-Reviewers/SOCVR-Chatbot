@@ -36,26 +36,10 @@ namespace SOCVR.Chatbot
                 using (var db = new DatabaseContext())
                 {
                     WriteToConsole("Connecting to database");
-
                     //create the database if it does not exist and push and new migrations to it
                     db.Database.Migrate();
-                    var roList = mng.CvChatRoom.GetRoomOwners();
 
-                    foreach (var ro in roList)
-                    {
-                        if (db.Users.Any(x => x.ProfileId == ro.ID)) continue;
-
-                        db.Users.Add(new User
-                        {
-                            ProfileId = ro.ID,
-                            Permissions = new List<UserPermission>
-                            {
-                                new UserPermission { PermissionGroup = PermissionGroup.Reviewer },
-                                new UserPermission { PermissionGroup = PermissionGroup.BotOwner }
-                            }
-                        });
-                        db.SaveChanges();
-                    }
+                    EnsureRoomOwnersAreInDatabase(db);
                 }
 
                 mng.PostStartupMessage();
@@ -65,6 +49,28 @@ namespace SOCVR.Chatbot
                 // wait to get signalled
                 // we do it this way because this is cross-thread
                 shutdownEvent.WaitOne();
+            }
+        }
+
+        private static void EnsureRoomOwnersAreInDatabase(DatabaseContext db)
+        {
+            
+            var roList = mng.CvChatRoom.GetRoomOwners();
+
+            foreach (var ro in roList)
+            {
+                if (db.Users.Any(x => x.ProfileId == ro.ID)) continue;
+
+                db.Users.Add(new User
+                {
+                    ProfileId = ro.ID,
+                    Permissions = new List<UserPermission>
+                            {
+                                new UserPermission { PermissionGroup = PermissionGroup.Reviewer },
+                                new UserPermission { PermissionGroup = PermissionGroup.BotOwner }
+                            }
+                });
+                db.SaveChanges();
             }
         }
 
