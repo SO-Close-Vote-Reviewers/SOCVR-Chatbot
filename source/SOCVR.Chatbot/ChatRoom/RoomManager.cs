@@ -22,6 +22,8 @@ namespace SOCVR.Chatbot.ChatRoom
         public event ShutdownOrderGivenHandler ShutdownOrderGiven;
         public event InformationMessageBrodcastedHandler InformationMessageBroadcasted;
 
+        public Room CvChatRoom => cvChatRoom;
+
         /// <summary>
         /// Creates a new RoomManger object.
         /// Initializes the ChatMessageProcessor for internal use.
@@ -66,6 +68,12 @@ namespace SOCVR.Chatbot.ChatRoom
             cvChatRoom.StripMention = true;
             cvChatRoom.InitialisePrimaryContentOnly = true;
 
+            cvChatRoom.EventManager.ConnectListener(EventType.MessagePosted, new Action<Message>(cvChatRoom_NewMessage));
+            cvChatRoom.EventManager.ConnectListener(EventType.MessageEdited, new Action<Message>(cvChatRoom_NewMessage));
+        }
+
+        public void PostStartupMessage()
+        {
             // Say the startup message?
             if (!ConfigurationAccessor.StartUpMessage.IsNullOrWhiteSpace())
             {
@@ -77,9 +85,6 @@ namespace SOCVR.Chatbot.ChatRoom
                     throw new InvalidOperationException("Unable to post start up message to room.");
                 }
             }
-
-            cvChatRoom.EventManager.ConnectListener(EventType.MessagePosted, new Action<Message>(cvChatRoom_NewMessage));
-            cvChatRoom.EventManager.ConnectListener(EventType.MessageEdited, new Action<Message>(cvChatRoom_NewMessage));
         }
 
         public void LeaveRoom()
