@@ -62,7 +62,10 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                 }
 
                 //lookup the target user
-                var targetUser = db.Users.SingleOrDefault(x => x.ProfileId == targetUserId);
+                var targetUser = db.Users
+                    .Include(x => x.Permissions)
+                    .Include(x => x.PermissionsRequested)
+                    .SingleOrDefault(x => x.ProfileId == targetUserId);
 
                 //if the user has never said a message in chat, the user will not exist in the database
                 //add this user
@@ -76,10 +79,13 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                     db.SaveChanges();
                 }
 
+                //lookup the chat target user
+                var chatTargetUser = chatRoom.GetUser(targetUserId);
+
                 //does the target user already belong to the requested group?
                 if (requestingPermissionGroup.Value.In(targetUser.Permissions.Select(x => x.PermissionGroup)))
                 {
-                    chatRoom.PostReplyOrThrow(incomingChatMessage, $"{chatRoom.GetUser(targetUserId).Name} is already in the {requestingPermissionGroup} group.");
+                    chatRoom.PostReplyOrThrow(incomingChatMessage, $"{chatTargetUser.Name} is already in the {requestingPermissionGroup} group.");
                     return;
                 }
 
@@ -88,7 +94,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                 {
                     case PermissionGroup.Reviewer:
                         //user needs 3k rep
-                        if (incomingChatMessage.Author.Reputation < 3000)
+                        if (chatTargetUser.Reputation < 3000)
                         {
                             chatRoom.PostReplyOrThrow(incomingChatMessage, "The target user need 3k reputation to join the Reviewers group.");
                             return;
@@ -119,11 +125,12 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                 {
                     //approve it
                     pendingRequest.Accepted = true;
+                    pendingRequest.ReviewingUser = processingUser;
                 }
 
                 db.SaveChanges();
 
-                chatRoom.PostReplyOrThrow(incomingChatMessage, $"I've added @{chatRoom.GetUser(targetUserId).GetChatFriendlyUsername()} to the {requestingPermissionGroup} group.");
+                chatRoom.PostReplyOrThrow(incomingChatMessage, $"I've added @{chatTargetUser.GetChatFriendlyUsername()} to the {requestingPermissionGroup} group.");
             }
         }
     }
