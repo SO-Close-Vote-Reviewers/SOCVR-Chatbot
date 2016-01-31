@@ -41,7 +41,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Admin
                 db.EnsureUserExists(reviewerId);
                 var targetUser = db.Users.Single(x => x.ProfileId == reviewerId);
 
-                var parsedReviewItem = UsersWatcher.GetUserReviewedItem(reviewItemId, reviewerId);
+                var parsedReviewItem = UserTracking.GetUserReviewedItem(reviewItemId, reviewerId);
 
                 db.ReviewedItems.Add(parsedReviewItem);
                 db.SaveChanges();
