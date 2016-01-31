@@ -125,8 +125,12 @@ namespace SOCVR.Chatbot
                     {
                         if (!curUsers.Any(x => x.UserId == id))
                         {
-                            RemoveUser(id);
+                            usersToRemove.Add(id);
                         }
+                    }
+                    foreach (var id in usersToRemove)
+                    {
+                        RemoveUser(id);
                     }
 
                     dbWatcherMre.WaitOne(TimeSpan.FromSeconds(5));
@@ -165,8 +169,8 @@ namespace SOCVR.Chatbot
             WatchedUsers[id].EventManager.ConnectListener(EventType.AuditPassed,
                 new Action<ReviewItem>(r => HandleAuditPassed(WatchedUsers[id], r)));
 
-            WatchedUsers[id].EventManager.ConnectListener(EventType.AuditFailed,
-                new Action<ReviewItem>(r => SaveReview(r)));
+            //WatchedUsers[id].EventManager.ConnectListener(EventType.AuditFailed,
+            //    new Action<ReviewItem>(r => ???));
 
             WatchedUsers[id].EventManager.ConnectListener(EventType.CurrentTagsChanged,
                 new Action<List<string>>((oldTags) => HandleCurrentTagsChanged(WatchedUsers[id], oldTags)));
