@@ -24,11 +24,13 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
 
         public override void RunAction(Message incomingChatMessage, Room chatRoom)
         {
+            //get the permission group from the chat message
             var rawRequestingPermissionGroup = GetRegexMatchingObject()
                 .Match(incomingChatMessage.Content)
                 .Groups[1]
                 .Value;
 
+            //parse the string into the enum
             var requestingPermissionGroup = MatchInputToPermissionGroup(rawRequestingPermissionGroup);
 
             if (requestingPermissionGroup == null)
