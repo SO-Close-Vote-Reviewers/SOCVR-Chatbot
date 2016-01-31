@@ -18,7 +18,7 @@ using User = SOCVRDotNet.User;
 
 namespace SOCVR.Chatbot
 {
-    public class UsersWatcher : IDisposable
+    internal class UsersWatcher : IDisposable
     {
         //private readonly ConcurrentDictionary<KeyValuePair<CEUser, Message>, List<string>> tagReviewedConfirmationQueue;
         private readonly ManualResetEvent dbWatcherMre = new ManualResetEvent(false);
@@ -55,6 +55,22 @@ namespace SOCVR.Chatbot
         }
 
 
+
+        public static UserReviewedItem GetUserReviewedItem(int reviewID, int profileID)
+        {
+            var fkey = UserDataFetcher.GetFkey();
+            var rev = new ReviewItem(reviewID, fkey);
+            var res = rev.Results.First(x => x.UserID == profileID);
+
+            return new UserReviewedItem
+            {
+                ActionTaken = (ReviewItemAction)(int)res.Action,
+                AuditPassed = rev.AuditPassed,
+                PrimaryTag = rev.Tags[0].ToLowerInvariant(),
+                ReviewedOn = res.Timestamp,
+                ReviewerId = profileID
+            };
+        }
 
         public void Dispose()
         {
@@ -237,7 +253,7 @@ namespace SOCVR.Chatbot
                     AuditPassed = rev.AuditPassed,
                     PrimaryTag = rev.Tags[0].ToLowerInvariant(),
                     ReviewedOn = res.Timestamp,
-                    ReviewerId = res.UserID
+                    ReviewerId = res.UserID,
                 });
                 db.SaveChanges();
             }
