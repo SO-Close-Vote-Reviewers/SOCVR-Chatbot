@@ -28,6 +28,7 @@ namespace SOCVR.Chatbot.Database
         public string PrimaryTag { get; set; }
     }
 
+    // Do NOT alter enum order.
     internal enum ReviewItemAction
     {
         LeaveOpen,
