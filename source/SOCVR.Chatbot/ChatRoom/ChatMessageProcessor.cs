@@ -45,6 +45,8 @@ namespace SOCVR.Chatbot.ChatRoom
             var isReplyToChatbot = false;
             ChatbotAction chatbotActionToRun = null;
 
+            EnsureAuthorInDatabase(incomingChatMessage);
+
             // Is the message a confirmation to a command suggestion?
             if (yesReply.IsMatch(incomingChatMessage.Content))
             {
@@ -125,6 +127,31 @@ namespace SOCVR.Chatbot.ChatRoom
                         $"Sorry, you are not in the {chatbotActionToRun.RequiredPermissionGroup.ToString()} permission group. Do you want to request access? (reply with 'yes')");
                 }
                 // Don't do anything for triggers.
+            }
+        }
+
+        /// <summary>
+        /// Before we test the message, we should add the user who wrote the
+        /// message to the database. This guarantees that the message author 
+        /// exists in the database, so the commands don't need to do that lookup
+        /// </summary>
+        /// <param name="incomingChatMessage"></param>
+        private void EnsureAuthorInDatabase(Message incomingChatMessage)
+        {
+            using (var db = new DatabaseContext())
+            {
+                var doesUserExist = db.Users.Any(x => x.ProfileId == incomingChatMessage.Author.ID);
+
+                if (!doesUserExist)
+                {
+                    var newUser = new Database.User()
+                    {
+                        ProfileId = incomingChatMessage.Author.ID
+                    };
+
+                    db.Users.Add(newUser);
+                    db.SaveChanges();
+                }
             }
         }
 
