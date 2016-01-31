@@ -38,14 +38,14 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Admin
                     .Parse<int>();
 
                 //look up reviewer
-#warning make a method to "get user or new"
-                var targetUser = db.Users.SingleOrDefault(x => x.ProfileId == incomingChatMessage.Author.ID);
+                db.EnsureUserExists(reviewerId);
+                var targetUser = db.Users.Single(x => x.ProfileId == reviewerId);
 
-                var newReview = null; //this will use the method from the user tracking
+                //var newReview = null; //this will use the method from the user tracking
                 //http://chat.stackoverflow.com/transcript/message/28474023#28474023
 
-                db.ReviewedItems.Add(newReview);
-                db.SaveChanges();
+                //db.ReviewedItems.Add(newReview);
+                //db.SaveChanges();
             }
         }
     }
