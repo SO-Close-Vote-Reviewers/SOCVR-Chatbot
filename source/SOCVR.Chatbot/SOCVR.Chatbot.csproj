@@ -155,6 +155,7 @@
   <ItemGroup>
     <Compile Include="ChatbotActions\ChatbotAction.cs" />
     <Compile Include="ChatbotActions\ChatbotActionRegister.cs" />
+    <Compile Include="ChatbotActions\Commands\Admin\AddReview.cs" />
     <Compile Include="ChatbotActions\Commands\Admin\PingReviewers.cs" />
     <Compile Include="ChatbotActions\Commands\Admin\StartEvent.cs" />
     <Compile Include="ChatbotActions\Commands\Admin\StopBot.cs" />
