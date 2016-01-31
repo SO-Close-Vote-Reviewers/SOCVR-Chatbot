@@ -1,4 +1,6 @@
 ﻿using SOCVR.Chatbot.Database;
+using System;
+using TCL.Extensions;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
 {
@@ -18,7 +20,15 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
         public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
             var sa = new CloseQueueStatsAccessor();
-            var message = sa.GetOverallQueueStats();
+            var stats = sa.GetOverallQueueStats();
+
+            var message = new[]
+            {
+                $"{stats.NeedReview} need review",
+                $"{stats.ReviewsToday} reviews today",
+                $"{stats.ReviewsAllTime} reviews all-time",
+            }
+            .ToCSV(Environment.NewLine);
 
             chatRoom.PostMessageOrThrow(message);
         }

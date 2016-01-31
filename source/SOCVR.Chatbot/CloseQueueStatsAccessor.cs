@@ -1,44 +1,45 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using CsQuery;
-using TCL.Extensions;
+using System.Globalization;
 
 namespace SOCVR.Chatbot
 {
     /// <summary>
     /// Class for getting stats about the Close Vote Queue.
     /// </summary>
-    public class CloseQueueStatsAccessor
+    internal class CloseQueueStatsAccessor
     {
-        public string GetOverallQueueStats()
+        public CloseVoteQueueStats GetOverallQueueStats()
         {
             var doc = CQ.CreateFromUrl("http://stackoverflow.com/review/close/stats");
             var statsTable = doc.Find("table.task-stat-table");
             var cells = statsTable.Find("td");
 
-            var needReview = cells
+            var stats = new CloseVoteQueueStats();
+
+            stats.NeedReview = int.Parse(cells
                 .ElementAt(0)
                 .FirstElementChild
-                .InnerText;
+                .InnerText, NumberStyles.AllowThousands);
 
-            var reviewsToday = cells
+            stats.ReviewsToday = int.Parse(cells
                 .ElementAt(1)
                 .FirstElementChild
-                .InnerText;
+                .InnerText, NumberStyles.AllowThousands);
 
-            var allTime = cells
+            stats.ReviewsAllTime = int.Parse(cells
                 .ElementAt(2)
                 .FirstElementChild
-                .InnerText;
+                .InnerText, NumberStyles.AllowThousands);
 
-            var message = new[]
-            {
-                $"{needReview} need review",
-                $"{reviewsToday} reviews today",
-                $"{allTime} reviews all-time",
-            }
-            .ToCSV(Environment.NewLine);
-            return message;
+            return stats;
         }
+    }
+
+    internal class CloseVoteQueueStats
+    {
+        public int NeedReview { get; set; }
+        public int ReviewsToday { get; set; }
+        public int ReviewsAllTime { get; set; }
     }
 }

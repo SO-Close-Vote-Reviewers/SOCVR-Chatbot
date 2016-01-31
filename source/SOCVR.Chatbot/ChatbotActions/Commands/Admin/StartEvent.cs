@@ -3,6 +3,7 @@ using SOCVR.Chatbot.Configuration;
 using SOCVR.Chatbot.Sede;
 using TCL.Extensions;
 using SOCVR.Chatbot.Database;
+using System;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands.Admin
 {
@@ -23,7 +24,15 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Admin
         {
             // Get the stats
             var sa = new CloseQueueStatsAccessor();
-            var statsMessage = sa.GetOverallQueueStats();
+            var stats = sa.GetOverallQueueStats();
+
+            var statsMessage = new[]
+            {
+                $"{stats.NeedReview} need review",
+                $"{stats.ReviewsToday} reviews today",
+                $"{stats.ReviewsAllTime} reviews all-time",
+            }
+            .ToCSV(Environment.NewLine);
 
             // Get the next 3 tags
             var tags = SedeAccessor.GetTags(chatRoom, ConfigurationAccessor.LoginEmail, ConfigurationAccessor.LoginPassword);
