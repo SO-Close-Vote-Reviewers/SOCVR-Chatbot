@@ -18,7 +18,7 @@ using User = SOCVRDotNet.User;
 
 namespace SOCVR.Chatbot
 {
-    internal class UsersWatcher : IDisposable
+    internal class UserTracking : IDisposable
     {
         //private readonly ConcurrentDictionary<KeyValuePair<CEUser, Message>, List<string>> tagReviewedConfirmationQueue;
         private readonly ManualResetEvent dbWatcherMre = new ManualResetEvent(false);
