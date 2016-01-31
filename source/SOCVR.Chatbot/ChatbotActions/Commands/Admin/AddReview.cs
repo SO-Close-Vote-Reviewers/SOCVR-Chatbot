@@ -37,14 +37,14 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Admin
                     .Value
                     .Parse<int>();
 
-                //look up reviewer
                 db.EnsureUserExists(reviewerId);
-                var targetUser = db.Users.Single(x => x.ProfileId == reviewerId);
 
                 var parsedReviewItem = UserTracking.GetUserReviewedItem(reviewItemId, reviewerId);
 
                 db.ReviewedItems.Add(parsedReviewItem);
                 db.SaveChanges();
+
+                chatRoom.PostReplyOrThrow(incomingChatMessage, "Review entered.");
             }
         }
     }
