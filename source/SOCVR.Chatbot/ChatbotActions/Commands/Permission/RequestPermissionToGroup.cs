@@ -10,7 +10,7 @@ using TCL.Extensions;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
 {
-    class RequestPermissionToGroup : UserCommand
+    class RequestPermissionToGroup : PermissionUserCommand
     {
         public override string ActionDescription => "Submits a request for the user to be added to a given permission group.";
 
@@ -47,19 +47,6 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                     .Include(x => x.Permissions)
                     .Include(x => x.PermissionsRequested)
                     .SingleOrDefault(x => x.ProfileId == incomingChatMessage.Author.ID);
-
-                //does the user exist?
-                if (requestingUser == null)
-                {
-                    //user does not exist. we need to make an entry for the person first
-                    requestingUser = new Database.User
-                    {
-                        ProfileId = incomingChatMessage.Author.ID
-                    };
-
-                    db.Users.Add(requestingUser);
-                    db.SaveChanges();
-                }
 
                 //is the user already in the group?
                 if (requestingPermissionGroup.Value.In(requestingUser.Permissions.Select(x => x.PermissionGroup)))
@@ -136,27 +123,6 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
 
                 chatRoom.PostReplyOrThrow(incomingChatMessage, $"I've created request #{newRequest.Id} to get you in the {requestingPermissionGroup.Value} group.");
             }
-        }
-
-        private PermissionGroup? MatchInputToPermissionGroup(string userInput)
-        {
-            //take the input, remove spaces, lower case it
-            userInput = userInput
-                .Replace(" ", "")
-                .ToLower();
-
-            var allPermissionGroups = Enum.GetValues(typeof(PermissionGroup))
-                .OfType<PermissionGroup>()
-                .Select(x => new
-                {
-                    EnumVal = x,
-                    MatchVal = x.ToString().ToLower()
-                });
-
-            var matchingPermissionGroup = allPermissionGroups
-                .SingleOrDefault(x => x.MatchVal == userInput);
-
-            return matchingPermissionGroup?.EnumVal;
         }
     }
 }
