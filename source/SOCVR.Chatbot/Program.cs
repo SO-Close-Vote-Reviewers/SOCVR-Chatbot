@@ -54,7 +54,6 @@ namespace SOCVR.Chatbot
 
         private static void EnsureRoomOwnersAreInDatabase(DatabaseContext db)
         {
-            
             var roList = mng.CvChatRoom.GetRoomOwners();
 
             foreach (var ro in roList)
