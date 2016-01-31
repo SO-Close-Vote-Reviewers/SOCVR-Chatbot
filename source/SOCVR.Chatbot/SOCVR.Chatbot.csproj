@@ -158,7 +158,6 @@
     <Compile Include="ChatbotActions\Commands\Admin\PingReviewers.cs" />
     <Compile Include="ChatbotActions\Commands\Admin\StartEvent.cs" />
     <Compile Include="ChatbotActions\Commands\Admin\StopBot.cs" />
-    <Compile Include="ChatbotActions\Commands\Admin\TrackUser.cs" />
     <Compile Include="ChatbotActions\Commands\Permission\AddUserToGroup.cs" />
     <Compile Include="ChatbotActions\Commands\Permission\ApproveRequest.cs" />
     <Compile Include="ChatbotActions\Commands\Permission\Membership.cs" />
