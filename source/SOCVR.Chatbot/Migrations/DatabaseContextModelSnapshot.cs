@@ -57,8 +57,9 @@ namespace SOCVR.Chatbot.Migrations
 
             modelBuilder.Entity("SOCVR.Chatbot.Database.UserReviewedItem", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("ReviewId");
+
+                    b.Property<int>("ReviewerId");
 
                     b.Property<int>("ActionTaken");
 
@@ -69,9 +70,7 @@ namespace SOCVR.Chatbot.Migrations
 
                     b.Property<DateTimeOffset>("ReviewedOn");
 
-                    b.Property<int>("ReviewerId");
-
-                    b.HasKey("Id");
+                    b.HasKey("ReviewId", "ReviewerId");
                 });
 
             modelBuilder.Entity("SOCVR.Chatbot.Database.PermissionRequest", b =>

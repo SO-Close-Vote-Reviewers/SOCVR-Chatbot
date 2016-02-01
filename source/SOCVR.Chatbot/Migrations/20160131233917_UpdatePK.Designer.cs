@@ -8,8 +8,8 @@ using SOCVR.Chatbot.Database;
 namespace SOCVR.Chatbot.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20160129011042_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20160131233917_UpdatePK")]
+    partial class UpdatePK
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,13 +21,15 @@ namespace SOCVR.Chatbot.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<bool?>("Accepted");
+
                     b.Property<DateTimeOffset>("RequestedOn");
 
                     b.Property<int>("RequestedPermissionGroup");
 
                     b.Property<int>("RequestingUserId");
 
-                    b.Property<int>("ReviewingUserId");
+                    b.Property<int?>("ReviewingUserId");
 
                     b.HasKey("Id");
                 });
@@ -56,8 +58,9 @@ namespace SOCVR.Chatbot.Migrations
 
             modelBuilder.Entity("SOCVR.Chatbot.Database.UserReviewedItem", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("ReviewId");
+
+                    b.Property<int>("ReviewerId");
 
                     b.Property<int>("ActionTaken");
 
@@ -68,9 +71,7 @@ namespace SOCVR.Chatbot.Migrations
 
                     b.Property<DateTimeOffset>("ReviewedOn");
 
-                    b.Property<int>("ReviewerId");
-
-                    b.HasKey("Id");
+                    b.HasKey("ReviewId", "ReviewerId");
                 });
 
             modelBuilder.Entity("SOCVR.Chatbot.Database.PermissionRequest", b =>

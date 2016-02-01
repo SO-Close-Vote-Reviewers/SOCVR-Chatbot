@@ -163,6 +163,7 @@
   <ItemGroup>
     <Compile Include="ChatbotActions\ChatbotAction.cs" />
     <Compile Include="ChatbotActions\ChatbotActionRegister.cs" />
+    <Compile Include="ChatbotActions\Commands\Admin\AddReview.cs" />
     <Compile Include="ChatbotActions\Commands\Admin\PingReviewers.cs" />
     <Compile Include="ChatbotActions\Commands\Admin\StartEvent.cs" />
     <Compile Include="ChatbotActions\Commands\Admin\StopBot.cs" />
@@ -191,6 +192,15 @@
     <Compile Include="ChatRoom\ChatMessageProcessor.cs" />
     <Compile Include="ChatRoom\RoomManager.cs" />
     <Compile Include="ChatRoom\RunningChatbotActionsManager.cs" />
+    <Compile Include="Migrations\20160131233525_InitialMigration.cs" />
+    <Compile Include="Migrations\20160131233525_InitialMigration.designer.cs">
+      <DependentUpon>20160131233525_InitialMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20160131233917_UpdatePK.cs" />
+    <Compile Include="Migrations\20160131233917_UpdatePK.designer.cs">
+      <DependentUpon>20160131233917_UpdatePK.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\DatabaseContextModelSnapshot.cs" />
     <Compile Include="UserTracking.cs" />
     <Compile Include="CloseQueueStatsAccessor.cs" />
     <Compile Include="Configuration\ConfigurationAccessor.cs" />
@@ -200,19 +210,6 @@
     <Compile Include="Database\UserPermission.cs" />
     <Compile Include="Database\UserReviewedItem.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="Migrations\20160129011042_InitialMigration.cs" />
-    <Compile Include="Migrations\20160129011042_InitialMigration.designer.cs">
-      <DependentUpon>20160129011042_InitialMigration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\20160130000129_AcceptedField.cs" />
-    <Compile Include="Migrations\20160130000129_AcceptedField.designer.cs">
-      <DependentUpon>20160130000129_AcceptedField.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\20160130022436_ReviewingUserNullable.cs" />
-    <Compile Include="Migrations\20160130022436_ReviewingUserNullable.designer.cs">
-      <DependentUpon>20160130022436_ReviewingUserNullable.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\DatabaseContextModelSnapshot.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sede\SEDEAccessor.cs" />

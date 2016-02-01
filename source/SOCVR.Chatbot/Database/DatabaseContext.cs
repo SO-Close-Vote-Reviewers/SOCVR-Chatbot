@@ -1,5 +1,8 @@
 ﻿using Microsoft.Data.Entity;
 using SOCVR.Chatbot.Configuration;
+using System;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace SOCVR.Chatbot.Database
 {
@@ -30,6 +33,13 @@ namespace SOCVR.Chatbot.Database
 
             //user reviewed item
             modelBuilder.Entity<UserReviewedItem>()
+                .HasKey(i => new
+                {
+                    i.ReviewId,
+                    i.ReviewerId
+                });
+
+            modelBuilder.Entity<UserReviewedItem>()
                 .HasOne(i => i.Reviewer)
                 .WithMany(u => u.ReviewedItems)
                 .HasForeignKey(i => i.ReviewerId)
@@ -52,6 +62,23 @@ namespace SOCVR.Chatbot.Database
             //user
             modelBuilder.Entity<User>()
                 .HasKey(u => u.ProfileId);
+        }
+
+        /// <summary>
+        /// Checks that there is a user in the databse with this profile Id.
+        /// If it does not exist, the user entry will be created.
+        /// </summary>
+        /// <param name="profileId"></param>
+        public void EnsureUserExists(int profileId)
+        {
+            var dbUser = Users.SingleOrDefault(x => x.ProfileId == profileId);
+
+            if (dbUser == null)
+            {
+                dbUser = new User() { ProfileId = profileId };
+                Users.Add(dbUser);
+                SaveChanges();
+            }
         }
     }
 }
