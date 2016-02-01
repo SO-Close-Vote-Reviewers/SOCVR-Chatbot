@@ -1,5 +1,6 @@
 ﻿using SOCVR.Chatbot.Database;
 using System;
+using System.IO;
 using System.Diagnostics;
 using System.Reflection;
 using LibGit2Sharp;
@@ -24,7 +25,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
 
         public Status()
         {
-            var repoDir = "";
+            var repoDir = SearchForRepo();
             repo = new Repository(repoDir);
         }
 
@@ -42,6 +43,27 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
             var message = $"SOCVR Chatbot {branch} at `{sha}`, running for {elapsedTime.ToUserFriendlyString()}.";
 
             chatRoom.PostMessageOrThrow(message);
+        }
+
+        private string SearchForRepo(string curPath = ".")
+        {
+            var path = "";
+            var dirs = Directory.EnumerateDirectories(curPath);
+
+            foreach (var dir in dirs)
+            {
+                if (Path.GetDirectoryName(dir) == ".git")
+                {
+                    return dir;
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return SearchForRepo("..");
+            }
+
+            return Directory.GetParent(path).FullName;
         }
     }
 }
