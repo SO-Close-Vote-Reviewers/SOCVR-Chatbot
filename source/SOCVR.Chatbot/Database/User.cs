@@ -24,6 +24,12 @@ namespace SOCVR.Chatbot.Database
         /// </summary>
         public DateTimeOffset? LastTrackingPreferenceChange { get; set; }
 
+        /// <summary>
+        /// If true, the user wishes the bot to track and announce their close vote reviews.
+        /// False means that they do not wish the bot to do that.
+        /// </summary>
+        public bool OptInToReviewTracking { get; set; }
+
         public virtual List<UserPermission> Permissions { get; set; }
         public virtual List<UserReviewedItem> ReviewedItems { get; set; }
         public virtual List<PermissionRequest> PermissionsRequested { get; set; }
