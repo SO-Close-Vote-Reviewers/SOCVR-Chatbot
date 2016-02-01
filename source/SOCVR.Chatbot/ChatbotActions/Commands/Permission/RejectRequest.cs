@@ -21,6 +21,6 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
             return "Request processed successfully.";
         }
 
-        protected override bool RequestValueAfterProcessing() => true;
+        protected override bool RequestValueAfterProcessing() => false;
     }
 }
