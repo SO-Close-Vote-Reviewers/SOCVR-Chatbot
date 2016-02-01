@@ -8,7 +8,7 @@ using SOCVR.Chatbot.Database;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands.Tracking
 {
-    class OptOut : UserCommand
+    internal class OptOut : OptTrackingCommand
     {
         public override string ActionDescription => "Tells the bot to stop tracking your close vote reviewing.";
 
@@ -20,9 +20,12 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Tracking
 
         protected override string RegexMatchingPattern => "^opt out$";
 
-        public override void RunAction(Message incomingChatMessage, Room chatRoom)
-        {
-            throw new NotImplementedException();
-        }
+        protected override bool GetOptValue() => false;
+
+        protected override string GetPastTencePhrase() => "opted-out";
+
+        protected override string OppositeCommandUsage() => "opt in";
+
+        protected override string TrackingPhrasePrefix() => "of";
     }
 }

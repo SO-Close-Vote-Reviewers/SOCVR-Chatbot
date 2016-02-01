@@ -191,6 +191,7 @@
     <Compile Include="ChatbotActions\Commands\Tags\RefreshTags.cs" />
     <Compile Include="ChatbotActions\Commands\Tracking\OptIn.cs" />
     <Compile Include="ChatbotActions\Commands\Tracking\OptOut.cs" />
+    <Compile Include="ChatbotActions\Commands\Tracking\OptTrackingCommand.cs" />
     <Compile Include="ChatbotActions\Commands\UserCommand.cs" />
     <Compile Include="ChatbotActions\Commands\Utilities\Alive.cs" />
     <Compile Include="ChatbotActions\Commands\Utilities\Commands.cs" />
