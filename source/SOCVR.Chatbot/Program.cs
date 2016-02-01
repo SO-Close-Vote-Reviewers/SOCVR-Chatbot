@@ -61,6 +61,8 @@ namespace SOCVR.Chatbot
                 db.Users.Add(new User
                 {
                     ProfileId = ro.ID,
+                    OptInToReviewTracking = true,
+                    LastTrackingPreferenceChange = DateTimeOffset.UtcNow,
                     Permissions = new List<UserPermission>
                     {
                         new UserPermission { PermissionGroup = PermissionGroup.Reviewer },
