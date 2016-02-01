@@ -89,13 +89,25 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                 request.ReviewingUserId = incomingChatMessage.Author.ID;
                 request.Accepted = RequestValueAfterProcessing();
 
-                //add to permissions list of requesting user
-                var newUserPermission = new UserPermission()
+                //if the request is approved
+                if (RequestValueAfterProcessing() == true)
                 {
-                    PermissionGroup = request.RequestedPermissionGroup,
-                    UserId = request.RequestingUserId
-                };
-                db.UserPermissions.Add(newUserPermission);
+                    //add to permissions list of requesting user
+                    var newUserPermission = new UserPermission()
+                    {
+                        PermissionGroup = request.RequestedPermissionGroup,
+                        UserId = request.RequestingUserId
+                    };
+                    db.UserPermissions.Add(newUserPermission);
+
+                    //if the request was for the reviewer group
+                    if (request.RequestedPermissionGroup == PermissionGroup.Reviewer)
+                    {
+                        //opt-in
+                        request.RequestingUser.OptInToReviewTracking = true;
+                        request.RequestingUser.LastTrackingPreferenceChange = DateTimeOffset.Now;
+                    }
+                }
 
                 db.SaveChanges();
 
