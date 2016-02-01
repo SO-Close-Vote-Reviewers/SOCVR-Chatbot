@@ -189,6 +189,9 @@
     <Compile Include="ChatbotActions\Commands\Tags\CurrentTag.cs" />
     <Compile Include="ChatbotActions\Commands\Tags\NextTags.cs" />
     <Compile Include="ChatbotActions\Commands\Tags\RefreshTags.cs" />
+    <Compile Include="ChatbotActions\Commands\Tracking\OptIn.cs" />
+    <Compile Include="ChatbotActions\Commands\Tracking\OptOut.cs" />
+    <Compile Include="ChatbotActions\Commands\Tracking\OptTrackingCommand.cs" />
     <Compile Include="ChatbotActions\Commands\UserCommand.cs" />
     <Compile Include="ChatbotActions\Commands\Utilities\Alive.cs" />
     <Compile Include="ChatbotActions\Commands\Utilities\Commands.cs" />
@@ -206,6 +209,10 @@
     <Compile Include="Migrations\20160131233917_UpdatePK.cs" />
     <Compile Include="Migrations\20160131233917_UpdatePK.designer.cs">
       <DependentUpon>20160131233917_UpdatePK.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20160201230050_OptInToReviewTracking.cs" />
+    <Compile Include="Migrations\20160201230050_OptInToReviewTracking.designer.cs">
+      <DependentUpon>20160201230050_OptInToReviewTracking.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\DatabaseContextModelSnapshot.cs" />
     <Compile Include="UserTracking.cs" />

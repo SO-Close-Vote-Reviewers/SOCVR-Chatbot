@@ -128,6 +128,13 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                     pendingRequest.ReviewingUser = processingUser;
                 }
 
+                //if you're add the user to the Reviewer group, also set them to opt-in
+                if (requestingPermissionGroup.Value == PermissionGroup.Reviewer)
+                {
+                    targetUser.OptInToReviewTracking = true;
+                    targetUser.LastTrackingPreferenceChange = DateTimeOffset.UtcNow;
+                }
+
                 db.SaveChanges();
 
                 chatRoom.PostReplyOrThrow(incomingChatMessage, $"I've added @{chatTargetUser.Name.Replace(" ", "")} to the {requestingPermissionGroup} group.");
