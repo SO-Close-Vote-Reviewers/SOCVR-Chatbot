@@ -52,7 +52,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
 
             foreach (var dir in dirs)
             {
-                if (Path.GetDirectoryName(dir) == ".git")
+                if (Path.GetFileName(dir) == ".git")
                 {
                     return dir;
                 }
@@ -60,10 +60,10 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
 
             if (string.IsNullOrWhiteSpace(path))
             {
-                return SearchForRepo("..");
+                return SearchForRepo(Directory.GetParent(curPath).FullName);
             }
 
-            return Directory.GetParent(path).FullName;
+            return path;
         }
     }
 }
