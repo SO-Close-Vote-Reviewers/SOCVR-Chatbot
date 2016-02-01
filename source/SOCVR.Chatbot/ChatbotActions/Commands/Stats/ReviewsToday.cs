@@ -12,56 +12,67 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
 
         public override string ActionName => "Reviews Today";
 
-        public override string ActionUsage => "reviews today [full]";
+        public override string ActionUsage => "reviews today <details>";
 
         public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.Reviewer;
 
-        protected override string RegexMatchingPattern => @"^reviews today( full|detail(ed|s)|verbose)?$";
+        protected override string RegexMatchingPattern => @"^reviews today(?: (details))?$";
 
         public override void RunAction(Message incomingChatMessage, Room chatRoom)
         {
             using (var db = new DatabaseContext())
             {
                 var msg = new MessageBuilder();
-                var reviews = db.ReviewedItems.Where(x => x.ReviewerId == incomingChatMessage.Author.ID);
-                var revCount = reviews.Count();
 
-                if (GetRegexMatchingObject().Match(incomingChatMessage.Content).Groups[1] != null)
+                var currentDate = DateTimeOffset.UtcNow;
+                //for testing
+                currentDate = new DateTimeOffset(2016, 01, 25, 0, 0, 0, TimeSpan.Zero);
+
+                var reviews = db.ReviewedItems
+                    .Where(x => x.ReviewerId == incomingChatMessage.Author.ID)
+                    .Where(x => x.ReviewedOn.Date == currentDate.Date)
+                    .ToList();
+
+                msg.AppendText($"You've reviewed {reviews.Count} post{(reviews.Count == 1 ? "" : "s")} today");
+
+                var audits = reviews.Count(x => x.AuditPassed != null);
+                if (audits > 0)
                 {
-                    msg.AppendText(reviews.ToStringTable(new[] { "Item Id", "Action", "Audit", "Completed At" },
-                        x => x.Id,
+                    msg.AppendText($" ({audits} of which {(audits > 1 ? "were audits" : "was an audit")})");
+                }
+
+                msg.AppendText(". ");
+
+                // if you've reviewed more than one item, give the stats about the times and speed.
+                if (reviews.Count > 1)
+                {
+                    var durRaw = reviews.Max(r => r.ReviewedOn) - reviews.Min(r => r.ReviewedOn);
+                    var durInf = new TimeSpan((durRaw.Ticks / reviews.Count) * (reviews.Count + 1));
+                    var avgInf = TimeSpan.FromSeconds(durInf.TotalSeconds / reviews.Count);
+
+                    msg.AppendText("The time between your first and last review today was ");
+                    msg.AppendText(durInf.ToUserFriendlyString());
+                    msg.AppendText(", averaging to a review every ");
+                    msg.AppendText(avgInf.ToUserFriendlyString());
+                    msg.AppendText(". ");
+                }
+
+                chatRoom.PostReplyOrThrow(incomingChatMessage, msg);
+
+                var includeDetailsTable = GetRegexMatchingObject()
+                    .Match(incomingChatMessage.Content)
+                    .Groups[1]
+                    .Success;
+
+                if (includeDetailsTable)
+                {
+                    var detailsTable = reviews.ToStringTable(new[] { "Item Id", "Action", "Audit", "Completed At" },
+                        x => x.ReviewId,
                         x => x.ActionTaken,
                         x => GetFriendlyAuditResult(x.AuditPassed),
-                        x => x.ReviewedOn.ToString("yyyy-MM-dd HH:mm:ss UTC")));
+                        x => x.ReviewedOn.ToString("yyyy-MM-dd HH:mm:ss UTC"));
 
-                    chatRoom.PostMessageOrThrow(msg);
-                }
-                else
-                {
-                    msg.AppendText($"You've reviewed {(revCount > 1 ? $"{revCount} posts today" : "a post today")}");
-                    var audits = reviews.Count(x => x.AuditPassed != null);
-                    if (audits > 0)
-                    {
-                        msg.AppendText($" ({audits} of which {(audits > 1 ? "were audits" : "was an audit")})");
-                    }
-
-                    msg.AppendText(". ");
-
-                    // It's always possible...
-                    if (revCount > 1)
-                    {
-                        var durRaw = reviews.Max(r => r.ReviewedOn) - reviews.Min(r => r.ReviewedOn);
-                        var durInf = new TimeSpan((durRaw.Ticks / revCount) * (revCount + 1));
-                        var avgInf = TimeSpan.FromSeconds(durInf.TotalSeconds / revCount);
-
-                        msg.AppendText("The time between your first and last review today was ");
-                        msg.AppendText(durInf.ToUserFriendlyString());
-                        msg.AppendText(", averaging to a review every ");
-                        msg.AppendText(avgInf.ToUserFriendlyString());
-                        msg.AppendText(".");
-                    }
-
-                    chatRoom.PostReplyOrThrow(incomingChatMessage, msg);
+                    chatRoom.PostMessageOrThrow(detailsTable);
                 }
             }
         }

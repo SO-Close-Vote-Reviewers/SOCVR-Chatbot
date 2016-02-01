@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Data.Entity.Migrations;
 
 namespace SOCVR.Chatbot.Migrations
@@ -25,10 +26,11 @@ namespace SOCVR.Chatbot.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:Serial", true),
+                    Accepted = table.Column<bool>(nullable: true),
                     RequestedOn = table.Column<DateTimeOffset>(nullable: false),
                     RequestedPermissionGroup = table.Column<int>(nullable: false),
                     RequestingUserId = table.Column<int>(nullable: false),
-                    ReviewingUserId = table.Column<int>(nullable: false)
+                    ReviewingUserId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -44,7 +46,7 @@ namespace SOCVR.Chatbot.Migrations
                         column: x => x.ReviewingUserId,
                         principalTable: "User",
                         principalColumn: "ProfileId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
             migrationBuilder.CreateTable(
                 name: "UserPermission",
@@ -69,7 +71,7 @@ namespace SOCVR.Chatbot.Migrations
                 name: "UserReviewedItem",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    ReviewId = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:Serial", true),
                     ActionTaken = table.Column<int>(nullable: false),
                     AuditPassed = table.Column<bool>(nullable: true),
@@ -79,7 +81,7 @@ namespace SOCVR.Chatbot.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserReviewedItem", x => x.Id);
+                    table.PrimaryKey("PK_UserReviewedItem", x => x.ReviewId);
                     table.ForeignKey(
                         name: "FK_UserReviewedItem_User_ReviewerId",
                         column: x => x.ReviewerId,

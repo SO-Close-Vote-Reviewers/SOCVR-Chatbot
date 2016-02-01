@@ -7,7 +7,7 @@ namespace SOCVR.Chatbot.Database
     /// </summary>
     internal class UserReviewedItem
     {
-        public int Id { get; set; }
+        public int ReviewId { get; set; }
 
         /// <summary>
         /// Null means the task was not an audit.

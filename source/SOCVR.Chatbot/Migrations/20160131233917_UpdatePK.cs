@@ -4,17 +4,22 @@ using Microsoft.Data.Entity.Migrations;
 
 namespace SOCVR.Chatbot.Migrations
 {
-    public partial class ReviewingUserNullable : Migration
+    public partial class UpdatePK : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(name: "FK_PermissionRequest_User_RequestingUserId", table: "PermissionRequest");
             migrationBuilder.DropForeignKey(name: "FK_UserPermission_User_UserId", table: "UserPermission");
             migrationBuilder.DropForeignKey(name: "FK_UserReviewedItem_User_ReviewerId", table: "UserReviewedItem");
+            migrationBuilder.DropPrimaryKey(name: "PK_UserReviewedItem", table: "UserReviewedItem");
             migrationBuilder.AlterColumn<int>(
-                name: "ReviewingUserId",
-                table: "PermissionRequest",
-                nullable: true);
+                name: "ReviewId",
+                table: "UserReviewedItem",
+                nullable: false);
+            migrationBuilder.AddPrimaryKey(
+                name: "PK_UserReviewedItem",
+                table: "UserReviewedItem",
+                columns: new[] { "ReviewId", "ReviewerId" });
             migrationBuilder.AddForeignKey(
                 name: "FK_PermissionRequest_User_RequestingUserId",
                 table: "PermissionRequest",
@@ -43,10 +48,16 @@ namespace SOCVR.Chatbot.Migrations
             migrationBuilder.DropForeignKey(name: "FK_PermissionRequest_User_RequestingUserId", table: "PermissionRequest");
             migrationBuilder.DropForeignKey(name: "FK_UserPermission_User_UserId", table: "UserPermission");
             migrationBuilder.DropForeignKey(name: "FK_UserReviewedItem_User_ReviewerId", table: "UserReviewedItem");
+            migrationBuilder.DropPrimaryKey(name: "PK_UserReviewedItem", table: "UserReviewedItem");
             migrationBuilder.AlterColumn<int>(
-                name: "ReviewingUserId",
-                table: "PermissionRequest",
-                nullable: false);
+                name: "ReviewId",
+                table: "UserReviewedItem",
+                nullable: false)
+                .Annotation("Npgsql:Serial", true);
+            migrationBuilder.AddPrimaryKey(
+                name: "PK_UserReviewedItem",
+                table: "UserReviewedItem",
+                column: "ReviewId");
             migrationBuilder.AddForeignKey(
                 name: "FK_PermissionRequest_User_RequestingUserId",
                 table: "PermissionRequest",

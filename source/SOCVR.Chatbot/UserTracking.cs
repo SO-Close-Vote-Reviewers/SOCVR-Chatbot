@@ -68,7 +68,8 @@ namespace SOCVR.Chatbot
                 AuditPassed = rev.AuditPassed,
                 PrimaryTag = rev.Tags[0].ToLowerInvariant(),
                 ReviewedOn = res.Timestamp,
-                ReviewerId = profileID
+                ReviewerId = profileID,
+                ReviewId = reviewID
             };
         }
 

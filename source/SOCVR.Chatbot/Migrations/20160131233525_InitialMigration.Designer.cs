@@ -8,8 +8,8 @@ using SOCVR.Chatbot.Database;
 namespace SOCVR.Chatbot.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20160130000129_AcceptedField")]
-    partial class AcceptedField
+    [Migration("20160131233525_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -29,7 +29,7 @@ namespace SOCVR.Chatbot.Migrations
 
                     b.Property<int>("RequestingUserId");
 
-                    b.Property<int>("ReviewingUserId");
+                    b.Property<int?>("ReviewingUserId");
 
                     b.HasKey("Id");
                 });
@@ -58,7 +58,7 @@ namespace SOCVR.Chatbot.Migrations
 
             modelBuilder.Entity("SOCVR.Chatbot.Database.UserReviewedItem", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ReviewId")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("ActionTaken");
@@ -72,7 +72,7 @@ namespace SOCVR.Chatbot.Migrations
 
                     b.Property<int>("ReviewerId");
 
-                    b.HasKey("Id");
+                    b.HasKey("ReviewId");
                 });
 
             modelBuilder.Entity("SOCVR.Chatbot.Database.PermissionRequest", b =>

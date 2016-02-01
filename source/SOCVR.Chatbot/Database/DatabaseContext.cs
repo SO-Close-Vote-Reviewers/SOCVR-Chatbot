@@ -33,6 +33,13 @@ namespace SOCVR.Chatbot.Database
 
             //user reviewed item
             modelBuilder.Entity<UserReviewedItem>()
+                .HasKey(i => new
+                {
+                    i.ReviewId,
+                    i.ReviewerId
+                });
+
+            modelBuilder.Entity<UserReviewedItem>()
                 .HasOne(i => i.Reviewer)
                 .WithMany(u => u.ReviewedItems)
                 .HasForeignKey(i => i.ReviewerId)
