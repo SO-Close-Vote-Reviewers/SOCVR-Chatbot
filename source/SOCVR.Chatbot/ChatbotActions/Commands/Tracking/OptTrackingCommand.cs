@@ -37,7 +37,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Tracking
                 user.LastTrackingPreferenceChange = DateTimeOffset.UtcNow;
                 db.SaveChanges();
 
-                chatRoom.PostReplyOrThrow(incomingChatMessage, $"You have been {GetPastTencePhrase()} to tracking, and will remain this way until you run `opt out`.");
+                chatRoom.PostReplyOrThrow(incomingChatMessage, $"You have {GetPastTencePhrase()} to tracking, and will remain this way until you run `{OppositeCommandUsage()}`.");
             }
         }
 
