@@ -40,7 +40,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
                     {
                         TagName = x.Key,
                         Count = x.Count(),
-                        Percent = x.Count() * 1.0 / auditEntries.Count
+                        Percent = x.Count() * 1.0 / auditEntries.Count * 100
                     });
 
                 var message = data
