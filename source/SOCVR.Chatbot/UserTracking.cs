@@ -94,7 +94,9 @@ namespace SOCVR.Chatbot
         {
             using (var db = new DatabaseContext())
             {
-                var users = db.UserPermissions.Where(x => x.PermissionGroup == PermissionGroup.Reviewer);
+                var users = db.UserPermissions
+                    .Where(x => x.PermissionGroup == PermissionGroup.Reviewer &&
+                                x.User.OptInToReviewTracking);
 
                 foreach (var user in users)
                 {
@@ -111,7 +113,9 @@ namespace SOCVR.Chatbot
             {
                 using (var db = new DatabaseContext())
                 {
-                    var curUsers = db.UserPermissions.Where(x => x.PermissionGroup == PermissionGroup.Reviewer);
+                    var curUsers = db.UserPermissions
+                        .Where(x => x.PermissionGroup == PermissionGroup.Reviewer &&
+                                    x.User.OptInToReviewTracking);
 
                     foreach (var user in curUsers)
                     {
