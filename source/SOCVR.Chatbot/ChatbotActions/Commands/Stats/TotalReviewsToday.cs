@@ -45,9 +45,21 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
                     return;
                 }
 
+                var singularPluralPhrases = new Dictionary<string, string>();
+                singularPluralPhrases.Add("member has", "members have");
+                singularPluralPhrases.Add("item", "items");
+
+                var phrase_memberhas = usersWhoHaveReviewedToday.Count == 1
+                    ? "member has"
+                    : "members have";
+
+                var phrase_item = usersWhoHaveReviewedToday.Count == 1
+                    ? "item"
+                    : "items";
+
                 var totalReviewedItems = usersWhoHaveReviewedToday.Sum(x => x.ReviewCount);
                 chatRoom.PostReplyOrThrow(incomingChatMessage,
-                    $"Today, {usersWhoHaveReviewedToday.Count} member{(usersWhoHaveReviewedToday.Count == 1 ? " has" : "s have")} reviewed a total of {totalReviewedItems} items. They are 55% of the way to processing all review items for the day.");
+                    $"Today, {usersWhoHaveReviewedToday.Count} {phrase_memberhas} reviewed a total of {totalReviewedItems} {phrase_item}.");
 
                 var dataTable = usersWhoHaveReviewedToday.ToStringTable(
                     new[]
