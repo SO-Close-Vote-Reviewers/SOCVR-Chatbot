@@ -39,9 +39,10 @@ namespace SOCVR.Chatbot
 
                     EnsureRoomOwnersAreInDatabase(db);
                 }
-
+                
                 WriteToConsole("Starting user tracker")
-                using (var watcher = new UserTracking())
+                var rm = mng.CvChatRoom;
+                using (var watcher = new UserTracking(ref rm))
                 {
                     mng.PostStartupMessage();
                     
