@@ -11,6 +11,7 @@ using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using SOCVR.Chatbot.ChatbotActions.Commands.Admin;
+using System.Reflection;
 
 namespace SOCVR.Chatbot.ChatRoom
 {
@@ -21,13 +22,13 @@ namespace SOCVR.Chatbot.ChatRoom
     public class ChatMessageProcessor
     {
         private Regex yesReply;
-        private ConcurrentDictionary<Message, KeyValuePair<Message, ChatbotAction>> unrecdCmds;
+        private ConcurrentDictionary<Message, KeyValuePair<Message, string>> unrecdCmds;
         private SimilarCommand simCmd;
 
         public ChatMessageProcessor()
         {
             simCmd = new SimilarCommand();
-            unrecdCmds = new ConcurrentDictionary<Message, KeyValuePair<Message, ChatbotAction>>();
+            unrecdCmds = new ConcurrentDictionary<Message, KeyValuePair<Message, string>>();
             yesReply = new Regex(@"(?i)^y([eu]+s+|[ue]+p|eah?)\b", RegexOptions.Compiled | RegexOptions.CultureInvariant);
         }
 
@@ -55,12 +56,12 @@ namespace SOCVR.Chatbot.ChatRoom
 
                 if (cmd.Key != null)
                 {
-                    chatbotActionToRun = cmd.Value.Value;
-                    //TODO: we should probably change the incoming message.
-                    // But this ain't right either (we're just fetching the
-                    // old rejected command again.)
-                    //incomingChatMessage = chatRoom[cmd.Key.ParentID];
-                    KeyValuePair<Message, ChatbotAction> temp;
+                    // What's a good sign of laziness? ..... Using reflection.
+                    typeof(Message)
+                        .GetProperty("Content")
+                        .SetValue(incomingChatMessage, cmd.Value.Value);
+
+                    KeyValuePair<Message, string> temp;
                     unrecdCmds.TryRemove(cmd.Key, out temp);
                 }
             }
@@ -87,12 +88,12 @@ namespace SOCVR.Chatbot.ChatRoom
                     // a reply to the chatbot or not.
                     if (isReplyToChatbot)
                     {
-                        var similarCommand = simCmd.FindCommand(incomingChatMessage.Content);
+                        var results = simCmd.FindCommand(incomingChatMessage.Content);
                         var msg = "Sorry, I don't understand that. ";
 
-                        if (similarCommand != null)
+                        if (results != null)
                         {
-                            msg += $"Did you mean `{similarCommand.Value.Key}`?";
+                            msg += $"Did you mean `{results.SuggestedCmdText}`?";
 
                             var reply = chatRoom.PostReply(incomingChatMessage, msg);
                             if (reply == null)
@@ -100,7 +101,10 @@ namespace SOCVR.Chatbot.ChatRoom
                                 throw new InvalidOperationException("Unable to post message");
                             }
 
-                            unrecdCmds[incomingChatMessage] = new KeyValuePair<Message, ChatbotAction>(reply, similarCommand.Value.Value);
+                            if (results.OptionsSubstituted)
+                            {
+                                unrecdCmds[incomingChatMessage] = new KeyValuePair<Message, string>(reply, results.SuggestedCmdText);
+                            }
                         }
                     }
 

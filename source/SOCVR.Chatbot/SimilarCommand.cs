@@ -30,9 +30,16 @@ namespace CVChatbot.Bot
 {
     internal class SimilarCommand
     {
+        public class Results
+        {
+            public string SuggestedCmdText { get; set; }
+            public ChatbotAction SuggestedAction { get; set; }
+            public bool OptionsSubstituted { get; set; }
+        }
+
         private Regex cmdOptions = new Regex(@"[()<>\[\]].*?[()<>\[\]]");
 
-        public KeyValuePair<string, ChatbotAction>? FindCommand(string message, double threshold = 2D / 3)
+        public Results FindCommand(string message, double threshold = 2D / 3)
         {
             if (string.IsNullOrWhiteSpace(message)) return null;
 
@@ -105,8 +112,22 @@ namespace CVChatbot.Bot
             }
 
             var cmdTxt = cmdOptions.Replace(act.ActionUsage, dynCmdOpt.Trim());
+            var optsSub = true;
 
-            return new KeyValuePair<string, ChatbotAction>(cmdTxt, act);
+            // If the chat command args are incorrect, show the generic
+            // command usage instead.
+            if (!act.DoesChatMessageActiveAction(cmdTxt, true))
+            {
+                cmdTxt = act.ActionUsage;
+                optsSub = false;
+            }
+
+            return new Results
+            {
+                SuggestedCmdText = cmdTxt,
+                SuggestedAction = act,
+                OptionsSubstituted = optsSub
+            };
         }
 
 

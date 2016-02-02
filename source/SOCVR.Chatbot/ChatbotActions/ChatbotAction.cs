@@ -17,6 +17,17 @@ namespace SOCVR.Chatbot.ChatbotActions
         /// <returns></returns>
         public bool DoesChatMessageActiveAction(Message incomingMessage, bool isMessageAReplyToChatbot)
         {
+            return DoesChatMessageActiveAction(incomingMessage.Content, isMessageAReplyToChatbot);
+        }
+        
+        /// <summary>
+        /// Determines if the incoming chat message activates this action.
+        /// </summary>
+        /// <param name="incomingMessage">The content of the message said in the chat room.</param>
+        /// <param name="isMessageAReplyToChatbot">A precomputed value indicating if the message is a direct reply to the chatbot.</param>
+        /// <returns></returns>
+        public bool DoesChatMessageActiveAction(string incomingMessage, bool isMessageAReplyToChatbot)
+        {
             // First, check if the message is a reply or not and if the Action accepts that.
             if (isMessageAReplyToChatbot != ReplyMessagesOnly)
                 return false;
@@ -24,7 +35,7 @@ namespace SOCVR.Chatbot.ChatbotActions
             // Now regex test it.
             var regex = GetRegexMatchingObject();
 
-            return regex.IsMatch(incomingMessage.Content);
+            return regex.IsMatch(incomingMessage);
         }
 
         /// <summary>
