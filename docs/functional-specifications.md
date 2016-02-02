@@ -180,13 +180,21 @@ This is just a quick command to test if the program is operational. When activat
 > I feel fine.
 
 ### Commands
-The bot will make two messages. The first will be a reply to the command.
+This command is used for showing the user what commands they can use to control the bot.
 
-> Below is a list of commands for the SOCVR Chatbot:
+By default, the bot will display an alphabetical list of commands that the user is allowed to run.
 
-The second will be a multilined message containing the list of commands in this format:
+> (in reply) Here is a list of commands you have permission to run:  
+> [command 1 usage] - [command 1 description]  
+> [command 2 usage] - [command 2 description]  
+> [command 3 usage] - [command 3 description]  
+
+Running `commands full` will show all commands the bot listens for, whether the user can run them or not. Commands will be grouped according to their permission group.
+
+The bot will make two messages. The first will be a reply to the command. The second will be a multilined message containing the list of commands in this format:
 
 <pre>
+Below is a list of commands for the SOCVR Chatbot:
 [group name]
     [command 1 usage] - [command 1 description]
     [command 2 usage] - [command 2 description]
