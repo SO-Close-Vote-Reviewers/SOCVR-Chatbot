@@ -252,6 +252,8 @@ namespace SOCVR.Chatbot
             var res = rev.Results.First();
             using (var db = new DatabaseContext())
             {
+                db.EnsureUserExists(res.UserID);
+
                 db.ReviewedItems.Add(new UserReviewedItem
                 {
                     ActionTaken = (ReviewItemAction)(int)res.Action,
@@ -259,6 +261,7 @@ namespace SOCVR.Chatbot
                     PrimaryTag = rev.Tags[0].ToLowerInvariant(),
                     ReviewedOn = res.Timestamp,
                     ReviewerId = res.UserID,
+                    ReviewId = rev.ID
                 });
                 db.SaveChanges();
             }
