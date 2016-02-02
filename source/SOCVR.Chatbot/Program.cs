@@ -40,13 +40,17 @@ namespace SOCVR.Chatbot
                     EnsureRoomOwnersAreInDatabase(db);
                 }
 
-                mng.PostStartupMessage();
-
-                WriteToConsole("Running wait loop");
-
-                // wait to get signalled
-                // we do it this way because this is cross-thread
-                shutdownEvent.WaitOne();
+                WriteToConsole("Starting user tracker")
+                using (var watcher = new UserTracking())
+                {
+                    mng.PostStartupMessage();
+                    
+                    WriteToConsole("Running wait loop");
+                    
+                    // wait to get signalled
+                    // we do it this way because this is cross-thread
+                    shutdownEvent.WaitOne();
+                }
             }
         }
 
