@@ -1,4 +1,5 @@
-﻿using SOCVR.Chatbot.Database;
+﻿using Microsoft.Data.Entity;
+using SOCVR.Chatbot.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
 
         public override PermissionGroup? RequiredPermissionGroup => null;
 
-        protected override string RegexMatchingPattern => "^(show the )?(list of )?(user )?command(s| list)( pl(ease|[sz]))?$";
+        protected override string RegexMatchingPattern => "^commands(?: (full))?$";
 
         private static class ReflectiveEnumerator
         {
@@ -39,35 +40,68 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
 
         public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
-            var groupedCommands = ChatbotActionRegister.AllChatActions
-                .Where(x => x is UserCommand)
-                .GroupBy(x => x.RequiredPermissionGroup);
+            var userCommands = ChatbotActionRegister.AllChatActions
+                .Where(x => x is UserCommand);
 
-            var finalMessageLines = new List<string>();
-            finalMessageLines.Add("Below is a list of commands for the Close Vote Chat Bot");
-            finalMessageLines.Add("");
+            var showAllCommands = GetRegexMatchingObject()
+                .Match(incomingChatMessage.Content)
+                .Groups[1]
+                .Success;
 
-            foreach (var group in groupedCommands)
+            if (showAllCommands)
             {
-                var permissionGroupName = group.Key != null
-                    ? group.Key.ToString()
-                    : "Public";
+                var groupedCommands = ChatbotActionRegister.AllChatActions
+                    .Where(x => x is UserCommand)
+                    .GroupBy(x => x.RequiredPermissionGroup);
 
-                finalMessageLines.Add(permissionGroupName);
-
-                var groupCommandLines = group
-                    .OrderBy(x => x.ActionName)
-                    .Select(x => $"    {x.ActionUsage} - {x.ActionDescription}");
-
-                finalMessageLines.AddRange(groupCommandLines);
+                var finalMessageLines = new List<string>();
+                finalMessageLines.Add("Below is a list of commands for the Close Vote Chat Bot");
                 finalMessageLines.Add("");
+
+                foreach (var group in groupedCommands)
+                {
+                    var permissionGroupName = group.Key != null
+                        ? group.Key.ToString()
+                        : "Public";
+
+                    finalMessageLines.Add(permissionGroupName);
+
+                    var groupCommandLines = group
+                        .OrderBy(x => x.ActionName)
+                        .Select(x => $"    {x.ActionUsage} - {x.ActionDescription}");
+
+                    finalMessageLines.AddRange(groupCommandLines);
+                    finalMessageLines.Add("");
+                }
+
+                var finalMessage = finalMessageLines
+                    .Select(x => "    " + x)
+                    .ToCSV(Environment.NewLine);
+
+                chatRoom.PostMessageOrThrow(finalMessage);
             }
+            else
+            {
+                chatRoom.PostReplyOrThrow(incomingChatMessage, "Here is a list of commands you have permission to run:");
 
-            var finalMessage = finalMessageLines
-                .Select(x => "    " + x)
-                .ToCSV(Environment.NewLine);
+                using (var db = new DatabaseContext())
+                {
+                    var permissionsForUser = db.Users
+                        .Include(x => x.Permissions)
+                        .Single(x => x.ProfileId == incomingChatMessage.Author.ID)
+                        .Permissions
+                        .Select(x => x.PermissionGroup)
+                        .ToList();
 
-            chatRoom.PostMessageOrThrow(finalMessage);
+                    var commandMessage = userCommands
+                        .Where(x => x.RequiredPermissionGroup == null || x.RequiredPermissionGroup.Value.In(permissionsForUser))
+                        .OrderBy(x => x.ActionName)
+                        .Select(x => $"    {x.ActionUsage} - {x.ActionDescription}")
+                        .ToCSV(Environment.NewLine);
+
+                    chatRoom.PostMessageOrThrow(commandMessage);
+                }
+            }
         }
     }
 }
