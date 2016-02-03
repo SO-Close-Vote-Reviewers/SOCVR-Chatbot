@@ -37,53 +37,97 @@ namespace CVChatbot.Bot
             public bool OptionsSubstituted { get; set; }
         }
 
-        private Regex cmdOptions = new Regex(@"[()<>\[\]].*?[()<>\[\]]");
+        private Regex cmdOptionsReg = new Regex(@"[()<>\[\]].*?[()<>\[\]]");
+
+
 
         public Results FindCommand(string message, double threshold = 2D / 3)
         {
             if (string.IsNullOrWhiteSpace(message)) return null;
 
-            var y = new string(message.Where(c => char.IsLetter(c) || c == ' ').ToArray())
-                .Trim()
-                .ToLowerInvariant();
-            var cmdDist = double.MaxValue;
-            ChatbotAction act = null;
+            var y = message.ToLowerInvariant();
+            var z = y.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            var cmds = new Dictionary<ChatbotAction, double>();
 
             foreach (var cmd in ChatbotActionRegister.AllChatActions)
             {
                 if (string.IsNullOrWhiteSpace(cmd.ActionUsage)) continue;
 
-                var x = cmdOptions.Replace(cmd.ActionUsage, "").ToLowerInvariant().Trim();
+                var x = cmdOptionsReg
+                    .Replace(cmd.ActionUsage, "")
+                    .ToLowerInvariant()
+                    .Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                cmds[cmd] = 0;
 
-                if (!string.IsNullOrWhiteSpace(x))
+                foreach (var aw in x)
                 {
-                    var z = y;
-                    var lenDiff = 1D;
-                    if (z.Length > x.Length)
+                    var d = double.MaxValue;
+
+                    foreach (var mw in z)
                     {
-                        z = z.Substring(0, (int)Math.Round(x.Length + Math.Max(1, (y.Length - x.Length) / 5D)));
-                        lenDiff = (double)y.Length / x.Length;
+                        var lenDiff = 1D;
+
+                        if (mw.Length > aw.Length)
+                        {
+                            lenDiff = (double)mw.Length / aw.Length;
+                        }
+                        else
+                        {
+                            lenDiff = (double)aw.Length / mw.Length;
+                        }
+
+                        var dist = Calculate(aw, mw, int.MaxValue) * lenDiff;
+
+                        if (dist < d)
+                        {
+                            d = dist;
+                        }
                     }
 
-                    var dist = Calculate(x, z, int.MaxValue) * lenDiff;
-
-                    if (dist < cmdDist)
-                    {
-                        act = cmd;
-                        cmdDist = dist;
-                    }
+                    cmds[cmd] += d;
                 }
             }
 
-            if ((y.Length - cmdDist) / y.Length < threshold)
+            var min = cmds.Values.Min();
+            var act = cmds.First(x => x.Value == min).Key;
+            var actLen = cmdOptionsReg
+                .Replace(act.ActionUsage, "")
+                .Replace("  ", " ")
+                .Trim()
+                .Length;
+            if ((actLen - min) / actLen < threshold)
             {
                 return null;
             }
 
-            var dynCmdOpt = "";
+            var cmdTxt = GetCommandText(message, act, threshold);
 
+            // If the chat command args are incorrect, show the generic
+            // command usage instead.
+            var optsSub = true;
+            if (!act.DoesChatMessageActiveAction(cmdTxt, true))
+            {
+                cmdTxt = act.ActionUsage;
+                optsSub = false;
+            }
+
+            return new Results
+            {
+                SuggestedCmdText = cmdTxt,
+                SuggestedAction = act,
+                OptionsSubstituted = optsSub
+            };
+        }
+
+
+
+        private string GetCommandText(string message, ChatbotAction act, double threshold)
+        {
+            var cmdOpts = new List<List<string>>();
             var msgWords = message.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-            var cmdWords = cmdOptions.Replace(act.ActionUsage, "").Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            var cmdWords = cmdOptionsReg
+                .Replace(act.ActionUsage, "")
+                .Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
             var ignoreWords = new List<int>();
             for (var i = 0; i < msgWords.Length; i++)
             {
@@ -102,35 +146,40 @@ namespace CVChatbot.Bot
                 if ((msgWords[i].Length - dist) / msgWords[i].Length > (threshold / 1.5))
                 {
                     ignoreWords.Add(i);
+                    cmdOpts.Add(new List<string>());
                 }
             }
+            var curCmdOptsInd = -1;
             for (var i = 0; i < msgWords.Length; i++)
             {
-                if (ignoreWords.Contains(i)) continue;
+                if (ignoreWords.Contains(i))
+                {
+                    curCmdOptsInd++;
+                    continue;
+                }
+                cmdOpts[curCmdOptsInd].Add(msgWords[i]);
+            }
+            cmdOpts = cmdOpts.Where(x => x.Count > 0).ToList();
 
-                dynCmdOpt += msgWords[i] + " ";
+            var ms = cmdOptionsReg.Matches(act.ActionUsage);
+            var cmdTxt = act.ActionUsage;
+            var globalDiff = 0;
+            var cmdOptI = 0;
+            foreach (Match m in ms)
+            {
+                var localDiff = 0;
+                cmdTxt = cmdTxt.Remove(m.Index + globalDiff, m.Length);
+                foreach (var opt in cmdOpts[cmdOptI])
+                {
+                    cmdTxt = cmdTxt.Insert(m.Index + localDiff + globalDiff, opt + " ");
+                    localDiff += opt.Length + 1;
+                }
+                globalDiff += localDiff - m.Length;
+                cmdOptI++;
             }
 
-            var cmdTxt = cmdOptions.Replace(act.ActionUsage, dynCmdOpt.Trim());
-            var optsSub = true;
-
-            // If the chat command args are incorrect, show the generic
-            // command usage instead.
-            if (!act.DoesChatMessageActiveAction(cmdTxt, true))
-            {
-                cmdTxt = act.ActionUsage;
-                optsSub = false;
-            }
-
-            return new Results
-            {
-                SuggestedCmdText = cmdTxt,
-                SuggestedAction = act,
-                OptionsSubstituted = optsSub
-            };
+            return  cmdTxt.Replace("  ", " ").Trim();
         }
-
-
 
         private static int Calculate(string x, string y, int threshold)
         {

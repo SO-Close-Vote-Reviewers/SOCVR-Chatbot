@@ -93,7 +93,14 @@ namespace SOCVR.Chatbot.ChatRoom
 
                         if (results != null)
                         {
-                            msg += $"Did you mean `{results.SuggestedCmdText}`?";
+                            if (!results.OptionsSubstituted)
+                            {
+                                msg += $"Maybe you meant `{results.SuggestedCmdText}`.";
+                            }
+                            else
+                            {
+                                msg += $"Did you mean `{results.SuggestedCmdText}`?";
+                            }
 
                             var reply = chatRoom.PostReply(incomingChatMessage, msg);
                             if (reply == null)
