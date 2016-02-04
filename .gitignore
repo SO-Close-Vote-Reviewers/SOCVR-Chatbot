@@ -155,8 +155,7 @@ $RECYCLE.BIN/
 # Mac desktop service store files
 .DS_Store
 
-
-/source/SOCVR.Chatbot.Frontend/connection-strings.config
-/source/SOCVR.Chatbot.Frontend/settings.txt
 /source/packages
 /source/SOCVR.Chatbot/settings.txt
+/docker-compose.yml
+
