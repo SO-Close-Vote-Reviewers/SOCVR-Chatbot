@@ -73,6 +73,7 @@ namespace SOCVR.Chatbot
                             WriteToConsole("Caught error when trying to set up database. Waiting 10 seconds to retry.");
                             WriteToConsole(ex.Message);
                             dbSetupAttempts += 1;
+                            Thread.Sleep(10000);
                         }
                         else
                         {
