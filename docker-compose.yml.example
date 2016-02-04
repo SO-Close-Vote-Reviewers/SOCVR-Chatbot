@@ -1,0 +1,36 @@
+ 
+socvr-chatbot-postgresql-data:
+  image: postgres:latest
+  container_name: socvr-chatbot-postgresql-data
+  entrypoint: /bin/true
+  volumes:
+    - /var/lib/postgres/data
+ 
+socvr-chatbot-postgresql:
+  image: postgres:latest
+  container_name: socvr-chatbot-postgres
+  environment:
+    POSTGRES_PASSWORD: 'chatbot'
+    POSTGRES_USER: 'chatbot'
+    POSTGRES_DB: 'cv-chatbot2'
+  ports:
+    - 5432
+  volumes_from:
+    - socvr-chatbot-postgresql-data
+ 
+socvr-chatbot:
+  image: socvr/chatbot
+  container_name: socvr-chatbot
+  environment:
+    LoginEmail: 'email_address'
+    LoginPassword: 'email_password'
+    DatabaseConnectionString: 'Server=db-container;Port=5432;Database=cv-chatbot2;User Id=chatbot;Password=chatbot;'
+    ChatRoomUrl: 'url'
+    DefaultCompletedTagsPeopleThreshold: 3
+    MaxFetchTags: 15
+    PingReviewersDaysBackThreshold: 7
+    DefaultNextTagCount: 3
+    StartUpMessage: 'Hello everyone! (docker example file)'
+    StopMessage: 'Goodbye! (docker example file)'
+  links:
+    - socvr-chatbot-postgresql:db-container

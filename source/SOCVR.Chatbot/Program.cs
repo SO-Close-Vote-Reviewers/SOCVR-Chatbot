@@ -6,6 +6,7 @@ using SOCVR.Chatbot.Database;
 using Microsoft.Data.Entity;
 using System.Linq;
 using System.Collections.Generic;
+using System.Net.Sockets;
 
 namespace SOCVR.Chatbot
 {
@@ -31,27 +32,49 @@ namespace SOCVR.Chatbot
                 WriteToConsole("Joining room");
                 mng.JoinRoom();
 
-                using (var db = new DatabaseContext())
-                {
-                    WriteToConsole("Connecting to database");
-                    //create the database if it does not exist and push and new migrations to it
-                    db.Database.Migrate();
-
-                    EnsureRoomOwnersAreInDatabase(db);
-                }
+                InitializeDatbase();
 
                 WriteToConsole("Starting user tracker");
                 var rm = mng.CvChatRoom;
                 using (var watcher = new UserTracking(ref rm))
                 {
                     mng.PostStartupMessage();
-                    
+
                     WriteToConsole("Running wait loop");
-                    
+
                     // wait to get signalled
                     // we do it this way because this is cross-thread
                     shutdownEvent.WaitOne();
                 }
+            }
+        }
+
+        private static void InitializeDatbase()
+        {
+            using (var db = new DatabaseContext())
+            {
+                WriteToConsole("Connecting to database");
+
+                bool dbSetUp = false;
+
+                //loop until the connection works
+                while (!dbSetUp)
+                {
+                    try
+                    {
+                        //create the database if it does not exist and push and new migrations to it
+                        db.Database.Migrate();
+                        dbSetUp = true;
+                    }
+                    catch (SocketException ex)
+                    {
+                        WriteToConsole("Caught error when trying to set up database. Waiting 30 seconds to retry.");
+                        WriteToConsole(ex.Message);
+                        Thread.Sleep(30 * 1000);
+                    }
+                }
+
+                EnsureRoomOwnersAreInDatabase(db);
             }
         }
 
