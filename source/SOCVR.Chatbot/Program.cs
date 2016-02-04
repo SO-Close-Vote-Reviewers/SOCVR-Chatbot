@@ -70,10 +70,10 @@ namespace SOCVR.Chatbot
                     {
                         if (dbSetupAttempts < 3)
                         {
-                            WriteToConsole("Caught error when trying to set up database. Waiting 10 seconds to retry.");
+                            WriteToConsole("Caught error when trying to set up database. Waiting 30 seconds to retry.");
                             WriteToConsole(ex.Message);
                             dbSetupAttempts += 1;
-                            Thread.Sleep(10000);
+                            Thread.Sleep(30000);
                         }
                         else
                         {

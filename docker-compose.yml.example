@@ -13,6 +13,8 @@ socvr-chatbot-postgresql:
     POSTGRES_PASSWORD: 'chatbot'
     POSTGRES_USER: 'chatbot'
     POSTGRES_DB: 'cv-chatbot2'
+  ports:
+    - 5432
   volumes_from:
     - socvr-chatbot-postgresql-data
  
