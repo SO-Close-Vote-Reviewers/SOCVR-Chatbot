@@ -55,30 +55,24 @@ namespace SOCVR.Chatbot
             {
                 WriteToConsole("Connecting to database");
 
-                int dbSetupAttempts = 0;
                 bool dbSetUp = false;
 
-                while (!dbSetUp && dbSetupAttempts < 3)
+                //loop until the connection works
+                while (!dbSetUp)
                 {
                     try
                     {
+                        db.Database.OpenConnection();
+
                         //create the database if it does not exist and push and new migrations to it
                         db.Database.Migrate();
                         dbSetUp = true;
                     }
                     catch (SocketException ex)
                     {
-                        if (dbSetupAttempts < 3)
-                        {
-                            WriteToConsole("Caught error when trying to set up database. Waiting 30 seconds to retry.");
-                            WriteToConsole(ex.Message);
-                            dbSetupAttempts += 1;
-                            Thread.Sleep(30000);
-                        }
-                        else
-                        {
-                            throw new Exception("Could not initialize database, waited too long.");
-                        }
+                        WriteToConsole("Caught error when trying to set up database. Waiting 30 seconds to retry.");
+                        WriteToConsole(ex.Message);
+                        Thread.Sleep(30 * 1000);
                     }
                 }
 
