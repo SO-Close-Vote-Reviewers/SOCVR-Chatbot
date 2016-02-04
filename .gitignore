@@ -154,9 +154,9 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
-/CVChatbot/CVChatbot/connection-strings.config
-/CVChatbot/CVChatbot.UI/settings.txt
-/CVChatbot/CVChatbot.UI/connection-strings.config
-/CVChatbot/packages/*
-/CVChatbot/CVChatbot.Console/settings.txt
-/CVChatbot/*.userprefs
+
+
+/source/SOCVR.Chatbot.Frontend/connection-strings.config
+/source/SOCVR.Chatbot.Frontend/settings.txt
+/source/packages
+/source/SOCVR.Chatbot/settings.txt
