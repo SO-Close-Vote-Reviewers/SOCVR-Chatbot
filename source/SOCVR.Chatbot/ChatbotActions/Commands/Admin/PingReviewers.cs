@@ -3,6 +3,7 @@ using System.Linq;
 using ChatExchangeDotNet;
 using SOCVR.Chatbot.Configuration;
 using SOCVR.Chatbot.Database;
+using Microsoft.Data.Entity;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands.Admin
 {
@@ -26,27 +27,47 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Admin
             using (var db = new DatabaseContext())
             {
                 var days = ConfigurationAccessor.PingReviewersDaysBackThreshold;
+                var startDate = DateTimeOffset.UtcNow.Date.AddDays(-days);
 
-                var users = db.Users.Where(x => (DateTimeOffset.UtcNow - x.ReviewedItems.Max(t => t.ReviewedOn)).TotalDays <= days);
+                var reviewsInTimeFrame = db.ReviewedItems
+                    .Where(x => x.ReviewedOn.Date >= startDate)
+                    .ToList();
 
-                if (!users.Any())
+                if (!reviewsInTimeFrame.Any())
                 {
                     chatRoom.PostReplyOrThrow(incomingChatMessage, $"No one has a completed review session in the last {days} days");
                     return;
                 }
 
+                var allProfileIds = reviewsInTimeFrame
+                    .Select(x => x.ReviewerId)
+                    .Distinct()
+                    .Except(new[] { incomingChatMessage.Author.ID }) //exclude yourself
+                    .ToList();
+
+                var pingableProfileIds = (from profileId in allProfileIds
+                                          join pingableUser in chatRoom.GetPingableUsers() on profileId equals pingableUser.ID
+                                          select profileId)
+                                         .ToList();
+
+                if (!pingableProfileIds.Any())
+                {
+                    chatRoom.PostReplyOrThrow(incomingChatMessage, "There is no one to ping.");
+                    return;
+                }
+
                 var msg = new MessageBuilder();
 
-                var messageFromincomingChatMessage = GetRegexMatchingObject()
+                var messageFromIncomingChatMessage = GetRegexMatchingObject()
                     .Match(incomingChatMessage.Content)
                     .Groups[1]
                     .Value;
 
-                msg.AppendText(messageFromincomingChatMessage + " ");
+                msg.AppendText(messageFromIncomingChatMessage + " ");
 
-                foreach (var u in users)
+                foreach (var profileId in pingableProfileIds)
                 {
-                    msg.AppendPing(chatRoom.GetUser(u.ProfileId));
+                    msg.AppendPing(chatRoom.GetUser(profileId));
                 }
 
                 chatRoom.PostMessageOrThrow(msg);
