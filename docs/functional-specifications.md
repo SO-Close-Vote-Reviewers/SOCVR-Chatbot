@@ -38,6 +38,7 @@ This document describes the functionality of the chatbot that resides in the [SO
 	- [Approve and Reject Request #](#approve-and-reject-request-)
 	- [Add User To Group](#add-user-to-group)
 	- [Remove User From Group](#remove-user-from-group)
+	- [View Requests](#view-requests)
 - [Command Interpretation](#command-interpretation)
 - [Permission system](#permission-system)
 	- [Permission Request](#permission-request)
@@ -165,6 +166,7 @@ Anyone in chat can run these commands.
 | [approve/reject] request [#]  | Approves or rejects a request for a user to join a permission group. |
 | add user to [group name]      | Manually adds a user to the given permission group.                  |
 | remove user from [group name] | Manually removes a user from the given permission group.             |
+| view requests                 | Shows a list of all pending permission requests                      |
 
 ## Commands - Descriptive
 
@@ -476,6 +478,11 @@ This is the mirror of the `Add user to` command.
     remove [user id] from [group name]
 
 Use the opposite logic as the last command.
+
+### View Requests
+This command shows all pending permission requests in the system. The user can then use any of the other permission commands to process them.
+
+See the "Viewing Requests" section for more details.
 
 ## Command Interpretation
 The bot will make an attempt to correct a user if they type in a wrong command (such as spelling).
