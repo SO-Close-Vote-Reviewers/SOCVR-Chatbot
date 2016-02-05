@@ -28,7 +28,7 @@ This document describes the functionality of the chatbot that resides in the [SO
 	- [Audit stats](#audit-stats)
 	- [Current Tag and Next # tags](#current-tag-and-next-tags)
 	- [Refresh tags](#refresh-tags)
-	- [Queue stats](#queue-stats)
+	- [Stats](#stats)
 	- [Current Review Count](#current-review-count)
 	- [Reviews Today](#reviews-today)
 	- [Start Event](#start-event)
@@ -144,7 +144,7 @@ Anyone in chat can run these commands.
 | Current Tag          | Fetches the tag that has the most amount of manageable close queue items from the SEDE query.                                                      |
 | Next # tags          | Displays the first X tags from the SEDE query to focus on.                                                                                         |
 | Refresh tags         | Forces a refresh of the tags obtained from the SEDE query.                                                                                         |
-| Queue stats          | Shows the stats at the top of the /review/close/stats page.                                                                                        |
+| Stats                | Shows the stats at the top of the /review/close/stats page.                                                                                        |
 | Reviews today        | Shows user's stats for the reviews they have made in the current UTC day. Adding "Details" will print a table of those reviews.                    |
 | Total reviews today  | Shows summary information and a table of the people who have completed reviews today.                                                              |
 | opt out and opt in   | (also "opt-out" / "opt-in") Allows a user to be temporarily removed from the tracking system, or resume being tracked.                             |
@@ -153,7 +153,7 @@ Anyone in chat can run these commands.
 
 | Command        | Description                                                                                                   |
 |----------------|---------------------------------------------------------------------------------------------------------------|
-| Start event    | The Start Event command is a combination of the Next [3] Tags and Queue Stats command.                        |
+| Start event    | The Start Event command is a combination of the Next [3] Tags and Stats command.                              |
 | Ping reviewers | Sends a message which includes an @reply to all users in the reviewers group that have done reviews recently. |
 | Stop bot       | Leaves the chat room and quits the running application.                                                       |
 | Reboot bot     | Shuts down then starts back up.                                                                               |
@@ -373,10 +373,10 @@ If the bot is not able to edit the first message (usualy because it took too muc
 
 > Tag refresh complete, took [time it took to do refresh].
 
-### Queue stats
+### Stats
 The "/review/close/stats" page holds general queue stats. This command displays those values.
 
-In the CV queue, [# need review] need review, [# reviews today] reviews have been completed today, and [# all time] reviews have been completed overall.
+> In the CV queue, [# need review] need review, [# reviews today] reviews have been completed today, and [# all time] reviews have been completed overall.
 
 ### Current Review Count
 As a user reviews CV items in the queue, the number of reviews they’ve completed gradually increases. This command prints exactly how many reviews the user has completed so far. Example,
