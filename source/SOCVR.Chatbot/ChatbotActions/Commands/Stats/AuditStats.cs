@@ -15,6 +15,8 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
 
         public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.Reviewer;
 
+        public override bool UserMustBeInAnyPermissionGroupToRun => true;
+
         protected override string RegexMatchingPattern => "^audit stats$";
 
         public override void RunAction(Message incomingChatMessage, Room chatRoom)

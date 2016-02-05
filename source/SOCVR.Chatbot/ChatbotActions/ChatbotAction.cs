@@ -94,5 +94,13 @@ namespace SOCVR.Chatbot.ChatbotActions
         /// </summary>
         /// <returns></returns>
         public abstract PermissionGroup? RequiredPermissionGroup { get; }
+
+        /// <summary>
+        /// If true, the user needs to be in at least one permission group to run the command.
+        /// If false, the user does not need to be in any permission groups.
+        /// This is used when commands are "non-public" - they are not tied to any particular
+        /// permission group but they require that you be in at least one of the groups.
+        /// </summary>
+        public abstract bool UserMustBeInAnyPermissionGroupToRun { get; }
     }
 }

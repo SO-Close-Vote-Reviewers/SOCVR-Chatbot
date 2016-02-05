@@ -18,6 +18,8 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Admin
 
         public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.BotOwner;
 
+        public override bool UserMustBeInAnyPermissionGroupToRun => true;
+
         protected override string RegexMatchingPattern => "^(pl(ease|[sz]) )?((start(ing)?( the)? event)|(event start(ed)?))( pl(eas|[sz]))?$";
 
         public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)

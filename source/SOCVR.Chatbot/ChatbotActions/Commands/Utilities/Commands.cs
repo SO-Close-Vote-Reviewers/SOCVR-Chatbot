@@ -21,6 +21,8 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
 
         public override PermissionGroup? RequiredPermissionGroup => null;
 
+        public override bool UserMustBeInAnyPermissionGroupToRun => false;
+
         protected override string RegexMatchingPattern => "^commands(?: (full))?$";
 
         private static class ReflectiveEnumerator

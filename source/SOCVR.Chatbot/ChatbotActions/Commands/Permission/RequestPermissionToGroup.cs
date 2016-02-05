@@ -20,6 +20,8 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
 
         public override PermissionGroup? RequiredPermissionGroup => null;
 
+        public override bool UserMustBeInAnyPermissionGroupToRun => false;
+
         protected override string RegexMatchingPattern => @"^request permission to (\w+)$";
 
         public override void RunAction(Message incomingChatMessage, Room chatRoom)

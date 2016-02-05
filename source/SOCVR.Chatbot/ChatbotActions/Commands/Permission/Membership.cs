@@ -15,6 +15,8 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
 
         public override PermissionGroup? RequiredPermissionGroup => null;
 
+        public override bool UserMustBeInAnyPermissionGroupToRun => false;
+
         protected override string RegexMatchingPattern => @"^membership$";
 
         public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
