@@ -174,9 +174,10 @@ namespace SOCVR.Chatbot.ChatRoom
         /// <returns></returns>
         private bool DoesUserHavePermissionToRunAction(ChatbotAction actionToRun, int chatUserId)
         {
-            //if the command does not require a permission group to run
-            if (actionToRun.RequiredPermissionGroup == null)
+            //if the command does not require the user to be in any permission groups
+            if (actionToRun.UserMustBeInAnyPermissionGroupToRun == false)
             {
+                //this is a "public" command
                 return true;
             }
 
@@ -186,28 +187,24 @@ namespace SOCVR.Chatbot.ChatRoom
             {
                 var dbUser = db.Users
                     .Include(x => x.Permissions)
-                    .SingleOrDefault(x => x.ProfileId == chatUserId);
+                    .Single(x => x.ProfileId == chatUserId);
 
-                if (dbUser == null)
+                //there are two configurations for the permission required for the command:
+                // 1) a specific group is required
+                // 2) any group is required
+
+                if (actionToRun.RequiredPermissionGroup != null)
                 {
-                    //this user does not exist in the database, and because this command requires permission
-                    //we have to deny usage
-                    return false;
-                }
+                    //the user must be in the named group in order to run
+                    var userPermissionGroups = dbUser.Permissions
+                        .Select(x => x.PermissionGroup);
 
-                //check if the user is in the necessary permission group
-                var userPermissionGroups = dbUser.Permissions
-                    .Select(x => x.PermissionGroup);
-
-                if (!actionToRun.RequiredPermissionGroup.Value.In(userPermissionGroups))
-                {
-                    //user is not in the required permission group
-                    return false;
+                    return actionToRun.RequiredPermissionGroup.Value.In(userPermissionGroups);
                 }
                 else
                 {
-                    //user is in the required permission group
-                    return true;
+                    //the user must be in ANY permission group to run
+                    return dbUser.Permissions.Any();
                 }
             }
         }
