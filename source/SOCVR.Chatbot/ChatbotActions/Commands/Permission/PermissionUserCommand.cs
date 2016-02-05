@@ -14,14 +14,19 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
             //take the input, remove spaces, lower case it
             userInput = userInput
                 .Replace(" ", "")
-                .ToLower();
+                .ToLowerInvariant();
+
+            if (userInput.EndsWith("s"))
+            {
+                userInput = userInput.Remove(userInput.Length - 2);
+            }
 
             var allPermissionGroups = Enum.GetValues(typeof(PermissionGroup))
                 .OfType<PermissionGroup>()
                 .Select(x => new
                 {
                     EnumVal = x,
-                    MatchVal = x.ToString().ToLower()
+                    MatchVal = x.ToString().ToLowerInvariant()
                 });
 
             var matchingPermissionGroup = allPermissionGroups
