@@ -1,0 +1,12 @@
+{
+  "LoginEmail": "emailaddress",
+  "LoginPassword": "emailpassword",
+  "DatabaseConnectionString": "Server=!!server!!;Port=5432;Database=!!database!!;User Id=!!user!!;Password=!!password!!;",
+  "ChatRoomUrl": "chaturl",
+  "DefaultCompletedTagsPeopleThreshold": 3,
+  "MaxFetchTags": 15,
+  "PingReviewersDaysBackThreshold": 7,
+  "DefaultNextTagCount": 3,
+  "StartUpMessage": "Hello everyone! (sample config)",
+  "StopMessage": "Shutting down. (sample config)"
+}

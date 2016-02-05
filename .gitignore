@@ -156,6 +156,5 @@ $RECYCLE.BIN/
 .DS_Store
 
 /source/packages
-/source/SOCVR.Chatbot/settings.txt
+/source/SOCVR.Chatbot/settings.json
 /docker-compose.yml
-
