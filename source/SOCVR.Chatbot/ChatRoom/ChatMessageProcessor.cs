@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using SOCVR.Chatbot.ChatbotActions.Commands.Admin;
 using System.Reflection;
+using SOCVR.Chatbot.ChatbotActions.Commands.Permission;
 
 namespace SOCVR.Chatbot.ChatRoom
 {
@@ -134,8 +135,24 @@ namespace SOCVR.Chatbot.ChatRoom
                 // Don't have permission, tell the user only if it's a command.
                 if (isReplyToChatbot)
                 {
-                    chatRoom.PostReplyOrThrow(incomingChatMessage,
-                        $"Sorry, you are not in the {chatbotActionToRun.RequiredPermissionGroup.ToString()} permission group. Do you want to request access? (reply with 'yes')");
+                    //a person can be denied a command for one of two reasons:
+                    // 1) they are not in the required permission group
+                    // 2) they are not in ANY permission groups
+                    // this is dependent on the command they try to run
+
+                    if (chatbotActionToRun.RequiredPermissionGroup != null)
+                    {
+                        //the command required a specific group which the user was not a part of
+                        chatRoom.PostReplyOrThrow(incomingChatMessage,
+                            $"Sorry, you are not in the {chatbotActionToRun.RequiredPermissionGroup.ToString()} permission group. Do you want to request access? (reply with 'yes')");
+                    }
+                    else
+                    {
+                        //the command can be ran by anyone who is in at least one permission group,
+                        //but this user is not in any
+                        chatRoom.PostReplyOrThrow(incomingChatMessage,
+                            $"Sorry, you need to be in at least one permission group to run this command. Run `{ChatbotActionRegister.GetChatBotActionUsage<Membership>()}` to see the list of groups.");
+                    }
                 }
                 // Don't do anything for triggers.
             }
