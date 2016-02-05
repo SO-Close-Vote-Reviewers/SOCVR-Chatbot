@@ -187,18 +187,35 @@ namespace SOCVR.Chatbot
         private void HandleReviewingStarted(User user)
         {
             var msg = new MessageBuilder();
-            msg.AppendPing(room.GetUser(user.ID));
-            msg.AppendText("I've noticed you've started reviewing! I'll update your session record.");
+
+            if (room.GetCurrentUsers().Any(x => x.ID == user.ID))
+            {
+                msg.AppendPing(room.GetUser(user.ID));
+                msg.AppendText("I've noticed you've started reviewing! I'll update your session record.");
+            }
+            else
+            {
+                msg.AppendText($"{room.GetUser(user.ID).GetChatFriendlyUsername()} has started reviewing!");
+            }
+
             room.PostMessageLight(msg);
         }
 
         private void HandleReviewingCompleted(User user, HashSet<ReviewItem> reviews)
         {
             var revCount = user.CompletedReviewsCount;
+            var userInRoom = room.GetCurrentUsers().Any(x => x.ID == user.ID);
+            var chatUser = room.GetUser(user.ID);
+            var shortName = chatUser.GetChatFriendlyUsername();
             var msg = new MessageBuilder();
-            msg.AppendPing(room.GetUser(user.ID));
+
+            if (userInRoom)
+            {
+                msg.AppendPing(chatUser);
+            }
+
             var posts = reviews.Count > 1 ? $"{revCount} posts today" : "a post today";
-            msg.AppendText($"You've reviewed {posts}");
+            msg.AppendText($"{(userInRoom ? "You've" : shortName)} reviewed {posts}");
 
             var audits = reviews.Count(x => x.AuditPassed != null);
             if (audits > 0)
@@ -206,7 +223,7 @@ namespace SOCVR.Chatbot
                 msg.AppendText($" ({audits} of which {(audits > 1 ? "were audits" : "was an audit")})");
             }
 
-            msg.AppendText(", thanks! ");
+            msg.AppendText(userInRoom ? ", thanks! " : "! ");
 
             // It's always possible...
             if (reviews.Count > 1)
@@ -215,8 +232,9 @@ namespace SOCVR.Chatbot
                 var durRaw = revRes.Max(r => r.Timestamp) - revRes.Min(r => r.Timestamp);
                 var durInf = new TimeSpan((durRaw.Ticks / revCount) * (revCount + 1));
                 var avgInf = TimeSpan.FromSeconds(durInf.TotalSeconds / revCount);
+                var pronounOrName = userInRoom ? "your" : shortName + "'s";
 
-                msg.AppendText("The time between your first and last review today was ");
+                msg.AppendText($"The time between {pronounOrName} first and last review today was ");
                 msg.AppendText(durInf.ToUserFriendlyString());
                 msg.AppendText(", averaging to a review every ");
                 msg.AppendText(avgInf.ToUserFriendlyString());
