@@ -19,6 +19,8 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Admin
 
         public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.BotOwner;
 
+        public override bool UserMustBeInAnyPermissionGroupToRun => true;
+
         protected override string RegexMatchingPattern => @"^add review (\d+) (\d+)$";
 
         public override void RunAction(Message incomingChatMessage, Room chatRoom)

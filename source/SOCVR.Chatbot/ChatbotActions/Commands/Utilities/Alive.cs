@@ -14,6 +14,8 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
 
         public override PermissionGroup? RequiredPermissionGroup => null;
 
+        public override bool UserMustBeInAnyPermissionGroupToRun => false;
+
         protected override string RegexMatchingPattern => @"^(?:(?:are )?you )?(alive|still there|(still )?with us)\??$";
 
         public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)

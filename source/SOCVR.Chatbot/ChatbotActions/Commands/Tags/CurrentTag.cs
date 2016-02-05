@@ -19,6 +19,8 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Tags
 
         public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.Reviewer;
 
+        public override bool UserMustBeInAnyPermissionGroupToRun => true;
+
         protected override string RegexMatchingPattern => @"^(what is the )?current tag( pl(ease|[sz]))?\??$";
 
         public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)

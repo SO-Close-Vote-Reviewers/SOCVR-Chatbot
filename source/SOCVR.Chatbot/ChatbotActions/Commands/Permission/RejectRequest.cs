@@ -11,8 +11,9 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
 
         public override string ActionUsage => "reject request [#]";
 
-#warning this command needs a non-public permission group. "null" doesn't really work, but it can slide for now.
         public override PermissionGroup? RequiredPermissionGroup => null;
+
+        public override bool UserMustBeInAnyPermissionGroupToRun => true;
 
         protected override string RegexMatchingPattern => @"^reject request (\d+)$";
 

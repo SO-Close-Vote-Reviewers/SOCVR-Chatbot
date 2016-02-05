@@ -14,6 +14,8 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Admin
 
         public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.BotOwner;
 
+        public override bool UserMustBeInAnyPermissionGroupToRun => true;
+
         protected override string RegexMatchingPattern => "^(stop( bot)?|die|shutdown)$";
 
         public override void RunAction(Message incomingChatMessage, Room chatRoom) => 

@@ -15,6 +15,8 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
 
         public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.Reviewer;
 
+        public override bool UserMustBeInAnyPermissionGroupToRun => true;
+
         protected override string RegexMatchingPattern => "^(close vote )?stats( (please|pl[sz]))?$";
 
         public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)

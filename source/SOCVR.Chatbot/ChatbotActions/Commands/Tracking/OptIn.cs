@@ -19,6 +19,8 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Tracking
 
         public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.Reviewer;
 
+        public override bool UserMustBeInAnyPermissionGroupToRun => true;
+
         protected override string RegexMatchingPattern => "^opt[ -]in$";
 
         protected override bool GetOptValue() => true;
