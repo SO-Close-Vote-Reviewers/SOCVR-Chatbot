@@ -10,10 +10,10 @@ This document describes the functionality of the chatbot that resides in the [SO
 - [Goals for v2](#goals-for-v2)
 - [V2 Member Workflow](#v2-member-workflow)
 - [V2 Command List](#v2-command-list)
-	- [Commands for Public permission group](#commands-for-public-permission-group)
+	- [Commands for all users](#commands-for-all-users)
 	- [Commands for Reviewer permission group](#commands-for-reviewer-permission-group)
 	- [Commands for Room Owner permission group](#commands-for-room-owner-permission-group)
-	- [Commands for All Non-Public Users](#commands-for-all-non-public-users)
+	- [Commands for Users in any permission group](#commands-for-users-in-any-permission-group)
 - [Commands - Descriptive](#commands-descriptive)
 	- [Alive](#alive)
 	- [Commands](#commands)
@@ -121,7 +121,7 @@ Commands for this version will focus on stats. Some commands will stick around i
 
 The following is a summary table of all commands. Extended details are in the next sections.
 
-### Commands for Public permission group
+### Commands for all users
 
 <!-- use https://ozh.github.io/ascii-tables/ to create this -->
 
@@ -159,7 +159,7 @@ Anyone in chat can run these commands.
 | Stop bot       | Leaves the chat room and quits the running application.                                                       |
 | Reboot bot     | Shuts down then starts back up.                                                                               |
 
-### Commands for All Non-Public Users
+### Commands for Users in any permission group
 
 | Command                       | Description                                                          |
 |-------------------------------|----------------------------------------------------------------------|
@@ -300,8 +300,6 @@ The groups shown are shown, in this order:
 
 1. Reviewers
 2. Bot Owners
-
-The `Public` permission group will not be shown in this list.
 
 ### Opt-in and Opt-out
 By default, when a user joins the Reviews permission group, they are opted-in to the tracking system. A Reviewer might want to be ignored by the tracking system for a period of time (this could be hours, days, months, etc). The Opt-out command will allow that user to be ignored until they run the opt-in command. The bot will also record the date of the last "opt-" change.
@@ -454,7 +452,7 @@ The command syntax is:
 
     add [user id] to [group name]
 
-Group name is the name of any permission group, so "reviewers" or "bot owner". You can't add a user to public.
+Group name is the name of any permission group, so "reviewers" or "bot owner".
 
 When a user is successfully added to a group using this command, the following message will be said as a reply to the command:
 
@@ -497,13 +495,12 @@ If no command matched the % threshold, then the bot will ignore the message.
 
 ## Permission system
 
-The new permission system will be made of 3 groups:
+The new permission system will be made of 2 groups:
 
-* Public
 * Reviewers
 * Bot Owners
 
-These groups are independent of each other. A person can be in multiple groups at once. Members of each group (besides Public) can add users to that group.
+These groups are independent of each other. A person can be in multiple groups at once. Members of each group can add users to that group.
 
 Restrictions on joining a group:
 * To join the Reviewers group you must have at least 3000 reputation.
@@ -576,7 +573,7 @@ A user can run the `request permission for [group name]` command.
 
 #### Viewing Requests
 
-Any user non-public user can run the `View requests` command to see the full list. This is an example output:
+A user that is in at least one permission group user can run the `View requests` command to see the full list. This is an example output:
 
 | Request # | Display Name | User Id | Requesting | Requested at            |
 |-----------|--------------|---------|------------|-------------------------|
