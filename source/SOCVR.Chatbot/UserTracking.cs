@@ -163,7 +163,7 @@ namespace SOCVR.Chatbot
         private void HookUpUserEvents(int id)
         {
             WatchedUsers[id].EventManager.ConnectListener(EventType.ItemReviewed,
-                new Action<ReviewItem>(r => SaveReview(r)));
+                new Action<ReviewItem>(r => SaveReview(r, id)));
 
             WatchedUsers[id].EventManager.ConnectListener(EventType.ReviewingStarted,
                 new Action(() => HandleReviewingStarted(WatchedUsers[id])));
@@ -251,9 +251,9 @@ namespace SOCVR.Chatbot
             room.PostMessageOrThrow(message.Message);
         }
 
-        private void SaveReview(ReviewItem rev)
+        private void SaveReview(ReviewItem rev, int userID)
         {
-            var res = rev.Results.First();
+            var res = rev.Results.First(x => x.UserID == userID);
             using (var db = new DatabaseContext())
             {
                 db.EnsureUserExists(res.UserID);
