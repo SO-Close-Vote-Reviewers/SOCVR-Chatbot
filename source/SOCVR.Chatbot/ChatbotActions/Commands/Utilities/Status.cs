@@ -1,7 +1,7 @@
 ﻿using SOCVR.Chatbot.Database;
 using System;
 using System.IO;
-using LibGit2Sharp;
+//using LibGit2Sharp;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
 {
@@ -23,15 +23,15 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
         public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
             var repoDir = SearchForRepo();
-            using (var repo = new Repository(repoDir))
-            {
+            //using (var repo = new Repository(repoDir))
+            //{
                 var elapsedTime = DateTime.Now - ChatBotStats.LoginDate;
-                var sha = repo.Head.Tip.Sha.Substring(0, 8);
-                var branch = repo.Head.FriendlyName;
+                var sha = ThisAssembly.Git.Sha.Substring(0, 8);
+                var branch = ThisAssembly.Git.Branch;
                 var message = $"SOCVR Chatbot {branch} at `{sha}`, running for {elapsedTime.ToUserFriendlyString()}.";
 
                 chatRoom.PostMessageOrThrow(message);
-            }
+            //}
         }
 
         private string SearchForRepo(string curPath = ".")
