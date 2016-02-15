@@ -25,10 +25,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
             using (var db = new DatabaseContext())
             {
                 var msg = new MessageBuilder();
-
                 var currentDate = DateTimeOffset.UtcNow;
-                //for testing
-                currentDate = new DateTimeOffset(2016, 01, 25, 0, 0, 0, TimeSpan.Zero);
 
                 var reviews = db.ReviewedItems
                     .Where(x => x.ReviewerId == incomingChatMessage.Author.ID)
