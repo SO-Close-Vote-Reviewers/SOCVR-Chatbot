@@ -19,4 +19,6 @@ RUN \
   mono /nuget.exe restore /srv/chatbot/source/SOCVR.Chatbot.sln && \
   xbuild /p:Configuration=Release /srv/chatbot/source/SOCVR.Chatbot.sln
 
+WORKDIR /srv/chatbot
+
 CMD ["mono", "/srv/chatbot/source/SOCVR.Chatbot/bin/Release/SOCVR.Chatbot.exe"]
