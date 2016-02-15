@@ -10,7 +10,7 @@ using System.Net.Sockets;
 
 namespace SOCVR.Chatbot
 {
-    class Program
+    static class Program
     {
         private static RoomManager mng;
 
@@ -114,7 +114,7 @@ namespace SOCVR.Chatbot
         }
 
         private static object writeToConsoleLockObject = new object();
-        private static void WriteToConsole(string message)
+        public static void WriteToConsole(string message)
         {
             lock (writeToConsoleLockObject)
             {

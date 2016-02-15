@@ -252,6 +252,7 @@ namespace SOCVR.Chatbot
 
         private void SaveReview(ReviewItem rev, int userID)
         {
+            Program.WriteToConsole($"Saving ReviewItem {rev.ID} for user {userID}.");
             var res = rev.Results.First(x => x.UserID == userID);
             using (var db = new DatabaseContext())
             {
