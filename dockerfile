@@ -1,12 +1,7 @@
 FROM mono:latest
 
 RUN apt-get update && apt-get install -y \
- python-software-properties \
- software-properties-common \
- nunit \
  git \
- nano \
- sudo \
  wget
 
 # copy everything to the /srv folder
