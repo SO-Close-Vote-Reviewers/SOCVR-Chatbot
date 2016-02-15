@@ -21,7 +21,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Tracking
 
                 if (user.OptInToReviewTracking == GetOptValue())
                 {
-                    //user is already opted-in
+                    //user already has that opt value
 
                     //if you are in the reviews group your LastTrackingPreferenceChange must be set
                     var deltaTime = DateTimeOffset.UtcNow - user.LastTrackingPreferenceChange.Value;
@@ -33,7 +33,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Tracking
                 }
 
                 //flip the setting and update the LastTrackingPreferenceChange value
-                user.OptInToReviewTracking = false;
+                user.OptInToReviewTracking = GetOptValue();
                 user.LastTrackingPreferenceChange = DateTimeOffset.UtcNow;
                 db.SaveChanges();
 
