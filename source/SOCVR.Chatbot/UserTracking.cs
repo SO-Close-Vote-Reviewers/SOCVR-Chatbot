@@ -3,16 +3,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-//using SOCVR.Chatbot.ChatbotActions;
 using System.Threading.Tasks;
 using AvsAnLib;
-//using System.Text.RegularExpressions;
 using ChatExchangeDotNet;
 using SOCVR.Chatbot.Database;
 using SOCVRDotNet;
 using TCL.Extensions;
-using CEEventType = ChatExchangeDotNet.EventType;
-//using CEUser = ChatExchangeDotNet.User;
 using EventType = SOCVRDotNet.EventType;
 using User = SOCVRDotNet.User;
 
@@ -20,11 +16,8 @@ namespace SOCVR.Chatbot
 {
     internal class UserTracking : IDisposable
     {
-        //private readonly ConcurrentDictionary<KeyValuePair<CEUser, Message>, List<string>> tagReviewedConfirmationQueue;
         private readonly ManualResetEvent dbWatcherMre = new ManualResetEvent(false);
         private readonly Room room;
-        //private readonly Regex yesRegex;
-        //private readonly Regex noRegex;
         private bool dispose;
 
         public ConcurrentDictionary<int, User> WatchedUsers { get; private set; }
@@ -37,16 +30,10 @@ namespace SOCVR.Chatbot
 
             room = chatRoom;
             WatchedUsers = new ConcurrentDictionary<int, User>();
-            //tagReviewedConfirmationQueue = new ConcurrentDictionary<KeyValuePair<CEUser, Message>, List<string>>();
-            //yesRegex = new Regex(@"(?i)^(y[eu][sp]|correct|right|true|tp)((\s\S+)*)$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
-            //noRegex = new Regex(@"(?i)^(no+(pe|t)?|wrong|incorrect|false|fp)((\s\S+)*)$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
             InitialiseWatcher();
 
             Task.Run(() => WatchDB());
-
-            // Listen for tag confirmations.
-            chatRoom.EventManager.ConnectListener(CEEventType.MessageReply, new Action<Message, Message>((parent, reply) => HandleCurrentTagsChangedConfirmation(reply)));
         }
 
         ~UserTracking()
@@ -138,7 +125,7 @@ namespace SOCVR.Chatbot
                         RemoveUser(id);
                     }
 
-                    dbWatcherMre.WaitOne(TimeSpan.FromSeconds(5));
+                    dbWatcherMre.WaitOne(TimeSpan.FromSeconds(3));
                 }
             }
         }
@@ -173,12 +160,6 @@ namespace SOCVR.Chatbot
 
             WatchedUsers[id].EventManager.ConnectListener(EventType.AuditPassed,
                 new Action<ReviewItem>(r => HandleAuditPassed(WatchedUsers[id], r)));
-
-            //WatchedUsers[id].EventManager.ConnectListener(EventType.AuditFailed,
-            //    new Action<ReviewItem>(r => ???));
-
-            WatchedUsers[id].EventManager.ConnectListener(EventType.CurrentTagsChanged,
-                new Action<List<string>>((oldTags) => HandleCurrentTagsChanged(WatchedUsers[id], oldTags)));
 
             WatchedUsers[id].EventManager.ConnectListener(EventType.InternalException,
                 new Action<Exception>(ex => HandleException(ex)));
@@ -287,108 +268,6 @@ namespace SOCVR.Chatbot
                 });
                 db.SaveChanges();
             }
-        }
-
-        private void HandleCurrentTagsChanged(User user, List<string> oldTags)
-        {
-            //var message = new MessageBuilder();
-            //var chatUser = room.GetUser(user.ID);
-
-            //message.AppendPing(chatUser);
-            //message.AppendText("It looks like you've finished reviewing ");
-
-            //if (oldTags.Count > 0)
-            //{
-            //    message.AppendText(oldTags[0], TextFormattingOptions.Tag);
-
-            //    if (oldTags.Count == 2)
-            //    {
-            //        message.AppendText(" & ");
-            //        message.AppendText(oldTags[1], TextFormattingOptions.Tag);
-            //    }
-            //    else if (oldTags.Count == 3)
-            //    {
-            //        message.AppendText(", ");
-            //        message.AppendText(oldTags[1], TextFormattingOptions.Tag);
-            //        message.AppendText(" & ");
-            //        message.AppendText(oldTags[2], TextFormattingOptions.Tag);
-            //    }
-
-            //    message.AppendText(". Is that right?");
-            //}
-            //else
-            //{
-            //    return;
-            //}
-
-            //var msg = room.PostMessage(message.Message);
-
-            //tagReviewedConfirmationQueue[new KeyValuePair<CEUser, Message>(chatUser, msg)] = oldTags;
-        }
-
-        private void HandleCurrentTagsChangedConfirmation(Message reply)
-        {
-            //var tagConfirmationKv = tagReviewedConfirmationQueue
-            //    .FirstOrDefault(kv => kv.Key.Key.ID == reply.Author.ID &&
-            //                          kv.Key.Value.ID == reply.ParentID);
-
-            //if (tagConfirmationKv.Key.Key == null) return;
-
-            //var msgContent = Message.GetMessageContent(reply.Host, reply.ID);
-            //if (yesRegex.IsMatch(msgContent))
-            //{
-            //    var selection = yesRegex.Match(msgContent).Groups[3].Value.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-            //    var savedTags = 0;
-
-            //    foreach (var tag in tagConfirmationKv.Value)
-            //    {
-            //        if (selection?.Length > 0 && selection.Any(t => tag.StartsWith(t)))
-            //        {
-            //            dbAccessor.InsertNoItemsInFilterRecord(reply.Author.ID, tag);
-            //            savedTags++;
-            //        }
-            //    }
-
-            //    var outMsg = "Ok, I've marked " + (savedTags > 1 ?
-            //        "them as completed tags." :
-            //        "it as a completed tag.");
-            //    room.PostReplyOrThrow(reply, outMsg);
-            //}
-            //else if (noRegex.IsMatch(msgContent))
-            //{
-            //    var selection = noRegex.Match(msgContent).Groups[4].Value.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-
-            //    if (selection?.Length == 0)
-            //    {
-            //        room.PostReplyOrThrow(reply, "Sorry, my mistake.");
-            //    }
-            //    else
-            //    {
-            //        var savedTags = 0;
-
-            //        foreach (var tag in tagConfirmationKv.Value)
-            //        {
-            //            if (selection.All(t => !tag.StartsWith(t)))
-            //            {
-            //                dbAccessor.InsertNoItemsInFilterRecord(reply.Author.ID, tag);
-            //                savedTags++;
-            //            }
-            //        }
-
-            //        var outMsg = savedTags == 0 ? "Sorry, my mistake." :
-            //            "Ok, I've marked " + (savedTags > 1 ?
-            //            "the others as completed tags." :
-            //            "the other as a completed tag.");
-            //        room.PostReplyOrThrow(reply, outMsg);
-            //    }
-            //}
-            //else
-            //{
-            //    return;
-            //}
-
-            //List<string> temp;
-            //tagReviewedConfirmationQueue.TryRemove(tagConfirmationKv.Key, out temp);
         }
 
         private void HandleException(Exception ex)
