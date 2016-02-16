@@ -13,6 +13,7 @@ namespace SOCVR.Chatbot
     static class Program
     {
         private static RoomManager mng;
+        private static UserTracking watcher;
 
         /// <summary>
         /// waithandle for shutdown
@@ -36,7 +37,7 @@ namespace SOCVR.Chatbot
 
                 WriteToConsole("Starting user tracker");
                 var rm = mng.CvChatRoom;
-                using (var watcher = new UserTracking(ref rm))
+                using (watcher = new UserTracking(ref rm))
                 {
                     mng.PostStartupMessage();
 
