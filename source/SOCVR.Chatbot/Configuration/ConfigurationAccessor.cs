@@ -8,20 +8,21 @@ namespace SOCVR.Chatbot.Configuration
 
     internal static class ConfigurationAccessor
     {
-        public static string LoginEmail { get { return GetConfigurationOption<string>("LoginEmail"); } }
-        public static string LoginPassword { get { return GetConfigurationOption<string>("LoginPassword"); } }
-        public static string DatabaseConnectionString { get { return GetConfigurationOption<string>("DatabaseConnectionString"); } }
-        public static string ChatRoomUrl { get { return GetConfigurationOption<string>("ChatRoomUrl"); } }
+        public static string LoginEmail => GetConfigurationOption<string>("LoginEmail");
+        public static string LoginPassword => GetConfigurationOption<string>("LoginPassword");
+        public static string DatabaseConnectionString => GetConfigurationOption<string>("DatabaseConnectionString");
+        public static string ChatRoomUrl => GetConfigurationOption<string>("ChatRoomUrl");
 
-        public static int DefaultCompletedTagsPeopleThreshold { get { return GetConfigurationOption<int>("DefaultCompletedTagsPeopleThreshold"); } }
-        public static int MaxFetchTags { get { return GetConfigurationOption<int>("MaxFetchTags"); } }
-        public static int PingReviewersDaysBackThreshold { get { return GetConfigurationOption<int>("PingReviewersDaysBackThreshold"); } }
-        public static int DefaultNextTagCount { get { return GetConfigurationOption<int>("DefaultNextTagCount"); } }
+        public static int DefaultCompletedTagsPeopleThreshold => GetConfigurationOption<int>("DefaultCompletedTagsPeopleThreshold");
+        public static int MaxFetchTags => GetConfigurationOption<int>("MaxFetchTags");
+        public static int PingReviewersDaysBackThreshold => GetConfigurationOption<int>("PingReviewersDaysBackThreshold");
+        public static int DefaultNextTagCount => GetConfigurationOption<int>("DefaultNextTagCount");
 
-        public static string StartUpMessage { get { return GetConfigurationOption<string>("StartUpMessage"); } }
-        public static string StopMessage { get { return GetConfigurationOption<string>("StopMessage"); } }
+        public static string StartUpMessage => GetConfigurationOption<string>("StartUpMessage");
+        public static string StopMessage => GetConfigurationOption<string>("StopMessage");
 
-        public static int FailedPermissionRequestCooldownHours { get { return GetConfigurationOption<int>("FailedPermissionRequestCooldownHours"); } }
+        public static int FailedPermissionRequestCooldownHours => GetConfigurationOption<int>("FailedPermissionRequestCooldownHours");
+                
 
         /// <summary>
         /// Searches for a configuration setting by the given key.
