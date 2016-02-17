@@ -25,6 +25,11 @@ namespace SOCVR.Chatbot.Configuration
 
         public static int RepRequirementToJoinReviewers => GetConfigurationOption<int>("RepRequirementToJoinReviewers");
 
+        public static int DaysInReviewersGroupBeforeProcessingRequests => GetConfigurationOption<int>("DaysInReviewersGroupBeforeProcessingRequests");
+
+        public static int ReviewsCompleteBeforeProcessingRequestsAsReviewer => GetConfigurationOption<int>("ReviewsCompleteBeforeProcessingRequestsAsReviewer");
+        public static int ReviewsTimeFrameDaysBeforeProcessingRequestsAsReviewer => GetConfigurationOption<int>("ReviewsTimeFrameDaysBeforeProcessingRequestsAsReviewer");
+
         /// <summary>
         /// Searches for a configuration setting by the given key.
         /// First search will be environment variables.
