@@ -21,6 +21,8 @@ namespace SOCVR.Chatbot.Configuration
         public static string StartUpMessage { get { return GetConfigurationOption<string>("StartUpMessage"); } }
         public static string StopMessage { get { return GetConfigurationOption<string>("StopMessage"); } }
 
+        public static int FailedPermissionRequestCooldownHours { get { return GetConfigurationOption<int>("FailedPermissionRequestCooldownHours"); } }
+
         /// <summary>
         /// Searches for a configuration setting by the given key.
         /// First search will be environment variables.

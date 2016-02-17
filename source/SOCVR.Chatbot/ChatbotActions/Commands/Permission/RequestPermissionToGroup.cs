@@ -7,6 +7,7 @@ using ChatExchangeDotNet;
 using SOCVR.Chatbot.Database;
 using Microsoft.Data.Entity;
 using TCL.Extensions;
+using SOCVR.Chatbot.Configuration;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
 {
@@ -81,7 +82,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                     //was the request made within the last 48 hours?
                     var deltaTime = DateTimeOffset.UtcNow - latestPermissionRequestForThisGroup.RequestedOn;
 
-                    if (deltaTime.TotalHours < 48)
+                    if (deltaTime.TotalHours < ConfigurationAccessor.FailedPermissionRequestCooldownHours)
                     {
                         //yes, the user needs to wait until the cool down expires to ask again
                         chatRoom.PostReplyOrThrow(incomingChatMessage, $"Sorry, your latest request for this permission was denied. Please wait ${deltaTime.ToUserFriendlyString()} to request again.");
