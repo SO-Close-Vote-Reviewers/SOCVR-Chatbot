@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using SOCVR.Chatbot.ChatbotActions.Commands.Admin;
 using System.Reflection;
 using SOCVR.Chatbot.ChatbotActions.Commands.Permission;
+using SOCVR.Chatbot.PassiveActions;
 
 namespace SOCVR.Chatbot.ChatRoom
 {
@@ -48,6 +49,13 @@ namespace SOCVR.Chatbot.ChatRoom
             ChatbotAction chatbotActionToRun = null;
 
             EnsureAuthorInDatabase(incomingChatMessage);
+
+            //before checking for active actions, check for passive actions
+            var autoViewRequestsAction = new AutoPostViewRequests();
+            if (autoViewRequestsAction.ShouldActionBeRan(incomingChatMessage))
+            {
+                autoViewRequestsAction.RunAction(incomingChatMessage, chatRoom);
+            }
 
             // Is the message a confirmation to a command suggestion?
             if (yesReply.IsMatch(incomingChatMessage.Content))

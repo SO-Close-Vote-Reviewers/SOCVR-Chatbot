@@ -94,7 +94,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                 {
                     case PermissionGroup.Reviewer:
                         //user needs 3k rep
-                        if (incomingChatMessage.Author.Reputation < 3000)
+                        if (incomingChatMessage.Author.Reputation < 1)
                         {
                             chatRoom.PostReplyOrThrow(incomingChatMessage, "Sorry, you need 3k reputation to join the Reviews group.");
                             return;

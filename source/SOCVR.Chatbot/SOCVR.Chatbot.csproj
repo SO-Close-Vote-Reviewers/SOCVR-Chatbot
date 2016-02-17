@@ -211,6 +211,7 @@
       <DependentUpon>20160201230050_OptInToReviewTracking.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\DatabaseContextModelSnapshot.cs" />
+    <Compile Include="PassiveActions\AutoPostViewRequests.cs" />
     <Compile Include="UserTracking.cs" />
     <Compile Include="CloseQueueStatsAccessor.cs" />
     <Compile Include="Configuration\ConfigurationAccessor.cs" />
