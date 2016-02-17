@@ -22,7 +22,8 @@ namespace SOCVR.Chatbot.Configuration
         public static string StopMessage => GetConfigurationOption<string>("StopMessage");
 
         public static int FailedPermissionRequestCooldownHours => GetConfigurationOption<int>("FailedPermissionRequestCooldownHours");
-                
+
+        public static int RepRequirementToJoinReviewers => GetConfigurationOption<int>("RepRequirementToJoinReviewers");
 
         /// <summary>
         /// Searches for a configuration setting by the given key.
