@@ -4,10 +4,10 @@ RUN apt-get update && apt-get install -y \
  git \
  wget
 
+RUN wget https://dist.nuget.org/win-x86-commandline/v3.3.0/nuget.exe
+
 # copy everything to the /srv folder
 COPY ./ /srv/chatbot/
-
-RUN wget https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
 
 # compile it
 RUN \
