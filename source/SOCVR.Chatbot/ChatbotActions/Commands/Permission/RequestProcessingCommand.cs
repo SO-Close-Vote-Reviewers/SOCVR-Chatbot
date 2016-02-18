@@ -93,7 +93,18 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                             return;
                         }
 
+                        var minDaysInReviewerGroup = ConfigurationAccessor.DaysInReviewersGroupBeforeProcessingRequests;
 
+                        var processingUserJoinedReviewersOn = processingUser
+                            .Permissions
+                            .Single(x => x.PermissionGroup == PermissionGroup.Reviewer)
+                            .JoinedOn;
+
+                        if ((DateTimeOffset.UtcNow - processingUserJoinedReviewersOn).TotalDays < minDaysInReviewerGroup)
+                        {
+                            chatRoom.PostReplyOrThrow(incomingChatMessage, $"You need to be in the Reviewers group for at least {minDaysInReviewerGroup} days before you can process requests for this group.");
+                            return;
+                        }
 
                         break;
                     case PermissionGroup.BotOwner:
