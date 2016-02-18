@@ -116,6 +116,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                 targetUser.Permissions.Add(new UserPermission
                 {
                     PermissionGroup = requestingPermissionGroup.Value,
+                    JoinedOn = DateTimeOffset.UtcNow
                 });
 
                 var pendingRequestsForTargetUserAndGroup = targetUser

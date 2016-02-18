@@ -129,7 +129,8 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                     var newUserPermission = new UserPermission()
                     {
                         PermissionGroup = request.RequestedPermissionGroup,
-                        UserId = request.RequestingUserId
+                        UserId = request.RequestingUserId,
+                        JoinedOn = DateTimeOffset.UtcNow
                     };
                     db.UserPermissions.Add(newUserPermission);
 
