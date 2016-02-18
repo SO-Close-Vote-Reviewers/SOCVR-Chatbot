@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.Entity;
+using SOCVR.Chatbot.Configuration;
 using SOCVR.Chatbot.Database;
 using System;
 using System.Collections.Generic;
@@ -37,7 +38,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
             return matchingPermissionGroup?.EnumVal;
         }
 
-        protected PermissionGroupJoinabilityStatus CanTargetUserJoinPermissionGroup(PermissionGroup permissionGroup, int targetUserId)
+        protected PermissionGroupJoinabilityStatus CanTargetUserJoinPermissionGroup(PermissionGroup permissionGroup, int targetUserId, ChatExchangeDotNet.Room chatRoom)
         {
             using (var db = new DatabaseContext())
             {
@@ -65,21 +66,59 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                     return PermissionGroupJoinabilityStatus.AlreadyInGroup;
                 }
 
+                //now that we have checked the general rules, switch on the specific group
+                //and check any specific restrictions
                 switch (permissionGroup)
                 {
                     case PermissionGroup.Reviewer:
-
-                        break;
+                        return CanUserJoinReviewersGroup(targetUser, chatRoom);
                     case PermissionGroup.BotOwner:
-
-                        break;
+                        return CanUserJoinBotOwnersGroup(targetUser);
+                    default:
+                        throw new Exception("Unknow permission group, unable to determine specific joining restrictions.");
                 }
             }
         }
 
-        private PermissionGroupJoinabilityStatus CanUserJoinReviewersGroup(int targetUserId)
+        protected object CanTargetUserLeavePermissionGroup(PermissionGroup permissionGroup, int targetUserId)
         {
+            throw new NotImplementedException();
+        }
 
+        /// <summary>
+        /// Tells if a user is allowed to add or remove other users from the given permission group.
+        /// </summary>
+        /// <param name="permissionGroup"></param>
+        /// <param name="processingUserId"></param>
+        /// <returns></returns>
+        protected object CanUserModifyMembershipForGroup(PermissionGroup permissionGroup, int processingUserId)
+        {
+            throw new NotImplementedException();
+        }
+
+        private PermissionGroupJoinabilityStatus CanUserJoinReviewersGroup(User targetUser, ChatExchangeDotNet.Room chatRoom)
+        {
+            //check user rep
+            var repRequirement = ConfigurationAccessor.RepRequirementToJoinReviewers;
+            var targetUserRep = chatRoom.GetUser(targetUser.ProfileId).Reputation;
+
+            if (targetUserRep < repRequirement)
+            {
+                return PermissionGroupJoinabilityStatus.Reviewer_NotEnoughRep;
+            }
+
+            return PermissionGroupJoinabilityStatus.CanJoinGroup;
+        }
+
+        private PermissionGroupJoinabilityStatus CanUserJoinBotOwnersGroup(User targetUser)
+        {
+            //if the target user is not in the Reviewer group, reject
+            if (!PermissionGroup.Reviewer.In(targetUser.Permissions.Select(x => x.PermissionGroup)))
+            {
+                return PermissionGroupJoinabilityStatus.BotOwner_NotInReviewerGroup;
+            }
+
+            return PermissionGroupJoinabilityStatus.CanJoinGroup;
         }
 
         protected enum PermissionGroupJoinabilityStatus
@@ -87,6 +126,9 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
             CanJoinGroup,
             AlreadyInGroup,
 
+            Reviewer_NotEnoughRep,
+
+            BotOwner_NotInReviewerGroup,
         }
     }
 }
