@@ -1,5 +1,6 @@
 ﻿using ChatExchangeDotNet;
 using Microsoft.Data.Entity;
+using SOCVR.Chatbot.Configuration;
 using SOCVR.Chatbot.Database;
 using System;
 using System.Collections.Generic;
@@ -54,6 +55,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                 //look up the user who is processing this request.
                 var processingUser = db.Users
                     .Include(x => x.Permissions)
+                    .Include(x => x.ReviewedItems)
                     .SingleOrDefault(x => x.ProfileId == incomingChatMessage.Author.ID);
 
                 //if the user does not exist in the database, or the user does not belong to the group being requested
@@ -67,18 +69,38 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                 switch (request.RequestedPermissionGroup)
                 {
                     case PermissionGroup.Reviewer:
-                        //user needs 3k rep
-                        if (incomingChatMessage.Author.Reputation < 3000)
+                        //check rep requirement if approving
+                        var targetUserRepRequirement = ConfigurationAccessor.RepRequirementToJoinReviewers;
+                        if (RequestValueAfterProcessing() == true && incomingChatMessage.Author.Reputation < targetUserRepRequirement)
                         {
-                            chatRoom.PostReplyOrThrow(incomingChatMessage, "Sorry, you need 3k reputation to join the Reviews group.");
+                            chatRoom.PostReplyOrThrow(incomingChatMessage, $"The target user needs at least {targetUserRepRequirement} rep to join the Reviewer group.");
                             return;
                         }
+
+                        //restrictions for the processing user
+                        var reviewsWindowTotalDays = ConfigurationAccessor.ReviewsTimeFrameDaysBeforeProcessingRequestsAsReviewer;
+
+                        var processingUserReviewsInWindow = processingUser
+                            .ReviewedItems
+                            .Where(x => (DateTimeOffset.UtcNow - x.ReviewedOn).TotalDays < reviewsWindowTotalDays)
+                            .Count();
+
+                        var reviewsRequired = ConfigurationAccessor.ReviewsCompleteBeforeProcessingRequestsAsReviewer;
+
+                        if (processingUserReviewsInWindow < reviewsRequired)
+                        {
+                            chatRoom.PostReplyOrThrow(incomingChatMessage, $"You need to be part of the Reviewer group for {reviewsWindowTotalDays} days and have logged {reviewsRequired} reviews before you can process requests for this group.");
+                            return;
+                        }
+
+
+
                         break;
                     case PermissionGroup.BotOwner:
                         //user needs to be in the Reviews group
-                        if (!PermissionGroup.Reviewer.In(request.RequestingUser.Permissions.Select(x => x.PermissionGroup)))
+                        if (RequestValueAfterProcessing() == true && !PermissionGroup.Reviewer.In(request.RequestingUser.Permissions.Select(x => x.PermissionGroup)))
                         {
-                            chatRoom.PostReplyOrThrow(incomingChatMessage, "You need to be in the Reviews group before you can join the Bot Owners group.");
+                            chatRoom.PostReplyOrThrow(incomingChatMessage, "The target user needs to be in the Reviewer group before they can join the Bot Owners group.");
                             return;
                         }
                         break;
