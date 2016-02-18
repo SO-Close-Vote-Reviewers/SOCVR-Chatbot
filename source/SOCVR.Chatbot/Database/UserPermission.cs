@@ -1,4 +1,6 @@
-﻿namespace SOCVR.Chatbot.Database
+﻿using System;
+
+namespace SOCVR.Chatbot.Database
 {
     internal class UserPermission
     {
@@ -8,6 +10,8 @@
         public int UserId { get; set; }
 
         public PermissionGroup PermissionGroup { get; set; }
+
+        public DateTimeOffset JoinedOn { get; set; }
     }
 
     internal enum PermissionGroup
