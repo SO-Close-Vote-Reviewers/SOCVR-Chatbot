@@ -235,8 +235,6 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
             NotInGroup,
 
             Reviewer_NotInGroupLongEnough,
-
-            Reviewer_NotEnoughRecentReviews,
         }
     }
 }

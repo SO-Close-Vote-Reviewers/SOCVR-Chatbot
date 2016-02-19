@@ -64,9 +64,6 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                         case PermissionGroupModifiableStatus.NotInGroup:
                             chatRoom.PostReplyOrThrow(incomingChatMessage, $"You need to be in the {request.RequestedPermissionGroup} group in order to add people to it.");
                             break;
-                        case PermissionGroupModifiableStatus.Reviewer_NotEnoughRecentReviews:
-                            chatRoom.PostReplyOrThrow(incomingChatMessage, $"You need to have at least {ConfigurationAccessor.ReviewsCompleteBeforeProcessingRequestsAsReviewer} logged within the last {ConfigurationAccessor.ReviewsTimeFrameDaysBeforeProcessingRequestsAsReviewer} days before you can process requests for the Reviewer group.");
-                            break;
                         case PermissionGroupModifiableStatus.Reviewer_NotInGroupLongEnough:
                             chatRoom.PostReplyOrThrow(incomingChatMessage, $"You need to be in the Reviewer group for at least {ConfigurationAccessor.DaysInReviewersGroupBeforeProcessingRequests} days before you can process requests.");
                             break;
