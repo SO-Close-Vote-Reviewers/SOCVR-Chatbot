@@ -74,6 +74,9 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                     db.SaveChanges();
                 }
 
+                //lookup the chat target user
+                var chatTargetUser = chatRoom.GetUser(targetUserId);
+
                 //check restrictions on processing user
                 var processingUserAbilityStatus = CanUserModifyMembershipForGroup(requestingPermissionGroup.Value, processingUser.ProfileId);
 
@@ -101,13 +104,13 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                     switch (canJoinStatus)
                     {
                         case PermissionGroupJoinabilityStatus.AlreadyInGroup:
-                            chatRoom.PostReplyOrThrow(incomingChatMessage, "The target user is already in the requested group. This is most likely a bug. cc @gunr2171.");
+                            chatRoom.PostReplyOrThrow(incomingChatMessage, $"{chatTargetUser.Name} is already in the {requestingPermissionGroup.Value} group.");
                             break;
                         case PermissionGroupJoinabilityStatus.BotOwner_NotInReviewerGroup:
-                            chatRoom.PostReplyOrThrow(incomingChatMessage, "The target user needs to be in the Reviewer group before they can join the Bot Owners group.");
+                            chatRoom.PostReplyOrThrow(incomingChatMessage, $"{chatTargetUser.Name} needs to be in the Reviewer group before they can join the Bot Owners group.");
                             break;
                         case PermissionGroupJoinabilityStatus.Reviewer_NotEnoughRep:
-                            chatRoom.PostReplyOrThrow(incomingChatMessage, $"The target user needs at least {ConfigurationAccessor.RepRequirementToJoinReviewers} rep to join the Reviewer group");
+                            chatRoom.PostReplyOrThrow(incomingChatMessage, $"{chatTargetUser.Name} needs at least {ConfigurationAccessor.RepRequirementToJoinReviewers} rep to join the Reviewer group");
                             break;
                     }
 
@@ -142,9 +145,6 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                 }
 
                 db.SaveChanges();
-
-                //lookup the chat target user
-                var chatTargetUser = chatRoom.GetUser(targetUserId);
 
                 chatRoom.PostReplyOrThrow(incomingChatMessage, $"I've added @{chatTargetUser.GetChatFriendlyUsername()} to the {requestingPermissionGroup} group.");
             }
