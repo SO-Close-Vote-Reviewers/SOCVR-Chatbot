@@ -80,9 +80,27 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
             }
         }
 
-        protected object CanTargetUserLeavePermissionGroup(PermissionGroup permissionGroup, int targetUserId)
+        protected PermissionGroupLeavabilityStatus CanTargetUserLeavePermissionGroup(PermissionGroup permissionGroup, int targetUserId)
         {
-            throw new NotImplementedException();
+            using (var db = new DatabaseContext())
+            {
+                var targetUser = db.Users
+                    .Include(x => x.Permissions)
+                    .Where(x => x.ProfileId == targetUserId)
+                    .Single();
+
+                var userIsInGroup = targetUser.Permissions
+                    .Where(x => x.PermissionGroup == permissionGroup)
+                    .Any();
+
+                if (!userIsInGroup)
+                {
+                    return PermissionGroupLeavabilityStatus.WasNotInGroup;
+                }
+
+                //passed all checks, user can leave group
+                return PermissionGroupLeavabilityStatus.CanLeaveGroup;
+            }
         }
 
         /// <summary>
@@ -91,9 +109,56 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
         /// <param name="permissionGroup"></param>
         /// <param name="processingUserId"></param>
         /// <returns></returns>
-        protected object CanUserModifyMembershipForGroup(PermissionGroup permissionGroup, int processingUserId)
+        protected PermissionGroupModifiableStatus CanUserModifyMembershipForGroup(PermissionGroup permissionGroup, int processingUserId)
         {
-            throw new NotImplementedException();
+            using (var db = new DatabaseContext())
+            {
+                var processingUser = db.Users
+                    .Include(x => x.Permissions)
+                    .Single(x => x.ProfileId == processingUserId);
+
+                //the only general restriction is that you are in the group you are trying to modify
+                if (!permissionGroup.In(processingUser.Permissions.Select(x => x.PermissionGroup)))
+                {
+                    return PermissionGroupModifiableStatus.NotInGroup;
+                }
+
+                //now check rules specific to each group
+                switch (permissionGroup)
+                {
+                    case PermissionGroup.Reviewer:
+                        return CanUserModifyReviewerGroup(permissionGroup, processingUser);
+                    case PermissionGroup.BotOwner:
+                        return CanUserModifyBotOwnersGroup(permissionGroup, processingUser);
+                    default:
+                        throw new Exception("Unknow permission group, unable to determine specific modification restrictions.");
+                }
+            }
+        }
+
+        private PermissionGroupModifiableStatus CanUserModifyReviewerGroup(PermissionGroup permissionGroup, User processingUser)
+        {
+            //user must be in the group for at least X days
+            var joinedGroupAt = processingUser.Permissions
+                .Single(x => x.PermissionGroup == permissionGroup)
+                .JoinedOn;
+
+            var minDaysNeededInGroup = ConfigurationAccessor.DaysInReviewersGroupBeforeProcessingRequests;
+            var deltaDays = (DateTimeOffset.UtcNow - joinedGroupAt).TotalDays;
+
+            if (deltaDays < minDaysNeededInGroup)
+            {
+                return PermissionGroupModifiableStatus.Reviewer_NotInGroupLongEnough;
+            }
+
+            //clear to modify group
+            return PermissionGroupModifiableStatus.CanModifyGroupMembership;
+        }
+
+        private PermissionGroupModifiableStatus CanUserModifyBotOwnersGroup(PermissionGroup permissionGroup, User processingUser)
+        {
+            //there are no specific requirements for this group
+            return PermissionGroupModifiableStatus.CanModifyGroupMembership;
         }
 
         private PermissionGroupJoinabilityStatus CanUserJoinReviewersGroup(User targetUser, ChatExchangeDotNet.Room chatRoom)
@@ -123,12 +188,55 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
 
         protected enum PermissionGroupJoinabilityStatus
         {
+            /// <summary>
+            /// User is free to join the group
+            /// </summary>
             CanJoinGroup,
+
+            /// <summary>
+            /// The user is already group
+            /// </summary>
             AlreadyInGroup,
 
+            /// <summary>
+            /// The user does not have enough rep to join the Reviewer group
+            /// </summary>
             Reviewer_NotEnoughRep,
 
+            /// <summary>
+            /// The user can't join the Bot Owner group because they are not in the Reviewer group
+            /// </summary>
             BotOwner_NotInReviewerGroup,
+        }
+
+        protected enum PermissionGroupLeavabilityStatus
+        {
+            /// <summary>
+            /// The user is free to leave the group
+            /// </summary>
+            CanLeaveGroup,
+
+            /// <summary>
+            /// The user is not in the group
+            /// </summary>
+            WasNotInGroup,
+        }
+
+        protected enum PermissionGroupModifiableStatus
+        {
+            /// <summary>
+            /// User is free to modify the membership of the group
+            /// </summary>
+            CanModifyGroupMembership,
+
+            /// <summary>
+            /// User cannot modify membership of group because they are not in the group,
+            /// </summary>
+            NotInGroup,
+
+            Reviewer_NotInGroupLongEnough,
+
+            Reviewer_NotEnoughRecentReviews,
         }
     }
 }
