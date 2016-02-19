@@ -51,11 +51,25 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                     .Include(x => x.PermissionsRequested)
                     .SingleOrDefault(x => x.ProfileId == incomingChatMessage.Author.ID);
 
-                //is the user already in the group?
-                if (requestingPermissionGroup.Value.In(requestingUser.Permissions.Select(x => x.PermissionGroup)))
+                //check if user can join group
+                var canJoinState = CanTargetUserJoinPermissionGroup(requestingPermissionGroup.Value, requestingUser.ProfileId, chatRoom);
+
+                if (canJoinState != PermissionGroupJoinabilityStatus.CanJoinGroup)
                 {
-                    //the user is already in that group
-                    chatRoom.PostReplyOrThrow(incomingChatMessage, $"You are already in the {rawRequestingPermissionGroup} group.");
+                    switch (canJoinState)
+                    {
+                        case PermissionGroupJoinabilityStatus.AlreadyInGroup:
+                            chatRoom.PostReplyOrThrow(incomingChatMessage, $"You are already in the {rawRequestingPermissionGroup} group.");
+                            break;
+                        case PermissionGroupJoinabilityStatus.BotOwner_NotInReviewerGroup:
+                            chatRoom.PostReplyOrThrow(incomingChatMessage, "You need to be in the Reviews group before you can join the Bot Owners group.");
+                            break;
+                        case PermissionGroupJoinabilityStatus.Reviewer_NotEnoughRep:
+                            var repRequirement = ConfigurationAccessor.RepRequirementToJoinReviewers;
+                            chatRoom.PostReplyOrThrow(incomingChatMessage, $"Sorry, you need at least {repRequirement} reputation to join the Reviews group.");
+                            break;
+                    }
+
                     return;
                 }
 
@@ -88,27 +102,6 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                         chatRoom.PostReplyOrThrow(incomingChatMessage, $"Sorry, your latest request for this permission was denied. Please wait ${deltaTime.ToUserFriendlyString()} to request again.");
                         return;
                     }
-                }
-
-                //check if there are any restrictions to joining the group
-                switch (requestingPermissionGroup.Value)
-                {
-                    case PermissionGroup.Reviewer:
-                        //user needs 3k rep
-                        if (incomingChatMessage.Author.Reputation < 3000)
-                        {
-                            chatRoom.PostReplyOrThrow(incomingChatMessage, "Sorry, you need 3k reputation to join the Reviews group.");
-                            return;
-                        }
-                        break;
-                    case PermissionGroup.BotOwner:
-                        //user needs to be in the Reviews group
-                        if (!PermissionGroup.Reviewer.In(requestingUser.Permissions.Select(x => x.PermissionGroup)))
-                        {
-                            chatRoom.PostReplyOrThrow(incomingChatMessage, "You need to be in the Reviews group before you can join the Bot Owners group.");
-                            return;
-                        }
-                        break;
                 }
 
                 //at this point we are good to make the request

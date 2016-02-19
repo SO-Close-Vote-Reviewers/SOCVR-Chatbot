@@ -210,6 +210,10 @@
     <Compile Include="Migrations\20160201230050_OptInToReviewTracking.designer.cs">
       <DependentUpon>20160201230050_OptInToReviewTracking.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20160218000823_UserPermissionJoinDate.cs" />
+    <Compile Include="Migrations\20160218000823_UserPermissionJoinDate.designer.cs">
+      <DependentUpon>20160218000823_UserPermissionJoinDate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\DatabaseContextModelSnapshot.cs" />
     <Compile Include="PassiveActions\AutoPostViewRequests.cs" />
     <Compile Include="UserTracking.cs" />
