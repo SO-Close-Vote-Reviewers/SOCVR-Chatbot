@@ -75,7 +75,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
 
 
                 //check restrictions on target user
-                if (RequestValueAfterProcessing() == true) //approve, joining group
+                if (RequestValueAfterProcessing()) //approve, joining group
                 {
                     //check if user can join group
                     var canJoinStatus = CanTargetUserJoinPermissionGroup(request.RequestedPermissionGroup, request.RequestingUser.ProfileId, chatRoom);
@@ -108,7 +108,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                 request.Accepted = RequestValueAfterProcessing();
 
                 //if the request is approved
-                if (RequestValueAfterProcessing() == true)
+                if (RequestValueAfterProcessing())
                 {
                     //add to permissions list of requesting user
                     var newUserPermission = new UserPermission()
