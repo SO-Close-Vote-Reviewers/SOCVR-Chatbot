@@ -22,21 +22,21 @@ socvr-chatbot:
   image: socvr/chatbot
   container_name: socvr-chatbot
   environment:
-	DatabaseConnectionString: 'Server=db-container;Port=5432;Database=cv-chatbot2;User Id=chatbot;Password=chatbot;'
-	
+    DatabaseConnectionString: 'Server=db-container;Port=5432;Database=cv-chatbot2;User Id=chatbot;Password=chatbot;'
+    
     LoginEmail: 'email_address'
     LoginPassword: 'email_password'
     ChatRoomUrl: 'url'
-	
+    
     DefaultCompletedTagsPeopleThreshold: 3
     MaxFetchTags: 15
     PingReviewersDaysBackThreshold: 7
     DefaultNextTagCount: 3
-	
-	FailedPermissionRequestCooldownHours: 48
-	ReviewsCompleteBeforeProcessingRequestsAsReviewer: 100
-	ReviewsTimeFrameDaysBeforeProcessingRequestsAsReviewer: 7
-	
+    
+    FailedPermissionRequestCooldownHours: 48
+    ReviewsCompleteBeforeProcessingRequestsAsReviewer: 100
+    ReviewsTimeFrameDaysBeforeProcessingRequestsAsReviewer: 7
+    
     StartUpMessage: 'Hello everyone! (docker example file)'
     StopMessage: 'Goodbye! (docker example file)'
   links:

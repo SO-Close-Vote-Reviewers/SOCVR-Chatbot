@@ -16,7 +16,7 @@ namespace SOCVR.Chatbot
         private static UserTracking watcher;
 
         /// <summary>
-        /// waithandle for shutdown
+        /// wait handle for shutdown
         /// </summary>
         static ManualResetEvent shutdownEvent = new ManualResetEvent(false);
 
@@ -43,7 +43,7 @@ namespace SOCVR.Chatbot
 
                     WriteToConsole("Running wait loop");
 
-                    // wait to get signalled
+                    // wait to get signaled
                     // we do it this way because this is cross-thread
                     shutdownEvent.WaitOne();
                 }
