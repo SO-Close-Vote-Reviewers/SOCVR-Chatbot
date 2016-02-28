@@ -30,6 +30,8 @@ namespace SOCVR.Chatbot.Configuration
         public static int ReviewsCompleteBeforeProcessingRequestsAsReviewer => GetConfigurationOption<int>("ReviewsCompleteBeforeProcessingRequestsAsReviewer");
         public static int ReviewsTimeFrameDaysBeforeProcessingRequestsAsReviewer => GetConfigurationOption<int>("ReviewsTimeFrameDaysBeforeProcessingRequestsAsReviewer");
 
+        public static string InstallationLocation => GetConfigurationOption<string>("InstallationLocation");
+
         /// <summary>
         /// Searches for a configuration setting by the given key.
         /// First search will be environment variables.

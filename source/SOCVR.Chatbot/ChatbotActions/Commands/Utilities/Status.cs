@@ -2,6 +2,7 @@
 using System;
 using System.Reflection;
 using System.Linq;
+using SOCVR.Chatbot.Configuration;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
 {
@@ -28,7 +29,10 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
             var elapsedTime = DateTime.Now - ChatBotStats.LoginDate;
             var sha = ThisAssembly.Git.Sha.Substring(0, 8);
             var branch = ThisAssembly.Git.Branch;
-            var message = $"SOCVR Chatbot {branch} at `{sha}`, running for {elapsedTime.ToUserFriendlyString()} (tracking latency `{avgLat}`ms).";
+
+            var location = ConfigurationAccessor.InstallationLocation;
+
+            var message = $"SOCVR Chatbot, running at {location}, version `{sha}` on {branch}, running for {elapsedTime.ToUserFriendlyString()} (tracking latency `{avgLat}`ms).";
 
             chatRoom.PostMessageOrThrow(message);
         }

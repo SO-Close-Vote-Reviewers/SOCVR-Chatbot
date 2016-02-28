@@ -37,7 +37,9 @@ socvr-chatbot:
     ReviewsCompleteBeforeProcessingRequestsAsReviewer: 100
     ReviewsTimeFrameDaysBeforeProcessingRequestsAsReviewer: 7
     
-    StartUpMessage: 'Hello everyone! (docker example file)'
-    StopMessage: 'Goodbye! (docker example file)'
+    StartUpMessage: 'Hello everyone!'
+    StopMessage: 'Goodbye!'
+    
+    InstallationLocation: 'docker example file'
   links:
     - socvr-chatbot-postgresql:db-container

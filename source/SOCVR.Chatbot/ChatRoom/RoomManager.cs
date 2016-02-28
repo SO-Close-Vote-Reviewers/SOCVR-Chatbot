@@ -9,7 +9,7 @@ namespace SOCVR.Chatbot.ChatRoom
     /// <summary>
     /// This class joins and keeps track of the chat room.
     /// </summary>
-    public class RoomManager:IDisposable
+    public class RoomManager : IDisposable
     {
         private Room cvChatRoom;
         private Client chatClient;
@@ -78,7 +78,8 @@ namespace SOCVR.Chatbot.ChatRoom
             if (!ConfigurationAccessor.StartUpMessage.IsNullOrWhiteSpace())
             {
                 // This is the one of the few instances to not using the "OrThrow" method.
-                var startMessage = cvChatRoom.PostMessage(ConfigurationAccessor.StartUpMessage);
+                var startupMessageText = $"{ConfigurationAccessor.StartUpMessage} ({ConfigurationAccessor.InstallationLocation})";
+                var startMessage = cvChatRoom.PostMessage(startupMessageText);
 
                 if (startMessage == null)
                 {
@@ -91,7 +92,10 @@ namespace SOCVR.Chatbot.ChatRoom
         {
             // If there is a stop message, say it.
             if (!ConfigurationAccessor.StopMessage.IsNullOrWhiteSpace())
-                cvChatRoom.PostMessage(ConfigurationAccessor.StopMessage);
+            {
+                var shutdownMessage = $"{ConfigurationAccessor.StopMessage} ({ConfigurationAccessor.InstallationLocation})";
+                cvChatRoom.PostMessage(shutdownMessage);
+            }
 
             cvChatRoom.Leave();
         }
