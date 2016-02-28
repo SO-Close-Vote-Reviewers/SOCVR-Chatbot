@@ -534,9 +534,7 @@ If a user does not have the correct permissions to run a command the bot will re
 
 > Sorry, you are not in the [name of group] permission group. Do you want to request access? (reply with "yes")
 
-A permission request will be inserted into the request queue if either:
-* The user replies "yes" (or limited variations) to the bot's message.
-* The user's first message proceeding the bot's message, posted less than 1 minute after the bot's message, is "yes" (or limited variations).
+A permission request will be inserted into the request queue the user replies "yes" (or limited variations) to the bot's message.
 
 The above is the standard reply, assuming there are no issues with the user creating a request. The following are alternate replies the bot can make depending on if the user can make a request.
 

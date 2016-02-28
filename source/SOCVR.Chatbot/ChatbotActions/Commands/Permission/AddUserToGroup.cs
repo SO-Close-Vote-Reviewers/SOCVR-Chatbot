@@ -4,6 +4,7 @@ using System.Linq;
 using ChatExchangeDotNet;
 using Microsoft.Data.Entity;
 using TCL.Extensions;
+using SOCVR.Chatbot.Configuration;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
 {
@@ -47,18 +48,10 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
 
             using (var db = new DatabaseContext())
             {
-                //first, lookup the person running the command
+                //lookup the processing user
                 var processingUser = db.Users
                     .Include(x => x.Permissions)
                     .Single(x => x.ProfileId == incomingChatMessage.Author.ID);
-
-                //is the processing user in the correct group?
-                if (!requestingPermissionGroup.Value.In(processingUser.Permissions.Select(x => x.PermissionGroup)))
-                {
-                    //the person running the command in not in the group themselves, they can't add new members to it
-                    chatRoom.PostReplyOrThrow(incomingChatMessage, $"You need to be in the {requestingPermissionGroup.ToString()} group in order to add people to it.");
-                    return;
-                }
 
                 //lookup the target user
                 var targetUser = db.Users
@@ -81,38 +74,52 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                 //lookup the chat target user
                 var chatTargetUser = chatRoom.GetUser(targetUserId);
 
-                //does the target user already belong to the requested group?
-                if (requestingPermissionGroup.Value.In(targetUser.Permissions.Select(x => x.PermissionGroup)))
+                //check restrictions on processing user
+                var processingUserAbilityStatus = CanUserModifyMembershipForGroup(requestingPermissionGroup.Value, processingUser.ProfileId);
+
+                if (processingUserAbilityStatus != PermissionGroupModifiableStatus.CanModifyGroupMembership)
                 {
-                    chatRoom.PostReplyOrThrow(incomingChatMessage, $"{chatTargetUser.Name} is already in the {requestingPermissionGroup} group.");
+                    switch (processingUserAbilityStatus)
+                    {
+                        case PermissionGroupModifiableStatus.NotInGroup:
+                            chatRoom.PostReplyOrThrow(incomingChatMessage, $"You need to be in the {requestingPermissionGroup.Value} group in order to add people to it.");
+                            break;
+                        case PermissionGroupModifiableStatus.Reviewer_NotInGroupLongEnough:
+                            chatRoom.PostReplyOrThrow(incomingChatMessage, $"You need to be in the Reviewer group for at least {ConfigurationAccessor.DaysInReviewersGroupBeforeProcessingRequests} days before you can process requests.");
+                            break;
+                    }
+
                     return;
                 }
+                //else, there was no problems with using this processing user
 
-                //check restrictions
-                switch (requestingPermissionGroup.Value)
+                //check restrictions on target user
+                var canJoinStatus = CanTargetUserJoinPermissionGroup(requestingPermissionGroup.Value, targetUserId, chatRoom);
+
+                if (canJoinStatus != PermissionGroupJoinabilityStatus.CanJoinGroup)
                 {
-                    case PermissionGroup.Reviewer:
-                        //user needs 3k rep
-                        if (chatTargetUser.Reputation < 3000)
-                        {
-                            chatRoom.PostReplyOrThrow(incomingChatMessage, "The target user need 3k reputation to join the Reviewers group.");
-                            return;
-                        }
-                        break;
-                    case PermissionGroup.BotOwner:
-                        //user needs to be in the Reviews group
-                        if (!PermissionGroup.Reviewer.In(targetUser.Permissions.Select(x => x.PermissionGroup)))
-                        {
-                            chatRoom.PostReplyOrThrow(incomingChatMessage, "The target user needs to be in the Reviewers group before they can join the Bot Owners group.");
-                            return;
-                        }
-                        break;
+                    switch (canJoinStatus)
+                    {
+                        case PermissionGroupJoinabilityStatus.AlreadyInGroup:
+                            chatRoom.PostReplyOrThrow(incomingChatMessage, $"{chatTargetUser.Name} is already in the {requestingPermissionGroup.Value} group.");
+                            break;
+                        case PermissionGroupJoinabilityStatus.BotOwner_NotInReviewerGroup:
+                            chatRoom.PostReplyOrThrow(incomingChatMessage, $"{chatTargetUser.Name} needs to be in the Reviewer group before they can join the Bot Owners group.");
+                            break;
+                        case PermissionGroupJoinabilityStatus.Reviewer_NotEnoughRep:
+                            chatRoom.PostReplyOrThrow(incomingChatMessage, $"{chatTargetUser.Name} needs at least {ConfigurationAccessor.RepRequirementToJoinReviewers} rep to join the Reviewer group");
+                            break;
+                    }
+
+                    return;
                 }
+                //else, user can join group, continue on
 
                 //passed all checked, add the user to the group and approve any pending requests for that user/group
                 targetUser.Permissions.Add(new UserPermission
                 {
                     PermissionGroup = requestingPermissionGroup.Value,
+                    JoinedOn = DateTimeOffset.UtcNow
                 });
 
                 var pendingRequestsForTargetUserAndGroup = targetUser

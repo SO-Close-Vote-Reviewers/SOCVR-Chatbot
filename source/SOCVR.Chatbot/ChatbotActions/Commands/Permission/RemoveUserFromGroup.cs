@@ -3,6 +3,7 @@ using System.Linq;
 using ChatExchangeDotNet;
 using TCL.Extensions;
 using Microsoft.Data.Entity;
+using SOCVR.Chatbot.Configuration;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
 {
@@ -51,14 +52,6 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                     .Include(x => x.Permissions)
                     .Single(x => x.ProfileId == incomingChatMessage.Author.ID);
 
-                //is the processing user in the correct group?
-                if (!indicatedPermissionGroup.Value.In(processingUser.Permissions.Select(x => x.PermissionGroup)))
-                {
-                    //the person running the command in not in the group themselves, they can't add new members to it
-                    chatRoom.PostReplyOrThrow(incomingChatMessage, $"You need to be in the {indicatedPermissionGroup.ToString()} group in order to remove people from it.");
-                    return;
-                }
-
                 //lookup the target user
                 var targetUser = db.Users
                     .Include(x => x.Permissions)
@@ -80,14 +73,40 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                 //lookup the chat target user
                 var chatTargetUser = chatRoom.GetUser(targetUserId);
 
-                //if the target user is not in the indicated group
-                if (!indicatedPermissionGroup.Value.In(targetUser.Permissions.Select(x => x.PermissionGroup)))
+                //check restrictions on processing user
+                var processingUserAbilityStatus = CanUserModifyMembershipForGroup(indicatedPermissionGroup.Value, processingUser.ProfileId);
+
+                if (processingUserAbilityStatus != PermissionGroupModifiableStatus.CanModifyGroupMembership)
                 {
-                    chatRoom.PostReplyOrThrow(incomingChatMessage, $"{chatTargetUser.Name} is not in the {indicatedPermissionGroup} group.");
+                    switch (processingUserAbilityStatus)
+                    {
+                        case PermissionGroupModifiableStatus.NotInGroup:
+                            chatRoom.PostReplyOrThrow(incomingChatMessage, $"You need to be in the {indicatedPermissionGroup.Value} group in order to add people to it.");
+                            break;
+                        case PermissionGroupModifiableStatus.Reviewer_NotInGroupLongEnough:
+                            chatRoom.PostReplyOrThrow(incomingChatMessage, $"You need to be in the Reviewer group for at least {ConfigurationAccessor.DaysInReviewersGroupBeforeProcessingRequests} days before you can process requests.");
+                            break;
+                    }
+
                     return;
                 }
+                //else, there was no problems with using this processing user
 
-                //don't need to check restrictions or requested permissions
+                //check restrictions on target user
+                var canJoinStatus = CanTargetUserLeavePermissionGroup(indicatedPermissionGroup.Value, targetUserId);
+
+                if (canJoinStatus != PermissionGroupLeavabilityStatus.CanLeaveGroup)
+                {
+                    switch (canJoinStatus)
+                    {
+                        case PermissionGroupLeavabilityStatus.WasNotInGroup:
+                            chatRoom.PostReplyOrThrow(incomingChatMessage, $"{chatTargetUser.Name} is not in the {indicatedPermissionGroup.Value} group.");
+                            break;
+                    }
+
+                    return;
+                }
+                //else, user can leave group, continue on
 
                 //remove the target user from the group
                 var permissionToRemove = targetUser.Permissions.Single(x => x.PermissionGroup == indicatedPermissionGroup);

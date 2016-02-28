@@ -258,6 +258,16 @@ namespace SOCVR.Chatbot
             {
                 db.EnsureUserExists(res.UserID);
 
+                var reviewAlreadyExists = db.ReviewedItems
+                    .Where(x => x.ReviewId == rev.ID)
+                    .Where(x => x.ReviewerId == res.UserID)
+                    .Any();
+
+                if (reviewAlreadyExists)
+                {
+                    return;
+                }
+
                 db.ReviewedItems.Add(new UserReviewedItem
                 {
                     ActionTaken = (ReviewItemAction)(int)res.Action,
