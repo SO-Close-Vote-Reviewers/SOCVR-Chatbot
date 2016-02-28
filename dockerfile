@@ -6,6 +6,8 @@ RUN apt-get update && apt-get install -y \
 
 RUN wget https://dist.nuget.org/win-x86-commandline/v3.3.0/nuget.exe
 
+ENV MONO_THREADS_PER_CPU 2000
+
 # copy everything to the /srv folder
 COPY ./ /srv/chatbot/
 
