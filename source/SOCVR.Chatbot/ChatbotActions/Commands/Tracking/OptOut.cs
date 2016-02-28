@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ChatExchangeDotNet;
-using SOCVR.Chatbot.Database;
+﻿using SOCVR.Chatbot.Database;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands.Tracking
 {

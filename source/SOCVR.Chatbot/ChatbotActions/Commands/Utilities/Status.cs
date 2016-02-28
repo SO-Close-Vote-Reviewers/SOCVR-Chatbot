@@ -22,15 +22,13 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
 
         public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
-            var type = typeof(Program);
-            var info = type.GetField("watcher", BindingFlags.NonPublic | BindingFlags.Static);
-            var tracker = (UserTracking)info.GetValue(null);
-            var avgLat = tracker.WatchedUsers.Values.Average(x => x.DetectionLatency.TotalMilliseconds);
+            var tracker = (UserTracking)typeof(Program).GetField("watcher", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+            var avgLat = Math.Round(tracker.WatchedUsers.Values.Average(x => x.DetectionLatency.TotalMilliseconds));
 
             var elapsedTime = DateTime.Now - ChatBotStats.LoginDate;
             var sha = ThisAssembly.Git.Sha.Substring(0, 8);
             var branch = ThisAssembly.Git.Branch;
-            var message = $"SOCVR Chatbot {branch} at `{sha}`, running for {elapsedTime.ToUserFriendlyString()} (tracking latency {avgLat}ms).";
+            var message = $"SOCVR Chatbot {branch} at `{sha}`, running for {elapsedTime.ToUserFriendlyString()} (tracking latency `{avgLat}`ms).";
 
             chatRoom.PostMessageOrThrow(message);
         }

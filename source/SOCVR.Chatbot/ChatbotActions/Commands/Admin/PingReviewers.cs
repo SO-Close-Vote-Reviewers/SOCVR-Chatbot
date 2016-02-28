@@ -3,7 +3,6 @@ using System.Linq;
 using ChatExchangeDotNet;
 using SOCVR.Chatbot.Configuration;
 using SOCVR.Chatbot.Database;
-using Microsoft.Data.Entity;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands.Admin
 {

@@ -1,5 +1,4 @@
-﻿using System;
-using SOCVR.Chatbot.Database;
+﻿using SOCVR.Chatbot.Database;
 using ChatExchangeDotNet;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission

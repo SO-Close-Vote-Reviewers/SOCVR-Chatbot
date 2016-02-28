@@ -1,8 +1,6 @@
 ﻿using Microsoft.Data.Entity;
 using SOCVR.Chatbot.Configuration;
-using System;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace SOCVR.Chatbot.Database
 {

@@ -3,7 +3,6 @@ using System.Linq;
 using ChatExchangeDotNet;
 using TCL.Extensions;
 using SOCVR.Chatbot.ChatbotActions;
-using SOCVR.Chatbot.ChatbotActions.Commands;
 using SOCVR.Chatbot.Database;
 using Microsoft.Data.Entity;
 using CVChatbot.Bot;
@@ -11,7 +10,6 @@ using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using SOCVR.Chatbot.ChatbotActions.Commands.Admin;
-using System.Reflection;
 using SOCVR.Chatbot.ChatbotActions.Commands.Permission;
 using SOCVR.Chatbot.PassiveActions;
 

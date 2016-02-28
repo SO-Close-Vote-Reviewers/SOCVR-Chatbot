@@ -2,10 +2,7 @@
 using Microsoft.Data.Entity;
 using SOCVR.Chatbot.Database;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TCL.Extensions;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
