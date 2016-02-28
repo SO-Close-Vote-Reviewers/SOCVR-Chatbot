@@ -1,12 +1,25 @@
 {
-  "LoginEmail": "emailaddress",
-  "LoginPassword": "emailpassword",
-  "DatabaseConnectionString": "Server=!!server!!;Port=5432;Database=!!database!!;User Id=!!user!!;Password=!!password!!;",
-  "ChatRoomUrl": "chaturl",
+  "LoginEmail": "login email",
+  "LoginPassword": "login password",
+  "DatabaseConnectionString": "Server=SERVERNAME;Port=5432;Database=DATABASENAME;User Id=USERNAME;Password=PASSWORD;",
+  "ChatRoomUrl": "chat room url",
+  
   "DefaultCompletedTagsPeopleThreshold": 3,
   "MaxFetchTags": 15,
   "PingReviewersDaysBackThreshold": 7,
   "DefaultNextTagCount": 3,
-  "StartUpMessage": "Hello everyone! (sample config)",
-  "StopMessage": "Shutting down. (sample config)"
+  
+  "StartUpMessage": "Hello everyone!",
+  "StopMessage": "Shutting down.",
+  
+  "FailedPermissionRequestCooldownHours": 3,
+  
+  "RepRequirementToJoinReviewers": 3000,
+  
+  "DaysInReviewersGroupBeforeProcessingRequests": 1,
+  
+  "ReviewsCompleteBeforeProcessingRequestsAsReviewer": 0,
+  "ReviewsTimeFrameDaysBeforeProcessingRequestsAsReviewer": 0,
+  
+  "InstallationLocation": "sample json config file"
 }
