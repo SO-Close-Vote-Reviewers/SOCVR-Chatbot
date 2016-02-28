@@ -33,12 +33,16 @@ socvr-chatbot:
     PingReviewersDaysBackThreshold: 7
     DefaultNextTagCount: 3
     
-    FailedPermissionRequestCooldownHours: 48
-    ReviewsCompleteBeforeProcessingRequestsAsReviewer: 100
-    ReviewsTimeFrameDaysBeforeProcessingRequestsAsReviewer: 7
-    
     StartUpMessage: 'Hello everyone!'
     StopMessage: 'Goodbye!'
+    
+    FailedPermissionRequestCooldownHours: 48
+    
+    RepRequirementToJoinReviewers: 3000
+    DaysInReviewersGroupBeforeProcessingRequests: 1
+    
+    ReviewsCompleteBeforeProcessingRequestsAsReviewer: 100
+    ReviewsTimeFrameDaysBeforeProcessingRequestsAsReviewer: 7
     
     InstallationLocation: 'docker example file'
   links:
