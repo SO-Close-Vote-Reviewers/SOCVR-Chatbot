@@ -68,6 +68,7 @@ namespace SOCVR.Chatbot
                         //create the database if it does not exist and push and new migrations to it
                         db.Database.Migrate();
                         dbSetUp = true;
+                        WriteToConsole("Connected to database");
                     }
                     catch (SocketException ex)
                     {
