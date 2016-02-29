@@ -13,7 +13,9 @@ namespace SOCVR.Chatbot
     static class Program
     {
         private static RoomManager mng;
-        private static UserTracking watcher;
+#pragma warning disable 0414
+        private static UserTracking watcher; // Accessed by reflection.
+#pragma warning restore 0414
 
         /// <summary>
         /// wait handle for shutdown
