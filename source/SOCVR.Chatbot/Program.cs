@@ -32,10 +32,10 @@ namespace SOCVR.Chatbot
                 mng.ShutdownOrderGiven += mng_ShutdownOrderGiven;
                 mng.InformationMessageBroadcasted += mng_InformationMessageBroadcasted;
 
+                InitializeDatbase();
+
                 WriteToConsole("Joining room");
                 mng.JoinRoom();
-
-                InitializeDatbase();
 
                 WriteToConsole("Starting user tracker");
                 var rm = mng.CvChatRoom;
