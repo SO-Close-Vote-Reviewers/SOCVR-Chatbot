@@ -67,7 +67,10 @@ namespace SOCVR.Chatbot.ChatRoom
             ChatBotStats.LoginDate = DateTime.Now;
             cvChatRoom.StripMention = true;
             cvChatRoom.InitialisePrimaryContentOnly = true;
+        }
 
+        public void ConnectEventDelegates()
+        {
             cvChatRoom.EventManager.ConnectListener(EventType.MessagePosted, new Action<Message>(cvChatRoom_NewMessage));
             cvChatRoom.EventManager.ConnectListener(EventType.MessageEdited, new Action<Message>(cvChatRoom_NewMessage));
         }
