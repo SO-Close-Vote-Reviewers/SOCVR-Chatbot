@@ -29,10 +29,10 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
             var elapsedTime = DateTime.Now - ChatBotStats.LoginDate;
             var sha = ThisAssembly.Git.Sha.Substring(0, 8);
             var branch = ThisAssembly.Git.Branch;
-
             var location = ConfigurationAccessor.InstallationLocation;
+            var commitUrl = $"https://github.com/SO-Close-Vote-Reviewers/SOCVR-Chatbot/commit/{ThisAssembly.Git.Sha}";
 
-            var message = $"SOCVR Chatbot, running at {location}, version `{sha}` on {branch}, running for {elapsedTime.ToUserFriendlyString()} (tracking latency `{avgLat}`ms).";
+            var message = $"SOCVR Chatbot, running at {location}, version [`{sha}`]({commitUrl}) on {branch}, running for {elapsedTime.ToUserFriendlyString()} (tracking latency `{avgLat}`ms).";
 
             chatRoom.PostMessageOrThrow(message);
         }
