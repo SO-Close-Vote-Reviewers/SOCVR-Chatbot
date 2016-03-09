@@ -544,7 +544,7 @@ If the user tries to run a command where they do not have permission to do so, a
 
 If the user tries to run a command where they do not have permission to do so, the latest request for that permission has been denied, and that denial was within the last 48 hours, then the bot will ignore the message. Once 48 hours has ellapsed, the bot will allow them to ask for permission again.
 
-*Note, there should not be a need to increase the amount of time a reject will encure.*
+*Note, there should not be a need to increase the amount of time a reject will incur.*
 
 There is a already a "kick" and "ban" system in chat which which room owners should use if it gets to this point.
 If the user tries to run a Reviewers command where they do not have permission to do so, and the user has less than 3000 reputation, the bot will respond with:
