@@ -57,14 +57,22 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
                 chatRoom.PostReplyOrThrow(incomingChatMessage,
                     $"Today, {usersWhoHaveReviewedToday.Count} {phrase_memberhas} reviewed a total of {totalReviewedItems} {phrase_item}.");
 
-                var dataTable = usersWhoHaveReviewedToday.ToStringTable(
-                    new[]
+                var dataTable = usersWhoHaveReviewedToday
+                    .Select(x => new
                     {
-                        "User",
-                        "Review Items Today"
-                    },
-                    x => chatRoom.GetUser(x.ReviewerProfileId).Name,
-                    x => x.ReviewCount);
+                        ReviewCount = x.ReviewCount,
+                        ReviewerName = chatRoom.GetUser(x.ReviewerProfileId).Name
+                    })
+                    .OrderByDescending(x => x.ReviewCount)
+                    .ThenBy(x => x.ReviewerName)
+                    .ToStringTable(
+                        new[]
+                        {
+                            "User",
+                            "Review Items Today"
+                        },
+                        x => x.ReviewerName,
+                        x => x.ReviewCount);
 
                 chatRoom.PostMessageOrThrow(dataTable);
             }
