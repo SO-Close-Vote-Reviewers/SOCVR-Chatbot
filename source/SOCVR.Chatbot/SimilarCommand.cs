@@ -133,12 +133,13 @@ namespace CVChatbot.Bot
                 return act.ActionUsage;
             }
 
-            var curCmdOptsInd = -1;
+            var curCmdOptsInd = 0;
             for (var i = 0; i < msgWords.Length; i++)
             {
                 if (ignoreWords.Contains(i))
                 {
-                    curCmdOptsInd++;
+                    if (ignoreWords[0] != i) curCmdOptsInd++;
+
                     continue;
                 }
                 cmdOpts[curCmdOptsInd].Add(msgWords[i]);
@@ -151,6 +152,12 @@ namespace CVChatbot.Bot
             var cmdOptI = 0;
             foreach (Match m in ms)
             {
+                if (cmdOptI >= cmdOpts.Count)
+                {
+                    cmdTxt = cmdOptionsReg.Replace(cmdTxt, "");
+                    break;
+                }
+
                 var localDiff = 0;
                 cmdTxt = cmdTxt.Remove(m.Index + globalDiff, m.Length);
                 foreach (var opt in cmdOpts[cmdOptI])
@@ -162,7 +169,7 @@ namespace CVChatbot.Bot
                 cmdOptI++;
             }
 
-            return  cmdTxt.Replace("  ", " ").Trim();
+            return cmdTxt.Replace("  ", " ").Trim();
         }
 
         private static int Calculate(string x, string y, int threshold)
