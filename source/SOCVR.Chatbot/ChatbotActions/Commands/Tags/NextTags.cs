@@ -19,7 +19,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Tags
 
         public override bool UserMustBeInAnyPermissionGroupToRun => true;
 
-        protected override string RegexMatchingPattern => @"^next(?: (\d+))? tags$";
+        protected override string RegexMatchingPattern => @"^next(?: (\d{1,9}))? tags$";
 
         public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {

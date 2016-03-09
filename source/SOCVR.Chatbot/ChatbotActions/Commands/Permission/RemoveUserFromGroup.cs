@@ -19,7 +19,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
 
         public override bool UserMustBeInAnyPermissionGroupToRun => true;
 
-        protected override string RegexMatchingPattern => @"^remove (\d+) from ([\w ]+)$";
+        protected override string RegexMatchingPattern => @"^remove (\d{1,9}) from ([\w ]+)$";
 
         public override void RunAction(Message incomingChatMessage, Room chatRoom)
         {

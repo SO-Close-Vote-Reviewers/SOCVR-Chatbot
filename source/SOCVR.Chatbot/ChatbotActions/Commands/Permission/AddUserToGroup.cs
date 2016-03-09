@@ -20,7 +20,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
 
         public override bool UserMustBeInAnyPermissionGroupToRun => true;
 
-        protected override string RegexMatchingPattern => @"^add (\d+) to ([\w ]+)$";
+        protected override string RegexMatchingPattern => @"^add (\d{1,9}) to ([\w ]+)$";
 
         public override void RunAction(Message incomingChatMessage, Room chatRoom)
         {

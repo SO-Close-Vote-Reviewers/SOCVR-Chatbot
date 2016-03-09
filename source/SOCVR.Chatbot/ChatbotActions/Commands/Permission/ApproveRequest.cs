@@ -15,7 +15,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
 
         public override bool UserMustBeInAnyPermissionGroupToRun => true;
 
-        protected override string RegexMatchingPattern => @"^approve request (\d+)$";
+        protected override string RegexMatchingPattern => @"^approve request (\d{1,9})$";
 
         protected override string GetProcessSuccessfulMessage(PermissionRequest request, Room chatRoom)
         {
