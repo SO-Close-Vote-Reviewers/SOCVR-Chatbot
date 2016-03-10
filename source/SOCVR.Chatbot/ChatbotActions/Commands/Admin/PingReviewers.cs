@@ -45,7 +45,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Admin
                     .ToList();
 
                 var pingableProfileIds = (from profileId in allProfileIds
-                                          join pingableUser in chatRoom.GetPingableUsers() on profileId equals pingableUser.ID
+                                          join pingableUser in chatRoom.PingableUsers on profileId equals pingableUser.ID
                                           select profileId)
                                          .ToList();
 

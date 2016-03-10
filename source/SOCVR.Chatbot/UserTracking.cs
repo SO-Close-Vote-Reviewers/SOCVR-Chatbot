@@ -169,7 +169,7 @@ namespace SOCVR.Chatbot
         {
             var msg = new MessageBuilder();
 
-            if (room.GetCurrentUsers().Any(x => x.ID == user.ID))
+            if (room.CurrentUsers.Any(x => x.ID == user.ID))
             {
                 msg.AppendPing(room.GetUser(user.ID));
                 msg.AppendText("I've noticed you've started reviewing! I'll update your session record.");
@@ -185,7 +185,7 @@ namespace SOCVR.Chatbot
         private void HandleReviewingCompleted(User user, HashSet<ReviewItem> reviews)
         {
             var revCount = user.CompletedReviewsCount;
-            var userInRoom = room.GetCurrentUsers().Any(x => x.ID == user.ID);
+            var userInRoom = room.CurrentUsers.Any(x => x.ID == user.ID);
             var chatUser = room.GetUser(user.ID);
             var shortName = chatUser.GetChatFriendlyUsername();
             var msg = new MessageBuilder();
