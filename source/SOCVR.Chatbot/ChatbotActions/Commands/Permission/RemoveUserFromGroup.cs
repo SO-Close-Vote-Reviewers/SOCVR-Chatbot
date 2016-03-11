@@ -29,6 +29,12 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                 .Value
                 .Parse<int>();
 
+            if (!ChatExchangeDotNet.User.Exists(chatRoom.Meta, targetUserId))
+            {
+                chatRoom.PostReplyOrThrow(incomingChatMessage, "Sorry, I couldn't find a user with that ID.");
+                return;
+            }
+
             //get the permission group from the chat message
             var rawRequestingPermissionGroup = GetRegexMatchingObject()
                 .Match(incomingChatMessage.Content)

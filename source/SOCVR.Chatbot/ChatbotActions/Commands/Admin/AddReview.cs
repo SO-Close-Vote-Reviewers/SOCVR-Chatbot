@@ -34,6 +34,12 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Admin
                     .Value
                     .Parse<int>();
 
+                if (!ChatExchangeDotNet.User.Exists(chatRoom.Meta, reviewerId))
+                {
+                    chatRoom.PostReplyOrThrow(incomingChatMessage, "Sorry, I couldn't find a user with that ID.");
+                    return;
+                }
+
                 db.EnsureUserExists(reviewerId);
 
                 var parsedReviewItem = UserTracking.GetUserReviewedItem(reviewItemId, reviewerId);
