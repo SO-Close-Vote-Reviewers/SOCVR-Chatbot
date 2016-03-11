@@ -82,9 +82,9 @@ namespace SOCVR.Chatbot.ChatRoom
             {
                 // This is the one of the few instances to not using the "OrThrow" method.
                 var startupMessageText = $"{ConfigurationAccessor.StartUpMessage} ({ConfigurationAccessor.InstallationLocation})";
-                var startMessage = cvChatRoom.PostMessage(startupMessageText);
+                var success = cvChatRoom.PostMessageLight(startupMessageText);
 
-                if (startMessage == null)
+                if (!success)
                 {
                     throw new InvalidOperationException("Unable to post start up message to room.");
                 }
@@ -97,7 +97,7 @@ namespace SOCVR.Chatbot.ChatRoom
             if (!ConfigurationAccessor.StopMessage.IsNullOrWhiteSpace())
             {
                 var shutdownMessage = $"{ConfigurationAccessor.StopMessage} ({ConfigurationAccessor.InstallationLocation})";
-                cvChatRoom.PostMessage(shutdownMessage);
+                cvChatRoom.PostMessageLight(shutdownMessage);
             }
 
             cvChatRoom.Leave();
