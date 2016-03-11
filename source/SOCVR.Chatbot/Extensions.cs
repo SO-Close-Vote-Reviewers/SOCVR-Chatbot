@@ -88,13 +88,19 @@ namespace SOCVR.Chatbot
         }
 
         /// <summary>
-        /// Attempts to returns a more "user friendly" variation of a user's name.
+        /// Returns a more "user friendly" variation of a user's name.
         /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
         public static string GetChatFriendlyUsername(this User user)
         {
-            var ms = Regex.Matches(user.Name, @"\p{Lu}*\p{Ll}*");
+            return user.Name.GetChatFriendlyUsername();
+        }
+
+        /// <summary>
+        /// Returns a more "user friendly" variation of a user's name.
+        /// </summary>
+        public static string GetChatFriendlyUsername(this string username)
+        {
+            var ms = Regex.Matches(username, @"\p{Lu}*\p{Ll}*");
             var matches = new List<string>();
             var name = "";
 
