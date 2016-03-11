@@ -23,7 +23,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
         {
             using (var db = new DatabaseContext())
             {
-                var usersInGroups = db.UserPermissions
+                var permissionGroups = db.UserPermissions
                     .Include(x => x.User)
                     .GroupBy(x => x.PermissionGroup)
                     .OrderBy(x => x.Key)
@@ -31,14 +31,22 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
 
                 var outputMessageBuilder = new StringBuilder();
 
-                foreach (var permissionGroup in usersInGroups)
+                foreach (var permissionGroup in permissionGroups)
                 {
                     outputMessageBuilder.AppendLine("    " + permissionGroup.Key.ToString());
 
-                    foreach (var user in permissionGroup.Select(x => x.User))
+                    var usersInGroup = permissionGroup
+                        .Select(x => x.User)
+                        .Select(x => new
+                        {
+                            DisplayName = chatRoom.GetUser(x.ProfileId).Name,
+                            ProfileId = x.ProfileId
+                        })
+                        .OrderBy(x => x.DisplayName);
+
+                    foreach (var user in usersInGroup)
                     {
-                        var displayName = chatRoom.GetUser(user.ProfileId).Name;
-                        outputMessageBuilder.AppendLine($"        {displayName} ({user.ProfileId})");
+                        outputMessageBuilder.AppendLine($"        {user.DisplayName} ({user.ProfileId})");
                     }
 
                     outputMessageBuilder.AppendLine("    ");
