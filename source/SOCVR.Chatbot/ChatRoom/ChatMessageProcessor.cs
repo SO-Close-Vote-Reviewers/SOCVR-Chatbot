@@ -150,7 +150,7 @@ namespace SOCVR.Chatbot.ChatRoom
                     {
                         //the command required a specific group which the user was not a part of
                         chatRoom.PostReplyOrThrow(incomingChatMessage,
-                            $"Sorry, you are not in the {chatbotActionToRun.RequiredPermissionGroup.ToString()} permission group. Do you want to request access? (reply with 'yes')");
+                            $"Sorry, you are not in the {chatbotActionToRun.RequiredPermissionGroup} permission group. You can request access by running `request permission to {chatbotActionToRun.RequiredPermissionGroup}`.");
                     }
                     else
                     {
@@ -316,3 +316,4 @@ namespace SOCVR.Chatbot.ChatRoom
         }
     }
 }
+
