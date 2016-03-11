@@ -37,7 +37,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
                 var audits = reviews.Count(x => x.AuditPassed != null);
                 if (audits > 0)
                 {
-                    msg.AppendText($" ({audits} of which {(audits > 1 ? "were audits" : "was an audit")})");
+                    msg.AppendText($" (of which {audits} {(audits > 1 ? "were audits" : "was an audit")})");
                 }
 
                 msg.AppendText(". ");
