@@ -63,7 +63,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                             break;
                         case PermissionGroupJoinabilityStatus.Reviewer_NotEnoughRep:
                             var repRequirement = ConfigurationAccessor.RepRequirementToJoinReviewers;
-                            chatRoom.PostReplyOrThrow(incomingChatMessage, $"Sorry, you need at least {repRequirement} reputation to join the Review group.");
+                            chatRoom.PostReplyOrThrow(incomingChatMessage, $"Sorry, you need at least {repRequirement} reputation to join the Reviewer group.");
                             break;
                     }
 
