@@ -167,12 +167,8 @@ namespace SOCVR.Chatbot
         /// <summary>
         /// Constructs a user-friendly string for this TimeSpan instance.
         /// </summary>
-        /// <remarks>
-        /// http://www.blackbeltcoder.com/Articles/time/creating-a-user-friendly-timespan-string
-        /// </remarks>
         public static string ToUserFriendlyString(this TimeSpan span)
         {
-
             var values = new List<string>();
 
             Action<int, string> componentProcessor = (int componentValue, string componentName) =>
