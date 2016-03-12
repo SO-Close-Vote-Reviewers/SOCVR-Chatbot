@@ -89,7 +89,7 @@ namespace SOCVR.Chatbot.PassiveActions
                     x => x.RequestedPermissionGroup.ToString(),
                     x => x.RequestedOn.ToString("yyyy-MM-dd HH:mm:ss 'UTC'"));
 
-                chatRoom.PostMessageOrThrow($"@{chatMessage.Author.GetChatFriendlyUsername()} The following is a list of users requesting access to a permission group.");
+                chatRoom.PostMessageOrThrow($"The following is a list of users requesting access to a permission group.");
                 chatRoom.PostMessageOrThrow(tableText);
             }
 
