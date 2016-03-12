@@ -167,66 +167,57 @@ namespace SOCVR.Chatbot
         /// <summary>
         /// Constructs a user-friendly string for this TimeSpan instance.
         /// </summary>
-        /// <remarks>
-        /// http://www.blackbeltcoder.com/Articles/time/creating-a-user-friendly-timespan-string
-        /// </remarks>
         public static string ToUserFriendlyString(this TimeSpan span)
         {
-            const int DaysInYear = 365;
-            const int DaysInMonth = 30;
-
-            // Get each non-zero value from TimeSpan component
             var values = new List<string>();
 
-            // Number of years
-            int days = span.Days;
-            if (days >= DaysInYear)
+            Action<int, string> componentProcessor = (int componentValue, string componentName) =>
             {
-                int years = (days / DaysInYear);
-                values.Add(CreateValueString(years, "year"));
-                days = (days % DaysInYear);
-            }
-            // Number of months
-            if (days >= DaysInMonth)
-            {
-                int months = (days / DaysInMonth);
-                values.Add(CreateValueString(months, "month"));
-                days = (days % DaysInMonth);
-            }
-            // Number of days
-            if (days >= 1)
-                values.Add(CreateValueString(days, "day"));
-            // Number of hours
-            if (span.Hours >= 1)
-                values.Add(CreateValueString(span.Hours, "hour"));
-            // Number of minutes
-            if (span.Minutes >= 1)
-                values.Add(CreateValueString(span.Minutes, "minute"));
-            // Number of seconds (include when 0 if no other components included)
-            if (span.Seconds >= 1 || values.Count == 0)
-                values.Add(CreateValueString(span.Seconds, "second"));
+                if (componentValue > 0)
+                {
+                    var valueToAdd = $"{componentValue} {componentName}{(componentValue == 1 ? "" : "s")}";
+                    values.Add(valueToAdd);
+                }
+            };
 
-            // Combine values into string
+            componentProcessor(span.Days, "day");
+            componentProcessor(span.Hours, "hour");
+            componentProcessor(span.Minutes, "minute");
+            componentProcessor(span.Seconds, "second");
+
             var builder = new StringBuilder();
+
             for (int i = 0; i < values.Count; i++)
             {
-                if (builder.Length > 0)
-                    builder.Append((i == (values.Count - 1)) ? " and " : ", ");
+                //add the item
                 builder.Append(values[i]);
-            }
-            // Return result
-            return builder.ToString();
-        }
 
-        /// <summary>
-        /// Constructs a string description of a time-span value.
-        /// </summary>
-        /// <param name="value">The value of this item</param>
-        /// <param name="description">The name of this item (singular form)</param>
-        private static string CreateValueString(int value, string description)
-        {
-            return String.Format("{0:#,##0} {1}",
-                value, (value == 1) ? description : String.Format("{0}s", description));
+                //if there is something after this value
+                if (i < values.Count - 1)
+                {
+                    //is this the second to last value?
+                    if (i == values.Count - 2)
+                    {
+                        //if there is only 2 items in the list
+                        if (values.Count == 2)
+                        {
+                            //you just need an "and" between them
+                            builder.Append(" and ");
+                        }
+                        else //there are 3 or more items
+                        {
+                            //write ", and"
+                            builder.Append(", and ");
+                        }
+                    }
+                    else //not the second to last value, like in the middle of the list
+                    {
+                        builder.Append(", ");
+                    }
+                }
+            }
+
+            return builder.ToString();
         }
 
         /// <summary>
@@ -267,7 +258,7 @@ namespace SOCVR.Chatbot
                 {
                     object value = valueSelectors[colIndex].Invoke(values[rowIndex - 1]);
 
-                    arrValues[rowIndex, colIndex] =  value?.ToString() ?? "null";
+                    arrValues[rowIndex, colIndex] = value?.ToString() ?? "null";
                 }
             }
 
@@ -318,16 +309,16 @@ namespace SOCVR.Chatbot
         {
             var maxColumnsWidth = new int[arrValues.GetLength(1)];
             for (int colIndex = 0; colIndex < arrValues.GetLength(1); colIndex++)
-            for (int rowIndex = 0; rowIndex < arrValues.GetLength(0); rowIndex++)
-            {
-                int newLength = arrValues[rowIndex, colIndex].Length;
-                int oldLength = maxColumnsWidth[colIndex];
-
-                if (newLength > oldLength)
+                for (int rowIndex = 0; rowIndex < arrValues.GetLength(0); rowIndex++)
                 {
-                    maxColumnsWidth[colIndex] = newLength;
+                    int newLength = arrValues[rowIndex, colIndex].Length;
+                    int oldLength = maxColumnsWidth[colIndex];
+
+                    if (newLength > oldLength)
+                    {
+                        maxColumnsWidth[colIndex] = newLength;
+                    }
                 }
-            }
 
             return maxColumnsWidth;
         }
