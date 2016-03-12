@@ -87,61 +87,6 @@ namespace SOCVR.Chatbot
                 .ToCSV(Environment.NewLine + "    " + Environment.NewLine);
         }
 
-        /// <summary>
-        /// Returns a more "user friendly" variation of a user's name.
-        /// </summary>
-        public static string GetChatFriendlyUsername(this User user)
-        {
-            return user.Name.GetChatFriendlyUsername();
-        }
-
-        /// <summary>
-        /// Returns a more "user friendly" variation of a user's name.
-        /// </summary>
-        public static string GetChatFriendlyUsername(this string username)
-        {
-            var ms = Regex.Matches(username, @"\p{Lu}*\p{Ll}*");
-            var matches = new List<string>();
-            var name = "";
-
-            foreach (Match m in ms)
-            {
-                if (string.IsNullOrWhiteSpace(m.Value)) continue;
-
-                matches.Add(m.Value);
-            }
-
-            if (matches.All(m => m.Length > 2))
-            {
-                var avg = matches.Average(x => x.Length);
-                if (Math.Abs(matches[0].Length - avg) > avg / 3)
-                {
-                    name = matches.OrderBy(x => x.Length).First();
-                }
-                else
-                {
-                    name = matches[0];
-                }
-            }
-            else
-            {
-                var spaceCount = 0;
-                foreach (var m in matches)
-                {
-                    if (name.Length - spaceCount > 2) break;
-                    name += m + " ";
-                    spaceCount++;
-                }
-            }
-
-            if (name.All(char.IsUpper))
-            {
-                name = name.ToLowerInvariant();
-            }
-
-            return (char.ToUpperInvariant(name[0]) + name.Remove(0, 1)).Trim();
-        }
-
 
 
         private static List<string> GetAllStackTracesInner(this Exception ex)

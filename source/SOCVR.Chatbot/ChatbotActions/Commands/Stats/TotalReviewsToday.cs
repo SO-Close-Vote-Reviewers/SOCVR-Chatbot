@@ -64,7 +64,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
                         ReviewerName = chatRoom.GetUser(x.ReviewerProfileId).Name
                     })
                     .OrderByDescending(x => x.ReviewCount)
-                    .ThenBy(x => x.ReviewerName.GetChatFriendlyUsername())
+                    .ThenBy(x => x.ReviewerName)
                     .ToStringTable(
                         new[]
                         {

@@ -176,7 +176,7 @@ namespace SOCVR.Chatbot
             }
             else
             {
-                msg.AppendText($"{room.GetUser(user.ID).GetChatFriendlyUsername()} has started reviewing!");
+                msg.AppendText($"{room.GetUser(user.ID)} has started reviewing!");
             }
 
             room.PostMessageLight(msg);
@@ -187,7 +187,6 @@ namespace SOCVR.Chatbot
             var revCount = user.CompletedReviewsCount;
             var userInRoom = room.CurrentUsers.Any(x => x.ID == user.ID);
             var chatUser = room.GetUser(user.ID);
-            var shortName = chatUser.GetChatFriendlyUsername();
             var msg = new MessageBuilder();
 
             if (userInRoom)
@@ -196,7 +195,7 @@ namespace SOCVR.Chatbot
             }
 
             var posts = reviews.Count > 1 ? $"{revCount} posts today" : "a post today";
-            msg.AppendText($"{(userInRoom ? "You've" : shortName)} reviewed {posts}");
+            msg.AppendText($"{(userInRoom ? "You've" : chatUser.Name)} reviewed {posts}");
 
             var audits = reviews.Count(x => x.AuditPassed != null);
             if (audits > 0)
@@ -213,7 +212,7 @@ namespace SOCVR.Chatbot
                 var durRaw = revRes.Max(r => r.Timestamp) - revRes.Min(r => r.Timestamp);
                 var durInf = new TimeSpan((durRaw.Ticks / revCount) * (revCount + 1));
                 var avgInf = TimeSpan.FromSeconds(durInf.TotalSeconds / revCount);
-                var pronounOrName = userInRoom ? "your" : shortName + "'s";
+                var pronounOrName = userInRoom ? "your" : chatUser.Name + "'s";
 
                 msg.AppendText($"The time between {pronounOrName} first and last review today was ");
                 msg.AppendText(durInf.ToUserFriendlyString());
@@ -240,7 +239,7 @@ namespace SOCVR.Chatbot
             var message = new MessageBuilder();
             var tag = audit.Tags[0].ToLowerInvariant();
 
-            message.AppendText(room.GetUser(user.ID).GetChatFriendlyUsername());
+            message.AppendText(room.GetUser(user.ID).Name);
             message.AppendText(" passed ");
             message.AppendText(AvsAn.Query(tag).Article + " ");
             message.AppendText(tag, TextFormattingOptions.Tag, WhiteSpace.Space);
