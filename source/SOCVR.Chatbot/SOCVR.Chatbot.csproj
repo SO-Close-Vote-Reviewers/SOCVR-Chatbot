@@ -172,6 +172,7 @@
     <Compile Include="ChatbotActions\Commands\Permission\AddUserToGroup.cs" />
     <Compile Include="ChatbotActions\Commands\Permission\ApproveRequest.cs" />
     <Compile Include="ChatbotActions\Commands\Permission\Membership.cs" />
+    <Compile Include="ChatbotActions\Commands\Permission\MyMembership.cs" />
     <Compile Include="ChatbotActions\Commands\Permission\PermissionUserCommand.cs" />
     <Compile Include="ChatbotActions\Commands\Permission\RejectRequest.cs" />
     <Compile Include="ChatbotActions\Commands\Permission\RemoveUserFromGroup.cs" />
