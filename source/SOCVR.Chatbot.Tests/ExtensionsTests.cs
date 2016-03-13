@@ -1,5 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
+using System.Linq;
 
 namespace SOCVR.Chatbot.Tests
 {
@@ -15,6 +16,17 @@ namespace SOCVR.Chatbot.Tests
         {
             var input = new TimeSpan(days, hours, minutes, seconds);
             var actual = input.ToUserFriendlyString();
+            Assert.AreEqual(expectedResult, actual);
+        }
+
+        [TestCase("a, b, and c", "a", "b", "c")]
+        [TestCase("apples", "apples")]
+        [TestCase("apples and bananas", "apples", "bananas")]
+        [TestCase("apples, bananas, cats, and dogs", "apples", "bananas", "cats", "dogs")]
+        public void CreateOxforCommaListString(string expectedResult, params object[] inputs)
+        {
+            var inputList = inputs.Select(x => x.ToString()).ToList();
+            var actual = inputList.CreateOxforCommaListString();
             Assert.AreEqual(expectedResult, actual);
         }
     }
