@@ -130,21 +130,27 @@ namespace SOCVR.Chatbot
             componentProcessor(span.Minutes, "minute");
             componentProcessor(span.Seconds, "second");
 
-            var builder = new StringBuilder();
+            return CreateOxforCommaListString(values);
+        }
 
-            for (int i = 0; i < values.Count; i++)
+        public static string CreateOxforCommaListString(this IEnumerable<string> values)
+        {
+            var builder = new StringBuilder();
+            var valueList = values.ToList();
+
+            for (int i = 0; i < valueList.Count; i++)
             {
                 //add the item
-                builder.Append(values[i]);
+                builder.Append(valueList[i]);
 
                 //if there is something after this value
-                if (i < values.Count - 1)
+                if (i < valueList.Count - 1)
                 {
                     //is this the second to last value?
-                    if (i == values.Count - 2)
+                    if (i == valueList.Count - 2)
                     {
                         //if there is only 2 items in the list
-                        if (values.Count == 2)
+                        if (valueList.Count == 2)
                         {
                             //you just need an "and" between them
                             builder.Append(" and ");
