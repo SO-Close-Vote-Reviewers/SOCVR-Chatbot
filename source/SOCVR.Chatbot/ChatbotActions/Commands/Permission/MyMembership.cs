@@ -37,7 +37,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
 
                 if (!permisionGroupsUserIsIn.Any())
                 {
-                    chatRoom.PostMessageOrThrow("You are not in any permission groups.");
+                    chatRoom.PostReplyOrThrow(incomingChatMessage, "You are not in any permission groups.");
                     return;
                 }
 
