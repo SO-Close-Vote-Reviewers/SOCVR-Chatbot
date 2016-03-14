@@ -174,17 +174,11 @@ namespace SOCVR.Chatbot.ChatRoom
         {
             using (var db = new DatabaseContext())
             {
-                var doesUserExist = db.Users.Any(x => x.ProfileId == incomingChatMessage.Author.ID);
+                db.EnsureUserExists(incomingChatMessage.Author.ID);
 
-                if (!doesUserExist)
+                if (incomingChatMessage.Author.IsMod)
                 {
-                    var newUser = new Database.User()
-                    {
-                        ProfileId = incomingChatMessage.Author.ID
-                    };
-
-                    db.Users.Add(newUser);
-                    db.SaveChanges();
+                    db.EnsureUserIsInAllPermissionGroups(incomingChatMessage.Author.ID);
                 }
             }
         }

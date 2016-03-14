@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.Entity;
 using SOCVR.Chatbot.Configuration;
+using System;
 using System.Linq;
 
 namespace SOCVR.Chatbot.Database
@@ -63,7 +64,7 @@ namespace SOCVR.Chatbot.Database
         }
 
         /// <summary>
-        /// Checks that there is a user in the databse with this profile Id.
+        /// Checks that there is a user in the database with this profile Id.
         /// If it does not exist, the user entry will be created.
         /// </summary>
         /// <param name="profileId"></param>
@@ -77,6 +78,34 @@ namespace SOCVR.Chatbot.Database
                 Users.Add(dbUser);
                 SaveChanges();
             }
+        }
+
+        public void EnsureUserIsInAllPermissionGroups(int profileId)
+        {
+            var dbUser = Users
+                .Include(x => x.Permissions)
+                .SingleOrDefault(x => x.ProfileId == profileId);
+
+            var permissionsUserCurrentlyHas = dbUser
+                .Permissions
+                .Select(x => x.PermissionGroup);
+
+            var allPermissionGroups = Enum
+                .GetValues(typeof(PermissionGroup))
+                .OfType<PermissionGroup>();
+
+            var missingPermissionGroups = allPermissionGroups.Except(permissionsUserCurrentlyHas);
+
+            foreach (var group in missingPermissionGroups)
+            {
+                dbUser.Permissions.Add(new UserPermission
+                {
+                    JoinedOn = DateTimeOffset.Now,
+                    PermissionGroup = group,
+                });
+            }
+
+            SaveChanges();
         }
     }
 }
