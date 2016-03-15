@@ -91,20 +91,8 @@ namespace SOCVR.Chatbot
 
             foreach (var ro in roList)
             {
-                if (db.Users.Any(x => x.ProfileId == ro.ID)) continue;
-
-                db.Users.Add(new User
-                {
-                    ProfileId = ro.ID,
-                    OptInToReviewTracking = true,
-                    LastTrackingPreferenceChange = DateTimeOffset.UtcNow,
-                    Permissions = new List<UserPermission>
-                    {
-                        new UserPermission { PermissionGroup = PermissionGroup.Reviewer },
-                        new UserPermission { PermissionGroup = PermissionGroup.BotOwner }
-                    }
-                });
-                db.SaveChanges();
+                db.EnsureUserExists(ro.ID);
+                db.EnsureUserIsInAllPermissionGroups(ro.ID);
             }
         }
 
