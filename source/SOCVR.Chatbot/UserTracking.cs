@@ -197,7 +197,7 @@ namespace SOCVR.Chatbot
             var posts = reviews.Count > 1 ? $"{revCount} posts today" : "a post today";
             msg.AppendText($"{(userInRoom ? "You've" : chatUser.Name)} reviewed {posts}");
 
-            var audits = reviews.Count(x => x.AuditPassed != null);
+            var audits = reviews.Count(x => x.AuditPassed != null) + (revCount - reviews.Count);
             if (audits > 0)
             {
                 msg.AppendText($" (of which {audits} {(audits > 1 ? "were audits" : "was an audit")})");
