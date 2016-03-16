@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using ChatExchangeDotNet;
 using SOCVR.Chatbot.Database;
 
@@ -24,6 +25,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
         {
             using (var db = new DatabaseContext())
             {
+                var tracker = (UserTracking)typeof(Program).GetField("watcher", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
                 var msg = new MessageBuilder();
                 var currentDate = DateTimeOffset.UtcNow;
 
@@ -35,6 +37,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
                 msg.AppendText($"You've reviewed {reviews.Count} post{(reviews.Count == 1 ? "" : "s")} today");
 
                 var audits = reviews.Count(x => x.AuditPassed != null);
+                audits += tracker.WatchedUsers[incomingChatMessage.Author.ID].CompletedReviewsCount - reviews.Count;
                 if (audits > 0)
                 {
                     msg.AppendText($" (of which {audits} {(audits > 1 ? "were audits" : "was an audit")})");
