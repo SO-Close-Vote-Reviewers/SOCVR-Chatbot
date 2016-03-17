@@ -79,6 +79,9 @@ namespace SOCVR.Chatbot
 
         private void InitialiseWatcher()
         {
+            //TODO: We may need to tweak this later (currently set to 1 by default).
+            //RequestThrottler.ThrottleFactor = 1.5F;
+
             using (var db = new DatabaseContext())
             {
                 var users = db.UserPermissions
