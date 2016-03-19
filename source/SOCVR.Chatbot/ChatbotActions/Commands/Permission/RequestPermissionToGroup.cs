@@ -3,7 +3,6 @@ using System.Linq;
 using ChatExchangeDotNet;
 using SOCVR.Chatbot.Database;
 using Microsoft.Data.Entity;
-using TCL.Extensions;
 using SOCVR.Chatbot.Configuration;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission

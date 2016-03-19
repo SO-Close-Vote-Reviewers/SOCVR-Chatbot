@@ -1,6 +1,5 @@
 ﻿using SOCVR.Chatbot.Database;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using ChatExchangeDotNet;
 using Microsoft.Data.Entity;

@@ -4,8 +4,6 @@ using TCL.Extensions;
 using SOCVR.Chatbot.ChatRoom;
 using SOCVR.Chatbot.Database;
 using Microsoft.Data.Entity;
-using System.Linq;
-using System.Collections.Generic;
 using System.Net.Sockets;
 
 namespace SOCVR.Chatbot
