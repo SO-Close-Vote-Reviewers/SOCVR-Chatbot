@@ -24,7 +24,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Tracking
                     var deltaTime = DateTimeOffset.UtcNow - user.LastTrackingPreferenceChange.Value;
 
                     var replyMessage = $"You are already {GetPastTencePhrase()} {TrackingPhrasePrefix()} tracking, and have been in this state for {deltaTime.ToUserFriendlyString()}. ";
-                    replyMessage += $"You may switch your preference by running `{OppositeCommandUsage()}`";
+                    replyMessage += $"You may switch your preference by running `{OppositeCommandUsage()}`.";
                     chatRoom.PostReplyOrThrow(incomingChatMessage, replyMessage);
                     return;
                 }
