@@ -93,8 +93,6 @@ namespace SOCVR.Chatbot
                     AddUser(user.UserId);
                 }
             }
-
-            RequestThrottler.RequestThroughputMin = 30;
         }
 
         private void WatchDB()
@@ -137,7 +135,8 @@ namespace SOCVR.Chatbot
         {
             if (WatchedUsers.ContainsKey(userID)) return;
 
-            WatchedUsers[userID] = new User(userID);
+            // Screw long boot times, let's init this in the bg.
+            WatchedUsers[userID] = new User(userID, true);
             HookUpUserEvents(userID);
         }
 

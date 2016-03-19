@@ -127,8 +127,8 @@
       <HintPath>..\packages\ServiceStack.Text.4.0.52\lib\net40\ServiceStack.Text.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SOCVR.Net, Version=3.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SOCVR.Net.3.3.0-beta\lib\SOCVR.Net.dll</HintPath>
+    <Reference Include="SOCVR.Net, Version=3.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SOCVR.Net.3.4.0-beta\lib\SOCVR.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
