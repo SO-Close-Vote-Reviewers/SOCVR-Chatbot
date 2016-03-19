@@ -181,6 +181,7 @@
     <Compile Include="ChatbotActions\Commands\Permission\ViewRequests.cs" />
     <Compile Include="ChatbotActions\Commands\Stats\AuditStats.cs" />
     <Compile Include="ChatbotActions\Commands\Stats\ReviewsToday.cs" />
+    <Compile Include="ChatbotActions\Commands\Stats\RoomEffectiveness.cs" />
     <Compile Include="ChatbotActions\Commands\Stats\Stats.cs" />
     <Compile Include="ChatbotActions\Commands\Stats\TotalReviewsToday.cs" />
     <Compile Include="ChatbotActions\Commands\Tags\CurrentTag.cs" />
