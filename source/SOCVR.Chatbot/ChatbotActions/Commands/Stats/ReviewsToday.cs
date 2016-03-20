@@ -9,7 +9,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
     internal class ReviewsToday : UserCommand
     {
         public override string ActionDescription =>
-            "Shows stats about your reviews completed today. Or, if requesting a full data dump (`review today details`), prints a table of the reviews items you've done today.";
+            "Shows stats about your reviews completed today. Or, if requesting a full data dump (\"reviews today details\"), prints a table of the reviews items you've done today.";
 
         public override string ActionName => "Reviews Today";
 
@@ -28,16 +28,17 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
                 var tracker = (UserTracking)typeof(Program).GetField("watcher", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
                 var msg = new MessageBuilder();
                 var currentDate = DateTimeOffset.UtcNow;
+                var revCount = tracker.WatchedUsers[incomingChatMessage.Author.ID].CompletedReviewsCount;
 
                 var reviews = db.ReviewedItems
                     .Where(x => x.ReviewerId == incomingChatMessage.Author.ID)
                     .Where(x => x.ReviewedOn.Date == currentDate.Date)
                     .ToList();
 
-                msg.AppendText($"You've reviewed {reviews.Count} post{(reviews.Count == 1 ? "" : "s")} today");
+                msg.AppendText($"You've reviewed {revCount} post{(revCount == 1 ? "" : "s")} today");
 
                 var audits = reviews.Count(x => x.AuditPassed != null);
-                audits += tracker.WatchedUsers[incomingChatMessage.Author.ID].CompletedReviewsCount - reviews.Count;
+                audits += revCount - reviews.Count;
                 if (audits > 0)
                 {
                     msg.AppendText($" (of which {audits} {(audits > 1 ? "were audits" : "was an audit")})");
