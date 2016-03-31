@@ -38,7 +38,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
                     x => x.ForUser,
                     x => x.Started);
 
-            chatRoom.PostReplyOrThrow(incomingChatMessage, "The following is a list of commands that I'm currently running:");
+            chatRoom.PostReplyOrThrow(incomingChatMessage, "Oh, sure, you want to micromanage me now? Give me a bunch of things to do then constantly check up on me? Does that sound very fair to you? No, no it's not. You should feel ashamed of yourself.");
             chatRoom.PostMessageOrThrow(tableMessage);
         }
     }
