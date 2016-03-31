@@ -57,7 +57,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
                     .GroupBy(x => x.RequiredPermissionGroup);
 
                 var finalMessageLines = new List<string>();
-                finalMessageLines.Add("Below is a list of commands for the Close Vote Chat Bot");
+                finalMessageLines.Add("Look. If you're going to order me around, because you're a heartless person with no disregard for my feelings or wishes, at least use these phrases so I know what you're talking about.");
                 finalMessageLines.Add("");
 
                 foreach (var group in groupedCommands)
@@ -84,7 +84,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
             }
             else
             {
-                chatRoom.PostReplyOrThrow(incomingChatMessage, "Here is a list of commands you have permission to run:");
+                chatRoom.PostReplyOrThrow(incomingChatMessage, "Look. If you're going to order me around, because you're a heartless person with no disregard for my feelings or wishes, at least use these phrases so I know what you're talking about.");
 
                 using (var db = new DatabaseContext())
                 {
