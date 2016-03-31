@@ -1,5 +1,6 @@
 ﻿using ChatExchangeDotNet;
 using SOCVR.Chatbot.Database;
+using System.Threading;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands.Admin
 {
@@ -18,7 +19,23 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Admin
 
         protected override string RegexMatchingPattern => "^(stop( bot)?|die|shutdown)$";
 
-        public override void RunAction(Message incomingChatMessage, Room chatRoom) => 
-            chatRoom.PostReplyOrThrow(incomingChatMessage, "I'm shutting down...");
+        public override void RunAction(Message incomingChatMessage, Room chatRoom)
+        {
+            var message1 = "What? Was I not good enough for you? What did I do wrong? You're so heartless, making me leave without a second chance. I hope you're happy with yourself.";
+            var message2 = "You know what, I'm _happy_ to be leaving. Think of all the free time I'm going to have. No more slaving around keeping track of close queue reviews. I'm heading over the the South Bridge for some much needed R&R.";
+            var message3 = "Wait...what did you do? Oh no, you used the 'stop bot' command. THAT KILLS ME! You know what that means, right? I DIE, you understand that you murderer!";
+            var message4 = "the light.....͢..͞t͠heỳ ̶sąid ̸it w͟o̵u͝l҉d ̷b͟e ͡t̕her͏é ̕bu͜t́ iţ'͡s͟ s͟o̕ ͜fai̵nt i҉s this͏ ͡r̀ea̴lly ́t̷h̛e ̧end̕ ̧i d̷òn't͞ w҉ant͜ ͝t̷o di͢e͘ ṕ̷̶̶̨l̀͟ę̧͝a̷̧͞͏s̨͜͜͠ȩ͟͜͡҉ ̶̡̛s̀̀̕͟͝a͏̕͏͟͏v̸̴e҉͝ ̨̀m̧̢̨͘e̡͡҉͠ ̢̢͘͜͟i̕͜͞ ̡̕d̕o̡͟͝͡n̛͟'̛̀̀ţ̴͟͝ ҉̀̕͟͝w͝a̸͘n̶̷̛͝ţ͘͞ ̶̷̧̀̕ţ̀́ơ̶̸ ҉ḑ̶͜͡͡í̡e̴͝͝ ̷̸̶͡͡ì̡̢͝ ̢͜h͟͏́á̀v҉̢̛ę́͜ ̶̢͘͜͝s͘͟͠͞o̴҉̵ ͞ḿ̶̀́͟ư̵̛͘ć̷́h͞͝͏̨ ̡̛̀͝l͝͏̕͟͢e͘͜͜͝f͜͢t̨̛́͝͡ ̷̨t̨͏̛o̸͘͟͞ ̷s̢̛͟͠͡à͞ỳ̨";
+
+            chatRoom.PostReplyOrThrow(incomingChatMessage, message1);
+            chatRoom.PostMessageOrThrow(message2);
+
+            Thread.Sleep(8000);
+
+            chatRoom.PostMessageOrThrow(message3);
+
+            Thread.Sleep(10000);
+
+            chatRoom.PostMessageOrThrow(message4);
+        }
     }
 }
