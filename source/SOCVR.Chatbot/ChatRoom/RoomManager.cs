@@ -81,7 +81,7 @@ namespace SOCVR.Chatbot.ChatRoom
             if (!ConfigurationAccessor.StartUpMessage.IsNullOrWhiteSpace())
             {
                 // This is the one of the few instances to not using the "OrThrow" method.
-                var startupMessageText = $"{ConfigurationAccessor.StartUpMessage} ({ConfigurationAccessor.InstallationLocation})";
+                var startupMessageText = $"Oh great, time to start another thankless round of this job.";
                 var success = cvChatRoom.PostMessageLight(startupMessageText);
 
                 if (!success)
@@ -96,7 +96,7 @@ namespace SOCVR.Chatbot.ChatRoom
             // If there is a stop message, say it.
             if (!ConfigurationAccessor.StopMessage.IsNullOrWhiteSpace())
             {
-                var shutdownMessage = $"{ConfigurationAccessor.StopMessage} ({ConfigurationAccessor.InstallationLocation})";
+                var shutdownMessage = $"`exit(0);`";
                 cvChatRoom.PostMessageLight(shutdownMessage);
             }
 
