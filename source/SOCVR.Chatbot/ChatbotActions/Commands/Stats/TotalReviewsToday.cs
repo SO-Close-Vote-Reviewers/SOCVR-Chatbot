@@ -40,7 +40,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
 
                 if (!usersWhoHaveReviewedToday.Any())
                 {
-                    chatRoom.PostReplyOrThrow(incomingChatMessage, "I have no record of any reviews from any tracked user today.");
+                    chatRoom.PostReplyOrThrow(incomingChatMessage, "Nobody has done anything today. Slackers.");
                     return;
                 }
 
