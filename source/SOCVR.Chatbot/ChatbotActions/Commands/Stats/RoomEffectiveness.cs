@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ChatExchangeDotNet;
 using System.Reflection;
+using TCL.Extensions;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
 {
@@ -34,19 +35,35 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
 
                 if (totalReviews == 0)
                 {
-                    chatRoom.PostReplyOrThrow(incomingChatMessage, "I don't have enough data to produce those stats.");
+                    chatRoom.PostReplyOrThrow(incomingChatMessage, "No one has made any reviews yet, so how do you expect me to tell you anything? Go review some stuff, or (better for me), go outside.");
                     return;
                 }
 
-                var reviewerCount = tracker.WatchedUsers.Values.Count(x => x.CompletedReviewsCount > 0);
+                var altMessages = new []
+                {
+                    "Nope",
+                    "Nah, don't want to",
+                    "I'll do it later"
+                };
 
-                var percentage = Math.Round(totalReviews * 1.0 / stats.ReviewsToday * 100, 2);
+                var randomNumber = new Random().Next(0, 100);
 
-                var usersPercentage = Math.Round(reviewerCount * 100D / chatRoom.PingableUsers.Count(x => x.Reputation >= 3000));
+                if (randomNumber > 66)
+                {
+                    var reviewerCount = tracker.WatchedUsers.Values.Count(x => x.CompletedReviewsCount > 0);
 
-                var message = $"{reviewerCount} members ({usersPercentage}% of this room's able reviewers) have processed {totalReviews} review items today, which accounts for {percentage}% of all CV reviews today.";
+                    var percentage = Math.Round(totalReviews * 1.0 / stats.ReviewsToday * 100, 2);
 
-                chatRoom.PostReplyOrThrow(incomingChatMessage, message);
+                    var usersPercentage = Math.Round(reviewerCount * 100D / chatRoom.PingableUsers.Count(x => x.Reputation >= 3000));
+
+                    var message = $"{reviewerCount} members ({usersPercentage}% of this room's able reviewers) have processed {totalReviews} review items today, which accounts for {percentage}% of all CV reviews today.";
+
+                    chatRoom.PostReplyOrThrow(incomingChatMessage, message);
+                }
+                else
+                {
+                    chatRoom.PostReplyOrThrow(incomingChatMessage, altMessages.PickRandom());
+                }
             }
         }
     }
