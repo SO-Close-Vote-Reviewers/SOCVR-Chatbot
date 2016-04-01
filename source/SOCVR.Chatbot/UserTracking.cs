@@ -174,11 +174,20 @@ namespace SOCVR.Chatbot
             if (room.CurrentUsers.Any(x => x.ID == user.ID))
             {
                 msg.AppendPing(room.GetUser(user.ID));
-                msg.AppendText("I've noticed you've started reviewing! I'll update your session record.");
+
+                var messages = new[]
+                {
+                    "Oh great, another person reviewing. Now I've got _more_ too keep track of. Thanks for the increased workload :(",
+                    "You started reviewing, but what's the chances I'll 'forget' to keep track?",
+                    "That's a nice review session you've started, it would be a _shame_ if something happened to it.",
+                    "You know, everyone else that's reviewed today, I'll keep track of. There's something about you that makes me not care. Don't expect accurate results in the end."
+                };
+
+                msg.AppendText(messages.PickRandom());
             }
             else
             {
-                msg.AppendText($"{room.GetUser(user.ID)} has started reviewing!");
+                msg.AppendText($"{room.GetUser(user.ID)} has started reviewing (twirls finger...)");
             }
 
             room.PostMessageLight(msg);
@@ -196,32 +205,7 @@ namespace SOCVR.Chatbot
                 msg.AppendPing(chatUser);
             }
 
-            var posts = reviews.Count > 1 ? $"{revCount} posts today" : "a post today";
-            msg.AppendText($"{(userInRoom ? "You've" : chatUser.Name)} reviewed {posts}");
-
-            var audits = reviews.Count(x => x.AuditPassed != null) + (revCount - reviews.Count);
-            if (audits > 0)
-            {
-                msg.AppendText($" (of which {audits} {(audits > 1 ? "were audits" : "was an audit")})");
-            }
-
-            msg.AppendText(userInRoom ? ", thanks! " : "! ");
-
-            // It's always possible...
-            if (reviews.Count > 1)
-            {
-                var revRes = reviews.Select(r => r.Results.First(rr => rr.UserID == user.ID));
-                var durRaw = revRes.Max(r => r.Timestamp) - revRes.Min(r => r.Timestamp);
-                var durInf = new TimeSpan((durRaw.Ticks / revCount) * (revCount + 1));
-                var avgInf = TimeSpan.FromSeconds(durInf.TotalSeconds / revCount);
-                var pronounOrName = userInRoom ? "your" : chatUser.Name + "'s";
-
-                msg.AppendText($"The time between {pronounOrName} first and last review today was ");
-                msg.AppendText(durInf.ToUserFriendlyString());
-                msg.AppendText(", averaging to a review every ");
-                msg.AppendText(avgInf.ToUserFriendlyString());
-                msg.AppendText(".");
-            }
+            msg.AppendText(" fished reviewing. I'm too lazy to get your stats now. Ask me later...");
 
             room.PostMessageLight(msg);
         }
@@ -231,24 +215,19 @@ namespace SOCVR.Chatbot
             //TODO: calc which tag is most relevant and use that instead
             // of just picking the first tag on the post.
 
-            var tooltip = "";
-            foreach (var t in audit.Tags)
-            {
-                tooltip += $"[{t}] ";
-            }
-            tooltip += $"audit passed at {audit.Results.First().Timestamp.ToString("HH:mm:ss")} UTC.";
-
-            var message = new MessageBuilder();
+            var userName = room.GetUser(user.ID).Name;
             var tag = audit.Tags[0].ToLowerInvariant();
+            var aOrAn = AvsAn.Query(tag).Article;
+            var tagText = $"[tag:{tag}]";
 
-            message.AppendText(room.GetUser(user.ID).Name);
-            message.AppendText(" passed ");
-            message.AppendText(AvsAn.Query(tag).Article + " ");
-            message.AppendText(tag, TextFormattingOptions.Tag, WhiteSpace.Space);
-            message.AppendLink("audit", "http://stackoverflow.com/review/close/" + audit.ID, tooltip);
-            message.AppendText("!");
+            var messages = new[]
+            {
+                $"{userName} just passed {aOrAn} {tagText} audit. Aren't you the king of reviews?",
+                $"{userName} passed {aOrAn} {tagText} audit. I bet the next one you'll fail.",
+                $"{userName} passed {aOrAn} {tagText} audit. Don't let it go to your head.",
+            };
 
-            room.PostMessageOrThrow(message.Message);
+            room.PostMessageOrThrow(messages.PickRandom());
         }
 
         private void SaveReview(ReviewItem rev, int userID)
