@@ -27,7 +27,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
             using (var db = new DatabaseContext())
             {
                 var tracker = (UserTracking)typeof(Program).GetField("watcher", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
-                var msg = new MessageBuilder();
+                var msg = new MessageBuilder(MultiLineMessageType.None, false);
                 var currentDate = DateTimeOffset.UtcNow;
                 var revCount = tracker.WatchedUsers[incomingChatMessage.Author.ID].CompletedReviewsCount;
 
