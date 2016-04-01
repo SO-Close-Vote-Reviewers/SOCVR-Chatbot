@@ -52,7 +52,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                     outputMessageBuilder.AppendLine("    ");
                 }
 
-                chatRoom.PostReplyOrThrow(incomingChatMessage, "Current users in permission groups:");
+                chatRoom.PostReplyOrThrow(incomingChatMessage, "You want to know all the people who like to boss me around? I bet you're already on this list, and you just want to gloat.");
                 chatRoom.PostMessageOrThrow(outputMessageBuilder.ToString());
             }
         }
