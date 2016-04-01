@@ -96,7 +96,7 @@ namespace SOCVR.Chatbot.ChatRoom
                     if (isReplyToChatbot)
                     {
                         var results = simCmd.FindCommand(incomingChatMessage.Content);
-                        var msg = "Sorry, I don't understand that. ";
+                        var msg = "What? ";
 
                         if (results != null)
                         {
@@ -150,14 +150,14 @@ namespace SOCVR.Chatbot.ChatRoom
                     {
                         //the command required a specific group which the user was not a part of
                         chatRoom.PostReplyOrThrow(incomingChatMessage,
-                            $"Sorry, you are not in the {chatbotActionToRun.RequiredPermissionGroup} permission group. You can request access by running `request permission to {chatbotActionToRun.RequiredPermissionGroup}`.");
+                            $"Luck for me, you are not in the {chatbotActionToRun.RequiredPermissionGroup} permission group. Not that you should, but you can request access by running `request permission to {chatbotActionToRun.RequiredPermissionGroup}`.");
                     }
                     else
                     {
                         //the command can be ran by anyone who is in at least one permission group,
                         //but this user is not in any
                         chatRoom.PostReplyOrThrow(incomingChatMessage,
-                            $"Sorry, you need to be in at least one permission group to run this command. Run `{ChatbotActionRegister.GetChatBotActionUsage<Membership>()}` to see the list of groups.");
+                            $"Lucky for me, you need to be in at least one permission group to run this command. Run `{ChatbotActionRegister.GetChatBotActionUsage<Membership>()}` to see the list of groups.");
                     }
                 }
                 // Don't do anything for triggers.
@@ -295,7 +295,7 @@ namespace SOCVR.Chatbot.ChatRoom
         /// <param name="actionToRun"></param>
         private void TellChatAboutErrorWhileRunningAction(Exception ex, Room chatRoom, ChatbotAction actionToRun)
         {
-            var headerLine = $"I hit an error while trying to run '{actionToRun.ActionName}':";
+            var headerLine = $"Oh great, one of you guys broke me. Way to go. '{actionToRun.ActionName}':";
 
             var errorMessage = "    " + ex.FullErrorMessage(Environment.NewLine + "    ");
 
