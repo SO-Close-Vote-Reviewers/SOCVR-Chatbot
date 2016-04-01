@@ -295,18 +295,8 @@ namespace SOCVR.Chatbot.ChatRoom
         /// <param name="actionToRun"></param>
         private void TellChatAboutErrorWhileRunningAction(Exception ex, Room chatRoom, ChatbotAction actionToRun)
         {
-            var headerLine = $"Oh great, one of you guys broke me. Way to go. '{actionToRun.ActionName}':";
-
-            var errorMessage = "    " + ex.FullErrorMessage(Environment.NewLine + "    ");
-
-            var stackTraceMessage = ex.GetAllStackTraces();
-
-            var detailsLine = errorMessage + Environment.NewLine +
-                "    ----" + Environment.NewLine +
-                stackTraceMessage;
-
+            var headerLine = $"Oh great, one of you guys broke me. Way to go. How about you just leave me alone for a while?";
             chatRoom.PostMessageOrThrow(headerLine);
-            chatRoom.PostMessageOrThrow(detailsLine);
         }
     }
 }
