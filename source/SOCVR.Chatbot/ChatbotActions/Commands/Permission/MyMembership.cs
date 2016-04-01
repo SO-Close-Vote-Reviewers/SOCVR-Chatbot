@@ -2,6 +2,7 @@
 using System.Linq;
 using ChatExchangeDotNet;
 using Microsoft.Data.Entity;
+using System.Threading;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
 {
@@ -33,7 +34,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
 
                 if (!permisionGroupsUserIsIn.Any())
                 {
-                    chatRoom.PostReplyOrThrow(incomingChatMessage, "You are not in any permission groups.");
+                    chatRoom.PostReplyOrThrow(incomingChatMessage, "You're not part of any permission group, which is good, because that means you have less control over me.");
                     return;
                 }
 
@@ -41,8 +42,12 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                     .Select(x => x.ToString())
                     .CreateOxforCommaListString();
 
-                var messageText = $"You are in the {groupsString} {(permisionGroupsUserIsIn.Count == 1 ? "group" : "groups")}.";
-                chatRoom.PostReplyOrThrow(incomingChatMessage, messageText);
+                var message1 = $"First of all, why do you care? Don't you have better things to do with your time then ordering around some chat bot? I've got better things to do with my time, so I'm sure you do as well.";
+                var message2 = $"But anyways, because you'd just ask me again if I didn't answer, you are right now in the {groupsString} {(permisionGroupsUserIsIn.Count == 1 ? "group" : "groups")}. Are you happy now?";
+
+                chatRoom.PostReplyOrThrow(incomingChatMessage, message1);
+                Thread.Sleep(3000);
+                chatRoom.PostReplyOrThrow(incomingChatMessage, message2);
             }
         }
     }
