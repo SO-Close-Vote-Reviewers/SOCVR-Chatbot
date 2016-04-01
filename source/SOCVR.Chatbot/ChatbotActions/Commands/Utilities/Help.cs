@@ -29,10 +29,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
                 "Hun?"
             };
 
-            var message = "This is a chat bot for the SO Close Vote Reviewers chat room, developed by the [SOCVR developers](https://github.com/SO-Close-Vote-Reviewers). " +
-                "For more information see the [github page](https://github.com/SO-Close-Vote-Reviewers/SOCVR-Chatbot). " +
-                "Reply with `{0}` to see a list of commands."
-                    .FormatInline(ChatbotActionRegister.GetChatBotActionUsage<Commands>());
+            var message = messages.PickRandom();
             chatRoom.PostMessageOrThrow(message);
         }
     }
