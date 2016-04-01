@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using ChatExchangeDotNet;
 using SOCVR.Chatbot.Database;
+using TCL.Extensions;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
 {
@@ -35,7 +36,15 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
                     .Where(x => x.ReviewedOn.Date == currentDate.Date)
                     .ToList();
 
-                msg.AppendText($"You've reviewed {revCount} post{(revCount == 1 ? "" : "s")} today");
+                var endings = new[]
+                {
+                    "Look, I could do 40 times that in half the time you took",
+                    "Slacker",
+                    "I could do a lot better",
+                    "Meh"
+                };
+
+                msg.AppendText($"I bet you think you're quite the hotshot for reviewing {revCount} post{(revCount == 1 ? "" : "s")}");
 
                 var audits = reviews.Count(x => x.AuditPassed != null);
                 audits += revCount - reviews.Count;
@@ -44,7 +53,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
                     msg.AppendText($" (of which {audits} {(audits > 1 ? "were audits" : "was an audit")})");
                 }
 
-                msg.AppendText(". ");
+                msg.AppendText($". {endings}. ");
 
                 // if you've reviewed more than one item, give the stats about the times and speed.
                 if (reviews.Count > 1)
@@ -53,11 +62,13 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
                     var durInf = new TimeSpan((durRaw.Ticks / reviews.Count) * (reviews.Count + 1));
                     var avgInf = TimeSpan.FromSeconds(durInf.TotalSeconds / reviews.Count);
 
-                    msg.AppendText("The time between your first and last review today was ");
-                    msg.AppendText(durInf.ToUserFriendlyString());
-                    msg.AppendText(", averaging to a review every ");
-                    msg.AppendText(avgInf.ToUserFriendlyString());
-                    msg.AppendText(". ");
+                    msg.AppendText("And you know what? I don't feel like telling you any more than that.");
+
+                    //msg.AppendText("The time between your first and last review today was ");
+                    //msg.AppendText(durInf.ToUserFriendlyString());
+                    //msg.AppendText(", averaging to a review every ");
+                    //msg.AppendText(avgInf.ToUserFriendlyString());
+                    //msg.AppendText(". ");
                 }
 
                 chatRoom.PostReplyOrThrow(incomingChatMessage, msg);
@@ -75,7 +86,9 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
                         x => GetFriendlyAuditResult(x.AuditPassed),
                         x => x.ReviewedOn.ToString("yyyy-MM-dd HH:mm:ss UTC"));
 
-                    chatRoom.PostMessageOrThrow(detailsTable);
+                    var tableMessage = "[Here's your table, that's all you deserve, you slave driver.](http://pngimg.com/upload/table_PNG6986.png)";
+
+                    chatRoom.PostMessageOrThrow(tableMessage);
                 }
             }
         }
