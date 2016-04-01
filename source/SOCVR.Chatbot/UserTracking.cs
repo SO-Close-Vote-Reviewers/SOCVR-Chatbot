@@ -169,7 +169,7 @@ namespace SOCVR.Chatbot
 
         private void HandleReviewingStarted(User user)
         {
-            var msg = new MessageBuilder();
+            var msg = new MessageBuilder(MultiLineMessageType.None, false);
 
             if (room.CurrentUsers.Any(x => x.ID == user.ID))
             {
