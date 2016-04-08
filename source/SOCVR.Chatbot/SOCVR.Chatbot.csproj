@@ -183,11 +183,10 @@
     <Compile Include="ChatbotActions\Commands\Permission\RequestPermissionToGroup.cs" />
     <Compile Include="ChatbotActions\Commands\Permission\RequestProcessingCommand.cs" />
     <Compile Include="ChatbotActions\Commands\Permission\ViewRequests.cs" />
-    <Compile Include="ChatbotActions\Commands\Stats\AuditStats.cs" />
-    <Compile Include="ChatbotActions\Commands\Stats\ReviewsToday.cs" />
-    <Compile Include="ChatbotActions\Commands\Stats\RoomEffectiveness.cs" />
-    <Compile Include="ChatbotActions\Commands\Stats\Stats.cs" />
-    <Compile Include="ChatbotActions\Commands\Stats\TotalReviewsToday.cs" />
+    <Compile Include="ChatbotActions\Commands\Stats\MyAuditStats.cs" />
+    <Compile Include="ChatbotActions\Commands\Stats\MyStats.cs" />
+    <Compile Include="ChatbotActions\Commands\Stats\RoomStats.cs" />
+    <Compile Include="ChatbotActions\Commands\Stats\QueueStats.cs" />
     <Compile Include="ChatbotActions\Commands\Tags\CurrentTag.cs" />
     <Compile Include="ChatbotActions\Commands\Tags\NextTags.cs" />
     <Compile Include="ChatbotActions\Commands\Tags\RefreshTags.cs" />

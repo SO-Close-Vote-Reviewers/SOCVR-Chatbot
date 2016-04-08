@@ -5,19 +5,19 @@ using System.Linq;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
 {
-    internal class AuditStats : UserCommand
+    internal class MyAuditStats : UserCommand
     {
         public override string ActionDescription => "Shows stats about your recorded audits.";
 
-        public override string ActionName => "Audit Stats";
+        public override string ActionName => "My Audit Stats";
 
-        public override string ActionUsage => "audit stats";
+        public override string ActionUsage => "my audit stats";
 
         public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.Reviewer;
 
         public override bool UserMustBeInAnyPermissionGroupToRun => true;
 
-        protected override string RegexMatchingPattern => "^audit stats$";
+        protected override string RegexMatchingPattern => "^my audit stats$";
 
         public override void RunAction(Message incomingChatMessage, Room chatRoom)
         {
@@ -43,7 +43,9 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
                         TagName = x.Key,
                         Count = x.Count(),
                         Percent = x.Count() * 1.0 / auditEntries.Count * 100
-                    });
+                    })
+                    .OrderBy(x => x.TagName)
+                    .OrderByDescending(x => x.Percent);
 
                 var message = data
                     .ToStringTable(new[] { "Tag Name", "%", "Count" },
@@ -51,7 +53,8 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
                         x => Math.Round(x.Percent, 2),
                         x => x.Count);
 
-                chatRoom.PostReplyOrThrow(incomingChatMessage, "Stats of all tracked audits by tag:");
+                var msgText = $"You've completed {auditEntries.Count} audit{(auditEntries.Count == 1 ? "" : "s")}:";
+                chatRoom.PostReplyOrThrow(incomingChatMessage, msgText);
                 chatRoom.PostMessageOrThrow(message);
             }
         }

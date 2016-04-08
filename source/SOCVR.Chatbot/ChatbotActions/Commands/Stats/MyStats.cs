@@ -6,20 +6,20 @@ using SOCVR.Chatbot.Database;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
 {
-    internal class ReviewsToday : UserCommand
+    internal class MyStats : UserCommand
     {
         public override string ActionDescription =>
             "Shows stats about your reviews completed today. Or, if requesting a full data dump (\"reviews today details\"), prints a table of the reviews items you've done today.";
 
-        public override string ActionName => "Reviews Today";
+        public override string ActionName => "My Stats";
 
-        public override string ActionUsage => "reviews today <details>";
+        public override string ActionUsage => "my stats <details|full>";
 
         public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.Reviewer;
 
         public override bool UserMustBeInAnyPermissionGroupToRun => true;
 
-        protected override string RegexMatchingPattern => @"^reviews today(?: (details))?$";
+        protected override string RegexMatchingPattern => @"^my stats(?: (details|full))?$";
 
         public override void RunAction(Message incomingChatMessage, Room chatRoom)
         {
