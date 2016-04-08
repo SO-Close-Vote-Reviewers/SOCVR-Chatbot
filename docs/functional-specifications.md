@@ -10,43 +10,43 @@ This document describes the functionality of the chatbot that resides in the [SO
 - [Goals for v2](#goals-for-v2)
 - [V2 Member Workflow](#v2-member-workflow)
 - [V2 Command List](#v2-command-list)
-	- [Commands for all users](#commands-for-all-users)
-	- [Commands for Reviewer permission group](#commands-for-reviewer-permission-group)
-	- [Commands for Room Owner permission group](#commands-for-room-owner-permission-group)
-	- [Commands for Users in any permission group](#commands-for-users-in-any-permission-group)
+    - [Commands for all users](#commands-for-all-users)
+    - [Commands for Reviewer permission group](#commands-for-reviewer-permission-group)
+    - [Commands for Room Owner permission group](#commands-for-room-owner-permission-group)
+    - [Commands for Users in any permission group](#commands-for-users-in-any-permission-group)
 - [Commands - Descriptive](#commands-descriptive)
-	- [Alive](#alive)
-	- [Commands](#commands)
-	- [Help](#help)
-	- [Running Commands](#running-commands)
-	- [Status](#status)
-	- [Reviews Today](#reviews-today)
-	- [Total reviews today](#total-reviews-today)
-	- [Request permission to group](#request-permission-to-group)
-	- [Membership](#membership)
-	- [Opt-in and Opt-out](#opt-in-and-opt-out)
-	- [Audit stats](#audit-stats)
-	- [Current Tag and Next # tags](#current-tag-and-next-tags)
-	- [Refresh tags](#refresh-tags)
-	- [Stats](#stats)
-	- [Current Review Count](#current-review-count)
-	- [Reviews Today](#reviews-today)
-	- [Start Event](#start-event)
-	- [Ping Reviewers](#ping-reviewers)
-	- [Stop Bot](#stop-bot)
-	- [Reboot Bot](#reboot-bot)
-	- [Approve and Reject Request #](#approve-and-reject-request-)
-	- [Add User To Group](#add-user-to-group)
-	- [Remove User From Group](#remove-user-from-group)
-	- [View Requests](#view-requests)
+    - [Alive](#alive)
+    - [Commands](#commands)
+    - [Help](#help)
+    - [Running Commands](#running-commands)
+    - [Status](#status)
+    - [Reviews Today](#reviews-today)
+    - [Total reviews today](#total-reviews-today)
+    - [Request permission to group](#request-permission-to-group)
+    - [Membership](#membership)
+    - [Opt-in and Opt-out](#opt-in-and-opt-out)
+    - [Audit stats](#audit-stats)
+    - [Current Tag and Next # tags](#current-tag-and-next-tags)
+    - [Refresh tags](#refresh-tags)
+    - [Stats](#stats)
+    - [Current Review Count](#current-review-count)
+    - [Reviews Today](#reviews-today)
+    - [Start Event](#start-event)
+    - [Ping Reviewers](#ping-reviewers)
+    - [Stop Bot](#stop-bot)
+    - [Reboot Bot](#reboot-bot)
+    - [Approve and Reject Request #](#approve-and-reject-request-)
+    - [Add User To Group](#add-user-to-group)
+    - [Remove User From Group](#remove-user-from-group)
+    - [View Requests](#view-requests)
 - [Command Interpretation](#command-interpretation)
 - [Permission system](#permission-system)
-	- [Permission Request](#permission-request)
-		- [Asking for permission](#asking-for-permission)
-		- [Viewing Requests](#viewing-requests)
-	- [Handling Requests](#handling-requests)
+    - [Permission Request](#permission-request)
+        - [Asking for permission](#asking-for-permission)
+        - [Viewing Requests](#viewing-requests)
+    - [Handling Requests](#handling-requests)
 - [User Tracking](#user-tracking)
-	- [Bot Messages](#bot-messages)
+    - [Bot Messages](#bot-messages)
 - [Docker](#docker)
 - [Configuration](#configuration)
 - [Database](#database)
@@ -57,11 +57,11 @@ This document describes the functionality of the chatbot that resides in the [SO
 
 Grab a chair and sit down. Let me tell you a tale of how things used to be.
 
-Back when I (gunr2171) joined SOCVR, the main members were rene and TGMCians. That's just about it. Some people popped in from time to time, but for the most part the only people consistently helping on the CV queue were those two. It took me some time to get used to the queue but once I was acclimated I joined in.
+Back when I (gunr2171) joined SOCVR, the main members were rene and TGMCians. That's just about it. Some people popped in from time to time, but for the most part the only people consistently helping on the CV queue were those two. It took me some time to get used to the queue, but once I was acclimated, I joined in.
 
 With such a small crew, the only way we could make a dent in the queue would be to all work on the same tag. This way, there would be a high chance we would be reviewing the same post, and ensuring that more review items were completed.
 
-The best way we had to keep track of what we were working on was manually. We would need to ping each other (usually rene) to say when we're done with a tag, or other such status updates. With only 3 members, this wasn't a problem.
+The best way we had to keep track of what we were working on was manually. We would need to ping each other (usually rene) to say when we're done with a tag or other such status updates. With only three members, this wasn't a problem.
 
 Audits were a different story. We wrote "passed c# audit" not to keep track of it, but to just tell the other person that we were still here and doing our part. It was a "hey look, I'm still going strong."
 
@@ -78,7 +78,7 @@ The questions this bot is designed to solve are:
 
 ## History of v1
 
-Version 1 was a really good stab. It got everything we really needed to have the bot do. Of course, there are a lot of things we wish it _could_ do. Version 2 is mostly improvement to the current system.
+Version 1 was a really good stab. It did everything we needed to have the bot do. Of course, there are a lot of things we wish it _could_ do. Version 2 is mostly improvement to the current system.
 
 Areas of Version 1 that we have problems with:
 
@@ -87,10 +87,10 @@ Areas of Version 1 that we have problems with:
 
 ## Goals for v2
 
-The high level goals for version 2 are:
+The high-level goals for version 2 are:
 
 * Runs as a Linux Docker image - running the bot from Jenkins is not what Jenkins is designed for, so the software will be built to run as a service. Jenkins will still be used for testing the software and deploying it to test/production environments.
-* Minimum interactions needed from chat to operate - bot will work in the background to gather information, without needing it from chat.
+* Minimum interactions needed from chat to operate - bot will work in the background to gather information, without requiring it from chat.
 * Store review sessions by UTC day, not by individual sessions - in v1 a person can have multiple sessions per day, which doesn't make a lot of sense and can be confusing. In v2, the chatbot will just record all reviews done within a UTC day and do computations from there.
 
 ## V2 Member Workflow
@@ -102,8 +102,8 @@ Here's how a chat member should expect to use the bot in v2:
 3. The bot pings the user to say:
   > I see you have started reviewing @[username]. Good luck!"
 
-4. The user may stop and start (human phrasing) multiple times, the bot will not care (this includes taking an hour between reviews).
-5. If the user passes an audit it will be posted to the chat room.
+4. The user may stop and start (human phrasing) multiple times; the bot will not care (this includes taking an hour between reviews).
+5. If the user passes an audit, it will be posted to the chat room.
 6. As soon as the user completes 40 review items in a single UTC day, the bot will ping the user saying:
   > You've completed 40 CV review items today, thanks! The time between your first and last review today was X minutes, averaging to a review every Y minutes.
 
@@ -135,7 +135,7 @@ Anyone in chat can run these commands.
 | Running Commands                   | Displays a list of commands that the bot is currently executing.                   |
 | Status                             | Displays how long it has been running for and what version is running.             |
 | Request permission to group        | Submits a request for the user to be added to a given permission group.            |
-| Membership                         | Shows a list of all permission groups, and the members in those permission groups. |
+| Membership                         | Shows a list of all permission groups and the members of those permission groups. |
 
 ### Commands for Reviewer permission group
 
@@ -259,7 +259,7 @@ If the user adds `details` to the end of the command, the following table will b
 +---------+------------+--------+-------------------------+
 </pre>
 
-The `Item Id` is the number in the URL for that review item. If the review item is not an audit then the Audit cell will be blank. Order this table by `Completed At` ascending.
+The `Item Id` is the number in the URL for that review item. If the review item is not an audit, then the Audit cell will be blank. Order this table by `Completed At` ascending.
 
 ### Total reviews today
 This command shows summary information about all reviews done in the current day along with a breakdown table of reviews by user. The table will be sorted by `Review Items Today` descending. Only members that have reviewed at least one item today will be used in these stats.
@@ -289,11 +289,11 @@ Then followed by a multilined message in the following format:
 
 <pre>
 [group name]
-	[display name] [user id]
-	[display name] [user id]
+    [display name] [user id]
+    [display name] [user id]
 [group name]
-	[display name] [user id]
-	[display name] [user id]
+    [display name] [user id]
+    [display name] [user id]
 </pre>
 
 The groups shown are shown, in this order:
@@ -392,7 +392,7 @@ A user may want more detailed information than what has already been provided fr
 | 23456   | Edit       | Passed | 2015-01-02 03:23:11 UTC |
 | 34567   | Leave Open | Failed | 2015-01-02 03:23:11 UTC |
 
-The Item Id is the number in the URL for that review item. If the review item is not an audit then the Audit cell will be blank. Order this table by Completed At ascending.
+The Item Id is the number in the URL for that review item. If the review item is not an audit, then the Audit cell will be blank. Order this table by Completed At ascending.
 
 This is the only place in the entire program which will display failed audits.
 
@@ -404,9 +404,9 @@ The bot will output two messages. The first message will be the output of the Qu
 ### Ping Reviewers
 This command allows the user to ping everyone in the Reviewer permissions group with a custom message.
 
-In order for a user to appear in the user list they must have reviewed at least X reviews within the last Y days (configurable). Default is 50 reviews within 3 days.
+For a user to appear in the user list, they must have reviewed at least X reviews within the last Y days (configurable). The default is 50 reviews within 3 days.
 
-The person giving the command will not appear in the list. The user list will be sorted alphabetically. Ensure that people with non-alphanumeric charters in their names have those characters removed so pings work correctly. The list of users is always placed after the message.
+The person giving the command will not appear on the list. The user list will be sorted alphabetically. Ensure that people with non-alphanumeric charters in their names have those characters removed, so pings work correctly. The list of users is always placed after the message.
 
 Here is an example:
 
@@ -417,7 +417,7 @@ Here is an example:
 When executed, this command will cause the bot to leave the chatroom and then terminate the current process. This will end the Docker container with a 0 exit code.
 
 ### Reboot Bot
-This command does the same as Stop Bot, but causes the bot to start back up again after successfully shutting down. This will not stop the Docker container.
+This command does the same as Stop Bot but causes the bot to start back up again after successfully shutting down. This will not stop the Docker container.
 
 ### Approve and Reject Request #
 Depending on the message, this command will approve or reject a request from a user to join a chat command permission group.
@@ -441,7 +441,7 @@ If command is valid, and the process was successful, the bot will reply to the c
 
 > Request processed successfully.
 
-If the request was approved, the message will append the following:
+If the request was approved, the message would append the following:
 
 > @[requesting user name] has been added to the [permission group] group.
 
@@ -489,7 +489,7 @@ The bot will look at the input and see if it within a configurable % of a known 
 
 > Did you mean to run "(command name)"? Reply "yes" to run it.
 
-If the user replies yes to the message then the bot will attempt to run the command as normal. Remember that permissions and restrictions still need to be checked.
+If the user replies yes to the message, then the bot will attempt to run the command as normal. Remember that permissions and restrictions still need to be checked.
 
 If no command matched the % threshold, then the bot will ignore the message.
 
@@ -516,7 +516,7 @@ In version 1, only bot owners could add users to the track list. This was fine m
 * If there are no bot owners present then the user has to come back later or make a ping.
 * Even if the bot owner is around they might not see the request.
 
-Either way, it's easy for a request to go unseen. This new permission system will allow normal members to handle requests (in the same spirit as community moderation on Stack Overflow). More eyes means quicker request handling.
+Either way, it's easy for a request to go unseen. This new permission system will allow normal members to handle requests (in the same spirit as community moderation on Stack Overflow). More eyes mean quicker request handling.
 
 Note: a user may only have one request per permission group active at a time (active means it is waiting to be approved or rejected).
 
@@ -542,11 +542,11 @@ If the user tries to run a command where they do not have permission to do so, a
 
 > Sorry, you are not in the [group name] permission group. There is already a request to get you this permission, please be patient.
 
-If the user tries to run a command where they do not have permission to do so, the latest request for that permission has been denied, and that denial was within the last 48 hours, then the bot will ignore the message. Once 48 hours has ellapsed, the bot will allow them to ask for permission again.
+If the user tries to run a command where they do not have permission to do so, the latest request for that permission has been denied, and that denial was within the last 48 hours, then the bot will ignore the message. Once 48 hours has elapsed, the bot will allow them to ask for permission again.
 
 *Note, there should not be a need to increase the amount of time a reject will incur.*
 
-There is a already a "kick" and "ban" system in chat which which room owners should use if it gets to this point.
+There is already a "kick" and "ban" system in chat which room owners should use if it gets to this point.
 If the user tries to run a Reviewers command where they do not have permission to do so, and the user has less than 3000 reputation, the bot will respond with:
 
 > Sorry, this command requires that you have 3000 reputation and are a part of the Reviewers permission group.
@@ -600,7 +600,7 @@ A group member has two methods to approve or reject a request.
 
 ## User Tracking
 
-As previously stated, v1 primarily relies on information fed from chat users in the room. This worked to a degree, but allows users to supply [inaccurate data](http://chat.stackoverflow.com/transcript/41570?m=24910842#24910842) and can become tiresome after a while. Thus we’ve introduced automated review data<sup>§</sup> gathering for:
+As previously stated, v1 primarily relies on information fed from chat users in the room. This worked to a degree but allows users to supply [inaccurate data](http://chat.stackoverflow.com/transcript/41570?m=24910842#24910842) and can become tiresome after a while. Thus, we’ve introduced automated review data<sup>§</sup> gathering for:
 
 * Passed audits,
 * Failed audits,
@@ -639,14 +639,14 @@ If the user appears to be working on a new set of tags (this message will only b
 
 ## Docker
 
-Docker is a "virtual machine" system for linux. We should use the following methods when using docker.
+Docker is a "virtual machine" system for Linux. We should use the following methods when using docker.
 * Environment variables before config file - If a setting can be found as an environment variable, use it. If it can't, try and find it in the configuration file. If it still can't be found, use a built-in default.
 * Database in its own container, which is linked.
 
 ## Configuration
 This program is designed to be very configurable.
 
-Some values used in the program have built-in defaults. However some values won't have built-in defaults. If these values are not configured from either the configuration file or environment variables then the bot should reply that the value(s) have not been configured.
+Some values used in the program have built-in defaults. However, some values won't have built-in defaults. If these values are not configured from either the configuration file or environment variables, then the bot should reply that the value(s) have not been configured.
 
 > This operation can't be performed because the following configuration values have not been set and no default exits: `value 1`, `value 2`, ...
 
