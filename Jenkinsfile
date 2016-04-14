@@ -18,3 +18,4 @@ def dockerBuild() {
 	def shCommand = "docker build -t ${imageName}${tagString} ."
 	sh shCommand
 }
+
