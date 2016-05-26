@@ -114,6 +114,12 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                     .Include(x => x.Permissions)
                     .Single(x => x.ProfileId == processingUserId);
 
+                //if you are a Bot Owner, you are always allowed to do it
+                if (PermissionGroup.BotOwner.In(processingUser.Permissions.Select(x => x.PermissionGroup)))
+                {
+                    return PermissionGroupModifiableStatus.CanModifyGroupMembership;
+                }
+
                 //the only general restriction is that you are in the group you are trying to modify
                 if (!permissionGroup.In(processingUser.Permissions.Select(x => x.PermissionGroup)))
                 {
