@@ -68,13 +68,21 @@ namespace SOCVR.Chatbot.Database
         /// If it does not exist, the user entry will be created.
         /// </summary>
         /// <param name="profileId"></param>
-        public void EnsureUserExists(int profileId)
+        /// <param name="setOptIn">If true, the user will be opted in to user tracking.</param>
+        public void EnsureUserExists(int profileId, bool setOptIn = false)
         {
             var dbUser = Users.SingleOrDefault(x => x.ProfileId == profileId);
 
             if (dbUser == null)
             {
                 dbUser = new User() { ProfileId = profileId };
+
+                if (setOptIn)
+                {
+                    dbUser.LastTrackingPreferenceChange = DateTimeOffset.Now;
+                    dbUser.OptInToReviewTracking = true;
+                }
+
                 Users.Add(dbUser);
                 SaveChanges();
             }

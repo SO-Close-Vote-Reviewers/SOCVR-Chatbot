@@ -89,7 +89,7 @@ namespace SOCVR.Chatbot
 
             foreach (var ro in roList)
             {
-                db.EnsureUserExists(ro.ID);
+                db.EnsureUserExists(ro.ID, true);
                 db.EnsureUserIsInAllPermissionGroups(ro.ID);
             }
         }
