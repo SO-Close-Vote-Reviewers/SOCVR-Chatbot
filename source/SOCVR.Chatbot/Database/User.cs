@@ -34,5 +34,6 @@ namespace SOCVR.Chatbot.Database
         public virtual List<UserReviewedItem> ReviewedItems { get; set; }
         public virtual List<PermissionRequest> PermissionsRequested { get; set; }
         public virtual List<PermissionRequest> PermissionsReviewed { get; set; }
+        public virtual List<DayMissingReviews> MissingReviewRecords { get; set; }
     }
 }

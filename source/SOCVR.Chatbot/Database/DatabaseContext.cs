@@ -61,6 +61,15 @@ namespace SOCVR.Chatbot.Database
             //user
             modelBuilder.Entity<User>()
                 .HasKey(u => u.ProfileId);
+
+            //MissingReviews
+            modelBuilder.Entity<DayMissingReviews>()
+                .HasKey(dmr => new { dmr.ProfileId, dmr.Date });
+
+            modelBuilder.Entity<DayMissingReviews>()
+                .HasOne(dmr => dmr.User)
+                .WithMany(u => u.MissingReviewRecords)
+                .HasForeignKey(dmr => dmr.ProfileId);
         }
 
         /// <summary>
