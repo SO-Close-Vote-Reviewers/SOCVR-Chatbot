@@ -24,7 +24,7 @@ namespace SOCVR.Chatbot.Database
         /// <summary>
         /// The UTC Date for this record.
         /// </summary>
-        public DateTime Date { get; set; }
+        public DateTimeOffset Date { get; set; }
 
         /// <summary>
         /// The number of reviews that are unaccounted for. 
