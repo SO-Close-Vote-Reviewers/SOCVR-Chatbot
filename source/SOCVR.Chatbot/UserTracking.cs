@@ -184,46 +184,23 @@ namespace SOCVR.Chatbot
             room.PostMessageLight(msg);
         }
 
-        private void HandleReviewingCompleted(User user, HashSet<ReviewItem> reviews)
+        private void HandleReviewingCompleted(User user, HashSet<ReviewItem> parsedReviews)
         {
-            var revCount = user.CompletedReviewsCount;
-            var userInRoom = room.CurrentUsers.Any(x => x.ID == user.ID);
-            var chatUser = room.GetUser(user.ID);
-            var msg = new MessageBuilder();
-
-            if (userInRoom)
+            using (var db = new DatabaseContext())
             {
-                msg.AppendPing(chatUser);
+                //set the number of missing reviews
+                var missingReviewCount = user.CompletedReviewsCount - parsedReviews.Count;
+
+                var newRecord = new DayMissingReviews();
+                newRecord.ProfileId = user.ID;
+                newRecord.Date = DateTimeOffset.UtcNow.Date;
+                newRecord.MissingReviewsCount = missingReviewCount;
+
+                db.DayMissingReviews.Add(newRecord);
+                db.SaveChanges();
             }
 
-            var posts = reviews.Count > 1 ? $"{revCount} posts today" : "a post today";
-            msg.AppendText($"{(userInRoom ? "You've" : chatUser.Name)} reviewed {posts}");
-
-            var audits = reviews.Count(x => x.AuditPassed != null) + (revCount - reviews.Count);
-            if (audits > 0)
-            {
-                msg.AppendText($" (of which {audits} {(audits > 1 ? "were audits" : "was an audit")})");
-            }
-
-            msg.AppendText(userInRoom ? ", thanks! " : "! ");
-
-            // It's always possible...
-            if (reviews.Count > 1)
-            {
-                var revRes = reviews.Select(r => r.Results.First(rr => rr.UserID == user.ID));
-                var durRaw = revRes.Max(r => r.Timestamp) - revRes.Min(r => r.Timestamp);
-                var durInf = new TimeSpan((durRaw.Ticks / revCount) * (revCount + 1));
-                var avgInf = TimeSpan.FromSeconds(durInf.TotalSeconds / revCount);
-                var pronounOrName = userInRoom ? "your" : chatUser.Name + "'s";
-
-                msg.AppendText($"The time between {pronounOrName} first and last review today was ");
-                msg.AppendText(durInf.ToUserFriendlyString());
-                msg.AppendText(", averaging to a review every ");
-                msg.AppendText(avgInf.ToUserFriendlyString());
-                msg.AppendText(".");
-            }
-
-            room.PostMessageLight(msg);
+#warning trigger the "my stats" command for the current user
         }
 
         private void HandleAuditPassed(User user, ReviewItem audit)
