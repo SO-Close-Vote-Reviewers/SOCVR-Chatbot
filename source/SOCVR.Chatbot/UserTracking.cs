@@ -149,21 +149,21 @@ namespace SOCVR.Chatbot
             temp.Dispose();
         }
 
-        private void HookUpUserEvents(int id)
+        private void HookUpUserEvents(int userId)
         {
-            WatchedUsers[id].EventManager.ConnectListener(EventType.ItemReviewed,
-                new Action<ReviewItem>(r => SaveReview(r, id)));
+            WatchedUsers[userId].EventManager.ConnectListener(EventType.ItemReviewed,
+                new Action<ReviewItem>(r => SaveReview(r, userId)));
 
-            WatchedUsers[id].EventManager.ConnectListener(EventType.ReviewingStarted,
-                new Action(() => HandleReviewingStarted(WatchedUsers[id])));
+            WatchedUsers[userId].EventManager.ConnectListener(EventType.ReviewingStarted,
+                new Action(() => HandleReviewingStarted(WatchedUsers[userId])));
 
-            WatchedUsers[id].EventManager.ConnectListener(EventType.ReviewingCompleted,
-                new Action<HashSet<ReviewItem>>(revs => HandleReviewingCompleted(WatchedUsers[id], revs)));
+            WatchedUsers[userId].EventManager.ConnectListener(EventType.ReviewingCompleted,
+                new Action<HashSet<ReviewItem>>(revs => HandleReviewingCompleted(WatchedUsers[userId], revs)));
 
-            WatchedUsers[id].EventManager.ConnectListener(EventType.AuditPassed,
-                new Action<ReviewItem>(r => HandleAuditPassed(WatchedUsers[id], r)));
+            WatchedUsers[userId].EventManager.ConnectListener(EventType.AuditPassed,
+                new Action<ReviewItem>(r => HandleAuditPassed(WatchedUsers[userId], r)));
 
-            WatchedUsers[id].EventManager.ConnectListener(EventType.InternalException,
+            WatchedUsers[userId].EventManager.ConnectListener(EventType.InternalException,
                 new Action<Exception>(ex => HandleException(ex)));
         }
 
