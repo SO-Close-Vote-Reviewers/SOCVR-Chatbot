@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace SOCVR.Chatbot.Database
 {
+#warning not going to lie, this is a pretty bad name. Open for suggestions.
+
+    /// <summary>
+    /// Holds information about the number of missing reviews for a given person on a given UTC day.
+    /// Add this to the number of parsed reviews to obtain the true number of reviews a person did on a day.
+    /// </summary>
     class DayMissingReviews
     {
         /// <summary>
