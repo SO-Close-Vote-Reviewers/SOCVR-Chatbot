@@ -5,6 +5,8 @@ using SOCVR.Chatbot.ChatRoom;
 using SOCVR.Chatbot.Database;
 using Microsoft.Data.Entity;
 using System.Net.Sockets;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace SOCVR.Chatbot
 {
@@ -14,6 +16,7 @@ namespace SOCVR.Chatbot
 #pragma warning disable 0414
         private static UserTracking watcher; // Accessed by reflection.
 #pragma warning restore 0414
+        private static ManualResetEvent ownersAdded = new ManualResetEvent(false);
 
         /// <summary>
         /// wait handle for shutdown
@@ -79,18 +82,31 @@ namespace SOCVR.Chatbot
                     }
                 }
 
-                EnsureRoomOwnersAreInDatabase(db);
+                // We only need to check the RO list on the bot's first start up.
+                if (!db.UserPermissions.Any(x => x.PermissionGroup == PermissionGroup.BotOwner))
+                {
+                    EnsureRoomOwnersAreInDatabase();
+                }
             }
         }
 
-        private static void EnsureRoomOwnersAreInDatabase(DatabaseContext db)
+        private static void EnsureRoomOwnersAreInDatabase()
         {
-            var roList = mng.CvChatRoom.RoomOwners;
-
-            foreach (var ro in roList)
+            // We'll need to wait for the room's user
+            // lists to be populated (since we init it async)
+            // before adding the ROs to the DB.
+            while (mng.CvChatRoom.RoomOwners.Count == 0)
             {
-                db.EnsureUserExists(ro.ID, true);
-                db.EnsureUserIsInAllPermissionGroups(ro.ID);
+                Thread.Sleep(1000);
+            }
+
+            using (var db = new DatabaseContext())
+            {
+                foreach (var ro in mng.CvChatRoom.RoomOwners)
+                {
+                    db.EnsureUserExists(ro.ID, true);
+                    db.EnsureUserIsInAllPermissionGroups(ro.ID);
+                }
             }
         }
 

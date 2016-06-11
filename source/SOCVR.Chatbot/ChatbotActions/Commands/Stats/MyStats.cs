@@ -26,6 +26,13 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
             using (var db = new DatabaseContext())
             {
                 var tracker = (UserTracking)typeof(Program).GetField("watcher", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+
+                if (!tracker.WatchedUsers.ContainsKey(incomingChatMessage.Author.ID))
+                {
+                    chatRoom.PostReplyOrThrow(incomingChatMessage, "I can't produce any stats for you. Your associated tracker could not be found.");
+                    return;
+                }
+
                 var msg = new MessageBuilder();
                 var currentDate = DateTimeOffset.UtcNow;
                 var revCount = tracker.WatchedUsers[incomingChatMessage.Author.ID].CompletedReviewsCount;

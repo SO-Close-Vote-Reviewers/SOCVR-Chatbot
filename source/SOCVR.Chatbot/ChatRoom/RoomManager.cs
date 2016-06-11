@@ -48,8 +48,7 @@ namespace SOCVR.Chatbot.ChatRoom
         {
             LeaveRoom();
 
-            if (ShutdownOrderGiven != null)
-                ShutdownOrderGiven(this, e);
+            ShutdownOrderGiven?.Invoke(this, e);
         }
 
         /// <summary>
@@ -63,7 +62,7 @@ namespace SOCVR.Chatbot.ChatRoom
 
             // Logic to join the chat room.
             chatClient = new Client(ConfigurationAccessor.LoginEmail, ConfigurationAccessor.LoginPassword);
-            cvChatRoom = chatClient.JoinRoom(ConfigurationAccessor.ChatRoomUrl);
+            cvChatRoom = chatClient.JoinRoom(ConfigurationAccessor.ChatRoomUrl, true);
             ChatBotStats.LoginDate = DateTime.Now;
             cvChatRoom.StripMention = true;
             cvChatRoom.InitialisePrimaryContentOnly = true;
@@ -71,8 +70,8 @@ namespace SOCVR.Chatbot.ChatRoom
 
         public void ConnectEventDelegates()
         {
+            cvChatRoom.EventManager.ConnectListener(EventType.UserMentioned, new Action<Message>(cvChatRoom_NewPing));
             cvChatRoom.EventManager.ConnectListener(EventType.MessagePosted, new Action<Message>(cvChatRoom_NewMessage));
-            cvChatRoom.EventManager.ConnectListener(EventType.MessageEdited, new Action<Message>(cvChatRoom_NewMessage));
         }
 
         public void PostStartupMessage()
@@ -103,20 +102,35 @@ namespace SOCVR.Chatbot.ChatRoom
             cvChatRoom.Leave();
         }
 
+        private async void cvChatRoom_NewPing(Message newMessage)
+        {
+            try
+            {
+                InformationMessageBroadcasted?.Invoke($"[ping] {newMessage.Content}", newMessage.Author.Name);
+
+                await Task.Run(() => cmp.ProcessPing(newMessage, cvChatRoom));
+            }
+            catch (Exception ex)
+            {
+                // Something happened outside of an action's RunAction method. Attempt to tell chat about it
+                // this line will throw an exception if it fails, moving it further up the line.
+                cvChatRoom.PostMessageOrThrow($"Error happened!\n\n{ex}");
+            }
+        }
+
         private async void cvChatRoom_NewMessage(Message newMessage)
         {
             try
             {
-                if (InformationMessageBroadcasted != null)
-                    InformationMessageBroadcasted(newMessage.Content, newMessage.Author.Name);
+                InformationMessageBroadcasted?.Invoke($"[message] {newMessage.Content}", newMessage.Author.Name);
 
-                await Task.Run(() => cmp.ProcessChatMessage(newMessage, cvChatRoom));
+                await Task.Run(() => cmp.ProcessNewMessage(newMessage, cvChatRoom));
             }
             catch (Exception ex)
             {
-                // Something happened outside of an action's RunAction method. attempt to tell chat about it
+                // Something happened outside of an action's RunAction method. Attempt to tell chat about it
                 // this line will throw an exception if it fails, moving it further up the line.
-                cvChatRoom.PostMessageOrThrow("error happened!\n" + ex.FullErrorMessage(Environment.NewLine)); // For now, more verbose later.
+                cvChatRoom.PostMessageOrThrow($"Error happened!\n\n{ex}");
             }
         }
     }

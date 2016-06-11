@@ -15,7 +15,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
 
         public override string ActionUsage => "room stats <details>";
 
-        public override PermissionGroup? RequiredPermissionGroup => PermissionGroup.Reviewer;
+        public override PermissionGroup? RequiredPermissionGroup => null;
 
         public override bool UserMustBeInAnyPermissionGroupToRun => true;
 
