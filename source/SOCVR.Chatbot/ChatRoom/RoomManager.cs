@@ -73,7 +73,7 @@ namespace SOCVR.Chatbot.ChatRoom
             cvChatRoom.EventManager.ConnectListener(EventType.MessageReply, new Action<Message, Message>((parent, child) =>
             {
                 cvChatRoom_NewPing(child);
-            });
+            }));
             cvChatRoom.EventManager.ConnectListener(EventType.UserMentioned, new Action<Message>(cvChatRoom_NewPing));
             cvChatRoom.EventManager.ConnectListener(EventType.MessagePosted, new Action<Message>(cvChatRoom_NewMessage));
         }
