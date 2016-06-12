@@ -37,6 +37,8 @@ namespace SOCVR.Chatbot.ChatRoom
 
         public void ProcessNewMessage(Message incomingChatMessage, Room chatRoom)
         {
+            EnsureAuthorInDatabase(incomingChatMessage);
+            
             //before checking for active actions, check for passive actions
             var autoViewRequestsAction = new AutoPostViewRequests();
             if (autoViewRequestsAction.ShouldActionBeRan(incomingChatMessage))
