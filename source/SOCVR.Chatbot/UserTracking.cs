@@ -66,6 +66,7 @@ namespace SOCVR.Chatbot
             dispose = true;
 
             dbWatcherMre.Set();
+            dbWatcherMre.Dispose();
 
             foreach (var id in WatchedUsers.Keys)
             {

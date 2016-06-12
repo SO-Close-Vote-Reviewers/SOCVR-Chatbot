@@ -294,11 +294,9 @@ namespace SOCVR.Chatbot.Sede
         private string Post(string url, string data)
         {
             using (var resp = PostStream(url, data))
+            using (var sr = new StreamReader(resp))
             {
-                using (var sr = new StreamReader(resp))
-                {
-                    return sr.ReadToEnd();
-                }
+                return sr.ReadToEnd();
             }
         }
 

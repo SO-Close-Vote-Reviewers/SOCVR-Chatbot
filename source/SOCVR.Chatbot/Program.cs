@@ -16,7 +16,6 @@ namespace SOCVR.Chatbot
 #pragma warning disable 0414
         private static UserTracking watcher; // Accessed by reflection.
 #pragma warning restore 0414
-        private static ManualResetEvent ownersAdded = new ManualResetEvent(false);
 
         /// <summary>
         /// wait handle for shutdown

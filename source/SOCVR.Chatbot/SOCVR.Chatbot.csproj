@@ -39,8 +39,8 @@
       <HintPath>..\packages\AvsAn.2.2.0.0\lib\net20\AvsAn.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ChatExchange.Net, Version=5.3.0.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ChatExchange.Net.5.3.2-beta\lib\ChatExchange.Net.dll</HintPath>
+    <Reference Include="ChatExchange.Net, Version=5.3.105.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ChatExchange.Net.5.3.3-beta\lib\ChatExchange.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="CsQuery, Version=1.3.3.249, Culture=neutral, processorArchitecture=MSIL">
