@@ -45,17 +45,28 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
                 //get the number of reviews done today by the entire site
                 var sa = new CloseQueueStatsAccessor();
                 var stats = sa.GetOverallQueueStats();
-                var tracker = (UserTracking)typeof(Program).GetField("watcher", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
 
-                var totalReviews = tracker.WatchedUsers.Values.Sum(x => x.CompletedReviewsCount);
+                var parsedReviewsToday = db.ReviewedItems
+                    .Where(x => x.ReviewedOn.Date == DateTimeOffset.UtcNow.Date)
+                    .ToList();
+
+                var missingReviewsToday = db.DayMissingReviews
+                    .Where(x => x.Date == DateTimeOffset.UtcNow.Date)
+                    .ToList();
+
+                var totalReviews = parsedReviewsToday.Count + missingReviewsToday.Count;
 
                 if (totalReviews == 0)
                 {
-                    chatRoom.PostReplyOrThrow(incomingChatMessage, "I don't have enough data to produce those stats.");
+                    chatRoom.PostReplyOrThrow(incomingChatMessage, "I don't have any reviews on record for any tracked person today.");
                     return;
                 }
 
-                var reviewerCount = tracker.WatchedUsers.Values.Count(x => x.CompletedReviewsCount > 0);
+                //var reviewerCount = tracker.WatchedUsers.Values.Count(x => x.CompletedReviewsCount > 0);
+
+                var reviewerCount =
+                    parsedReviewsToday.Select(x => x.ReviewerId).Distinct().Count() +
+                    missingReviewsToday.Select(x => x.ProfileId).Distinct().Count();
 
                 var percentage = Math.Round(totalReviews  * 100D / stats.ReviewsToday, 2);
 
