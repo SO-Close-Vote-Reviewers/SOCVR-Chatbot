@@ -66,7 +66,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Tags
 
             var tagString = tags
                 .Take(tagsToFetch)
-                .Select(x => $"[tag:{x.Key}] `{x.Value}`")
+                .Select(x => TagFormatter.CreateQueueLinkedTagWithReviewCount(x.Key, x.Value))
                 .ToCSV(", ");
 
             var message = $"The next {tagsToFetch} tags are: {tagString}";
