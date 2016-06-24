@@ -63,7 +63,7 @@ namespace SOCVR.Chatbot.ChatRoom
 
             // Logic to join the chat room.
             chatClient = new Client(ConfigurationAccessor.LoginEmail, ConfigurationAccessor.LoginPassword);
-            cvChatRoom = chatClient.JoinRoom(ConfigurationAccessor.ChatRoomUrl);
+            cvChatRoom = chatClient.JoinRoom(ConfigurationAccessor.ChatRoomUrl, true);
             ChatBotStats.LoginDate = DateTime.Now;
             cvChatRoom.StripMention = true;
             cvChatRoom.InitialisePrimaryContentOnly = true;
