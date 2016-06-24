@@ -176,6 +176,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChatbotActions\Annoucements\Announcement.cs" />
+    <Compile Include="ChatbotActions\Annoucements\PostPendingPermissoinRequests.cs" />
     <Compile Include="ChatbotActions\ChatbotAction.cs" />
     <Compile Include="ChatbotActions\ChatbotActionRegister.cs" />
     <Compile Include="ChatbotActions\Commands\Admin\AddReview.cs" />

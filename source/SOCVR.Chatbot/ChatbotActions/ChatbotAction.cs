@@ -1,14 +1,21 @@
 ﻿using System.Text.RegularExpressions;
 using ChatExchangeDotNet;
 using SOCVR.Chatbot.Database;
+using System.Collections.Generic;
 
 namespace SOCVR.Chatbot.ChatbotActions
 {
     /// <summary>
-    /// An action the chatbot will take based on a chat message.
+    /// Ends with the a message posted to the chat room.
     /// </summary>
     internal abstract class ChatbotAction
     {
+        /// <summary>
+        /// Runs the action and returns the messages that should be posted to the chat room.
+        /// </summary>
+        /// <returns></returns>
+        public abstract List<string> RunAction();
+
         /// <summary>
         /// Determines if the incoming chat message activates this action.
         /// </summary>
@@ -70,37 +77,6 @@ namespace SOCVR.Chatbot.ChatbotActions
         /// <param name="chatRoom">The chat room the message was said in.</param>
         public abstract void RunAction(Message incomingChatMessage, Room chatRoom);
 
-        /// <summary>
-        /// Returns the human-friendly name of the chatbot action.
-        /// </summary>
-        /// <returns></returns>
-        public abstract string ActionName { get; }
-
-        /// <summary>
-        /// Returns a short description of what the action does. Triggers return null.
-        /// </summary>
-        /// <returns></returns>
-        public abstract string ActionDescription { get; }
-
-        /// <summary>
-        /// Returns the usage of the action, including optional arguments. Triggers return null.
-        /// </summary>
-        /// <returns></returns>
-        public abstract string ActionUsage { get; }
-
-        /// <summary>
-        /// Returns the permission group the user must be in to run the command.
-        /// Null means the user does not need to belong to a permission group to run the command.
-        /// </summary>
-        /// <returns></returns>
-        public abstract PermissionGroup? RequiredPermissionGroup { get; }
-
-        /// <summary>
-        /// If true, the user needs to be in at least one permission group to run the command.
-        /// If false, the user does not need to be in any permission groups.
-        /// This is used when commands are "non-public" - they are not tied to any particular
-        /// permission group but they require that you be in at least one of the groups.
-        /// </summary>
-        public abstract bool UserMustBeInAnyPermissionGroupToRun { get; }
+    
     }
 }
