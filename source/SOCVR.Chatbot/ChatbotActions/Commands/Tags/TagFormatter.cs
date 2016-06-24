@@ -11,7 +11,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Tags
         public static string CreateQueueLinkedTag(string tagName)
         {
             var linkUrl = $"http://stackoverflow.com/review/close?filter-tags={tagName}";
-            return $"[tagName]({linkUrl})";
+            return $"[{tagName}]({linkUrl})";
         }
 
         public static string CreateQueueLinkedTagWithReviewCount(string tagName, int reviewCount)
