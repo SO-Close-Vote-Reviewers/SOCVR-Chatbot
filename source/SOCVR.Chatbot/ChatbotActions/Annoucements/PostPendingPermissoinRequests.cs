@@ -14,7 +14,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Annoucements
     /// </summary>
     internal class PostPendingPermissoinRequests : Announcement
     {
-        public override List<string> RunAction()
+        public override void RunAction(Room chatRoom)
         {
             using (var db = new DatabaseContext())
             {
@@ -45,12 +45,8 @@ namespace SOCVR.Chatbot.ChatbotActions.Annoucements
                     x => x.RequestedPermissionGroup.ToString(),
                     x => x.RequestedOn.ToString("yyyy-MM-dd HH:mm:ss 'UTC'"));
 
-                var messages = new List<string>();
-
-                messages.Add($"The following is a list of users requesting access to a permission group.");
-                messages.Add(tableText);
-
-                return messages;
+                chatRoom.PostMessageOrThrow("The following is a list of users requesting access to a permission group.");
+                chatRoom.PostMessageOrThrow(tableText);
             }
         }
     }
