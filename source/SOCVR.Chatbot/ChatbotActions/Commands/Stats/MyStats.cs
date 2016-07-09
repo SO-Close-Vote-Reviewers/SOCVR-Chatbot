@@ -25,33 +25,40 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
         {
             using (var db = new DatabaseContext())
             {
-                var tracker = (UserTracking)typeof(Program).GetField("watcher", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
-                var msg = new MessageBuilder();
                 var currentDate = DateTimeOffset.UtcNow;
-                var revCount = tracker.WatchedUsers[incomingChatMessage.Author.ID].CompletedReviewsCount;
-
-                var reviews = db.ReviewedItems
+                var parsedReviews = db.ReviewedItems
                     .Where(x => x.ReviewerId == incomingChatMessage.Author.ID)
                     .Where(x => x.ReviewedOn.Date == currentDate.Date)
                     .ToList();
 
-                msg.AppendText($"You've reviewed {revCount} post{(revCount == 1 ? "" : "s")} today");
+                var missingReviewCount = db.DayMissingReviews
+                    .Where(x => x.Date == currentDate)
+                    .Where(x => x.ProfileId == incomingChatMessage.Author.ID)
+                    .Select(x => x.MissingReviewsCount)
+                    .SingleOrDefault();
 
-                var audits = reviews.Count(x => x.AuditPassed != null);
-                audits += revCount - reviews.Count;
-                if (audits > 0)
+                var totalReviewCount = parsedReviews.Count + missingReviewCount;
+
+                var msg = new MessageBuilder();
+
+                msg.AppendText($"You've reviewed {totalReviewCount} post{(totalReviewCount == 1 ? "" : "s")} today");
+
+                var parsedAuditCount = parsedReviews.Where(x => x.AuditPassed != null).Count();
+                var totalAuditCount = parsedAuditCount + missingReviewCount;
+
+                if (totalAuditCount > 0)
                 {
-                    msg.AppendText($" (of which {audits} {(audits > 1 ? "were audits" : "was an audit")})");
+                    msg.AppendText($" (of which {totalAuditCount} {(totalAuditCount > 1 ? "were audits" : "was an audit")})");
                 }
 
                 msg.AppendText(". ");
 
                 // if you've reviewed more than one item, give the stats about the times and speed.
-                if (reviews.Count > 1)
+                if (parsedReviews.Count > 1)
                 {
-                    var durRaw = reviews.Max(r => r.ReviewedOn) - reviews.Min(r => r.ReviewedOn);
-                    var durInf = new TimeSpan((durRaw.Ticks / reviews.Count) * (reviews.Count + 1));
-                    var avgInf = TimeSpan.FromSeconds(durInf.TotalSeconds / reviews.Count);
+                    var durRaw = parsedReviews.Max(r => r.ReviewedOn) - parsedReviews.Min(r => r.ReviewedOn);
+                    var durInf = new TimeSpan((durRaw.Ticks / parsedReviews.Count) * (parsedReviews.Count + 1));
+                    var avgInf = TimeSpan.FromSeconds(durInf.TotalSeconds / parsedReviews.Count);
 
                     msg.AppendText("The time between your first and last review today was ");
                     msg.AppendText(durInf.ToUserFriendlyString());
@@ -69,7 +76,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
 
                 if (includeDetailsTable)
                 {
-                    var detailsTable = reviews.ToStringTable(new[] { "Item Id", "Action", "Audit", "Completed At" },
+                    var detailsTable = parsedReviews.ToStringTable(new[] { "Item Id", "Action", "Audit", "Completed At" },
                         x => x.ReviewId,
                         x => x.ActionTaken,
                         x => GetFriendlyAuditResult(x.AuditPassed),
