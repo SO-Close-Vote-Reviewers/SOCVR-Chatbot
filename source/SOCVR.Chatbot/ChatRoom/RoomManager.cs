@@ -3,13 +3,14 @@ using System.Threading.Tasks;
 using ChatExchangeDotNet;
 using TCL.Extensions;
 using SOCVR.Chatbot.Configuration;
+using SOCVR.Chatbot.ChatbotActions.Annoucements;
 
 namespace SOCVR.Chatbot.ChatRoom
 {
     /// <summary>
     /// This class joins and keeps track of the chat room.
     /// </summary>
-    public class RoomManager : IDisposable
+    internal class RoomManager : IDisposable
     {
         private Room cvChatRoom;
         private Client chatClient;
@@ -107,8 +108,7 @@ namespace SOCVR.Chatbot.ChatRoom
         {
             try
             {
-                if (InformationMessageBroadcasted != null)
-                    InformationMessageBroadcasted(newMessage.Content, newMessage.Author.Name);
+                InformationMessageBroadcasted?.Invoke(newMessage.Content, newMessage.Author.Name);
 
                 await Task.Run(() => cmp.ProcessChatMessage(newMessage, cvChatRoom));
             }
@@ -118,6 +118,12 @@ namespace SOCVR.Chatbot.ChatRoom
                 // this line will throw an exception if it fails, moving it further up the line.
                 cvChatRoom.PostMessageOrThrow("error happened!\n" + ex.FullErrorMessage(Environment.NewLine)); // For now, more verbose later.
             }
+        }
+
+        public void RunAnnouncement<TAnnouncement>() where TAnnouncement : Announcement, new()
+        {
+            var annoucement = new TAnnouncement();
+            annoucement.RunAction(cvChatRoom);
         }
     }
 }
