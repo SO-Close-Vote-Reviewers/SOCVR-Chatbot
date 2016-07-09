@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using SOCVR.Chatbot.ChatbotActions.Commands.Admin;
 using SOCVR.Chatbot.ChatbotActions.Commands.Permission;
 using SOCVR.Chatbot.PassiveActions;
+using SOCVR.Chatbot.ChatbotActions.Commands;
 
 namespace SOCVR.Chatbot.ChatRoom
 {
@@ -44,7 +45,7 @@ namespace SOCVR.Chatbot.ChatRoom
         public void ProcessChatMessage(Message incomingChatMessage, Room chatRoom)
         {
             var isReplyToChatbot = false;
-            ChatbotAction chatbotActionToRun = null;
+            UserCommand userCommandToRun = null;
 
             EnsureAuthorInDatabase(incomingChatMessage);
 
@@ -73,13 +74,13 @@ namespace SOCVR.Chatbot.ChatRoom
                 }
             }
 
-            if (chatbotActionToRun == null)
+            if (userCommandToRun == null)
             {
                 // Do this first so I only have to find the result once per chat message.
                 isReplyToChatbot = MessageIsReplyToChatbot(incomingChatMessage, chatRoom);
 
                 // Determine the list of possible actions that work from the message.
-                var possibleChatbotActionsToRun = ChatbotActionRegister.AllChatActions
+                var possibleChatbotActionsToRun = ChatbotActionRegister.AllUserCommands
                     .Where(x => x.DoesChatMessageActiveAction(incomingChatMessage, isReplyToChatbot))
                     .ToList();
 
@@ -127,14 +128,14 @@ namespace SOCVR.Chatbot.ChatRoom
                 }
 
                 // You have a single item to run.
-                chatbotActionToRun = possibleChatbotActionsToRun.Single();
+                userCommandToRun = possibleChatbotActionsToRun.Single();
             }
 
             // Now, do you have permission to run it? If you are a mod the answer is yes, else you need to check.
-            if (incomingChatMessage.Author.IsMod || DoesUserHavePermissionToRunAction(chatbotActionToRun, incomingChatMessage.Author.ID))
+            if (incomingChatMessage.Author.IsMod || DoesUserHavePermissionToRunAction(userCommandToRun, incomingChatMessage.Author.ID))
             {
                 // Have permission, run it.
-                RunChatbotAction(chatbotActionToRun, incomingChatMessage, chatRoom);
+                RunUserCommand(userCommandToRun, incomingChatMessage, chatRoom);
             }
             else
             {
@@ -146,11 +147,11 @@ namespace SOCVR.Chatbot.ChatRoom
                     // 2) they are not in ANY permission groups
                     // this is dependent on the command they try to run
 
-                    if (chatbotActionToRun.RequiredPermissionGroup != null)
+                    if (userCommandToRun.RequiredPermissionGroup != null)
                     {
                         //the command required a specific group which the user was not a part of
                         chatRoom.PostReplyOrThrow(incomingChatMessage,
-                            $"Sorry, you are not in the {chatbotActionToRun.RequiredPermissionGroup} permission group. You can request access by running `request permission to {chatbotActionToRun.RequiredPermissionGroup}`.");
+                            $"Sorry, you are not in the {userCommandToRun.RequiredPermissionGroup} permission group. You can request access by running `request permission to {userCommandToRun.RequiredPermissionGroup}`.");
                     }
                     else
                     {
@@ -186,13 +187,13 @@ namespace SOCVR.Chatbot.ChatRoom
         /// <summary>
         /// Determines if the specified chat user has the correct permissions to run the chatbot action.
         /// </summary>
-        /// <param name="actionToRun">The action the user would like to run.</param>
+        /// <param name="commandToRun">The action the user would like to run.</param>
         /// <param name="chatUserId">The chat user who initiated this request.</param>
         /// <returns></returns>
-        private bool DoesUserHavePermissionToRunAction(ChatbotAction actionToRun, int chatUserId)
+        private bool DoesUserHavePermissionToRunAction(UserCommand commandToRun, int chatUserId)
         {
             //if the command does not require the user to be in any permission groups
-            if (actionToRun.UserMustBeInAnyPermissionGroupToRun == false)
+            if (commandToRun.UserMustBeInAnyPermissionGroupToRun == false)
             {
                 //this is a "public" command
                 return true;
@@ -210,13 +211,13 @@ namespace SOCVR.Chatbot.ChatRoom
                 // 1) a specific group is required
                 // 2) any group is required
 
-                if (actionToRun.RequiredPermissionGroup != null)
+                if (commandToRun.RequiredPermissionGroup != null)
                 {
                     //the user must be in the named group in order to run
                     var userPermissionGroups = dbUser.Permissions
                         .Select(x => x.PermissionGroup);
 
-                    return actionToRun.RequiredPermissionGroup.Value.In(userPermissionGroups);
+                    return commandToRun.RequiredPermissionGroup.Value.In(userPermissionGroups);
                 }
                 else
                 {
@@ -252,26 +253,25 @@ namespace SOCVR.Chatbot.ChatRoom
         /// <summary>
         /// Runs the logic for the chatbot action and records the start and stop of the action.
         /// </summary>
-        /// <param name="action"></param>
+        /// <param name="command"></param>
         /// <param name="incomingChatMessage"></param>
         /// <param name="chatRoom"></param>
-        private void RunChatbotAction(ChatbotAction action, Message incomingChatMessage, Room chatRoom)
+        private void RunUserCommand(UserCommand command, Message incomingChatMessage, Room chatRoom)
         {
             // Record as started.
             var id = RunningChatbotActionsManager.MarkChatbotActionAsStarted(
-                action.ActionName,
+                command.ActionName,
                 incomingChatMessage.Author.Name,
                 incomingChatMessage.Author.ID);
 
             try
             {
-                action.RunAction(incomingChatMessage, chatRoom);
+                command.RunAction(incomingChatMessage, chatRoom);
 
                 // If the command was "stop bot", need to trigger a program shutdown.
-                if (action is StopBot)
+                if (command is StopBot)
                 {
-                    if (StopBotCommandIssued != null)
-                        StopBotCommandIssued(this, new EventArgs());
+                    StopBotCommandIssued?.Invoke(this, new EventArgs());
                 }
             }
             catch (Exception ex)
@@ -279,7 +279,7 @@ namespace SOCVR.Chatbot.ChatRoom
                 // ChatMessageProcessor is responsible for outputting any errors that occur
                 // while running chatbot actions. Anything outside of the RunAction() method
                 // should be handled higher up.
-                TellChatAboutErrorWhileRunningAction(ex, chatRoom, action);
+                TellChatAboutErrorWhileRunningAction(ex, chatRoom, command);
             }
 
             // Mark as finished.
@@ -292,10 +292,10 @@ namespace SOCVR.Chatbot.ChatRoom
         /// </summary>
         /// <param name="ex"></param>
         /// <param name="chatRoom"></param>
-        /// <param name="actionToRun"></param>
-        private void TellChatAboutErrorWhileRunningAction(Exception ex, Room chatRoom, ChatbotAction actionToRun)
+        /// <param name="commandToRun"></param>
+        private void TellChatAboutErrorWhileRunningAction(Exception ex, Room chatRoom, UserCommand commandToRun)
         {
-            var headerLine = $"I hit an error while trying to run '{actionToRun.ActionName}':";
+            var headerLine = $"I hit an error while trying to run '{commandToRun.ActionName}':";
 
             var errorMessage = "    " + ex.FullErrorMessage(Environment.NewLine + "    ");
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SOCVR.Chatbot.ChatbotActions.Commands;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -15,12 +16,12 @@ namespace SOCVR.Chatbot.ChatbotActions
         /// Returns list where each element is an instance of a different class that inherits ChatBotAction and is not abstract.
         /// Use this value to loop through all the UserCommands and Triggers in the program.
         /// </summary>
-        internal static List<ChatbotAction> AllChatActions
+        internal static List<UserCommand> AllUserCommands
         {
             get
             {
                 return ReflectiveEnumerator
-                    .GetEnumerableOfType<ChatbotAction>()
+                    .GetEnumerableOfType<UserCommand>()
                     .ToList();
             }
         }
@@ -33,7 +34,7 @@ namespace SOCVR.Chatbot.ChatbotActions
         internal static string GetChatBotActionUsage<TAction>()
             where TAction : ChatbotAction
         {
-            return AllChatActions
+            return AllUserCommands
                 .Single(x => x is TAction)
                 .ActionUsage;
         }

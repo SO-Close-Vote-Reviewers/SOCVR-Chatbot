@@ -42,7 +42,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
 
         public override void RunAction(ChatExchangeDotNet.Message incomingChatMessage, ChatExchangeDotNet.Room chatRoom)
         {
-            var userCommands = ChatbotActionRegister.AllChatActions
+            var userCommands = ChatbotActionRegister.AllUserCommands
                 .Where(x => x is UserCommand);
 
             var showAllCommands = GetRegexMatchingObject()
@@ -52,7 +52,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Utilities
 
             if (showAllCommands)
             {
-                var groupedCommands = ChatbotActionRegister.AllChatActions
+                var groupedCommands = ChatbotActionRegister.AllUserCommands
                     .Where(x => x is UserCommand)
                     .GroupBy(x => x.RequiredPermissionGroup);
 

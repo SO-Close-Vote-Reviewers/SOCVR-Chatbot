@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using SOCVR.Chatbot.ChatbotActions;
+using SOCVR.Chatbot.ChatbotActions.Commands;
 
 namespace CVChatbot.Bot
 {
@@ -25,9 +26,9 @@ namespace CVChatbot.Bot
 
             var y = message.ToLowerInvariant();
             var z = y.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-            var cmds = new Dictionary<ChatbotAction, double>();
+            var cmds = new Dictionary<UserCommand, double>();
 
-            foreach (var cmd in ChatbotActionRegister.AllChatActions)
+            foreach (var cmd in ChatbotActionRegister.AllUserCommands)
             {
                 if (string.IsNullOrWhiteSpace(cmd.ActionUsage)) continue;
 
@@ -99,7 +100,7 @@ namespace CVChatbot.Bot
 
 
 
-        private string GetCommandText(string message, ChatbotAction act, double threshold)
+        private string GetCommandText(string message, UserCommand act, double threshold)
         {
             var cmdOpts = new List<List<string>>();
             var msgWords = message.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
