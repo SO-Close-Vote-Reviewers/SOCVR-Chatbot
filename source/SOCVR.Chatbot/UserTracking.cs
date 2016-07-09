@@ -11,6 +11,7 @@ using SOCVRDotNet;
 using TCL.Extensions;
 using EventType = SOCVRDotNet.EventType;
 using User = SOCVRDotNet.User;
+using SOCVR.Chatbot.ChatbotActions.Annoucements;
 
 namespace SOCVR.Chatbot
 {
@@ -200,8 +201,8 @@ namespace SOCVR.Chatbot
                 db.SaveChanges();
             }
 
-#warning trigger the "my stats" command for the current user
-
+            var announcement = new PostPendingPermissoinRequests();
+            announcement.RunAction(room);
         }
 
         private void HandleAuditPassed(User user, ReviewItem audit)
