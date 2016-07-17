@@ -134,7 +134,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                     case PermissionGroup.BotOwner:
                         return CanUserModifyBotOwnersGroup(permissionGroup, processingUser);
                     default:
-                        throw new Exception("Unknow permission group, unable to determine specific modification restrictions.");
+                        throw new Exception("Unknown permission group, unable to determine specific modification restrictions.");
                 }
             }
         }

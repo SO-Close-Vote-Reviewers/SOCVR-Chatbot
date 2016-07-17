@@ -101,7 +101,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Permission
                     
                     //else, user can join group, continue on
                 }
-                //else, reject. Don't need to check anything for the target user becuase the target user doesn't get modified
+                //else, reject. Don't need to check anything for the target user because the target user doesn't get modified
 
 
                 //all is good, set the new values
