@@ -4,14 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
 using AvsAnLib;
 using ChatExchangeDotNet;
+using SOCVR.Chatbot.ChatbotActions.Annoucements;
 using SOCVR.Chatbot.Database;
 using SOCVRDotNet;
 using TCL.Extensions;
+
 using EventType = SOCVRDotNet.EventType;
 using User = SOCVRDotNet.User;
-using SOCVR.Chatbot.ChatbotActions.Annoucements;
 
 namespace SOCVR.Chatbot
 {

@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Net.Sockets;
 using System.Threading;
-using TCL.Extensions;
+using Microsoft.Data.Entity;
 using SOCVR.Chatbot.ChatRoom;
 using SOCVR.Chatbot.Database;
-using Microsoft.Data.Entity;
-using System.Net.Sockets;
+using TCL.Extensions;
 
 namespace SOCVR.Chatbot
 {
@@ -113,7 +113,7 @@ namespace SOCVR.Chatbot
             {
                 // [2000-01-01 00:00:00.00] [<profile id>] (<Message Type>) <message>
                 var formattedMessage = "[{0}] {1}".FormatInline(DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm:ss.ff zzz"), message);
-                System.Console.WriteLine(formattedMessage);
+                Console.WriteLine(formattedMessage);
             }
         }
     }

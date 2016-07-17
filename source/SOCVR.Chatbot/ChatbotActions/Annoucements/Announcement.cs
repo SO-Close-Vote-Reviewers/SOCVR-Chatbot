@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SOCVR.Chatbot.ChatbotActions.Annoucements
+﻿namespace SOCVR.Chatbot.ChatbotActions.Annoucements
 {
     /// <summary>
     /// An announcement is a message that the chat bot sends to the chat room when a particular event occurs.

@@ -2,7 +2,6 @@
 using System;
 using System.Linq;
 using ChatExchangeDotNet;
-using System.Reflection;
 using Microsoft.Data.Entity;
 
 namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
