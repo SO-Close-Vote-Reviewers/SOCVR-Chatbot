@@ -102,7 +102,7 @@ namespace SOCVR.Chatbot.Database
         {
             var dbUser = Users
                 .Include(x => x.Permissions)
-                .SingleOrDefault(x => x.ProfileId == profileId);
+                .Single(x => x.ProfileId == profileId);
 
             var permissionsUserCurrentlyHas = dbUser
                 .Permissions

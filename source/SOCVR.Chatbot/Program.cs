@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 using Microsoft.Data.Entity;
@@ -79,18 +80,31 @@ namespace SOCVR.Chatbot
                     }
                 }
 
-                EnsureRoomOwnersAreInDatabase(db);
+                // We only need to check the RO list on the bot's first start up.
+                if (!db.UserPermissions.Any(x => x.PermissionGroup == PermissionGroup.BotOwner))
+                {
+                    EnsureRoomOwnersAreInDatabase();
+                }
             }
         }
 
-        private static void EnsureRoomOwnersAreInDatabase(DatabaseContext db)
+        private static void EnsureRoomOwnersAreInDatabase()
         {
-            var roList = mng.CvChatRoom.RoomOwners;
-
-            foreach (var ro in roList)
+            // We'll need to wait for the room's user
+            // lists to be populated (since we init it async)
+            // before adding the ROs to the DB.
+            while (mng.CvChatRoom.RoomOwners.Count == 0)
             {
-                db.EnsureUserExists(ro.ID, true);
-                db.EnsureUserIsInAllPermissionGroups(ro.ID);
+                Thread.Sleep(1000);
+            }
+
+            using (var db = new DatabaseContext())
+            {
+                foreach (var ro in mng.CvChatRoom.RoomOwners)
+                {
+                    db.EnsureUserExists(ro.ID, true);
+                    db.EnsureUserIsInAllPermissionGroups(ro.ID);
+                }
             }
         }
 

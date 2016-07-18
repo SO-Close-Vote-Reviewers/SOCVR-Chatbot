@@ -36,25 +36,30 @@ namespace SOCVR.Chatbot.ChatRoom
         public delegate void StopBotCommandIssuedHandler(object sender, EventArgs e);
         public event StopBotCommandIssuedHandler StopBotCommandIssued;
 
-        /// <summary>
-        /// Main entry point for the class.
-        /// Takes a message revived from chat, determines what action should be taken, then performs that action.
-        /// </summary>
-        /// <param name="incomingChatMessage">The chat message that was said.</param>
-        /// <param name="chatRoom">The room the chat message was said in.</param>
-        public void ProcessChatMessage(Message incomingChatMessage, Room chatRoom)
+        public void ProcessNewMessage(Message incomingChatMessage, Room chatRoom)
         {
-            var isReplyToChatbot = false;
-            UserCommand userCommandToRun = null;
-
             EnsureAuthorInDatabase(incomingChatMessage);
-
+            
             //before checking for active actions, check for passive actions
             var autoViewRequestsAction = new AutoPostViewRequests();
             if (autoViewRequestsAction.ShouldActionBeRan(incomingChatMessage))
             {
                 autoViewRequestsAction.RunAction(incomingChatMessage, chatRoom);
             }
+        }
+
+        /// <summary>
+        /// Main entry point for the class.
+        /// Takes a message revived from chat, determines what action should be taken, then performs that action.
+        /// </summary>
+        /// <param name="incomingChatMessage">The chat message that was said.</param>
+        /// <param name="chatRoom">The room the chat message was said in.</param>
+        public void ProcessPing(Message incomingChatMessage, Room chatRoom)
+        {
+            var isReplyToChatbot = false;
+            UserCommand userCommandToRun = null;
+
+            EnsureAuthorInDatabase(incomingChatMessage);
 
             // Is the message a confirmation to a command suggestion?
             if (yesReply.IsMatch(incomingChatMessage.Content))
@@ -76,12 +81,9 @@ namespace SOCVR.Chatbot.ChatRoom
 
             if (userCommandToRun == null)
             {
-                // Do this first so I only have to find the result once per chat message.
-                isReplyToChatbot = MessageIsReplyToChatbot(incomingChatMessage, chatRoom);
-
                 // Determine the list of possible actions that work from the message.
-                var possibleChatbotActionsToRun = ChatbotActionRegister.AllUserCommands
-                    .Where(x => x.DoesChatMessageActiveAction(incomingChatMessage, isReplyToChatbot))
+                var possibleChatbotActionsToRun = ChatbotActionRegister.AllChatActions
+                    .Where(x => x.DoesChatMessageActiveAction(incomingChatMessage, true))
                     .ToList();
 
                 if (possibleChatbotActionsToRun.Count > 1)
@@ -92,38 +94,32 @@ namespace SOCVR.Chatbot.ChatRoom
 
                 if (!possibleChatbotActionsToRun.Any())
                 {
-                    // Didn't find an action to run, what to do next depends of if the message was
-                    // a reply to the chatbot or not.
-                    if (isReplyToChatbot)
+                    var results = simCmd.FindCommand(incomingChatMessage.Content);
+                    var msg = "Sorry, I don't understand that. ";
+
+                    if (results != null)
                     {
-                        var results = simCmd.FindCommand(incomingChatMessage.Content);
-                        var msg = "Sorry, I don't understand that. ";
-
-                        if (results != null)
+                        if (!results.OptionsSubstituted)
                         {
-                            if (!results.OptionsSubstituted)
-                            {
-                                msg += $"Maybe you meant `{results.SuggestedCmdText}`.";
-                            }
-                            else
-                            {
-                                msg += $"Did you mean `{results.SuggestedCmdText}`?";
-                            }
+                            msg += $"Maybe you meant `{results.SuggestedCmdText}`.";
+                        }
+                        else
+                        {
+                            msg += $"Did you mean `{results.SuggestedCmdText}`?";
+                        }
 
-                            var reply = chatRoom.PostReply(incomingChatMessage, msg);
-                            if (reply == null)
-                            {
-                                throw new InvalidOperationException("Unable to post message");
-                            }
+                        var reply = chatRoom.PostReply(incomingChatMessage, msg);
+                        if (reply == null)
+                        {
+                            throw new InvalidOperationException("Unable to post message");
+                        }
 
-                            if (results.OptionsSubstituted)
-                            {
-                                unrecdCmds[incomingChatMessage] = new KeyValuePair<Message, string>(reply, results.SuggestedCmdText);
-                            }
+                        if (results.OptionsSubstituted)
+                        {
+                            unrecdCmds[incomingChatMessage] = new KeyValuePair<Message, string>(reply, results.SuggestedCmdText);
                         }
                     }
 
-                    // Else it's a trigger, do nothing.
                     return;
                 }
 
@@ -176,11 +172,6 @@ namespace SOCVR.Chatbot.ChatRoom
             using (var db = new DatabaseContext())
             {
                 db.EnsureUserExists(incomingChatMessage.Author.ID);
-
-                if (incomingChatMessage.Author.IsMod)
-                {
-                    db.EnsureUserIsInAllPermissionGroups(incomingChatMessage.Author.ID);
-                }
             }
         }
 
@@ -224,29 +215,6 @@ namespace SOCVR.Chatbot.ChatRoom
                     //the user must be in ANY permission group to run
                     return dbUser.Permissions.Any();
                 }
-            }
-        }
-
-        /// <summary>
-        /// Determines if the chat message is directed to the chatbot or not.
-        /// </summary>
-        /// <param name="chatMessage"></param>
-        /// <param name="chatRoom"></param>
-        /// <returns></returns>
-        private bool MessageIsReplyToChatbot(Message chatMessage, Room chatRoom)
-        {
-            if (chatMessage.ParentID == -1)
-                return false;
-
-            // Check if we're trying to fetch a deleted message.
-            try
-            {
-                var parentMessage = chatRoom.GetMessage(chatMessage.ParentID);
-                return parentMessage.Author.ID == chatRoom.Me.ID;
-            }
-            catch (MessageNotFoundException)
-            {
-                return false;
             }
         }
 
