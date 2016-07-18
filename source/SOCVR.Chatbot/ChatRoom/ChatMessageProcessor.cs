@@ -82,7 +82,7 @@ namespace SOCVR.Chatbot.ChatRoom
             if (userCommandToRun == null)
             {
                 // Determine the list of possible actions that work from the message.
-                var possibleChatbotActionsToRun = ChatbotActionRegister.AllChatActions
+                var possibleChatbotActionsToRun = ChatbotActionRegister.AllUserCommands
                     .Where(x => x.DoesChatMessageActiveAction(incomingChatMessage, true))
                     .ToList();
 
