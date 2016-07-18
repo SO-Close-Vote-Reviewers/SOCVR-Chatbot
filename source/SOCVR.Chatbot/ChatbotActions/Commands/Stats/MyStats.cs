@@ -35,7 +35,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
 
                 var msg = new MessageBuilder();
                 var currentDate = DateTimeOffset.UtcNow;
-                var revCount = tracker.WatchedUsers[incomingChatMessage.Author.ID].CompletedReviewsCount;
+                var revCount = tracker.WatchedUsers[incomingChatMessage.Author.ID].TrueReviewCount;
 
                 var reviews = db.ReviewedItems
                     .Where(x => x.ReviewerId == incomingChatMessage.Author.ID)

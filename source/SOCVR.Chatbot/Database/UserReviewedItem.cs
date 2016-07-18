@@ -31,8 +31,8 @@ namespace SOCVR.Chatbot.Database
     // Do NOT alter enum order.
     internal enum ReviewItemAction
     {
-        LeaveOpen,
         Close,
+        LeaveOpen,
         Edit
     }
 }
