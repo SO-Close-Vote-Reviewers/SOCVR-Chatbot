@@ -150,10 +150,10 @@ namespace SOCVR.Chatbot
         {
             WatchedUsers[id].ItemReviewed += (o, e) =>
             {
-                SaveReview(e);
-                if (e.AuditPassed == true)
+                SaveReview(e.Item2);
+                if (e.Item2.AuditPassed == true)
                 {
-                    HandleAuditPassed((User)o, e);
+                    HandleAuditPassed(e.Item1, e.Item2);
                 }
             };
             WatchedUsers[id].ReviewingStarted += (o, e) => HandleReviewingStarted(e);
