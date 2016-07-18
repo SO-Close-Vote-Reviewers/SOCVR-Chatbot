@@ -171,11 +171,6 @@ namespace SOCVR.Chatbot.ChatRoom
             using (var db = new DatabaseContext())
             {
                 db.EnsureUserExists(incomingChatMessage.Author.ID);
-
-                if (incomingChatMessage.Author.IsMod)
-                {
-                    db.EnsureUserIsInAllPermissionGroups(incomingChatMessage.Author.ID);
-                }
             }
         }
 
