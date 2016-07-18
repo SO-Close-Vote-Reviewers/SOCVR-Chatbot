@@ -61,7 +61,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
                     return;
                 }
 
-                //var reviewerCount = tracker.WatchedUsers.Values.Count(x => x.CompletedReviewsCount > 0);
+                //var reviewerCount = tracker.WatchedUsers.Values.Count(x => x.TrueReviewCount > 0);
 
                 var reviewerCount =
                     parsedReviewsToday.Select(x => x.ReviewerId).Distinct().Count() +

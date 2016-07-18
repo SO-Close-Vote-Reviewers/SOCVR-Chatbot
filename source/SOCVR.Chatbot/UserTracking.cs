@@ -9,11 +9,9 @@ using AvsAnLib;
 using ChatExchangeDotNet;
 using SOCVR.Chatbot.ChatbotActions.Annoucements;
 using SOCVR.Chatbot.Database;
-using SOCVRDotNet;
+using CVQMonitor;
 using TCL.Extensions;
-
-using EventType = SOCVRDotNet.EventType;
-using User = SOCVRDotNet.User;
+using User = CVQMonitor.User;
 
 namespace SOCVR.Chatbot
 {
@@ -48,16 +46,14 @@ namespace SOCVR.Chatbot
 
         public static UserReviewedItem GetUserReviewedItem(int reviewID, int profileID)
         {
-            var fkey = UserDataFetcher.GetFkey();
-            var rev = new ReviewItem(reviewID, fkey);
-            var res = rev.Results.First(x => x.UserID == profileID);
+            var rev = new Review(reviewID, profileID);
 
             return new UserReviewedItem
             {
-                ActionTaken = (ReviewItemAction)(int)res.Action,
+                ActionTaken = (ReviewItemAction)(int)rev.Action,
                 AuditPassed = rev.AuditPassed,
                 PrimaryTag = rev.Tags[0].ToLowerInvariant(),
-                ReviewedOn = res.Timestamp,
+                ReviewedOn = rev.Timestamp,
                 ReviewerId = profileID,
                 ReviewId = reviewID
             };
@@ -73,7 +69,7 @@ namespace SOCVR.Chatbot
 
             foreach (var id in WatchedUsers.Keys)
             {
-                WatchedUsers[id].Dispose();
+                ((IDisposable)WatchedUsers[id]).Dispose();
             }
 
             GC.SuppressFinalize(this);
@@ -139,8 +135,7 @@ namespace SOCVR.Chatbot
         {
             if (WatchedUsers.ContainsKey(userID)) return;
 
-            // Screw long boot times, let's init this in the bg.
-            WatchedUsers[userID] = new User(userID, true);
+            WatchedUsers[userID] = new User(userID);
             HookUpUserEvents(userID);
         }
 
@@ -150,25 +145,25 @@ namespace SOCVR.Chatbot
 
             User temp;
             WatchedUsers.TryRemove(userID, out temp);
-            temp.Dispose();
+            ((IDisposable)temp).Dispose();
         }
 
         private void HookUpUserEvents(int userId)
         {
-            WatchedUsers[userId].EventManager.ConnectListener(EventType.ItemReviewed,
-                new Action<ReviewItem>(r => SaveReview(r, userId)));
+            WatchedUsers[userId].ItemReviewed += (o, e) =>
+            {
+                SaveReview(e);
+                if (e.AuditPassed == true)
+                {
+                    HandleAuditPassed((User)o, e);
+                }
+            };
+            WatchedUsers[userId].ReviewingStarted += (o, e) => HandleReviewingStarted(e);
 
-            WatchedUsers[userId].EventManager.ConnectListener(EventType.ReviewingStarted,
-                new Action(() => HandleReviewingStarted(WatchedUsers[userId])));
-
-            WatchedUsers[userId].EventManager.ConnectListener(EventType.ReviewingCompleted,
-                new Action<HashSet<ReviewItem>>(revs => HandleReviewingCompleted(WatchedUsers[userId], revs)));
-
-            WatchedUsers[userId].EventManager.ConnectListener(EventType.AuditPassed,
-                new Action<ReviewItem>(r => HandleAuditPassed(WatchedUsers[userId], r)));
-
-            WatchedUsers[userId].EventManager.ConnectListener(EventType.InternalException,
-                new Action<Exception>(ex => HandleException(ex)));
+            WatchedUsers[userId].ReviewingLimitReached += (o, e) =>
+            {
+                HandleReviewingCompleted(e, e.ReviewsToday.ToList());
+            };
         }
 
         private void HandleReviewingStarted(User user)
@@ -188,12 +183,12 @@ namespace SOCVR.Chatbot
             room.PostMessageLight(msg);
         }
 
-        private void HandleReviewingCompleted(User user, HashSet<ReviewItem> parsedReviews)
+        private void HandleReviewingCompleted(User user, ICollection<Review> reviews)
         {
             using (var db = new DatabaseContext())
             {
                 //set the number of missing reviews
-                var missingReviewCount = user.CompletedReviewsCount - parsedReviews.Count;
+                var missingReviewCount = user.TrueReviewCount - reviews.Count;
 
                 var newRecord = new DayMissingReviews();
                 newRecord.ProfileId = user.ID;
@@ -208,7 +203,7 @@ namespace SOCVR.Chatbot
             announcement.RunAction(room);
         }
 
-        private void HandleAuditPassed(User user, ReviewItem audit)
+        private void HandleAuditPassed(User user, Review audit)
         {
             //TODO: calc which tag is most relevant and use that instead
             // of just picking the first tag on the post.
@@ -218,7 +213,7 @@ namespace SOCVR.Chatbot
             {
                 tooltip += $"[{t}] ";
             }
-            tooltip += $"audit passed at {audit.Results.First().Timestamp.ToString("HH:mm:ss")} UTC.";
+            tooltip += $"audit passed at {audit.Timestamp.ToString("HH:mm:ss")} UTC.";
 
             var message = new MessageBuilder();
             var tag = audit.Tags[0].ToLowerInvariant();
@@ -233,31 +228,26 @@ namespace SOCVR.Chatbot
             room.PostMessageOrThrow(message.Message);
         }
 
-        private void SaveReview(ReviewItem rev, int userID)
+        private void SaveReview(Review rev)
         {
-            Program.WriteToConsole($"Saving ReviewItem {rev.ID} for user {userID}.");
-            var res = rev.Results.First(x => x.UserID == userID);
+            Program.WriteToConsole($"Saving ReviewItem {rev.ID} for {rev.ReviewerName} ({rev.ReviewerID}).");
             using (var db = new DatabaseContext())
             {
-                db.EnsureUserExists(res.UserID);
+                db.EnsureUserExists(rev.ReviewerID);
 
                 var reviewAlreadyExists = db.ReviewedItems
-                    .Where(x => x.ReviewId == rev.ID)
-                    .Where(x => x.ReviewerId == res.UserID)
+                    .Where(x => x.ReviewId == rev.ID && x.ReviewerId == rev.ReviewerID)
                     .Any();
 
-                if (reviewAlreadyExists)
-                {
-                    return;
-                }
+                if (reviewAlreadyExists) return;
 
                 db.ReviewedItems.Add(new UserReviewedItem
                 {
-                    ActionTaken = (ReviewItemAction)(int)res.Action,
+                    ActionTaken = (ReviewItemAction)(int)rev.Action,
                     AuditPassed = rev.AuditPassed,
                     PrimaryTag = rev.Tags[0].ToLowerInvariant(),
-                    ReviewedOn = res.Timestamp,
-                    ReviewerId = res.UserID,
+                    ReviewedOn = rev.Timestamp,
+                    ReviewerId = rev.ReviewerID,
                     ReviewId = rev.ID
                 });
                 db.SaveChanges();
