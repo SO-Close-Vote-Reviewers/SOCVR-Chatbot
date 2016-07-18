@@ -47,7 +47,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
                 var stats = sa.GetOverallQueueStats();
                 var tracker = (UserTracking)typeof(Program).GetField("watcher", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
 
-                var totalReviews = tracker.WatchedUsers.Values.Sum(x => x.CompletedReviewsCount);
+                var totalReviews = tracker.WatchedUsers.Values.Sum(x => x.TrueReviewCount);
 
                 if (totalReviews == 0)
                 {
@@ -55,7 +55,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
                     return;
                 }
 
-                var reviewerCount = tracker.WatchedUsers.Values.Count(x => x.CompletedReviewsCount > 0);
+                var reviewerCount = tracker.WatchedUsers.Values.Count(x => x.TrueReviewCount > 0);
 
                 var percentage = Math.Round(totalReviews  * 100D / stats.ReviewsToday, 2);
 
