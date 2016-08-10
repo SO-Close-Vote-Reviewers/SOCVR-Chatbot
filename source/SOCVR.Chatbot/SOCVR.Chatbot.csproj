@@ -200,7 +200,6 @@
     <Compile Include="ChatbotActions\Commands\Tags\CurrentTag.cs" />
     <Compile Include="ChatbotActions\Commands\Tags\NextTags.cs" />
     <Compile Include="ChatbotActions\Commands\Tags\RefreshTags.cs" />
-    <Compile Include="ChatbotActions\Commands\Tags\TagFormatter.cs" />
     <Compile Include="ChatbotActions\Commands\Tracking\OptIn.cs" />
     <Compile Include="ChatbotActions\Commands\Tracking\OptOut.cs" />
     <Compile Include="ChatbotActions\Commands\Tracking\OptTrackingCommand.cs" />

@@ -36,7 +36,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Tags
             string dataMessage;
             if (tags != null)
             {
-                dataMessage = $"The current tag is {TagFormatter.CreateQueueLinkedTag(tags.First().Key)} with {tags.First().Value} known review items.";
+                dataMessage = $"The current tag is [tag:{tags.First().Key}] with {tags.First().Value} known review items.";
             }
             else
             {
