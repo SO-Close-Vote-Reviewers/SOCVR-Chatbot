@@ -45,9 +45,7 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
                 //get the number of reviews done today by the entire site
                 var sa = new CloseQueueStatsAccessor();
                 var stats = sa.GetOverallQueueStats();
-                var tracker = (UserTracking)typeof(Program).GetField("watcher", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
-
-                var totalReviews = tracker.WatchedUsers.Values.Sum(x => x.TrueReviewCount);
+                var totalReviews = db.ReviewedItems.Count(r => r.ReviewedOn.Date == DateTimeOffset.UtcNow.Date);
 
                 if (totalReviews == 0)
                 {
@@ -55,13 +53,11 @@ namespace SOCVR.Chatbot.ChatbotActions.Commands.Stats
                     return;
                 }
 
-                var reviewerCount = tracker.WatchedUsers.Values.Count(x => x.TrueReviewCount > 0);
-
+                var allReviewers = db.UserPermissions.Count(u => u.PermissionGroup == PermissionGroup.Reviewer);
+                var reviewerCount = db.Users.Count(u => u.ReviewedItems.Any(r => r.ReviewedOn.Date == DateTimeOffset.UtcNow.Date));
                 var percentage = Math.Round(totalReviews  * 100D / stats.ReviewsToday, 2);
-
-                var usersPercentage = Math.Round(reviewerCount * 100D / chatRoom.PingableUsers.Count(x => x.Reputation >= 3000));
-
-                var message = $"{reviewerCount} members ({usersPercentage}% of this room's able reviewers) have processed {totalReviews} review items today, which accounts for {percentage}% of all CV reviews today.";
+                var usersPercentage = Math.Round(reviewerCount * 100D / allReviewers);
+                var message = $"{reviewerCount} members ({usersPercentage}% of this room's registered reviewers) have processed {totalReviews} review items, which accounts for {percentage}% of all CV reviews today.";
 
                 chatRoom.PostReplyOrThrow(incomingChatMessage, message);
             }
