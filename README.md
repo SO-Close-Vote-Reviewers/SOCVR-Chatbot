@@ -16,4 +16,4 @@ Instead of using a prefix (like `!!` or `<<`), you talk to the chat user directl
 2. Reply to any message said by the chatbot
 
 ##More Documentation##
-Find out more info on the project's [wiki pages](https://github.com/SO-Close-Vote-Reviewers/SOCVR-Chatbot/wiki), including a list of commands and triggers.
+Find out more at the [functional specification](https://github.com/SO-Close-Vote-Reviewers/SOCVR-Chatbot/blob/master/docs/functional-specifications.md).
