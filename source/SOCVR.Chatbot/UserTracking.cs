@@ -77,8 +77,8 @@ namespace SOCVR.Chatbot
 
         private void InitialiseWatcher()
         {
-            //TODO: We may need to tweak this later (currently set to 1 by default).
-            //RequestThrottler.ThrottleFactor = 1.5F;
+            //TODO: We may need to tweak this later.
+            RequestScheduler.RequestsPerMinute = 45;
 
             using (var db = new DatabaseContext())
             {
@@ -158,7 +158,7 @@ namespace SOCVR.Chatbot
             };
             WatchedUsers[id].ReviewingStarted += (o, e) => HandleReviewingStarted(e);
 
-            WatchedUsers[id].ReviewingLimitReached += (o, e) =>
+            WatchedUsers[id].ReviewLimitReached += (o, e) =>
             {
                 HandleReviewingCompleted(e, e.ReviewsToday.ToList());
             };
