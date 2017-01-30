@@ -107,15 +107,23 @@ namespace SOCVR.Chatbot.ChatRoom
                             msg += $"Did you mean `{results.SuggestedCmdText}`?";
                         }
 
-                        var reply = chatRoom.PostReply(incomingChatMessage, msg);
-                        if (reply == null)
+                        Message reply;
+                        try
                         {
-                            throw new InvalidOperationException("Unable to post message");
-                        }
+                            reply = chatRoom.PostReply(incomingChatMessage, msg);
+                            if (reply == null)
+                            {
+                                throw new InvalidOperationException("Unable to post message");
+                            }
 
-                        if (results.OptionsSubstituted)
+                            if (results.OptionsSubstituted)
+                            {
+                                unrecdCmds[incomingChatMessage] = new KeyValuePair<Message, string>(reply, results.SuggestedCmdText);
+                            }
+                        }
+                        catch (DuplicateMessageException)
                         {
-                            unrecdCmds[incomingChatMessage] = new KeyValuePair<Message, string>(reply, results.SuggestedCmdText);
+                            // Not sure what to do here atm.
                         }
                     }
 
