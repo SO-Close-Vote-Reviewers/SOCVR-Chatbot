@@ -156,6 +156,7 @@ namespace SOCVR.Chatbot
                     HandleAuditPassed(e.Item1, e.Item2);
                 }
             };
+
             WatchedUsers[id].ReviewingStarted += (o, e) => HandleReviewingStarted(e);
 
             WatchedUsers[id].ReviewLimitReached += (o, e) =>
